@@ -2,8 +2,6 @@
 
 AI 기반 이미지 분류 CAPTCHA 서비스 **REAL**의 공식 웹사이트입니다.
 
-![REAL Logo](public/real-logo.png)
-
 ## 🌟 프로젝트 소개
 
 REAL은 딥러닝 기반 이미지 분류와 행동 패턴 분석을 통해 사람은 자연스럽게 풀 수 있고, 봇은 통과하기 어려운 맞춤형 CAPTCHA 서비스를 제공합니다.
