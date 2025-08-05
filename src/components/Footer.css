@@ -1,0 +1,62 @@
+/* Footer */
+.footer {
+  background-color: #ffffff;
+  border-top: 1px solid #e0e0e0;
+  padding: 3rem 0 2rem 0;
+  margin-top: auto;
+}
+
+.footer-content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  text-align: center;
+}
+
+/* Top Section - Navigation Links */
+.footer-nav {
+  margin-bottom: 2rem;
+}
+
+.footer-nav a {
+  color: #666666;
+  text-decoration: none;
+  margin: 0 1.5rem;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+}
+
+.footer-nav a:hover {
+  color: #000000;
+}
+
+/* Middle Section - Logo */
+.footer-logo {
+  margin-bottom: 2rem;
+}
+
+.real-logo {
+  width: 75px;
+  height: auto;
+}
+
+/* Bottom Section - Copyright */
+.footer-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.copyright {
+  color: #666666;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .footer-nav a {
+    margin: 0 1rem;
+    font-size: 0.8rem;
+  }
+} 
