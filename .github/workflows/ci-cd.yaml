@@ -57,14 +57,14 @@ jobs:
                   IMAGE_TAG="${{ github.sha }}"
                   
                   # website 폴더가 없으면 생성
-                  mkdir -p deploy-manifests/website
+                  mkdir -p website
                   
                   # website deployment의 이미지 태그 업데이트
-                  if [ -f "deploy-manifests/website/deployment-website.yaml" ]; then
-                      sed -i -E "s|(image: kc-sfacspace.kr-central-2.kcr.dev/team1-repo/website:)([^ ]+)|\1$IMAGE_TAG|" deploy-manifests/website/deployment-website.yaml
+                  if [ -f "website/deployment-website.yaml" ]; then
+                      sed -i -E "s|(image: kc-sfacspace.kr-central-2.kcr.dev/team1-repo/website:)([^ ]+)|\1$IMAGE_TAG|" website/deployment-website.yaml
                   else
                       echo "Warning: deployment-website.yaml file not found. Creating basic deployment file."
-                      cat > deploy-manifests/website/deployment-website.yaml << 'EOF'
+                      cat > website/deployment-website.yaml << EOF
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -90,7 +90,7 @@ EOF
 
                   git config user.name "github-actions[bot]"
                   git config user.email "github-actions[bot]@users.noreply.github.com"
-                  git add deploy-manifests/website/deployment-website.yaml
+                  git add website/deployment-website.yaml
                   git commit -m "Update website image to ${{ github.sha }}" || echo "No changes to commit"
                   git push
               working-directory: ./deploy-manifests 
