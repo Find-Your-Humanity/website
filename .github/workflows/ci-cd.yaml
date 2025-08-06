@@ -56,8 +56,37 @@ jobs:
               run: |
                   IMAGE_TAG="${{ github.sha }}"
                   
+                  # website 폴더가 없으면 생성
+                  mkdir -p deploy-manifests/website
+                  
                   # website deployment의 이미지 태그 업데이트
-                  sed -i -E "s|(image: kc-sfacspace.kr-central-2.kcr.dev/team1-repo/website:)([^ ]+)|\1$IMAGE_TAG|" deploy-manifests/website/deployment-website.yaml
+                  if [ -f "deploy-manifests/website/deployment-website.yaml" ]; then
+                      sed -i -E "s|(image: kc-sfacspace.kr-central-2.kcr.dev/team1-repo/website:)([^ ]+)|\1$IMAGE_TAG|" deploy-manifests/website/deployment-website.yaml
+                  else
+                      echo "Warning: deployment-website.yaml file not found. Creating basic deployment file."
+                      cat > deploy-manifests/website/deployment-website.yaml << 'EOF'
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: website
+  namespace: captcha
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: website
+  template:
+    metadata:
+      labels:
+        app: website
+    spec:
+      containers:
+        - name: website
+          image: kc-sfacspace.kr-central-2.kcr.dev/team1-repo/website:$IMAGE_TAG
+          ports:
+            - containerPort: 80
+EOF
+                  fi
 
                   git config user.name "github-actions[bot]"
                   git config user.email "github-actions[bot]@users.noreply.github.com"
