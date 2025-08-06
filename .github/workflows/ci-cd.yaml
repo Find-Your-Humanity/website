@@ -1,0 +1,67 @@
+name: CI/CD Pipeline for Website
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+        timeout-minutes: 30
+
+        steps:
+            - name: Checkout application code
+              uses: actions/checkout@v4
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '18'
+                  cache: 'npm'
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3
+
+            - name: Login to Container Registry
+              uses: docker/login-action@v3
+              with:
+                  registry: ${{ secrets.PROJECT_NAME }}.kr-central-2.kcr.dev
+                  username: ${{ secrets.ACCESS_KEY }}
+                  password: ${{ secrets.ACCESS_SECRET_KEY }}
+
+            - name: Build and push Docker image
+              id: docker_build
+              uses: docker/build-push-action@v5
+              with:
+                  context: .
+                  push: true
+                  cache-from: type=gha
+                  cache-to: type=gha,mode=max
+                  tags: |
+                      ${{ secrets.PROJECT_NAME }}.kr-central-2.kcr.dev/${{ secrets.REPOSITORY_NAME }}/website:${{ github.sha }}
+                      ${{ secrets.PROJECT_NAME }}.kr-central-2.kcr.dev/${{ secrets.REPOSITORY_NAME }}/website:latest
+
+            - name: Checkout Kubernetes manifests repository
+              uses: actions/checkout@v4
+              with:
+                  repository: Find-Your-Humanity/deploy-manifests
+                  path: deploy-manifests
+                  token: ${{ secrets.PAT }}
+
+            - name: Update image tag in Kubernetes manifest
+              run: |
+                  IMAGE_TAG="${{ github.sha }}"
+                  
+                  # website deployment의 이미지 태그 업데이트
+                  sed -i -E "s|(image: kc-sfacspace.kr-central-2.kcr.dev/team1-repo/website:)([^ ]+)|\1$IMAGE_TAG|" deploy-manifests/website/deployment-website.yaml
+
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+                  git add deploy-manifests/website/deployment-website.yaml
+                  git commit -m "Update website image to ${{ github.sha }}" || echo "No changes to commit"
+                  git push
+              working-directory: ./deploy-manifests 
