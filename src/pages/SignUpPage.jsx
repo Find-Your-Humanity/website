@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import { FaEye, FaEyeSlash, FaFacebook, FaApple, FaGoogle } from 'react-icons/fa';
 import './SignUpPage.css';
 
 const SignUpPage = () => {
   const navigate = useNavigate();
+  const { signup } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -22,13 +24,30 @@ const SignUpPage = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // 회원가입 로직 구현
-    console.log('Sign up attempt:', formData);
     
-    // 회원가입 성공 후 Sign In 페이지로 이동
-    navigate('/signin');
+    if (formData.password !== formData.confirmPassword) {
+      alert('비밀번호가 일치하지 않습니다.');
+      return;
+    }
+
+    console.log('Sign up attempt:', formData);
+
+    // API 호출
+    const result = await signup({
+      email: formData.email,
+      username: formData.username,
+      password: formData.password,
+      contact: formData.contact
+    });
+
+    if (result.success) {
+      alert('회원가입이 완료되었습니다!');
+      navigate('/signin');
+    } else {
+      alert(`회원가입 실패: ${result.error}`);
+    }
   };
 
   return (
@@ -152,4 +171,4 @@ const SignUpPage = () => {
   );
 };
 
-export default SignUpPage; 
+export default SignUpPage;
