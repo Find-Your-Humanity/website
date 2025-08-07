@@ -6,28 +6,28 @@ const CompanyPage = () => {
   const teamMembers = [
     {
       id: 1,
-      name: '김철수',
+      name: '강영모',
       role: 'CEO & Founder',
       description: '10년 이상의 보안 솔루션 개발 경험을 바탕으로 REAL의 비전을 이끌어갑니다.',
       image: '/team-member-1.jpg'
     },
     {
       id: 2,
-      name: '이영희',
+      name: '임현지',
       role: 'CTO',
       description: 'AI/ML 전문가로서 REAL의 핵심 기술 개발을 담당합니다.',
       image: '/team-member-2.jpg'
     },
     {
       id: 3,
-      name: '박민수',
+      name: '전남규',
       role: 'Lead Developer',
       description: '프론트엔드 및 백엔드 개발을 총괄하며 사용자 경험을 개선합니다.',
       image: '/team-member-3.jpg'
     },
     {
       id: 4,
-      name: '정수진',
+      name: '김재현',
       role: 'Product Manager',
       description: '제품 전략과 사용자 피드백을 바탕으로 REAL의 성장을 이끌어갑니다.',
       image: '/team-member-4.jpg'
@@ -108,4 +108,4 @@ const CompanyPage = () => {
   );
 };
 
-export default CompanyPage; 
+export default CompanyPage;
