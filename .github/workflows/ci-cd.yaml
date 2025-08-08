@@ -66,4 +66,4 @@ jobs:
             git add website/deployment-website.yaml
             git commit -m "Update website image to ${{ github.sha }}" || echo "No changes to commit"
             git push
-        working-directory: ./deploy-manifests 
+        working-directory: ./deploy-manifests/website
