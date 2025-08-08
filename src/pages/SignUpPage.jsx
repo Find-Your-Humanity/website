@@ -27,12 +27,16 @@ const SignUpPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    console.log('📝 폼 제출 시작');
+    console.log('📋 폼 데이터:', formData);
+    
     if (formData.password !== formData.confirmPassword) {
       alert('비밀번호가 일치하지 않습니다.');
       return;
     }
 
-    console.log('Sign up attempt:', formData);
+    console.log('🔐 비밀번호 확인 완료');
+    console.log('🚀 Signup 함수 호출 시작');
 
     // API 호출
     const result = await signup({
@@ -41,6 +45,8 @@ const SignUpPage = () => {
       password: formData.password,
       contact: formData.contact
     });
+
+    console.log('📨 Signup 결과:', result);
 
     if (result.success) {
       alert('회원가입이 완료되었습니다!');
