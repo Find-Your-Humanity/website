@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json();
       
       // 토큰과 사용자 정보 저장
-      localStorage.setItem('authToken', data.token);
+      localStorage.setItem('authToken', data.access_token);
       localStorage.setItem('userData', JSON.stringify(data.user));
       
       setUser(data.user);
