@@ -59,7 +59,7 @@ jobs:
             
             # sed 명령어를 사용하여 deployment-client.yaml 파일의 이미지 태그를 업데이트
             # 정규식을 사용하여 이미지 태그만 동적으로 변경
-            sed -i -E "s|(image: ${{ secrets.PROJECT_NAME }}.kr-central-2.kcr.dev/${{ secrets.REPOSITORY_NAME }}/website:)([^ ]+)|\1$IMAGE_TAG|" deployment-client.yaml
+            sed -i -E "s|(image: ${{ secrets.PROJECT_NAME }}.kr-central-2.kcr.dev/${{ secrets.REPOSITORY_NAME }}/website:)([^ ]+)|\1$IMAGE_TAG|" deployment-website.yaml
             
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
