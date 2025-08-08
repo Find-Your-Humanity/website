@@ -52,127 +52,18 @@ jobs:
           path: deploy-manifests
           token: ${{ secrets.PAT }}
 
-      - name: Create deployment file
+      - name: Update image tag in Kubernetes manifest
         run: |
-          IMAGE_TAG="${{ github.sha }}"
-          
-          # website 폴더 생성
-          mkdir -p website
-          
-          # deployment 파일 생성
-          cat > website/deployment-website.yaml << 'EOF'
-          apiVersion: apps/v1
-          kind: Deployment
-          metadata:
-            name: website
-            namespace: captcha
-            labels:
-              app: website
-          spec:
-            replicas: 2
-            selector:
-              matchLabels:
-                app: website
-            template:
-              metadata:
-                labels:
-                  app: website
-              spec:
-                nodeSelector:
-                  pool-name: platform-pool
-                containers:
-                  - name: website
-                    image: kc-sfacspace.kr-central-2.kcr.dev/team1-repo/website:IMAGE_TAG_PLACEHOLDER
-                    ports:
-                      - containerPort: 80
-                    env:
-                      - name: REACT_APP_API_URL
-                        value: "http://captcha-api-backend-service.captcha.svc.cluster.local"
-                    resources:
-                      requests:
-                        memory: "128Mi"
-                        cpu: "100m"
-                      limits:
-                        memory: "256Mi"
-                        cpu: "200m"
-                    livenessProbe:
-                      httpGet:
-                        path: /
-                        port: 80
-                      initialDelaySeconds: 30
-                      periodSeconds: 10
-                    readinessProbe:
-                      httpGet:
-                        path: /
-                        port: 80
-                      initialDelaySeconds: 5
-                      periodSeconds: 5
-                imagePullSecrets:
-                  - name: kcr-pull-secret
-          ---
-          apiVersion: v1
-          kind: Service
-          metadata:
-            name: website-service
-            namespace: captcha
-            labels:
-              app: website
-          spec:
-            selector:
-              app: website
-            ports:
-              - protocol: TCP
-                port: 80
-                targetPort: 80
-            type: ClusterIP
-          ---
-          apiVersion: networking.k8s.io/v1
-          kind: Ingress
-          metadata:
-            name: website-ingress
-            namespace: captcha
-            annotations:
-              nginx.ingress.kubernetes.io/rewrite-target: /
-              nginx.ingress.kubernetes.io/ssl-redirect: "true"
-              cert-manager.io/cluster-issuer: "letsencrypt-prod"
-          spec:
-            tls:
-              - hosts:
-                  - www.realcatcha.com
-                  - realcatcha.com
-                secretName: realcatcha-tls
-            rules:
-              - host: www.realcatcha.com
-                http:
-                  paths:
-                    - path: /
-                      pathType: Prefix
-                      backend:
-                        service:
-                          name: website-service
-                          port:
-                            number: 80
-              - host: realcatcha.com
-                http:
-                  paths:
-                    - path: /
-                      pathType: Prefix
-                      backend:
-                        service:
-                          name: website-service
-                          port:
-                            number: 80
-          EOF
-          
-          # 이미지 태그 교체
-          sed -i "s/IMAGE_TAG_PLACEHOLDER/$IMAGE_TAG/g" website/deployment-website.yaml
-        working-directory: ./deploy-manifests
-
-      - name: Commit and push changes
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add website/deployment-website.yaml
-          git commit -m "Update website image to ${{ github.sha }}" || echo "No changes to commit"
-          git push
+            IMAGE_TAG="${{ github.sha }}"
+            IMAGE_FULL_PATH="${{ secrets.PROJECT_NAME }}.kr-central-2.kcr.dev/${{ secrets.REPOSITORY_NAME }}/website:$IMAGE_TAG"
+            
+            # sed 명령어를 사용하여 deployment-client.yaml 파일의 이미지 태그를 업데이트
+            # 정규식을 사용하여 이미지 태그만 동적으로 변경
+            sed -i -E "s|(image: ${{ secrets.PROJECT_NAME }}.kr-central-2.kcr.dev/${{ secrets.REPOSITORY_NAME }}/website:)([^ ]+)|\1$IMAGE_TAG|" deployment-client.yaml
+            
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add website/deployment-website.yaml
+            git commit -m "Update website image to ${{ github.sha }}" || echo "No changes to commit"
+            git push
         working-directory: ./deploy-manifests 
