@@ -1,17 +1,36 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash, FaFacebook, FaApple, FaGoogle } from 'react-icons/fa';
+import { useAuth } from '../contexts/AuthContext';
 import './SignInPage.css';
 
 const SignInPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // 로그인 로직 구현
-    console.log('Sign in attempt:', { email, password });
+    setError('');
+    setIsLoading(true);
+
+    try {
+      const result = await login(email, password);
+      if (result.success) {
+        navigate('/dashboard'); // 로그인 성공 시 대시보드로 이동
+      } else {
+        setError(result.error || '로그인에 실패했습니다.');
+      }
+    } catch (error) {
+      setError('로그인 중 오류가 발생했습니다.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -29,6 +48,12 @@ const SignInPage = () => {
           <div className="signin-form">
             <h1 className="signin-title">Sign in</h1>
             
+            {error && (
+              <div className="error-message">
+                {error}
+              </div>
+            )}
+
             <form onSubmit={handleSubmit}>
               <div className="form-group">
                 <input
@@ -38,6 +63,7 @@ const SignInPage = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   className="form-input"
                   required
+                  disabled={isLoading}
                 />
               </div>
 
@@ -50,11 +76,13 @@ const SignInPage = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     className="form-input"
                     required
+                    disabled={isLoading}
                   />
                   <button
                     type="button"
                     className="password-toggle"
                     onClick={() => setShowPassword(!showPassword)}
+                    disabled={isLoading}
                   >
                     {showPassword ? <FaEyeSlash /> : <FaEye />}
                   </button>
@@ -67,10 +95,10 @@ const SignInPage = () => {
                 <a href="#forgot-password" className="link">Forgot password ?</a>
               </div>
 
-                          <button type="submit" className="signin-button">
-              Sign In
-            </button>
-          </form>
+              <button type="submit" className="signin-button" disabled={isLoading}>
+                {isLoading ? 'Signing In...' : 'Sign In'}
+              </button>
+            </form>
 
           <div className="divider">
             <span>or continue with</span>
