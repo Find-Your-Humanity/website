@@ -38,8 +38,8 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       setLoading(true);
 
-      // API 호출 (상대 경로로 변경)
-      const response = await fetch('/api/auth/login', {
+      // API 호출 (절대 경로로 변경)
+      const response = await fetch('https://gateway.realcatcha.com/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -82,9 +82,9 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
 
       console.log('🚀 Signup 요청 시작:', userData);
-      console.log('📡 API URL:', '/api/auth/signup');
+      console.log('📡 API URL:', 'https://gateway.realcatcha.com/api/auth/signup');
 
-      const response = await fetch('/api/auth/signup', {
+      const response = await fetch('https://gateway.realcatcha.com/api/auth/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
