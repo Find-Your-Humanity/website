@@ -84,7 +84,7 @@ export const AuthProvider = ({ children }) => {
       console.log('🚀 Signup 요청 시작:', userData);
       console.log('📡 API URL:', '/api/auth/signup');
 
-      const response = await fetch('/api/auth/signup', {
+      const response = await fetch('https://gateway.realcatcha.com/api/auth/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
