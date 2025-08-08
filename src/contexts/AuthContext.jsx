@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
 
       // API 호출
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch('https://gateway.realcatcha.com/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -81,7 +81,7 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       setLoading(true);
 
-      const response = await fetch('/api/auth/signup', {
+      const response = await fetch('https://gateway.realcatcha.com/api/auth/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
