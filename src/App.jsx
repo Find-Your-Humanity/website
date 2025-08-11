@@ -9,6 +9,7 @@ import CompanyPage from './pages/CompanyPage';
 import SignInPage from './pages/SignInPage';
 import SuccessPage from './pages/SuccessPage';
 import SignUpPage from './pages/SignUpPage';
+import ContactPage from './pages/ContactPage';
 import './App.css';
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
             <Route path="/company" element={<CompanyPage />} />
             <Route path="/signin" element={<SignInPage />} />
             <Route path="/signup" element={<SignUpPage />} />
+            <Route path="/contact" element={<ContactPage />} />
             <Route path="/success" element={<SuccessPage />} />
           </Routes>
         </MainLayout>
