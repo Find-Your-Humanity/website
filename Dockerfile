@@ -28,9 +28,9 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 # 포트 노출
 EXPOSE 80
 
-# 헬스체크
+# 헬스체크 (alpine busybox의 wget 사용)
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:80/ || exit 1
+    CMD wget -q -O /dev/null http://localhost:80/ || exit 1
 
 # nginx 시작
 CMD ["nginx", "-g", "daemon off;"] 
