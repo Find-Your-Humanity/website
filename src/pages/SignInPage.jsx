@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash, FaFacebook, FaApple, FaGoogle } from 'react-icons/fa';
 import { useAuth } from '../contexts/AuthContext';
-import './SignInPage.css';
+import '../styles/pages/SignInPage.css';
 
 const SignInPage = () => {
   const [showPassword, setShowPassword] = useState(false);

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { FaEye, FaEyeSlash, FaFacebook, FaApple, FaGoogle } from 'react-icons/fa';
 import { validateSignupForm, hasErrors } from '../utils/validation';
-import './SignUpPage.css';
+import '../styles/pages/SignUpPage.css';
 
 const SignUpPage = () => {
   const navigate = useNavigate();

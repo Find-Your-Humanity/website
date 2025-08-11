@@ -1,5 +1,5 @@
 import React from 'react';
-import './ProductsPage.css';
+import '../styles/pages/ProductsPage.css';
 
 const ProductsPage = () => {
   return (

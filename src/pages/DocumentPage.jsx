@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FaSearch, FaMoon, FaHome, FaReact, FaVuejs, FaWordpress, FaAngular, FaNodeJs } from 'react-icons/fa';
-import './DocumentPage.css';
+import '../styles/pages/DocumentPage.css';
 
 const DocumentPage = () => {
   const [searchQuery, setSearchQuery] = useState('');

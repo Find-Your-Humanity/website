@@ -1,6 +1,6 @@
 import React from 'react';
 import { FaUser } from 'react-icons/fa';
-import './CompanyPage.css';
+import '../styles/pages/CompanyPage.css';
 
 const CompanyPage = () => {
   const teamMembers = [
