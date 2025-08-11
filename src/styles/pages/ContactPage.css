@@ -1,8 +1,8 @@
 /* 배경: 그라데이션 어두운 톤 */
-.contact-page { min-height: 100vh; background: radial-gradient(1200px 600px at 50% -200px, #2a1260 0%, #07091c 60%, #050714 100%); display: flex; align-items: center; justify-content: center; padding: 2rem; padding-top: 0; }
+.contact-page { min-height: 100vh; background: radial-gradient(1200px 600px at 50% -200px, #2a1260 0%, #07091c 60%, #050714 100%); display: flex; align-items: center; justify-content: center; padding: 2rem; padding-top: 1px; border-top: 1px solid transparent; margin-top: 0 !important; }
 .contact-container { width: 100%; max-width: 980px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); backdrop-filter: blur(6px); border-radius: 16px; box-shadow: 0 12px 36px rgba(0,0,0,0.35); overflow: hidden; }
 .contact-form { padding: 2rem 2.5rem; }
-.contact-title { font-size: 2rem; font-weight: 800; margin-bottom: 1rem; color: #fff; }
+.contact-title { font-size: 2rem; font-weight: 800; margin: 0 0 1rem; color: #fff; }
 .contact-page .section-title { font-size: 1.1rem; font-weight: 700; color: #d9d9e3; margin: 1rem 0 .6rem; }
 .contact-page .label { display: block; font-size: .9rem; color: #b9b9c9; margin-bottom: .4rem; }
 .contact-page .form-group { margin-bottom: 1rem; }
