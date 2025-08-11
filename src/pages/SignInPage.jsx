@@ -22,7 +22,7 @@ const SignInPage = () => {
     try {
       const result = await login(email, password);
       if (result.success) {
-        navigate('/dashboard'); // 로그인 성공 시 대시보드로 이동
+        navigate('/success'); // 로그인 성공 시 대시보드로 이동
       } else {
         setError(result.error || '로그인에 실패했습니다.');
       }

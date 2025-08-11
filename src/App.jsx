@@ -7,6 +7,7 @@ import ProductsPage from './pages/ProductsPage';
 import DocumentPage from './pages/DocumentPage';
 import CompanyPage from './pages/CompanyPage';
 import SignInPage from './pages/SignInPage';
+import SuccessPage from './pages/SuccessPage';
 import SignUpPage from './pages/SignUpPage';
 import './App.css';
 
@@ -22,6 +23,7 @@ function App() {
             <Route path="/company" element={<CompanyPage />} />
             <Route path="/signin" element={<SignInPage />} />
             <Route path="/signup" element={<SignUpPage />} />
+            <Route path="/success" element={<SuccessPage />} />
           </Routes>
         </MainLayout>
       </Router>
