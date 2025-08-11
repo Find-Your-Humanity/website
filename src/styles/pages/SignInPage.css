@@ -8,13 +8,28 @@
 .signin-form { width: 100%; max-width: 400px; }
 .signin-title { font-size: 2rem; font-weight: 550; color: #000000; margin-bottom: 1.5rem; text-align: left; }
 .form-group { margin-bottom: 1rem; }
-.form-input { width: 100%; padding: .8rem; border: 1px solid #000; border-radius: 8px; font-size: .9rem; background-color: #fff; color: #000; transition: border-color .3s ease; }
-.form-input, .form-input::placeholder { color: #000; }
+.form-input {
+  width: 100%;
+  height: 48px;
+  padding: .8rem .9rem;
+  border: 1.5px solid #000000;
+  border-radius: 10px;
+  font-size: .95rem;
+  background-color: #ffffff;
+  color: #000000;
+  transition: box-shadow .2s ease, border-color .2s ease;
+}
+.form-input::placeholder { color: #6b7280; }
+.form-input:focus {
+  outline: none;
+  border-color: #000000;
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.08);
+}
 .form-input:focus { outline: none; border-color: #DFFF00; }
 .form-input::placeholder { color: #9e9e9e; }
 .password-input-container { position: relative; }
 .password-toggle { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; padding: 0; width: 20px; height: 20px; }
-.password-toggle svg { width: 20px; height: 20px; opacity: .6; transition: opacity .3s ease; color: #000; }
+.password-toggle svg { width: 20px; height: 20px; opacity: .75; transition: opacity .3s ease; color: #333; }
 .password-toggle:hover svg { opacity: 1; }
 .form-links { display: flex; justify-content: flex-end; align-items: center; gap: .5rem; margin-bottom: 1.5rem; }
 .link { color: #9e9e9e; text-decoration: none; font-size: .9rem; transition: color .3s ease; }
