@@ -188,6 +188,23 @@
   color: #4285f4;
 }
 
+/* 추가: 에러 메시지 스타일 */
+.error-message {
+  background-color: #fee;
+  color: #c33;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  text-align: center;
+  border: 1px solid #fcc;
+}
+
+.field-error {
+  color: #c33;
+  font-size: 0.8rem;
+  margin-top: 6px;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .signup-container {
