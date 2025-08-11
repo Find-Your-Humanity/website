@@ -9,6 +9,7 @@
 .signin-title { font-size: 2rem; font-weight: 550; color: #000000; margin-bottom: 1.5rem; text-align: left; }
 .form-group { margin-bottom: 1rem; }
 .form-input { width: 100%; padding: .8rem; border: 1px solid #000; border-radius: 8px; font-size: .9rem; background-color: #fff; color: #000; transition: border-color .3s ease; }
+.form-input, .form-input::placeholder { color: #000; }
 .form-input:focus { outline: none; border-color: #DFFF00; }
 .form-input::placeholder { color: #9e9e9e; }
 .password-input-container { position: relative; }
