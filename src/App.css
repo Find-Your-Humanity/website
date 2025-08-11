@@ -37,3 +37,12 @@ body {
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+/* form inputs force override (signin/signup) */
+.signin-page .form-input,
+.signin-page .form-textarea,
+.signup-page .form-input,
+.signup-page .form-textarea {
+  color: #000 !important;
+  background-color: #fff !important;
+  border-color: #000 !important;
+}
