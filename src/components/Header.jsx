@@ -16,7 +16,7 @@ const Header = () => {
   return (
     <header className="header">
       <div className="header-content">
-        <Link to="/" className="logo">REALCAPTCHA</Link>
+        <Link to="/" className="logo">REALCATCHA</Link>
 
         <nav className="nav">
           <Link to="/" className={location.pathname === '/' ? 'nav-link active' : 'nav-link'}>
