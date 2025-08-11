@@ -10,6 +10,7 @@ import SignInPage from './pages/SignInPage';
 import SuccessPage from './pages/SuccessPage';
 import SignUpPage from './pages/SignUpPage';
 import ContactPage from './pages/ContactPage';
+import DashboardEmbed from './pages/DashboardEmbed';
 import './App.css';
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
             <Route path="/signin" element={<SignInPage />} />
             <Route path="/signup" element={<SignUpPage />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="/dashboard" element={<DashboardEmbed />} />
             <Route path="/success" element={<SuccessPage />} />
           </Routes>
         </MainLayout>

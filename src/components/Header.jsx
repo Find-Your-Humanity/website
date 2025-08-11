@@ -32,9 +32,9 @@ const Header = () => {
             문의하기
           </Link>
           {isAuthenticated && (
-            <a href="https://dashboard.realcatcha.com" target="_blank" rel="noopener noreferrer" className="nav-link">
-              대시보드 ↗
-            </a>
+            <Link to="/dashboard" className={location.pathname === '/dashboard' ? 'nav-link active' : 'nav-link'}>
+              대시보드
+            </Link>
           )}
         </nav>
 

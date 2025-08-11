@@ -22,3 +22,18 @@ body {
   color: #000000;
   line-height: 1.6;
 }
+
+/* simple spinner */
+.spinner {
+  width: 42px;
+  height: 42px;
+  border: 4px solid rgba(0,0,0,0.15);
+  border-top-color: #8a2be2;
+  border-right-color: #20dfdf;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
