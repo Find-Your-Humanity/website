@@ -96,9 +96,20 @@ export const AuthProvider = ({ children }) => {
       console.log('📨 응답 헤더:', Object.fromEntries(response.headers.entries()));
 
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('❌ 응답 오류:', errorText);
-        throw new Error(`회원가입에 실패했습니다. (${response.status})`);
+        let message = `회원가입에 실패했습니다. (${response.status})`;
+        try {
+          const maybeJson = await response.clone().json();
+          if (maybeJson && maybeJson.detail) {
+            message = maybeJson.detail;
+          }
+        } catch (_) {
+          try {
+            const text = await response.text();
+            if (text) message = text;
+          } catch (_) {}
+        }
+        console.error('❌ 응답 오류 메시지:', message);
+        return { success: false, error: message };
       }
 
       const data = await response.json();
@@ -106,8 +117,9 @@ export const AuthProvider = ({ children }) => {
       return { success: true, message: '회원가입이 완료되었습니다.' };
     } catch (error) {
       console.error('❌ 회원가입 오류:', error);
-      setError(error.message);
-      return { success: false, error: error.message };
+      const fallback = error?.message || '회원가입 중 오류가 발생했습니다.';
+      setError(fallback);
+      return { success: false, error: fallback };
     } finally {
       setLoading(false);
     }
