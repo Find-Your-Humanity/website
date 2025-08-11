@@ -22,12 +22,20 @@ const Header = () => {
           <Link to="/" className={location.pathname === '/' ? 'nav-link active' : 'nav-link'}>
             realcatcha
           </Link>
+          <Link to="/products" className={location.pathname === '/products' ? 'nav-link active' : 'nav-link'}>
+            Products
+          </Link>
+          <Link to="/company" className={location.pathname === '/company' ? 'nav-link active' : 'nav-link'}>
+            Company
+          </Link>
           <Link to="/contact" className={location.pathname === '/contact' ? 'nav-link active' : 'nav-link'}>
             문의하기
           </Link>
-          <a href="https://dashboard.realcatcha.com" target="_blank" rel="noopener noreferrer" className="nav-link">
-            대시보드 ↗
-          </a>
+          {isAuthenticated && (
+            <a href="https://dashboard.realcatcha.com" target="_blank" rel="noopener noreferrer" className="nav-link">
+              대시보드 ↗
+            </a>
+          )}
         </nav>
 
         <div className="auth-area">
