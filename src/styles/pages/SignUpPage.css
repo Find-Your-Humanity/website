@@ -19,6 +19,14 @@
   color: #000000;
   transition: box-shadow .2s ease, border-color .2s ease;
 }
+.signup-page .form-input,
+.signup-page .form-textarea {
+  color: #000 !important;
+  background-color: #ffffff !important;
+  border-color: #000000 !important;
+}
+.signup-page .form-input::placeholder,
+.signup-page .form-textarea::placeholder { color: #6b7280 !important; }
 .form-input::placeholder { color: #6b7280; }
 .form-input:focus {
   outline: none;

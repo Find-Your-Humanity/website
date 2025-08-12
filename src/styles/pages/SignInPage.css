@@ -19,6 +19,14 @@
   color: #000000;
   transition: box-shadow .2s ease, border-color .2s ease;
 }
+.signin-page .form-input,
+.signin-page .form-textarea {
+  color: #000 !important;
+  background-color: #ffffff !important;
+  border-color: #000000 !important;
+}
+.signin-page .form-input::placeholder,
+.signin-page .form-textarea::placeholder { color: #6b7280 !important; }
 .form-input::placeholder { color: #6b7280; }
 .form-input:focus {
   outline: none;

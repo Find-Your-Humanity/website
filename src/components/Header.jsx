@@ -29,11 +29,11 @@ const Header = () => {
             Company
           </Link>
           <Link to="/contact" className={location.pathname === '/contact' ? 'nav-link active' : 'nav-link'}>
-            문의하기
+            Contact-us
           </Link>
           {isAuthenticated && (
             <Link to="/dashboard" className={location.pathname === '/dashboard' ? 'nav-link active' : 'nav-link'}>
-              대시보드
+              Dashboard
             </Link>
           )}
         </nav>
