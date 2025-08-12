@@ -2,14 +2,18 @@
 .company-page {
   min-height: 100vh;
   background-color: #ffffff;
+  padding-top: 1px;              /* prevent margin-collapsing under sticky header */
+  border-top: 1px solid transparent;
+  margin-top: 0 !important;
 }
 
 /* Hero Section */
 .hero-section {
   position: relative;
-  height: 60vh;
-  min-height: 400px;
+  height: calc(100vh - 80px); /* fill viewport below navbar */
+  min-height: 480px;
   overflow: hidden;
+  margin: 0;
 }
 
 .hero-background {
@@ -19,6 +23,7 @@
 }
 
 .hero-bg-image {
+  display: block;           /* remove baseline gap */
   width: 100%;
   height: 100%;
   object-fit: cover;
