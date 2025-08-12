@@ -3,7 +3,7 @@ import '../styles/pages/HomePage.css';
 
 const HomePage = () => {
   return (
-    <>
+    <div className="home-page">
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-content">
@@ -64,7 +64,7 @@ const HomePage = () => {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 };
 

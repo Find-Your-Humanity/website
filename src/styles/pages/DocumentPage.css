@@ -402,7 +402,7 @@
     display: none;
   }
   
-  .main-content {
+  .document-page .main-content {
     padding: 1.5rem;
   }
   
@@ -444,7 +444,7 @@
     width: 200px;
   }
   
-  .main-content {
+  .document-page .main-content {
     padding: 1rem;
   }
   
