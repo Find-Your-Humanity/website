@@ -92,7 +92,7 @@ const SignInPage = () => {
               <div className="form-links">
                 <Link to="/signup" className="link">Sign Up</Link>
                 <span className="separator">|</span>
-                <a href="#forgot-password" className="link">Forgot password ?</a>
+                <Link to="/forgot-password" className="link">Forgot password ?</Link>
               </div>
 
               <button type="submit" className="signin-button" disabled={isLoading}>
