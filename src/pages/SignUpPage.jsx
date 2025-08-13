@@ -130,28 +130,34 @@ const SignUpPage = () => {
             )}
 
             <form onSubmit={handleSubmit} noValidate>
+              {/* 1) 이메일 입력 + 내부 버튼 (한 줄) */}
               <div className="form-group">
-                <div style={{ display:'flex', gap:8, alignItems:'center' }}>
-                  <div style={{ position:'relative', flex: 2 }}>
-                    <input
-                      type="email"
-                      name="email"
-                      placeholder="Enter Email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      className="form-input"
-                      required
-                      style={{ paddingRight: '34%' }}
-                    />
-                    <button
-                      type="button"
-                      onClick={requestEmailCode}
-                      disabled={codeRequesting}
-                      style={{ position:'absolute', right:6, top:6, bottom:6, width:'32%', minWidth:120, borderRadius:8, background:'#DFFF00', color:'#000', fontWeight:600, border:'none', cursor:'pointer' }}
-                    >
-                      {codeRequesting ? 'Sending...' : '인증번호 받기'}
-                    </button>
-                  </div>
+                <div style={{ position:'relative' }}>
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Enter Email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="form-input"
+                    required
+                    style={{ paddingRight: '34%' }}
+                  />
+                  <button
+                    type="button"
+                    onClick={requestEmailCode}
+                    disabled={codeRequesting}
+                    style={{ position:'absolute', right:6, top:6, bottom:6, width:'32%', minWidth:140, borderRadius:10, background:'#DFFF00', color:'#000', fontWeight:700, border:'1.5px solid #000', cursor:'pointer', whiteSpace:'pre-line' }}
+                  >
+                    {codeRequesting ? 'Sending...' : '인증번호\n받기'}
+                  </button>
+                </div>
+                {fieldErrors.email && <div className="field-error">{fieldErrors.email}</div>}
+              </div>
+
+              {/* 2) 코드 입력 + 인증 버튼 (한 줄, 분리) */}
+              <div className="form-group">
+                <div style={{ display:'flex', gap:14, alignItems:'center' }}>
                   <input
                     type="text"
                     placeholder="6-digit code"
@@ -160,11 +166,16 @@ const SignUpPage = () => {
                     className="form-input"
                     style={{ flex: 1 }}
                   />
-                  <button type="button" className="signup-button" onClick={verifyEmailCode} disabled={emailVerified} style={{ flex: 1 }}>
+                  <button
+                    type="button"
+                    className="signup-button"
+                    onClick={verifyEmailCode}
+                    disabled={emailVerified}
+                    style={{ width: 180, border:'1.5px solid #000', borderRadius:10 }}
+                  >
                     {emailVerified ? '인증 완료' : '인증하기'}
                   </button>
                 </div>
-                {fieldErrors.email && <div className="field-error">{fieldErrors.email}</div>}
               </div>
 
               <div className="form-group">
