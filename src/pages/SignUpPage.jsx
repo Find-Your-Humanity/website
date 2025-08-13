@@ -131,32 +131,40 @@ const SignUpPage = () => {
 
             <form onSubmit={handleSubmit} noValidate>
               <div className="form-group">
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Enter Email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="form-input"
-                  required
-                />
-                {fieldErrors.email && <div className="field-error">{fieldErrors.email}</div>}
-                <div style={{ display:'flex', gap:8, marginTop:8, alignItems:'center' }}>
-                  <button type="button" className="signup-button" onClick={requestEmailCode} disabled={codeRequesting}>
-                    {codeRequesting ? 'Sending...' : '인증번호 받기'}
-                  </button>
+                <div style={{ display:'flex', gap:8, alignItems:'center' }}>
+                  <div style={{ position:'relative', flex: 2 }}>
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="Enter Email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="form-input"
+                      required
+                      style={{ paddingRight: '34%' }}
+                    />
+                    <button
+                      type="button"
+                      onClick={requestEmailCode}
+                      disabled={codeRequesting}
+                      style={{ position:'absolute', right:6, top:6, bottom:6, width:'32%', minWidth:120, borderRadius:8, background:'#DFFF00', color:'#000', fontWeight:600, border:'none', cursor:'pointer' }}
+                    >
+                      {codeRequesting ? 'Sending...' : '인증번호 받기'}
+                    </button>
+                  </div>
                   <input
                     type="text"
                     placeholder="6-digit code"
                     value={verifyCode}
                     onChange={(e)=>setVerifyCode(e.target.value)}
                     className="form-input"
-                    style={{ maxWidth:160 }}
+                    style={{ flex: 1 }}
                   />
-                  <button type="button" className="signup-button" onClick={verifyEmailCode} disabled={emailVerified}>
+                  <button type="button" className="signup-button" onClick={verifyEmailCode} disabled={emailVerified} style={{ flex: 1 }}>
                     {emailVerified ? '인증 완료' : '인증하기'}
                   </button>
                 </div>
+                {fieldErrors.email && <div className="field-error">{fieldErrors.email}</div>}
               </div>
 
               <div className="form-group">
