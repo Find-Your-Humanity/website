@@ -141,16 +141,16 @@ const SignUpPage = () => {
                     onChange={handleChange}
                     className="form-input"
                     required
-                    style={{ paddingRight: '36%' }}
+                    style={{ paddingRight: '42%' }}
                   />
                   <button
                     type="button"
                     onClick={requestEmailCode}
                     disabled={codeRequesting}
                     className="inline-btn"
-                    style={{ position:'absolute', right:6, top:0, bottom:0, width:'32%', minWidth:140, flexDirection:'column', lineHeight:1, padding:'0 10px' }}
+                    style={{ position:'absolute', right:'-2px', top:'-2px', bottom:'-2px', width:'40%', minWidth:170, lineHeight:1, padding:'0 16px', whiteSpace:'nowrap', borderLeft:'none' }}
                   >
-                    {codeRequesting ? 'Sending...' : (<><span style={{lineHeight:1}}>인증번호</span><span style={{lineHeight:1}}>받기</span></>)}
+                    {codeRequesting ? 'Sending...' : '인증번호 받기'}
                   </button>
                 </div>
                 {fieldErrors.email && <div className="field-error">{fieldErrors.email}</div>}
