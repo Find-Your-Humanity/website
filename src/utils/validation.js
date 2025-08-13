@@ -17,7 +17,9 @@ export function validateUsername(username) {
 
 export function validatePassword(password) {
   if (!password || typeof password !== 'string') return '비밀번호를 입력해주세요.';
-  if (password.length < 4) return '비밀번호는 4자 이상이어야 합니다.';
+  // 영문, 숫자, 특수문자 조합 8자 이상
+  const strong = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+  if (!strong.test(password)) return '비밀번호는 영문, 숫자, 특수문자 조합 8자 이상이어야 합니다.';
   return '';
 }
 
