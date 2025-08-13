@@ -6,7 +6,7 @@ const ForgotPasswordPage = () => {
   const [token, setToken] = useState('');
   const [code, setCode] = useState('');
   const [newPassword, setNewPassword] = useState('');
-  const [step, setStep] = useState('request'); // 'request' | 'reset-token' | 'reset-code'
+  const [step, setStep] = useState('request'); // 'request' | 'sent' | 'reset-token' | 'reset-code'
   const [mode, setMode] = useState('token'); // 'token' | 'code'
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -41,10 +41,8 @@ const ForgotPasswordPage = () => {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.detail || '요청에 실패했습니다.');
-      setMessage('비밀번호 재설정 메일을 발송했습니다. (개발용: 아래 토큰 입력 후 새 비밀번호 설정)');
-      if (data.reset_token) setToken(data.reset_token);
-      setMode('token');
-      setStep('reset-token');
+      setMessage('비밀번호 재설정 메일을 발송했습니다. 메일함을 확인해 주세요.');
+      setStep('sent');
     } catch (err) {
       setMessage(err.message);
     } finally {
@@ -135,15 +133,23 @@ const ForgotPasswordPage = () => {
                     disabled={loading}
                   />
                 </div>
-                <div style={{ display:'flex', gap:12, flexWrap:'wrap' }}>
-                  <button onClick={handleRequestLink} className="signin-button" disabled={loading}>
+                <div style={{ display:'flex', gap:12, flexWrap:'wrap', justifyContent:'center' }}>
+                  <button onClick={handleRequestLink} className="signin-button" style={{ maxWidth:520 }} disabled={loading}>
                     {loading && mode==='token' ? 'Submitting...' : 'Send reset link'}
                   </button>
-                  <button onClick={handleRequestCode} className="signin-button" disabled={loading}>
+                  <button onClick={handleRequestCode} className="signin-button" style={{ maxWidth:520 }} disabled={loading}>
                     {loading && mode==='code' ? 'Submitting...' : 'Send 6-digit code'}
                   </button>
                 </div>
               </form>
+            ) : step === 'sent' ? (
+              <div style={{ textAlign:'center', padding:'24px 0' }}>
+                <div style={{ fontSize:28, fontWeight:700, marginBottom:8 }}>비밀번호 재설정 메일 발송 완료</div>
+                <div style={{ color:'#666', marginBottom:24 }}>비밀번호 재설정 이메일을 확인해 주세요. 링크 유효기간은 발송 후 12시간입니다.</div>
+                <div style={{ display:'flex', justifyContent:'center' }}>
+                  <button onClick={()=>setStep('request')} className="signin-button" style={{ maxWidth:300 }}>다시 보내기</button>
+                </div>
+              </div>
             ) : step === 'reset-token' ? (
               <form onSubmit={handleResetToken}>
                 <div className="form-group">
