@@ -19,6 +19,10 @@ const SignUpPage = () => {
   });
   const [fieldErrors, setFieldErrors] = useState({});
   const [serverError, setServerError] = useState('');
+  const [emailVerified, setEmailVerified] = useState(false);
+  const [codeRequesting, setCodeRequesting] = useState(false);
+  const [verifyCode, setVerifyCode] = useState('');
+  const GATEWAY = 'https://gateway.realcatcha.com';
 
   const handleChange = (e) => {
     setFormData({
@@ -39,7 +43,13 @@ const SignUpPage = () => {
       return; // 폼 위에 에러가 표시됨
     }
 
-    // 2) 서버 요청
+    // 2) 이메일 인증 강제
+    if (!emailVerified) {
+      setServerError('이메일 인증을 먼저 완료해 주세요.');
+      return;
+    }
+
+    // 3) 서버 요청
     const result = await signup({
       email: formData.email,
       username: formData.username,
@@ -53,6 +63,50 @@ const SignUpPage = () => {
     } else {
       // 3) 서버 에러 메시지 보여주기 (422 detail 등)
       setServerError(result.error || '회원가입 중 오류가 발생했습니다.');
+    }
+  };
+
+  const requestEmailCode = async () => {
+    if (!formData.email) {
+      setServerError('이메일을 입력해 주세요.');
+      return;
+    }
+    setServerError('');
+    setCodeRequesting(true);
+    try {
+      const res = await fetch(`${GATEWAY}/api/auth/verify-email/request`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: formData.email })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.detail || '인증코드 발송에 실패했습니다.');
+      alert('인증코드를 이메일로 발송했습니다.');
+    } catch (e) {
+      setServerError(e.message);
+    } finally {
+      setCodeRequesting(false);
+    }
+  };
+
+  const verifyEmailCode = async () => {
+    if (!verifyCode || verifyCode.length !== 6) {
+      setServerError('6자리 인증코드를 입력해 주세요.');
+      return;
+    }
+    setServerError('');
+    try {
+      const res = await fetch(`${GATEWAY}/api/auth/verify-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: formData.email, code: verifyCode })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.detail || '이메일 인증에 실패했습니다.');
+      setEmailVerified(true);
+      alert('이메일 인증이 완료되었습니다. 회원가입을 진행하세요.');
+    } catch (e) {
+      setServerError(e.message);
     }
   };
 
@@ -87,6 +141,22 @@ const SignUpPage = () => {
                   required
                 />
                 {fieldErrors.email && <div className="field-error">{fieldErrors.email}</div>}
+                <div style={{ display:'flex', gap:8, marginTop:8, alignItems:'center' }}>
+                  <button type="button" className="signup-button" onClick={requestEmailCode} disabled={codeRequesting}>
+                    {codeRequesting ? 'Sending...' : '인증번호 받기'}
+                  </button>
+                  <input
+                    type="text"
+                    placeholder="6-digit code"
+                    value={verifyCode}
+                    onChange={(e)=>setVerifyCode(e.target.value)}
+                    className="form-input"
+                    style={{ maxWidth:160 }}
+                  />
+                  <button type="button" className="signup-button" onClick={verifyEmailCode} disabled={emailVerified}>
+                    {emailVerified ? '인증 완료' : '인증하기'}
+                  </button>
+                </div>
               </div>
 
               <div className="form-group">
