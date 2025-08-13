@@ -24,7 +24,7 @@ const SignInPage = () => {
       if (result.success) {
         navigate('/'); // 로그인 성공 시 홈으로 이동
       } else {
-        setError(result.error || '로그인에 실패했습니다.');
+        setError(result.error || '아이디와 비밀번호가 다릅니다.');
       }
     } catch (error) {
       setError('로그인 중 오류가 발생했습니다.');

@@ -115,10 +115,10 @@ const ForgotPasswordPage = () => {
   };
 
   return (
-    <div className="signin-page">
-      <div className="signin-container">
-        <div className="form-side" style={{ width: '100%' }}>
-          <div className="signin-form">
+    <div className="signin-page" style={{ display:'flex', alignItems:'center', justifyContent:'center', minHeight:'80vh' }}>
+      <div className="signin-container" style={{ width:'100%', maxWidth:920 }}>
+        <div className="form-side" style={{ width: '100%', display:'flex', justifyContent:'center' }}>
+          <div className="signin-form" style={{ width:'100%', maxWidth:520, margin:'0 auto' }}>
             <h1 className="signin-title">Forgot password</h1>
             {message && <div className="error-message">{message}</div>}
 
