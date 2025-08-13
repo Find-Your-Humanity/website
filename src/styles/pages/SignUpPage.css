@@ -18,6 +18,7 @@
   background-color: #ffffff;
   color: #000000;
   transition: box-shadow .2s ease, border-color .2s ease;
+  box-sizing: border-box;
 }
 .signup-page .form-input,
 .signup-page .form-textarea {
@@ -49,4 +50,19 @@
 .field-error { color:#c33; font-size:.8rem; margin-top:6px; }
 @media (max-width: 768px){ .signup-container{grid-template-columns:1fr;} .illustration-side{display:none;} .form-side{padding:2rem;} .signup-title{font-size:2rem;} }
 @media (max-width: 480px){ .signup-page{padding:1rem;} .form-side{padding:1.5rem;} .signup-title{font-size:1.8rem;} .social-login{gap:.5rem;} .social-button{width:45px; height:45px;} }
+
+/* inline 버튼: 인풋 높이와 정확히 맞춤 */
+.inline-btn {
+  height: 48px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #DFFF00;
+  color: #000;
+  border: 1.5px solid #000;
+  border-radius: 10px;
+  font-weight: 700;
+  box-sizing: border-box;
+}
 

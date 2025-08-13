@@ -147,7 +147,8 @@ const SignUpPage = () => {
                     type="button"
                     onClick={requestEmailCode}
                     disabled={codeRequesting}
-                    style={{ position:'absolute', right:6, top:0, bottom:0, width:'32%', minWidth:140, borderRadius:10, background:'#DFFF00', color:'#000', fontWeight:700, border:'1.5px solid #000', cursor:'pointer', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', textAlign:'center', lineHeight:1, padding:'0 10px', height:'100%' }}
+                    className="inline-btn"
+                    style={{ position:'absolute', right:6, top:0, bottom:0, width:'32%', minWidth:140, flexDirection:'column', lineHeight:1, padding:'0 10px' }}
                   >
                     {codeRequesting ? 'Sending...' : (<><span style={{lineHeight:1}}>인증번호</span><span style={{lineHeight:1}}>받기</span></>)}
                   </button>
@@ -168,10 +169,10 @@ const SignUpPage = () => {
                   />
                   <button
                     type="button"
-                    className="signup-button"
+                    className="inline-btn"
                     onClick={verifyEmailCode}
                     disabled={emailVerified}
-                    style={{ width: 180, border:'1.5px solid #000', borderRadius:10, height:48, display:'flex', alignItems:'center', justifyContent:'center' }}
+                    style={{ width: 180 }}
                   >
                     {emailVerified ? '인증 완료' : '인증하기'}
                   </button>
