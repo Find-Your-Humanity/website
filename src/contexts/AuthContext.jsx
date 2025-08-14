@@ -47,11 +47,23 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify({ email, password }),
       });
 
+      // 서버 응답 본문 먼저 파싱 (에러 메시지 활용)
+      let data = null;
+      try {
+        data = await response.clone().json();
+      } catch (_) {}
+
       if (!response.ok) {
-        throw new Error('로그인에 실패했습니다.');
+        const detail = data?.detail || data?.message;
+        const friendly = typeof detail === 'string' && detail
+          ? detail
+          : '없는 이메일 또는 비밀번호가 올바르지 않습니다.';
+        throw new Error(friendly);
       }
 
-      const data = await response.json();
+      if (!data) {
+        data = await response.json();
+      }
       
       // 토큰과 사용자 정보 저장
       localStorage.setItem('authToken', data.access_token);
