@@ -127,7 +127,7 @@ const SignUpPage = () => {
         )}
 
         <form onSubmit={handleSubmit} noValidate>
-          {/* 이메일 + 중복확인 */}
+          {/* 이메일 + 인증번호 받기 */}
           <div className="mobile-form-group">
             <div className="input-with-button">
               <input
@@ -145,10 +145,83 @@ const SignUpPage = () => {
                 disabled={codeRequesting}
                 className="inline-verify-btn"
               >
-                {codeRequesting ? '전송중...' : '중복확인'}
+                {codeRequesting ? '전송중...' : '인증번호 받기'}
               </button>
             </div>
             {fieldErrors.email && <div className="field-error">{fieldErrors.email}</div>}
+          </div>
+
+          {/* 이메일 인증번호 입력 */}
+          <div className="mobile-form-group">
+            <div className="input-with-button">
+              <input
+                type="text"
+                placeholder="이메일 인증번호 (6자리)"
+                value={verifyCode}
+                onChange={(e) => setVerifyCode(e.target.value)}
+                className="mobile-input"
+                maxLength="6"
+              />
+              <button
+                type="button"
+                className="inline-verify-btn"
+                onClick={verifyEmailCode}
+                disabled={emailVerified}
+                style={{ 
+                  backgroundColor: emailVerified ? '#28a745' : '#000',
+                  minWidth: '80px'
+                }}
+              >
+                {emailVerified ? '인증완료' : '인증하기'}
+              </button>
+            </div>
+            {emailVerified && (
+              <div style={{ color: '#28a745', fontSize: '12px', marginTop: '6px' }}>
+                ✓ 이메일 인증이 완료되었습니다.
+              </div>
+            )}
+          </div>
+
+          {/* 사용자명 */}
+          <div className="mobile-form-group">
+            <input
+              type="text"
+              name="username"
+              placeholder="사용자명"
+              value={formData.username}
+              onChange={handleChange}
+              className="mobile-input"
+              required
+            />
+            {fieldErrors.username && <div className="field-error">{fieldErrors.username}</div>}
+          </div>
+
+          {/* 이름 (실명 입력) */}
+          <div className="mobile-form-group">
+            <input
+              type="text"
+              name="fullName"
+              placeholder="이름 (실명 입력)"
+              value={formData.fullName}
+              onChange={handleChange}
+              className="mobile-input"
+              required
+            />
+            {fieldErrors.fullName && <div className="field-error">{fieldErrors.fullName}</div>}
+          </div>
+
+          {/* 휴대전화번호 */}
+          <div className="mobile-form-group">
+            <input
+              type="tel"
+              name="contact"
+              placeholder="휴대전화번호 ('-'제외)"
+              value={formData.contact}
+              onChange={handleChange}
+              className="mobile-input"
+              required
+            />
+            {fieldErrors.contact && <div className="field-error">{fieldErrors.contact}</div>}
           </div>
 
           {/* 비밀번호 */}
@@ -197,93 +270,7 @@ const SignUpPage = () => {
             {fieldErrors.confirmPassword && <div className="field-error">{fieldErrors.confirmPassword}</div>}
           </div>
 
-          {/* 이름 (실명 입력) */}
-          <div className="mobile-form-group">
-            <input
-              type="text"
-              name="fullName"
-              placeholder="이름 (실명 입력)"
-              value={formData.fullName}
-              onChange={handleChange}
-              className="mobile-input"
-              required
-            />
-            {fieldErrors.fullName && <div className="field-error">{fieldErrors.fullName}</div>}
-          </div>
 
-          {/* 휴대전화번호 + 인증번호 전송 */}
-          <div className="mobile-form-group">
-            <div className="input-with-button">
-              <input
-                type="tel"
-                name="contact"
-                placeholder="휴대전화번호 ('-'제외)"
-                value={formData.contact}
-                onChange={handleChange}
-                className="mobile-input"
-                required
-              />
-              <button
-                type="button"
-                className="inline-verify-btn"
-                onClick={() => alert('인증번호를 발송했습니다.')}
-              >
-                인증번호 전송
-              </button>
-            </div>
-            {fieldErrors.contact && <div className="field-error">{fieldErrors.contact}</div>}
-          </div>
-
-          {/* 인증번호 입력 */}
-          <div className="mobile-form-group">
-            <input
-              type="text"
-              placeholder="인증번호 입력"
-              value={verifyCode}
-              onChange={(e) => setVerifyCode(e.target.value)}
-              className="mobile-input"
-            />
-          </div>
-
-          {/* 생년월일 */}
-          <div className="mobile-form-group">
-            <input
-              type="text"
-              name="birthDate"
-              placeholder="생년월일 (8자리 입력)"
-              className="mobile-input"
-            />
-          </div>
-
-          {/* 동의 체크박스들 */}
-          <div className="agreement-section">
-            <div className="agreement-item">
-              <label className="checkbox-container">
-                <input type="checkbox" />
-                <span className="checkmark"></span>
-                <span className="agreement-text">이용약관 동의</span>
-              </label>
-              <button type="button" className="agreement-link">›</button>
-            </div>
-
-            <div className="agreement-item">
-              <label className="checkbox-container">
-                <input type="checkbox" />
-                <span className="checkmark"></span>
-                <span className="agreement-text">개인정보 취급방침 동의</span>
-              </label>
-              <button type="button" className="agreement-link">›</button>
-            </div>
-
-            <div className="agreement-item">
-              <label className="checkbox-container">
-                <input type="checkbox" />
-                <span className="checkmark"></span>
-                <span className="agreement-text">마케팅 정보 수신 동의</span>
-              </label>
-              <button type="button" className="agreement-link">›</button>
-            </div>
-          </div>
 
           <button type="submit" className="mobile-signup-button">
             회원가입

@@ -134,79 +134,7 @@
   justify-content: center;
 }
 
-/* 동의 약관 섹션 */
-.agreement-section {
-  margin: 32px 0;
-  padding: 20px;
-  background-color: #f8f9fa;
-  border-radius: 12px;
-}
 
-.agreement-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-
-.agreement-item:last-child {
-  margin-bottom: 0;
-}
-
-/* 커스텀 체크박스 */
-.checkbox-container {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  flex: 1;
-}
-
-.checkbox-container input[type="checkbox"] {
-  display: none;
-}
-
-.checkmark {
-  width: 20px;
-  height: 20px;
-  border: 2px solid #ddd;
-  border-radius: 4px;
-  margin-right: 12px;
-  position: relative;
-  background-color: #fff;
-  transition: all 0.2s ease;
-}
-
-.checkbox-container input[type="checkbox"]:checked + .checkmark {
-  background-color: #000;
-  border-color: #000;
-}
-
-.checkbox-container input[type="checkbox"]:checked + .checkmark::after {
-  content: "✓";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: #fff;
-  font-size: 12px;
-  font-weight: bold;
-}
-
-.agreement-text {
-  font-size: 14px;
-  color: #333;
-  flex: 1;
-}
-
-.agreement-link {
-  background: none;
-  border: none;
-  font-size: 18px;
-  color: #999;
-  cursor: pointer;
-  padding: 4px;
-  margin-left: 8px;
-}
 
 /* 회원가입 버튼 */
 .mobile-signup-button {
