@@ -11,7 +11,23 @@ const SignInPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   
-  const { login } = useAuth();
+  console.log('SignInPage 렌더링 중...'); // 디버깅용
+  
+  let login;
+  try {
+    const auth = useAuth();
+    login = auth.login;
+  } catch (authError) {
+    console.error('AuthContext 오류:', authError);
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center' }}>
+        <h2>로그인 페이지를 불러올 수 없습니다</h2>
+        <p>인증 시스템에 문제가 발생했습니다.</p>
+        <p style={{ color: 'red', fontSize: '0.9rem' }}>{authError.message}</p>
+      </div>
+    );
+  }
+  
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -19,19 +35,26 @@ const SignInPage = () => {
     setError('');
     setIsLoading(true);
 
+    console.log('로그인 시도:', { email, password: '***' }); // 디버깅용
+
     try {
       const result = await login(email, password);
+      console.log('로그인 결과:', result); // 디버깅용
+      
       if (result.success) {
         navigate('/'); // 로그인 성공 시 홈으로 이동
       } else {
         setError(result.error || '아이디와 비밀번호가 다릅니다.');
       }
     } catch (error) {
+      console.error('로그인 오류:', error); // 디버깅용
       setError('로그인 중 오류가 발생했습니다.');
     } finally {
       setIsLoading(false);
     }
   };
+
+  console.log('SignInPage 렌더링 시작...', { email, isLoading, error }); // 디버깅용
 
   return (
     <div className="signin-page">

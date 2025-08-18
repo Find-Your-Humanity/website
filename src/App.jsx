@@ -7,6 +7,7 @@ import ProductsPage from './pages/ProductsPage';
 import DocumentPage from './pages/DocumentPage';
 import CompanyPage from './pages/CompanyPage';
 import SignInPage from './pages/SignInPage';
+import SignInPageTest from './pages/SignInPageTest';
 import SignUpPage from './pages/SignUpPage';
 import ContactPage from './pages/ContactPage';
 import DashboardEmbed from './pages/DashboardEmbed';
@@ -24,7 +25,8 @@ function App() {
             <Route path="/products" element={<ProductsPage />} />
             <Route path="/document" element={<DocumentPage />} />
             <Route path="/company" element={<CompanyPage />} />
-            <Route path="/signin" element={<SignInPage />} />
+            <Route path="/signin" element={<SignInPageTest />} />
+            <Route path="/signin-original" element={<SignInPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/signup" element={<SignUpPage />} />
