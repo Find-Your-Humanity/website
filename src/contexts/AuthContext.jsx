@@ -15,21 +15,51 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // 로컬 스토리지에서 사용자 정보 복원
+  // 사용자 정보 복원 (로컬 스토리지 + 쿠키 자동 로그인)
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
-    const userData = localStorage.getItem('userData');
-    
-    if (token && userData) {
-      try {
-        setUser(JSON.parse(userData));
-      } catch (error) {
-        console.error('사용자 데이터 파싱 오류:', error);
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('userData');
+    const initAuth = async () => {
+      // 1. 로컬 스토리지 확인
+      const token = localStorage.getItem('authToken');
+      const userData = localStorage.getItem('userData');
+      
+      if (token && userData) {
+        try {
+          setUser(JSON.parse(userData));
+          setLoading(false);
+          return;
+        } catch (error) {
+          console.error('사용자 데이터 파싱 오류:', error);
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('userData');
+        }
       }
-    }
-    setLoading(false);
+      
+      // 2. 쿠키 기반 자동 로그인 시도
+      try {
+        const response = await fetch('https://gateway.realcatcha.com/api/auth/me', {
+          method: 'GET',
+          credentials: 'include', // 쿠키 전송
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.user) {
+            setUser(data.user);
+            // 토큰이 있다면 로컬 스토리지에도 저장
+            if (data.access_token) {
+              localStorage.setItem('authToken', data.access_token);
+              localStorage.setItem('userData', JSON.stringify(data.user));
+            }
+          }
+        }
+      } catch (error) {
+        console.warn('쿠키 기반 자동 로그인 실패:', error);
+      }
+      
+      setLoading(false);
+    };
+    
+    initAuth();
   }, []);
 
   // 로그인 함수
@@ -38,12 +68,13 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       setLoading(true);
 
-      // API 호출 (절대 경로로 변경)
+      // API 호출 (절대 경로로 변경) - 쿠키 전송 포함
       const response = await fetch('https://gateway.realcatcha.com/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // 쿠키 전송/수신 허용
         body: JSON.stringify({ email, password }),
       });
 
@@ -80,7 +111,19 @@ export const AuthProvider = ({ children }) => {
   };
 
   // 로그아웃 함수
-  const logout = () => {
+  const logout = async () => {
+    try {
+      // 백엔드에 로그아웃 요청 (쿠키 제거)
+      await fetch('https://gateway.realcatcha.com/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include', // 쿠키 전송 허용
+      });
+    } catch (error) {
+      console.warn('로그아웃 API 호출 실패:', error);
+      // API 실패해도 로컬 상태는 정리
+    }
+    
+    // 로컬 스토리지 및 상태 정리
     localStorage.removeItem('authToken');
     localStorage.removeItem('userData');
     setUser(null);
