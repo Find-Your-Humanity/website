@@ -4,12 +4,32 @@ import { useAuth } from '../contexts/AuthContext';
 const DashboardEmbed = () => {
   const [isLoading, setIsLoading] = useState(true);
   const iframeRef = useRef(null);
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1200);
-    return () => clearTimeout(timer);
-  }, []);
+    
+    // 대시보드에서 로그아웃 메시지 수신 처리
+    const handleMessage = (event) => {
+      if (event.origin !== 'https://dashboard.realcatcha.com') {
+        return;
+      }
+      
+      if (event.data.type === 'LOGOUT') {
+        // 대시보드에서 로그아웃했으면 웹사이트도 로그아웃
+        logout();
+        // 로그인 페이지로 리다이렉트
+        window.location.href = '/signin';
+      }
+    };
+    
+    window.addEventListener('message', handleMessage);
+    
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('message', handleMessage);
+    };
+  }, [logout]);
 
   // iframe 로드 완료 시 토큰 전달
   const handleIframeLoad = () => {
