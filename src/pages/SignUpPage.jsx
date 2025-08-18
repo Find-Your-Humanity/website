@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { FaEye, FaEyeSlash, FaArrowLeft } from 'react-icons/fa';
+import { FaEye, FaEyeSlash, FaFacebook, FaApple, FaGoogle } from 'react-icons/fa';
 import { validateSignupForm, hasErrors } from '../utils/validation';
 import '../styles/pages/SignUpPage.css';
 
@@ -15,8 +15,7 @@ const SignUpPage = () => {
     username: '',
     contact: '',
     password: '',
-    confirmPassword: '',
-    fullName: ''
+    confirmPassword: ''
   });
   const [fieldErrors, setFieldErrors] = useState({});
   const [serverError, setServerError] = useState('');
@@ -55,8 +54,7 @@ const SignUpPage = () => {
       email: formData.email,
       username: formData.username,
       password: formData.password,
-      contact: formData.contact,
-      full_name: formData.fullName
+      contact: formData.contact
     });
 
     if (result.success) {
@@ -113,169 +111,166 @@ const SignUpPage = () => {
   };
 
   return (
-    <div className="signup-page-mobile">
-      <div className="mobile-header">
-        <button className="back-button" onClick={() => navigate(-1)}>
-          <FaArrowLeft />
-        </button>
-        <h1 className="mobile-title">회원가입</h1>
-      </div>
-
-      <div className="mobile-form-container">
-        {serverError && (
-          <div className="error-message">{serverError}</div>
-        )}
-
-        <form onSubmit={handleSubmit} noValidate>
-          {/* 이메일 + 인증번호 받기 */}
-          <div className="mobile-form-group">
-            <div className="input-with-button">
-              <input
-                type="email"
-                name="email"
-                placeholder="아이디 (이메일 주소)"
-                value={formData.email}
-                onChange={handleChange}
-                className="mobile-input"
-                required
-              />
-              <button
-                type="button"
-                onClick={requestEmailCode}
-                disabled={codeRequesting}
-                className="inline-verify-btn"
-              >
-                {codeRequesting ? '전송중...' : '인증번호 받기'}
-              </button>
-            </div>
-            {fieldErrors.email && <div className="field-error">{fieldErrors.email}</div>}
+    <div className="signup-page">
+      <div className="signup-container">
+        {/* Left Side - Illustration */}
+        <div className="illustration-side">
+          <div className="illustration">
+            <img src="/signup-illustration.svg" alt="Sign Up Illustration" />
           </div>
+        </div>
 
-          {/* 이메일 인증번호 입력 */}
-          <div className="mobile-form-group">
-            <div className="input-with-button">
-              <input
-                type="text"
-                placeholder="이메일 인증번호 (6자리)"
-                value={verifyCode}
-                onChange={(e) => setVerifyCode(e.target.value)}
-                className="mobile-input"
-                maxLength="6"
-              />
-              <button
-                type="button"
-                className="inline-verify-btn"
-                onClick={verifyEmailCode}
-                disabled={emailVerified}
-                style={{ 
-                  backgroundColor: emailVerified ? '#28a745' : '#000',
-                  minWidth: '80px'
-                }}
-              >
-                {emailVerified ? '인증완료' : '인증하기'}
-              </button>
-            </div>
-            {emailVerified && (
-              <div style={{ color: '#28a745', fontSize: '12px', marginTop: '6px' }}>
-                ✓ 이메일 인증이 완료되었습니다.
-              </div>
+        {/* Right Side - Sign Up Form */}
+        <div className="form-side">
+          <div className="signup-form">
+            <h1 className="signup-title">Sign Up</h1>
+
+            {serverError && (
+              <div className="error-message">{serverError}</div>
             )}
-          </div>
 
-          {/* 사용자명 */}
-          <div className="mobile-form-group">
-            <input
-              type="text"
-              name="username"
-              placeholder="사용자명"
-              value={formData.username}
-              onChange={handleChange}
-              className="mobile-input"
-              required
-            />
-            {fieldErrors.username && <div className="field-error">{fieldErrors.username}</div>}
-          </div>
+            <form onSubmit={handleSubmit} noValidate>
+              {/* 1) 이메일 입력 + 내부 버튼 (한 줄) */}
+              <div className="form-group">
+                <div style={{ position:'relative' }}>
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Enter Email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="form-input"
+                    required
+                    style={{ paddingRight: '42%' }}
+                  />
+                  <button
+                    type="button"
+                    onClick={requestEmailCode}
+                    disabled={codeRequesting}
+                    className="inline-btn"
+                    style={{ position:'absolute', right:'-2px', top:'-2px', bottom:'-2px', width:'40%', minWidth:170, lineHeight:1, padding:'0 16px', whiteSpace:'nowrap', borderLeft:'none' }}
+                  >
+                    {codeRequesting ? 'Sending...' : '인증번호 받기'}
+                  </button>
+                </div>
+                {fieldErrors.email && <div className="field-error">{fieldErrors.email}</div>}
+              </div>
 
-          {/* 이름 (실명 입력) */}
-          <div className="mobile-form-group">
-            <input
-              type="text"
-              name="fullName"
-              placeholder="이름 (실명 입력)"
-              value={formData.fullName}
-              onChange={handleChange}
-              className="mobile-input"
-              required
-            />
-            {fieldErrors.fullName && <div className="field-error">{fieldErrors.fullName}</div>}
-          </div>
+              {/* 2) 코드 입력 + 인증 버튼 (한 줄, 분리) */}
+              <div className="form-group">
+                <div style={{ display:'flex', gap:14, alignItems:'center' }}>
+                  <input
+                    type="text"
+                    placeholder="6-digit code"
+                    value={verifyCode}
+                    onChange={(e)=>setVerifyCode(e.target.value)}
+                    className="form-input"
+                    style={{ flex: 1 }}
+                  />
+                  <button
+                    type="button"
+                    className="inline-btn"
+                    onClick={verifyEmailCode}
+                    disabled={emailVerified}
+                    style={{ width: 180 }}
+                  >
+                    {emailVerified ? '인증 완료' : '인증하기'}
+                  </button>
+                </div>
+              </div>
 
-          {/* 휴대전화번호 */}
-          <div className="mobile-form-group">
-            <input
-              type="tel"
-              name="contact"
-              placeholder="휴대전화번호 ('-'제외)"
-              value={formData.contact}
-              onChange={handleChange}
-              className="mobile-input"
-              required
-            />
-            {fieldErrors.contact && <div className="field-error">{fieldErrors.contact}</div>}
-          </div>
+              <div className="form-group">
+                <input
+                  type="text"
+                  name="username"
+                  placeholder="Create User name"
+                  value={formData.username}
+                  onChange={handleChange}
+                  className="form-input"
+                  required
+                />
+                {fieldErrors.username && <div className="field-error">{fieldErrors.username}</div>}
+              </div>
 
-          {/* 비밀번호 */}
-          <div className="mobile-form-group">
-            <div className="password-input-container">
-              <input
-                type={showPassword ? "text" : "password"}
-                name="password"
-                placeholder="비밀번호"
-                value={formData.password}
-                onChange={handleChange}
-                className="mobile-input"
-                required
-              />
-              <button
-                type="button"
-                className="password-toggle"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              <div className="form-group">
+                <input
+                  type="tel"
+                  name="contact"
+                  placeholder="Contact number"
+                  value={formData.contact}
+                  onChange={handleChange}
+                  className="form-input"
+                  required
+                />
+                {fieldErrors.contact && <div className="field-error">{fieldErrors.contact}</div>}
+              </div>
+
+              <div className="form-group">
+                <div className="password-input-container">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    placeholder="Password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className="form-input"
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="password-toggle"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </button>
+                </div>
+                {fieldErrors.password && <div className="field-error">{fieldErrors.password}</div>}
+              </div>
+
+              <div className="form-group">
+                <div className="password-input-container">
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    name="confirmPassword"
+                    placeholder="Confirm Password"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    className="form-input"
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="password-toggle"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                  </button>
+                </div>
+                {fieldErrors.confirmPassword && <div className="field-error">{fieldErrors.confirmPassword}</div>}
+              </div>
+
+              <button type="submit" className="signup-button">
+                Register
+              </button>
+            </form>
+
+            <div className="divider">
+              <span>or continue with</span>
+            </div>
+
+            <div className="social-login">
+              <button className="social-button facebook">
+                <FaFacebook />
+              </button>
+              <button className="social-button apple">
+                <FaApple />
+              </button>
+              <button className="social-button google">
+                <FaGoogle />
               </button>
             </div>
-            {fieldErrors.password && <div className="field-error">{fieldErrors.password}</div>}
           </div>
-
-          {/* 비밀번호 확인 */}
-          <div className="mobile-form-group">
-            <div className="password-input-container">
-              <input
-                type={showConfirmPassword ? "text" : "password"}
-                name="confirmPassword"
-                placeholder="비밀번호 확인"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                className="mobile-input"
-                required
-              />
-              <button
-                type="button"
-                className="password-toggle"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              >
-                {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-              </button>
-            </div>
-            {fieldErrors.confirmPassword && <div className="field-error">{fieldErrors.confirmPassword}</div>}
-          </div>
-
-
-
-          <button type="submit" className="mobile-signup-button">
-            회원가입
-          </button>
-        </form>
+        </div>
       </div>
     </div>
   );

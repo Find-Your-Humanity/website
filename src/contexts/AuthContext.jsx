@@ -34,18 +34,12 @@ export const AuthProvider = ({ children }) => {
         }
       }
       
-      // 2. 쿠키 기반 자동 로그인 시도 (타임아웃 5초)
+      // 2. 쿠키 기반 자동 로그인 시도
       try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000);
-        
         const response = await fetch('https://gateway.realcatcha.com/api/auth/me', {
           method: 'GET',
           credentials: 'include', // 쿠키 전송
-          signal: controller.signal
         });
-        
-        clearTimeout(timeoutId);
         
         if (response.ok) {
           const data = await response.json();
@@ -59,11 +53,7 @@ export const AuthProvider = ({ children }) => {
           }
         }
       } catch (error) {
-        if (error.name === 'AbortError') {
-          console.warn('자동 로그인 타임아웃');
-        } else {
-          console.warn('쿠키 기반 자동 로그인 실패:', error);
-        }
+        console.warn('쿠키 기반 자동 로그인 실패:', error);
       }
       
       setLoading(false);
