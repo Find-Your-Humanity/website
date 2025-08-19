@@ -10,6 +10,9 @@ import SignInPage from './pages/SignInPage';
 import SignUpPage from './pages/SignUpPage';
 import ContactPage from './pages/ContactPage';
 import ContactStatusPage from './pages/ContactStatusPage';
+import TermsPage from './pages/TermsPage';
+import PrivacyPage from './pages/PrivacyPage';
+import FAQPage from './pages/FAQPage';
 import DashboardEmbed from './pages/DashboardEmbed';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
@@ -31,6 +34,9 @@ function App() {
             <Route path="/signup" element={<SignUpPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/contact-status" element={<ContactStatusPage />} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/faq" element={<FAQPage />} />
             <Route path="/dashboard" element={<DashboardEmbed />} />
           </Routes>
         </MainLayout>

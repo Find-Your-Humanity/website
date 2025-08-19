@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Footer.css';
 
 const Footer = () => {
@@ -7,9 +8,9 @@ const Footer = () => {
       <div className="footer-content">
         {/* Top Section - Navigation Links */}
         <div className="footer-nav">
-          <a href="#terms">서비스 이용약관</a>
-          <a href="#privacy">개인정보처리방침</a>
-          <a href="#faq">FAQ</a>
+          <Link to="/terms">서비스 이용약관</Link>
+          <Link to="/privacy">개인정보처리방침</Link>
+          <Link to="/faq">FAQ</Link>
         </div>
         
         {/* Middle Section - Logo */}
