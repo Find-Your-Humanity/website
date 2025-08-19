@@ -13,6 +13,7 @@ import ContactStatusPage from './pages/ContactStatusPage';
 import TermsPage from './pages/TermsPage';
 import PrivacyPage from './pages/PrivacyPage';
 import FAQPage from './pages/FAQPage';
+import MyInquiriesPage from './pages/MyInquiriesPage';
 import DashboardEmbed from './pages/DashboardEmbed';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
@@ -37,6 +38,7 @@ function App() {
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/faq" element={<FAQPage />} />
+            <Route path="/my-inquiries" element={<MyInquiriesPage />} />
             <Route path="/dashboard" element={<DashboardEmbed />} />
           </Routes>
         </MainLayout>
