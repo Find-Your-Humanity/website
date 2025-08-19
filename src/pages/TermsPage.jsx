@@ -7,7 +7,7 @@ const TermsPage = () => {
       <div className="legal-container">
         <div className="legal-header">
           <h1 className="legal-title">서비스 이용약관</h1>
-          <p className="legal-subtitle">RealCaptcha 서비스 이용에 관한 약관입니다.</p>
+          <p className="legal-subtitle">realcatcha 서비스 이용에 관한 약관입니다.</p>
           <div className="legal-date">최종 업데이트: 2024년 8월 19일</div>
         </div>
 
@@ -15,7 +15,7 @@ const TermsPage = () => {
           <section className="legal-section">
             <h2>제1조 (목적)</h2>
             <p>
-              본 약관은 RealCaptcha(이하 "회사")가 제공하는 CAPTCHA 검증 서비스(이하 "서비스")의 
+              본 약관은 realcatcha(이하 "회사")가 제공하는 CAPTCHA 검증 서비스(이하 "서비스")의 
               이용과 관련하여 회사와 이용자 간의 권리, 의무 및 책임사항, 기타 필요한 사항을 
               규정함을 목적으로 합니다.
             </p>
@@ -136,7 +136,7 @@ const TermsPage = () => {
         <div className="legal-footer">
           <div className="contact-info">
             <h3>문의처</h3>
-            <p>이메일: legal@realcaptcha.com</p>
+            <p>이메일: legal@realcatcha.com</p>
             <p>전화: 02-1234-5678</p>
             <p>주소: 서울시 강남구 테헤란로 123, 456호</p>
           </div>

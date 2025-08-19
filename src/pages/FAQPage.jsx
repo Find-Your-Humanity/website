@@ -13,12 +13,12 @@ const FAQPage = () => {
       category: "서비스 일반",
       questions: [
         {
-          question: "RealCaptcha는 어떤 서비스인가요?",
-          answer: "RealCaptcha는 웹사이트와 애플리케이션에서 봇과 사람을 구분하는 CAPTCHA 검증 서비스입니다. 간단한 API 호출로 실시간 보안 검증을 제공하며, 스팸과 악성 트래픽으로부터 여러분의 서비스를 보호합니다."
+          question: "realcatcha는 어떤 서비스인가요?",
+          answer: "realcatcha는 웹사이트와 애플리케이션에서 봇과 사람을 구분하는 CAPTCHA 검증 서비스입니다. 간단한 API 호출로 실시간 보안 검증을 제공하며, 스팸과 악성 트래픽으로부터 여러분의 서비스를 보호합니다."
         },
         {
           question: "다른 CAPTCHA 서비스와의 차이점은 무엇인가요?",
-          answer: "RealCaptcha는 한국어 환경에 최적화되어 있으며, 높은 정확도와 빠른 응답속도를 자랑합니다. 또한 간단한 통합 과정과 합리적인 가격으로 개발자 친화적인 서비스를 제공합니다."
+          answer: "realcatcha는 한국어 환경에 최적화되어 있으며, 높은 정확도와 빠른 응답속도를 자랑합니다. 또한 간단한 통합 과정과 합리적인 가격으로 개발자 친화적인 서비스를 제공합니다."
         },
         {
           question: "어떤 플랫폼에서 사용할 수 있나요?",
@@ -139,7 +139,7 @@ const FAQPage = () => {
         <div className="faq-header">
           <h1 className="faq-title">자주 묻는 질문</h1>
           <p className="faq-subtitle">
-            RealCaptcha 서비스에 대한 궁금한 점들을 빠르게 해결해보세요.
+            realcatcha 서비스에 대한 궁금한 점들을 빠르게 해결해보세요.
           </p>
         </div>
 
@@ -193,7 +193,7 @@ const FAQPage = () => {
               <a href="/contact" className="contact-btn primary">
                 문의하기
               </a>
-              <a href="mailto:support@realcaptcha.com" className="contact-btn secondary">
+              <a href="mailto:support@realcatcha.com" className="contact-btn secondary">
                 이메일 보내기
               </a>
             </div>

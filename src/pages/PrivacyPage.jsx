@@ -7,7 +7,7 @@ const PrivacyPage = () => {
       <div className="legal-container">
         <div className="legal-header">
           <h1 className="legal-title">개인정보처리방침</h1>
-          <p className="legal-subtitle">RealCaptcha의 개인정보 수집, 이용, 보관에 관한 정책입니다.</p>
+          <p className="legal-subtitle">realcatcha의 개인정보 수집, 이용, 보관에 관한 정책입니다.</p>
           <div className="legal-date">최종 업데이트: 2024년 8월 19일</div>
         </div>
 
@@ -15,7 +15,7 @@ const PrivacyPage = () => {
           <section className="legal-section">
             <h2>1. 개인정보처리방침의 목적</h2>
             <p>
-              RealCaptcha(이하 "회사")는 개인정보보호법 제30조에 따라 정보주체의 개인정보를 
+              realcatcha(이하 "회사")는 개인정보보호법 제30조에 따라 정보주체의 개인정보를 
               보호하고 이와 관련한 고충을 신속하고 원활하게 처리할 수 있도록 하기 위하여 
               다음과 같이 개인정보처리방침을 수립·공개합니다.
             </p>
@@ -192,9 +192,9 @@ const PrivacyPage = () => {
             <div className="contact-info">
               <h3>개인정보보호책임자</h3>
               <ul>
-                <li>성명: 강영모</li>
+                <li>성명: 전남규 </li>
                 <li>직책: 개인정보보호책임자</li>
-                <li>연락처: privacy@realcaptcha.com</li>
+                                 <li>연락처: privacy@realcatcha.com</li>
                 <li>전화: 02-1234-5678</li>
               </ul>
             </div>
