@@ -37,15 +37,39 @@ const ContactPage = () => {
 
     try {
       setStatus('submitting');
-      // 실제 전송은 백엔드 연동 시 multipart/form-data 사용
-      // 데모: 600ms 후 성공 처리
-      await new Promise((r) => setTimeout(r, 600));
-      setStatus('success');
-      setForm({ subject: '', contact: '', email: '', message: '' });
-      setAttachedFile(null);
+      
+      // FormData 생성
+      const formData = new FormData();
+      formData.append('subject', form.subject);
+      formData.append('contact', form.contact);
+      formData.append('email', form.email);
+      formData.append('message', form.message);
+      
+      if (attachedFile) {
+        formData.append('file', attachedFile);
+      }
+      
+      // 백엔드 API 호출
+      const response = await fetch('https://gateway.realcatcha.com/api/contact', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        setStatus('success');
+        setForm({ subject: '', contact: '', email: '', message: '' });
+        setAttachedFile(null);
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+      } else {
+        throw new Error(result.message || '문의 제출에 실패했습니다.');
+      }
     } catch (e) {
       setStatus('error');
-      setError('제출 중 오류가 발생했습니다.');
+      setError(e.message || '제출 중 오류가 발생했습니다.');
     }
   };
 
