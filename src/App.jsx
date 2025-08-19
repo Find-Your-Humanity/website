@@ -9,6 +9,7 @@ import CompanyPage from './pages/CompanyPage';
 import SignInPage from './pages/SignInPage';
 import SignUpPage from './pages/SignUpPage';
 import ContactPage from './pages/ContactPage';
+import ContactStatusPage from './pages/ContactStatusPage';
 import DashboardEmbed from './pages/DashboardEmbed';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
@@ -29,6 +30,7 @@ function App() {
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/signup" element={<SignUpPage />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="/contact-status" element={<ContactStatusPage />} />
             <Route path="/dashboard" element={<DashboardEmbed />} />
           </Routes>
         </MainLayout>
