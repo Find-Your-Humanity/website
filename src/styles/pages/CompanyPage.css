@@ -52,12 +52,12 @@
   padding: 0 2rem;
 }
 
-.hero-title {
+.company-page .hero-title {
   font-size: 3rem;
   font-weight: bold;
   margin-bottom: 1rem;
   line-height: 1.2;
-  color: #f0f0f0;
+  color: #f0f0f0 !important;
 }
 
 .hero-subtitle {
@@ -215,7 +215,7 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .hero-title {
+  .company-page .hero-title {
     font-size: 2rem;
   }
   
@@ -254,7 +254,7 @@
     min-height: 300px;
   }
   
-  .hero-title {
+  .company-page .hero-title {
     font-size: 1.8rem;
   }
   
