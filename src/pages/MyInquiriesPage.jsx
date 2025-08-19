@@ -32,10 +32,20 @@ const MyInquiriesPage = () => {
       });
 
       if (!response.ok) {
-        throw new Error('문의사항을 불러오는데 실패했습니다.');
+        const errorData = await response.text();
+        console.error('API Error Response:', response.status, errorData);
+        
+        if (response.status === 401) {
+          throw new Error('로그인이 필요합니다. 다시 로그인해 주세요.');
+        } else if (response.status === 500) {
+          throw new Error(`서버 오류가 발생했습니다. (${response.status})`);
+        } else {
+          throw new Error(`문의사항을 불러오는데 실패했습니다. (${response.status})`);
+        }
       }
 
       const data = await response.json();
+      console.log('API Response:', data);
       setInquiries(data.contact_requests || []);
     } catch (error) {
       console.error('문의사항 조회 오류:', error);
