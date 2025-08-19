@@ -1,15 +1,12 @@
 import React, { useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import '../styles/pages/ContactPage.css';
 
 const ContactPage = () => {
   const fileInputRef = useRef(null);
-  const navigate = useNavigate();
   const [form, setForm] = useState({ subject: '', contact: '', email: '', message: '' });
   const [attachedFile, setAttachedFile] = useState(null);
   const [status, setStatus] = useState('idle'); // idle | submitting | success | error
   const [error, setError] = useState('');
-  const [statusCheckUrl, setStatusCheckUrl] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -71,10 +68,7 @@ const ContactPage = () => {
           fileInputRef.current.value = '';
         }
         
-        // 상태 조회 URL 저장
-        if (result.contact_id) {
-          setStatusCheckUrl(`/contact-status?email=${encodeURIComponent(form.email)}&id=${result.contact_id}`);
-        }
+        // 성공 처리 완료
       } else {
         throw new Error(result.message || '문의 제출에 실패했습니다.');
       }
@@ -93,20 +87,12 @@ const ContactPage = () => {
           <section className="section">
             <h2 className="section-title">문의 정보</h2>
             {status === 'success' && (
-              <div className="success-message">
-                문의가 접수되었습니다. 빠르게 답변드리겠습니다.
-                {statusCheckUrl && (
-                  <div style={{ marginTop: '1rem' }}>
-                    <button 
-                      type="button" 
-                      className="status-check-button"
-                      onClick={() => navigate(statusCheckUrl)}
-                    >
-                      📋 문의 상태 조회하기
-                    </button>
-                  </div>
-                )}
+                          <div className="success-message">
+              문의가 접수되었습니다. 빠르게 답변드리겠습니다.
+              <div style={{ marginTop: '1rem', fontSize: '0.9rem', color: '#666' }}>
+                💡 답변 확인은 로그인 후 상단 프로필 메뉴에서 "문의사항 확인"을 클릭하세요.
               </div>
+            </div>
             )}
             {error && <div className="error-message">{error}</div>}
 
