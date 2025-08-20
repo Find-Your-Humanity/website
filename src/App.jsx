@@ -17,6 +17,7 @@ import MyInquiriesPage from './pages/MyInquiriesPage';
 import DashboardEmbed from './pages/DashboardEmbed';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
+import GoogleCallbackPage from './pages/GoogleCallbackPage';
 import './App.css';
 
 function App() {
@@ -40,6 +41,7 @@ function App() {
             <Route path="/faq" element={<FAQPage />} />
             <Route path="/my-inquiries" element={<MyInquiriesPage />} />
             <Route path="/dashboard" element={<DashboardEmbed />} />
+            <Route path="/auth/google/callback" element={<GoogleCallbackPage />} />
           </Routes>
         </MainLayout>
       </Router>

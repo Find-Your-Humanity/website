@@ -33,6 +33,28 @@ const SignInPage = () => {
     }
   };
 
+  const handleGoogleLogin = async () => {
+    try {
+      setError('');
+      setIsLoading(true);
+      
+      // Google OAuth URL 가져오기
+      const response = await fetch('https://gateway.realcatcha.com/api/auth/google');
+      const data = await response.json();
+      
+      if (data.auth_url) {
+        // Google OAuth 페이지로 리디렉트
+        window.location.href = data.auth_url;
+      } else {
+        setError('Google 로그인을 시작할 수 없습니다.');
+      }
+    } catch (error) {
+      setError('Google 로그인 중 오류가 발생했습니다.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="signin-page">
       <div className="signin-container">
@@ -105,13 +127,29 @@ const SignInPage = () => {
           </div>
 
           <div className="social-login">
-              <button className="social-button facebook">
+              <button 
+                type="button"
+                className="social-button facebook" 
+                disabled={isLoading}
+                title="Facebook 로그인 (준비 중)"
+              >
                 <FaFacebook />
               </button>
-              <button className="social-button apple">
+              <button 
+                type="button"
+                className="social-button apple" 
+                disabled={isLoading}
+                title="Apple 로그인 (준비 중)"
+              >
                 <FaApple />
               </button>
-              <button className="social-button google">
+              <button 
+                type="button"
+                className="social-button google" 
+                onClick={handleGoogleLogin}
+                disabled={isLoading}
+                title="Google로 로그인"
+              >
                 <FaGoogle />
               </button>
             </div>
