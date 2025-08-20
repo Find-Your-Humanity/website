@@ -3,32 +3,28 @@ import { useAuth } from '../contexts/AuthContext';
 import '../styles/pages/MyInquiriesPage.css';
 
 const MyInquiriesPage = () => {
-  const { user, isAuthenticated } = useAuth();
+  const { user, fetchWithAuth } = useAuth();
   const [inquiries, setInquiries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedInquiry, setSelectedInquiry] = useState(null);
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!user) {
       setLoading(false);
       return;
     }
     
     fetchMyInquiries();
-  }, [isAuthenticated, user]);
+  }, [user]);
 
   const fetchMyInquiries = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      const response = await fetch('https://gateway.realcatcha.com/api/my-contact-requests', {
+      const response = await fetchWithAuth('https://gateway.realcatcha.com/api/my-contact-requests', {
         method: 'GET',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
       });
 
       if (!response.ok) {
