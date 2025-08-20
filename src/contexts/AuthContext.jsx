@@ -14,6 +14,10 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // 하위 호환: 인증 상태 헬퍼
+  const isLoggedIn = !!user;
+  const isAuthenticated = () => !!user;
 
   // 토큰 갱신 함수
   const refreshToken = async () => {
@@ -221,6 +225,9 @@ export const AuthProvider = ({ children }) => {
     fetchWithAuth,
     refreshToken,
     setError,
+    // 하위 호환 제공
+    isAuthenticated,
+    isLoggedIn,
   };
 
   return (
