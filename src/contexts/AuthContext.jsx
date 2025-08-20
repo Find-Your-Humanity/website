@@ -14,82 +14,6 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
-  // 하위 호환: 인증 상태 헬퍼
-  const isLoggedIn = !!user;
-  const isAuthenticated = () => !!user;
-
-  // 토큰 갱신 함수
-  const refreshToken = async () => {
-    try {
-      const response = await fetch('https://gateway.realcatcha.com/api/auth/refresh', {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success && data.user) {
-          setUser(data.user);
-          if (data.access_token) {
-            localStorage.setItem('authToken', data.access_token);
-            localStorage.setItem('userData', JSON.stringify(data.user));
-          }
-          return data.access_token;
-        }
-      }
-      
-      // 갱신 실패 시 로그아웃 처리
-      throw new Error('토큰 갱신 실패');
-    } catch (error) {
-      console.error('토큰 갱신 오류:', error);
-      // 갱신 실패 시 로그아웃
-      setUser(null);
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('userData');
-      throw error;
-    }
-  };
-
-  // API 요청 래퍼 (자동 토큰 갱신 포함)
-  const fetchWithAuth = async (url, options = {}) => {
-    try {
-      const response = await fetch(url, {
-        ...options,
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          ...options.headers,
-        },
-      });
-
-      // 401 에러 시 토큰 갱신 시도
-      if (response.status === 401) {
-        try {
-          await refreshToken();
-          // 원본 요청 재시도
-          return await fetch(url, {
-            ...options,
-            credentials: 'include',
-            headers: {
-              'Content-Type': 'application/json',
-              ...options.headers,
-            },
-          });
-        } catch (refreshError) {
-          // 갱신 실패 시 401 응답 그대로 반환
-          return response;
-        }
-      }
-
-      return response;
-    } catch (error) {
-      throw error;
-    }
-  };
 
   // 사용자 정보 복원 (로컬 스토리지 + 쿠키 자동 로그인)
   useEffect(() => {
@@ -126,13 +50,6 @@ export const AuthProvider = ({ children }) => {
               localStorage.setItem('authToken', data.access_token);
               localStorage.setItem('userData', JSON.stringify(data.user));
             }
-          }
-        } else if (response.status === 401) {
-          // Access Token이 만료된 경우 Refresh Token으로 갱신 시도
-          try {
-            await refreshToken();
-          } catch (refreshError) {
-            console.log('자동 로그인 불가능');
           }
         }
       } catch (error) {
@@ -180,23 +97,20 @@ export const AuthProvider = ({ children }) => {
       }
       
       // 토큰과 사용자 정보 저장
-      if (data.access_token) {
-        localStorage.setItem('authToken', data.access_token);
-      }
-      if (data.user) {
-        localStorage.setItem('userData', JSON.stringify(data.user));
-        setUser(data.user);
-      }
-
-      return data;
-    } catch (err) {
-      setError(err.message || '로그인 중 오류가 발생했습니다.');
-      throw err;
+      localStorage.setItem('authToken', data.access_token);
+      localStorage.setItem('userData', JSON.stringify(data.user));
+      
+      setUser(data.user);
+      return { success: true };
+    } catch (error) {
+      setError(error.message);
+      return { success: false, error: error.message };
     } finally {
       setLoading(false);
     }
   };
 
+  // 로그아웃 함수
   const logout = async () => {
     try {
       // 백엔드에 로그아웃 요청 (쿠키 제거)
@@ -208,12 +122,62 @@ export const AuthProvider = ({ children }) => {
       console.warn('로그아웃 API 호출 실패:', error);
       // API 실패해도 로컬 상태는 정리
     }
-
-    // 로컬 스토리지 정리
+    
+    // 로컬 스토리지 및 상태 정리
     localStorage.removeItem('authToken');
     localStorage.removeItem('userData');
     setUser(null);
     setError(null);
+  };
+
+  // 회원가입 함수
+  const signup = async (userData) => {
+    try {
+      setError(null);
+      setLoading(true);
+
+      console.log('🚀 Signup 요청 시작:', userData);
+      console.log('📡 API URL:', 'https://gateway.realcatcha.com/api/auth/signup');
+
+      const response = await fetch('https://gateway.realcatcha.com/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+
+      console.log('📨 응답 상태:', response.status);
+      console.log('📨 응답 헤더:', Object.fromEntries(response.headers.entries()));
+
+      if (!response.ok) {
+        let message = `회원가입에 실패했습니다. (${response.status})`;
+        try {
+          const maybeJson = await response.clone().json();
+          if (maybeJson && maybeJson.detail) {
+            message = maybeJson.detail;
+          }
+        } catch (_) {
+          try {
+            const text = await response.text();
+            if (text) message = text;
+          } catch (_) {}
+        }
+        console.error('❌ 응답 오류 메시지:', message);
+        return { success: false, error: message };
+      }
+
+      const data = await response.json();
+      console.log('✅ 회원가입 성공:', data);
+      return { success: true, message: '회원가입이 완료되었습니다.' };
+    } catch (error) {
+      console.error('❌ 회원가입 오류:', error);
+      const fallback = error?.message || '회원가입 중 오류가 발생했습니다.';
+      setError(fallback);
+      return { success: false, error: fallback };
+    } finally {
+      setLoading(false);
+    }
   };
 
   const value = {
@@ -222,12 +186,8 @@ export const AuthProvider = ({ children }) => {
     error,
     login,
     logout,
-    fetchWithAuth,
-    refreshToken,
-    setError,
-    // 하위 호환 제공
-    isAuthenticated,
-    isLoggedIn,
+    signup,
+    isAuthenticated: !!user,
   };
 
   return (
