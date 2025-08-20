@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }) => {
         
         if (response.ok) {
           const data = await response.json();
-          if (data.success && data.user) {
+          if (data && data.success && data.user) {
             setUser(data.user);
             // 토큰이 있다면 로컬 스토리지에도 저장
             if (data.access_token) {
@@ -51,6 +51,10 @@ export const AuthProvider = ({ children }) => {
               localStorage.setItem('userData', JSON.stringify(data.user));
             }
           }
+        } else {
+          // 401 에러 등으로 인증 실패 시 로컬 스토리지 정리
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('userData');
         }
       } catch (error) {
         console.warn('쿠키 기반 자동 로그인 실패:', error);
