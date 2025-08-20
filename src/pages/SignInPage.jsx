@@ -58,7 +58,7 @@ const SignInPage = () => {
               <div className="form-group">
                 <input
                   type="email"
-                  placeholder="Enter E-mail or User Name"
+                  placeholder="Enter E-mail"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="form-input"
