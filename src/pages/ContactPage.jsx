@@ -1,12 +1,23 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import '../styles/pages/ContactPage.css';
 
 const ContactPage = () => {
   const fileInputRef = useRef(null);
+  const navigate = useNavigate();
+  const { isAuthenticated, user } = useAuth();
   const [form, setForm] = useState({ subject: '', contact: '', email: '', message: '' });
   const [attachedFile, setAttachedFile] = useState(null);
   const [status, setStatus] = useState('idle'); // idle | submitting | success | error
   const [error, setError] = useState('');
+
+  // 로그인 되어 있으면 이메일 자동 채움(수정 불가)
+  useEffect(() => {
+    if (isAuthenticated && user?.email) {
+      setForm((prev) => ({ ...prev, email: user.email }));
+    }
+  }, [isAuthenticated, user?.email]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,6 +34,11 @@ const ContactPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    if (!isAuthenticated) {
+      setError('로그인 후 문의를 제출할 수 있습니다. 로그인해 주세요.');
+      return;
+    }
 
     if (!form.subject || !form.contact || !form.email || !form.message) {
       setError('모든 필드를 입력해주세요.');
@@ -125,6 +141,21 @@ const ContactPage = () => {
                 </div>
               </div>
 
+              {!isAuthenticated && (
+                <div className="error-message" style={{ marginBottom: '1rem' }}>
+                  🔒 로그인 후 문의를 제출할 수 있습니다.
+                  <div style={{ marginTop: '.5rem' }}>
+                    <button
+                      type="button"
+                      className="primary-button"
+                      onClick={() => navigate('/signin?next=/contact')}
+                    >
+                      로그인하러 가기
+                    </button>
+                  </div>
+                </div>
+              )}
+
               <div className="form-group">
                 <label className="label">연락처</label>
                 <input
@@ -135,6 +166,7 @@ const ContactPage = () => {
                   value={form.contact}
                   onChange={handleChange}
                   required
+                  disabled={status === 'submitting'}
                 />
               </div>
 
@@ -148,6 +180,7 @@ const ContactPage = () => {
                   value={form.email}
                   onChange={handleChange}
                   required
+                  disabled={isAuthenticated || status === 'submitting'}
                 />
               </div>
 
@@ -166,7 +199,7 @@ const ContactPage = () => {
 
               <div className="actions">
                 <button type="button" className="secondary-button" onClick={() => navigate(-1)}>이전</button>
-                <button type="submit" className="primary-button" disabled={status === 'submitting'}>
+                <button type="submit" className="primary-button" disabled={status === 'submitting' || !isAuthenticated}>
                   {status === 'submitting' ? '제출 중...' : '문의하기'}
                 </button>
               </div>
