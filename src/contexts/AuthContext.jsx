@@ -66,7 +66,7 @@ export const AuthProvider = ({ children }) => {
     initAuth();
   }, []);
 
-  // 로그인 함수
+  // 로그인 함수 (이메일/비밀번호)
   const login = async (email, password) => {
     try {
       setError(null);
@@ -111,6 +111,20 @@ export const AuthProvider = ({ children }) => {
       return { success: false, error: error.message };
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Google OAuth 로그인 함수
+  const loginWithGoogle = (userData) => {
+    try {
+      setError(null);
+      setUser(userData);
+      localStorage.setItem('userData', JSON.stringify(userData));
+      localStorage.setItem('authToken', 'google-oauth');
+      return { success: true };
+    } catch (error) {
+      setError(error.message);
+      return { success: false, error: error.message };
     }
   };
 
@@ -189,6 +203,7 @@ export const AuthProvider = ({ children }) => {
     loading,
     error,
     login,
+    loginWithGoogle,
     logout,
     signup,
     isAuthenticated: !!user,

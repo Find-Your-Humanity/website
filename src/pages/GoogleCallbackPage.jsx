@@ -6,7 +6,7 @@ import '../styles/pages/GoogleCallbackPage.css';
 const GoogleCallbackPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { loginWithGoogle } = useAuth();
   const [status, setStatus] = useState('processing'); // processing, success, error
   const [message, setMessage] = useState('Google 로그인 처리 중...');
 
@@ -44,9 +44,8 @@ const GoogleCallbackPage = () => {
           
           // AuthContext 상태 업데이트
           if (data.user) {
-            // 로컬 스토리지에 사용자 정보 저장
-            localStorage.setItem('userData', JSON.stringify(data.user));
-            localStorage.setItem('authToken', 'google-oauth'); // Google OAuth는 쿠키 기반
+            // AuthContext 상태 업데이트
+            loginWithGoogle(data.user);
           }
           
           // 2초 후 홈으로 리디렉트
