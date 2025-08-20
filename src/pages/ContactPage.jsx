@@ -141,20 +141,7 @@ const ContactPage = () => {
                 </div>
               </div>
 
-              {!isAuthenticated && (
-                <div className="error-message" style={{ marginBottom: '1rem' }}>
-                  🔒 로그인 후 문의를 제출할 수 있습니다.
-                  <div style={{ marginTop: '.5rem' }}>
-                    <button
-                      type="button"
-                      className="primary-button"
-                      onClick={() => navigate('/signin?next=/contact')}
-                    >
-                      로그인하러 가기
-                    </button>
-                  </div>
-                </div>
-              )}
+
 
               <div className="form-group">
                 <label className="label">연락처</label>
@@ -199,9 +186,19 @@ const ContactPage = () => {
 
               <div className="actions">
                 <button type="button" className="secondary-button" onClick={() => navigate(-1)}>이전</button>
-                <button type="submit" className="primary-button" disabled={status === 'submitting' || !isAuthenticated}>
-                  {status === 'submitting' ? '제출 중...' : '문의하기'}
-                </button>
+                {isAuthenticated ? (
+                  <button type="submit" className="primary-button" disabled={status === 'submitting'}>
+                    {status === 'submitting' ? '제출 중...' : '문의하기'}
+                  </button>
+                ) : (
+                  <button 
+                    type="button" 
+                    className="primary-button" 
+                    onClick={() => navigate('/signin?next=/contact')}
+                  >
+                    로그인 후 문의하기
+                  </button>
+                )}
               </div>
             </form>
           </section>
