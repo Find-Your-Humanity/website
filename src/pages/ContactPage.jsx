@@ -67,6 +67,7 @@ const ContactPage = () => {
       const response = await fetch('https://gateway.realcatcha.com/api/contact', {
         method: 'POST',
         body: formData,
+        credentials: 'include',
       });
       
       const result = await response.json();
