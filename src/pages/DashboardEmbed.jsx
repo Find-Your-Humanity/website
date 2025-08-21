@@ -3,8 +3,55 @@ import { useAuth } from '../contexts/AuthContext';
 
 const DashboardEmbed = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [authVerified, setAuthVerified] = useState(false);
   const iframeRef = useRef(null);
   const { user, isAuthenticated, logout } = useAuth();
+
+  // 인증 상태 확인 및 검증
+  useEffect(() => {
+    const verifyAuth = async () => {
+      try {
+        // 로컬 스토리지에 토큰이 있는지 확인
+        const token = localStorage.getItem('authToken');
+        const userData = localStorage.getItem('userData');
+        
+        if (!token || !userData) {
+          console.log('토큰 또는 사용자 데이터가 없음');
+          setAuthVerified(true);
+          return;
+        }
+
+        // 서버에 인증 상태 확인
+        const response = await fetch('https://gateway.realcatcha.com/api/auth/me', {
+          method: 'GET',
+          credentials: 'include',
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data && data.success && data.user) {
+            console.log('인증 상태 확인 성공');
+            setAuthVerified(true);
+          } else {
+            console.log('서버 응답에 사용자 정보 없음');
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userData');
+            setAuthVerified(true);
+          }
+        } else {
+          console.log('인증 상태 확인 실패:', response.status);
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('userData');
+          setAuthVerified(true);
+        }
+      } catch (error) {
+        console.warn('인증 상태 확인 중 오류:', error);
+        setAuthVerified(true);
+      }
+    };
+
+    verifyAuth();
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1200);
@@ -35,7 +82,7 @@ const DashboardEmbed = () => {
   const handleIframeLoad = () => {
     setIsLoading(false);
     
-    if (isAuthenticated && iframeRef.current) {
+    if (authVerified && isAuthenticated && iframeRef.current) {
       const token = localStorage.getItem('authToken');
       const userData = localStorage.getItem('userData');
       
@@ -52,8 +99,8 @@ const DashboardEmbed = () => {
     }
   };
 
-  // 로그인되지 않은 경우
-  if (!isAuthenticated) {
+  // 인증 상태 확인 중이거나 로그인되지 않은 경우
+  if (!authVerified || !isAuthenticated) {
     return (
       <div style={{height: 'calc(100vh - 140px)', display:'flex', alignItems:'center', justifyContent:'center'}}>
         <div style={{textAlign: 'center', padding: 40}}>

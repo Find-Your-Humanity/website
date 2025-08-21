@@ -50,6 +50,11 @@ export const AuthProvider = ({ children }) => {
               localStorage.setItem('authToken', data.access_token);
               localStorage.setItem('userData', JSON.stringify(data.user));
             }
+            console.log('PostMessage로 자동 로그인 완료:', data.user);
+          } else {
+            // 서버 응답에 사용자 정보가 없는 경우
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userData');
           }
         } else {
           // 401 에러 등으로 인증 실패 시 로컬 스토리지 정리
@@ -58,6 +63,9 @@ export const AuthProvider = ({ children }) => {
         }
       } catch (error) {
         console.warn('쿠키 기반 자동 로그인 실패:', error);
+        // 네트워크 오류 시에도 로컬 스토리지 정리
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('userData');
       }
       
       setLoading(false);
