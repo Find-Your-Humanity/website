@@ -22,6 +22,44 @@
 
 .real-text {
   color: #DFFF00 !important;
+  animation: realPulse 3s ease-in-out infinite !important;
+  display: inline-block !important;
+}
+
+.not-text {
+  color: #000000 !important;
+  animation: notPulse 3s ease-in-out infinite !important;
+  display: inline-block !important;
+}
+
+@keyframes realPulse {
+  0%, 100% {
+    transform: scale(1) !important;
+  }
+  25% {
+    transform: scale(1.2) !important;
+  }
+  50% {
+    transform: scale(1) !important;
+  }
+  75% {
+    transform: scale(0.9) !important;
+  }
+}
+
+@keyframes notPulse {
+  0%, 100% {
+    transform: scale(1) !important;
+  }
+  25% {
+    transform: scale(0.9) !important;
+  }
+  50% {
+    transform: scale(1) !important;
+  }
+  75% {
+    transform: scale(1.2) !important;
+  }
 }
 
 .hero-subtitle {

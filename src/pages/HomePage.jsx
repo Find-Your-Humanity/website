@@ -8,7 +8,7 @@ const HomePage = () => {
       <section className="hero">
         <div className="hero-content">
           <h1 className="hero-title">
-            <span className="real-text">REAL</span> or Not?
+            <span className="real-text">REAL</span> or <span className="not-text">Not</span>?
           </h1>
           <p className="hero-subtitle">Bots won't know.</p>
           <div className="hero-buttons">
