@@ -79,15 +79,15 @@ const GoogleCallbackPage = () => {
           </div>
           
           <h2 className="callback-title">
-            {status === 'processing' && 'Google 로그인 처리 중...'}
-            {status === 'success' && '로그인 성공!'}
-            {status === 'error' && '로그인 실패'}
+            {status === 'processing' && '로그인 중'}
+            {status === 'success' && '완료'}
+            {status === 'error' && '오류'}
           </h2>
           
           <p className="callback-message">{message}</p>
           
           {status === 'processing' && (
-            <div className="loading-text">잠시만 기다려주세요...</div>
+            <div className="loading-text">잠시만요</div>
           )}
         </div>
       </div>
