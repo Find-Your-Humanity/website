@@ -12,7 +12,12 @@ const HomePage = () => {
           </h1>
           <p className="hero-subtitle">Bots won't know.</p>
           <div className="hero-buttons">
-            <button className="btn btn-primary">Try CAPTCHA</button>
+            <button 
+              className="btn btn-primary" 
+              onClick={() => window.open('https://test.realcatcha.com/', '_blank')}
+            >
+              Try CAPTCHA
+            </button>
             <button className="btn btn-primary">Start Free Plan</button>
           </div>
         </div>
