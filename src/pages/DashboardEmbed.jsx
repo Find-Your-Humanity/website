@@ -5,6 +5,12 @@ import '../styles/pages/DashboardEmbed.css';
 const DashboardEmbed = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const [lastUpdate, setLastUpdate] = useState(new Date());
+  const [stats, setStats] = useState({
+    totalRequests: 125430,
+    successRate: 94.8,
+    avgResponseTime: 245,
+    activeUsers: 1247
+  });
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -37,28 +43,24 @@ const DashboardEmbed = () => {
       {/* Top Navigation Bar */}
       <div className="dashboard-header">
         <div className="header-left">
-          <div className="brand-logo">대시보드</div>
+          <div className="brand-logo">REALCATCHA</div>
           <nav className="header-nav">
-            <a href="#" className="nav-link">ORCA ERP</a>
-            <a href="#" className="nav-link">문의하기</a>
-            <a href="#" className="nav-link active">대시보드</a>
+            <a href="#" className="nav-link">realcatcha</a>
+            <a href="#" className="nav-link">Products</a>
+            <a href="#" className="nav-link">Company</a>
+            <a href="#" className="nav-link">Document</a>
+            <a href="#" className="nav-link">Contact-us</a>
+            <a href="#" className="nav-link active">Dashboard</a>
           </nav>
         </div>
         <div className="header-right">
           <div className="user-section">
-            <span className="logout-text">로그아웃</span>
             <div className="user-icon">👤</div>
+            <span className="user-name">전남규</span>
+            <span className="dropdown-arrow">▼</span>
+            <button className="logout-button">→</button>
           </div>
         </div>
-      </div>
-
-      {/* Breadcrumbs */}
-      <div className="breadcrumbs">
-        <span>Dashboard</span>
-        <span className="breadcrumb-separator">{'>'}</span>
-        <span>서비스 관리</span>
-        <span className="breadcrumb-separator">{'>'}</span>
-        <span>ERP 신청</span>
       </div>
 
       <div className="dashboard-content">
@@ -72,44 +74,33 @@ const DashboardEmbed = () => {
           </div>
           
           <nav className="sidebar-nav">
-            <div className="nav-category">
-              <div className="nav-category-title">서비스 관리</div>
-              <div className="nav-item active">
-                <span className="nav-icon">📊</span>
-                <span className="nav-text">ERP 구독 관리</span>
-              </div>
+            <div className="nav-item active">
+              <span className="nav-icon">📊</span>
+              <span className="nav-text">대시보드</span>
             </div>
-            
-            <div className="nav-category">
-              <div className="nav-category-title">결제 관리</div>
-              <div className="nav-item">
-                <span className="nav-icon">💰</span>
-                <span className="nav-text">이번달 청구 금액</span>
-              </div>
-              <div className="nav-item">
-                <span className="nav-icon">💳</span>
-                <span className="nav-text">카드 관리</span>
-              </div>
-              <div className="nav-item">
-                <span className="nav-icon">📋</span>
-                <span className="nav-text">결제 히스토리</span>
-              </div>
+            <div className="nav-item">
+              <span className="nav-icon">📈</span>
+              <span className="nav-text">분석</span>
             </div>
-            
-            <div className="nav-category">
-              <div className="nav-category-title">회사 정보</div>
-              <div className="nav-item">
-                <span className="nav-icon">🏢</span>
-                <span className="nav-text">입점사 정보</span>
-              </div>
+            <div className="nav-item">
+              <span className="nav-icon">👥</span>
+              <span className="nav-text">사용자 관리</span>
             </div>
-            
-            <div className="nav-category">
-              <div className="nav-category-title">고객 센터</div>
-              <div className="nav-item">
-                <span className="nav-icon">📞</span>
-                <span className="nav-text">문의 사항</span>
-              </div>
+            <div className="nav-item">
+              <span className="nav-icon">💳</span>
+              <span className="nav-text">요금제 관리</span>
+            </div>
+            <div className="nav-item">
+              <span className="nav-icon">📧</span>
+              <span className="nav-text">요청사항</span>
+            </div>
+            <div className="nav-item">
+              <span className="nav-icon">📊</span>
+              <span className="nav-text">요청 상태</span>
+            </div>
+            <div className="nav-item">
+              <span className="nav-icon">⚙️</span>
+              <span className="nav-text">설정</span>
             </div>
           </nav>
           
@@ -121,7 +112,11 @@ const DashboardEmbed = () => {
         {/* Main Content */}
         <div className="dashboard-main">
           <div className="main-header">
-            <h1 className="main-title">ERP 신청</h1>
+            <div className="header-content">
+              <h1 className="main-title">Real Captcha Dashboard</h1>
+              <h2 className="main-subtitle">대시보드</h2>
+              <p className="main-description">Real Captcha 서비스 모니터링 및 관리</p>
+            </div>
             <div className="main-status">
               <div className="status-info">
                 <span className="last-update">마지막 업데이트: {lastUpdate.toLocaleTimeString()}</span>
@@ -135,109 +130,73 @@ const DashboardEmbed = () => {
           </div>
 
           <div className="main-content">
-            <div className="erp-creation-section">
-              <div className="erp-creation-message">
-                <h2>ERP 생성중입니다.</h2>
-                <button className="subscribe-button">지금부터 구독하기</button>
+            {/* Stats Cards */}
+            <div className="stats-grid">
+              <div className="stat-card">
+                <div className="stat-icon blue">🛡️</div>
+                <div className="stat-content">
+                  <div className="stat-value blue">{stats.totalRequests.toLocaleString()}</div>
+                  <div className="stat-label">총 요청 수</div>
+                </div>
+              </div>
+              
+              <div className="stat-card">
+                <div className="stat-icon green">📈</div>
+                <div className="stat-content">
+                  <div className="stat-value green">{stats.successRate}%</div>
+                  <div className="stat-label">성공률</div>
+                  <div className="stat-subtitle">118,920 / 125,430</div>
+                </div>
+              </div>
+              
+              <div className="stat-card">
+                <div className="stat-icon orange">🔄</div>
+                <div className="stat-content">
+                  <div className="stat-value orange">{stats.avgResponseTime}ms</div>
+                  <div className="stat-label">평균 응답 시간</div>
+                </div>
+              </div>
+              
+              <div className="stat-card">
+                <div className="stat-icon purple">👥</div>
+                <div className="stat-content">
+                  <div className="stat-value purple">{stats.activeUsers.toLocaleString()}</div>
+                  <div className="stat-label">현재 활성 사용자</div>
+                  <div className="stat-subtitle">125/분</div>
+                </div>
               </div>
             </div>
 
-            <div className="usage-features-section">
-              <h3 className="section-title">사용 기능</h3>
-              
-              <div className="subscription-duration">
-                <div className="duration-buttons">
-                  <button className="duration-btn active">매달</button>
-                  <button className="duration-btn">3개월</button>
-                  <button className="duration-btn">6개월</button>
-                  <button className="duration-btn">1년</button>
+            {/* Charts Section */}
+            <div className="charts-section">
+              <h3 className="section-title">시간별 요청 현황</h3>
+              <div className="chart-container">
+                <div className="chart-placeholder">
+                  <div className="chart-line blue"></div>
+                  <div className="chart-line green"></div>
+                  <div className="chart-points">
+                    <div className="chart-point"></div>
+                    <div className="chart-point"></div>
+                    <div className="chart-point"></div>
+                    <div className="chart-point"></div>
+                    <div className="chart-point"></div>
+                  </div>
                 </div>
-                <span className="currency-unit">(단위: 원)</span>
               </div>
+            </div>
 
-              <div className="pricing-table">
-                <table className="plans-table">
-                  <thead>
-                    <tr>
-                      <th>ERP 기능/패키지</th>
-                      <th>BASIC</th>
-                      <th>STANDARD</th>
-                      <th>PRO</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="price-row">
-                      <td>가격 안내</td>
-                      <td>인당 4,900 /월</td>
-                      <td>
-                        <div className="standard-offer">
-                          <span>인당 10,000 /월</span>
-                          <div className="offer-badge">
-                            <span>✅</span>
-                            <span>최초 가입 시 한 달 무료</span>
-                          </div>
-                        </div>
-                      </td>
-                      <td>인당 50,000 /월</td>
-                    </tr>
-                    <tr>
-                      <td>생산 관리</td>
-                      <td>
-                        <div className="feature-item">
-                          <span className="feature-icon">🔧</span>
-                          <span>기본 생산 관리</span>
-                          <span className="feature-tag basic">BASIC</span>
-                        </div>
-                      </td>
-                      <td>
-                        <div className="feature-item">
-                          <span className="feature-icon">🔧</span>
-                          <span>기본 생산 관리</span>
-                        </div>
-                      </td>
-                      <td>
-                        <div className="feature-item">
-                          <span className="feature-icon">🔧</span>
-                          <span>기본 생산 관리</span>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td>
-                        <div className="feature-item">
-                          <span className="feature-icon">🤖</span>
-                          <span>AI 자동 생산 지시</span>
-                          <span className="feature-tag pro">PRO</span>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>재고 관리</td>
-                      <td>
-                        <div className="feature-item">
-                          <span className="feature-icon">📦</span>
-                          <span>기본 재고 관리</span>
-                          <span className="feature-tag basic">BASIC</span>
-                        </div>
-                      </td>
-                      <td>
-                        <div className="feature-item">
-                          <span className="feature-icon">📦</span>
-                          <span>기본 재고 관리</span>
-                        </div>
-                      </td>
-                      <td>
-                        <div className="feature-item">
-                          <span className="feature-icon">📦</span>
-                          <span>기본 재고 관리</span>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+            {/* Real-time Alerts */}
+            <div className="alerts-section">
+              <h3 className="section-title">실시간 알림</h3>
+              <div className="alerts-list">
+                <div className="alert-item success">
+                  <span className="alert-icon">✅</span>
+                  <span className="alert-text">모든 서비스가 정상 작동 중입니다.</span>
+                </div>
+                <div className="alert-item warning">
+                  <span className="alert-icon">⚠️</span>
+                  <span className="alert-text">GPU 풀 사용률이 85%에 도달했습니다.</span>
+                </div>
               </div>
             </div>
           </div>
