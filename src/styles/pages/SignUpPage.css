@@ -52,18 +52,33 @@
 @media (max-width: 480px){ .signup-page{padding:1rem;} .form-side{padding:1.5rem;} .signup-title{font-size:1.8rem;} .social-login{gap:.5rem;} .social-button{width:45px; height:45px;} }
 
 /* inline 버튼: 인풋 높이와 정확히 맞춤 */
-.inline-btn {
-  height: 48px;
-  padding: 0 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #DFFF00;
-  color: #000;
-  border: 1.5px solid #000;
-  border-radius: 10px;
-  font-weight: 700;
-  box-sizing: border-box;
+.signup-page .inline-btn {
+  height: 48px !important;
+  padding: 0 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background-color: #DFFF00 !important;
+  color: #000 !important;
+  border: 1.5px solid #000000 !important;
+  border-radius: 10px !important;
+  font-weight: 700 !important;
+  box-sizing: border-box !important;
+  font-size: 0.95rem !important;
+  cursor: pointer !important;
+  transition: all .3s ease !important;
+}
+
+.signup-page .inline-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(223,255,0,.3) !important;
+}
+
+.signup-page .inline-btn:disabled {
+  background-color: #ccc !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
 }
 
 /* Google Login Button */

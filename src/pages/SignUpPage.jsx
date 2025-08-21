@@ -149,9 +149,9 @@ const SignUpPage = () => {
             )}
 
             <form onSubmit={handleSubmit} noValidate>
-              {/* 1) 이메일 입력 + 내부 버튼 (한 줄) */}
+              {/* 1) 이메일 입력 + 인증번호 받기 버튼 (분리) */}
               <div className="form-group">
-                <div style={{ position:'relative' }}>
+                <div style={{ display:'flex', gap:14, alignItems:'center' }}>
                   <input
                     type="email"
                     name="email"
@@ -159,15 +159,15 @@ const SignUpPage = () => {
                     value={formData.email}
                     onChange={handleChange}
                     className="form-input"
+                    style={{ flex: 1 }}
                     required
-                    style={{ paddingRight: '42%' }}
                   />
                   <button
                     type="button"
                     onClick={requestEmailCode}
                     disabled={codeRequesting}
                     className="inline-btn"
-                    style={{ position:'absolute', right:'-2px', top:'-2px', bottom:'-2px', width:'40%', minWidth:170, lineHeight:1, padding:'0 16px', whiteSpace:'nowrap', borderLeft:'none' }}
+                    style={{ width: 180 }}
                   >
                     {codeRequesting ? 'Sending...' : '인증번호 받기'}
                   </button>
