@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import DashboardHeader from '../components/DashboardHeader';
 
 const DashboardEmbed = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -102,7 +103,7 @@ const DashboardEmbed = () => {
   // 인증 상태 확인 중이거나 로그인되지 않은 경우
   if (!authVerified || !isAuthenticated) {
     return (
-      <div style={{height: 'calc(100vh - 140px)', display:'flex', alignItems:'center', justifyContent:'center'}}>
+      <div style={{height: '100vh', display:'flex', alignItems:'center', justifyContent:'center'}}>
         <div style={{textAlign: 'center', padding: 40}}>
           <h3>대시보드 접근</h3>
           <p>대시보드를 이용하려면 먼저 로그인해주세요.</p>
@@ -126,11 +127,11 @@ const DashboardEmbed = () => {
   }
 
   return (
-    <div style={{height: 'calc(100vh - 140px)', display:'flex', flexDirection:'column'}}>
-      <div style={{height: 12}} />
-      <div style={{position:'relative', flex:1, borderRadius: 12, overflow:'hidden', boxShadow:'0 8px 24px rgba(0,0,0,0.15)'}}>
+    <div style={{height: '100vh', display:'flex', flexDirection:'column', overflow: 'hidden'}}>
+      <DashboardHeader />
+      <div style={{position:'relative', flex:1, overflow:'hidden'}}>
         {isLoading && (
-          <div style={{position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center', background:'linear-gradient(135deg, rgba(138,43,226,0.08), rgba(32,223,223,0.08))'}}>
+          <div style={{position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center', background:'linear-gradient(135deg, rgba(138,43,226,0.08), rgba(32,223,223,0.08))', zIndex: 1000}}>
             <div className="spinner" />
           </div>
         )}
@@ -142,7 +143,6 @@ const DashboardEmbed = () => {
           onLoad={handleIframeLoad}
         />
       </div>
-      <div style={{height: 12}} />
     </div>
   );
 };
