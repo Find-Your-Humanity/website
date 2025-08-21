@@ -122,10 +122,6 @@ const SignInPage = () => {
               </button>
             </form>
 
-          <div className="divider">
-            <span>or</span>
-          </div>
-
           <button 
             type="button"
             className="google-login-button" 
