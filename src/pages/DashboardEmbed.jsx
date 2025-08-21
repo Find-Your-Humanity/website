@@ -1,34 +1,74 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import '../styles/pages/DashboardEmbed.css';
 
 const DashboardEmbed = () => {
+  const [isLoading, setIsLoading] = useState(true);
+  const iframeRef = useRef(null);
   const { user, isAuthenticated, logout } = useAuth();
-  const [lastUpdate, setLastUpdate] = useState(new Date());
-  const [stats, setStats] = useState({
-    totalRequests: 125430,
-    successRate: 94.8,
-    avgResponseTime: 245,
-    activeUsers: 1247
-  });
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setLastUpdate(new Date());
-    }, 1000);
+    const timer = setTimeout(() => setIsLoading(false), 1200);
     
-    return () => clearInterval(interval);
-  }, []);
+    // 대시보드에서 로그아웃 메시지 수신 처리
+    const handleMessage = (event) => {
+      if (event.origin !== 'https://dashboard.realcatcha.com') {
+        return;
+      }
+      
+      if (event.data.type === 'LOGOUT') {
+        // 대시보드에서 로그아웃했으면 웹사이트도 로그아웃
+        logout();
+        // 로그인 페이지로 리다이렉트
+        window.location.href = '/signin';
+      }
+    };
+    
+    window.addEventListener('message', handleMessage);
+    
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('message', handleMessage);
+    };
+  }, [logout]);
+
+  // iframe 로드 완료 시 토큰 전달
+  const handleIframeLoad = () => {
+    setIsLoading(false);
+    
+    if (isAuthenticated && iframeRef.current) {
+      const token = localStorage.getItem('authToken');
+      const userData = localStorage.getItem('userData');
+      
+      if (token && userData) {
+        // 대시보드로 인증 정보 전달
+        setTimeout(() => {
+          iframeRef.current.contentWindow.postMessage({
+            type: 'AUTH_TOKEN',
+            token: token,
+            user: JSON.parse(userData)
+          }, 'https://dashboard.realcatcha.com');
+        }, 1000); // iframe이 완전히 로드될 때까지 잠시 대기
+      }
+    }
+  };
 
   // 로그인되지 않은 경우
   if (!isAuthenticated) {
     return (
-      <div className="dashboard-login-required">
-        <div className="login-required-content">
+      <div style={{height: 'calc(100vh - 140px)', display:'flex', alignItems:'center', justifyContent:'center'}}>
+        <div style={{textAlign: 'center', padding: 40}}>
           <h3>대시보드 접근</h3>
           <p>대시보드를 이용하려면 먼저 로그인해주세요.</p>
           <button 
-            className="login-button"
+            style={{
+              padding: '12px 24px',
+              backgroundColor: '#1976d2',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontSize: '16px'
+            }}
             onClick={() => window.location.href = '/signin'}
           >
             로그인하기
@@ -39,169 +79,23 @@ const DashboardEmbed = () => {
   }
 
   return (
-    <div className="dashboard-container">
-      {/* Top Navigation Bar */}
-      <div className="dashboard-header">
-        <div className="header-left">
-          <div className="brand-logo">REALCATCHA</div>
-          <nav className="header-nav">
-            <a href="#" className="nav-link">realcatcha</a>
-            <a href="#" className="nav-link">Products</a>
-            <a href="#" className="nav-link">Company</a>
-            <a href="#" className="nav-link">Document</a>
-            <a href="#" className="nav-link">Contact-us</a>
-            <a href="#" className="nav-link active">Dashboard</a>
-          </nav>
-        </div>
-        <div className="header-right">
-          <div className="user-section">
-            <div className="user-icon">👤</div>
-            <span className="user-name">전남규</span>
-            <span className="dropdown-arrow">▼</span>
-            <button className="logout-button">→</button>
+    <div style={{height: 'calc(100vh - 140px)', display:'flex', flexDirection:'column'}}>
+      <div style={{height: 12}} />
+      <div style={{position:'relative', flex:1, borderRadius: 12, overflow:'hidden', boxShadow:'0 8px 24px rgba(0,0,0,0.15)'}}>
+        {isLoading && (
+          <div style={{position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center', background:'linear-gradient(135deg, rgba(138,43,226,0.08), rgba(32,223,223,0.08))'}}>
+            <div className="spinner" />
           </div>
-        </div>
+        )}
+        <iframe
+          ref={iframeRef}
+          title="Realcatcha Dashboard"
+          src="https://dashboard.realcatcha.com"
+          style={{ width: '100%', height: '100%', border: 'none', background:'#fff' }}
+          onLoad={handleIframeLoad}
+        />
       </div>
-
-      <div className="dashboard-content">
-        {/* Left Sidebar */}
-        <div className="dashboard-sidebar">
-          <div className="sidebar-header">
-            <div className="sidebar-brand">
-              <span className="brand-icon">🛡️</span>
-              <span className="brand-text">Real</span>
-            </div>
-          </div>
-          
-          <nav className="sidebar-nav">
-            <div className="nav-item active">
-              <span className="nav-icon">📊</span>
-              <span className="nav-text">대시보드</span>
-            </div>
-            <div className="nav-item">
-              <span className="nav-icon">📈</span>
-              <span className="nav-text">분석</span>
-            </div>
-            <div className="nav-item">
-              <span className="nav-icon">👥</span>
-              <span className="nav-text">사용자 관리</span>
-            </div>
-            <div className="nav-item">
-              <span className="nav-icon">💳</span>
-              <span className="nav-text">요금제 관리</span>
-            </div>
-            <div className="nav-item">
-              <span className="nav-icon">📧</span>
-              <span className="nav-text">요청사항</span>
-            </div>
-            <div className="nav-item">
-              <span className="nav-icon">📊</span>
-              <span className="nav-text">요청 상태</span>
-            </div>
-            <div className="nav-item">
-              <span className="nav-icon">⚙️</span>
-              <span className="nav-text">설정</span>
-            </div>
-          </nav>
-          
-          <div className="sidebar-footer">
-            <span className="version-text">v1.0.0</span>
-          </div>
-        </div>
-
-        {/* Main Content */}
-        <div className="dashboard-main">
-          <div className="main-header">
-            <div className="header-content">
-              <h1 className="main-title">Real Captcha Dashboard</h1>
-              <h2 className="main-subtitle">대시보드</h2>
-              <p className="main-description">Real Captcha 서비스 모니터링 및 관리</p>
-            </div>
-            <div className="main-status">
-              <div className="status-info">
-                <span className="last-update">마지막 업데이트: {lastUpdate.toLocaleTimeString()}</span>
-                <button className="refresh-button">🔄</button>
-              </div>
-              <div className="status-badge">
-                <span className="status-icon">✅</span>
-                <span className="status-text">정상 운영</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="main-content">
-            {/* Stats Cards */}
-            <div className="stats-grid">
-              <div className="stat-card">
-                <div className="stat-icon blue">🛡️</div>
-                <div className="stat-content">
-                  <div className="stat-value blue">{stats.totalRequests.toLocaleString()}</div>
-                  <div className="stat-label">총 요청 수</div>
-                </div>
-              </div>
-              
-              <div className="stat-card">
-                <div className="stat-icon green">📈</div>
-                <div className="stat-content">
-                  <div className="stat-value green">{stats.successRate}%</div>
-                  <div className="stat-label">성공률</div>
-                  <div className="stat-subtitle">118,920 / 125,430</div>
-                </div>
-              </div>
-              
-              <div className="stat-card">
-                <div className="stat-icon orange">🔄</div>
-                <div className="stat-content">
-                  <div className="stat-value orange">{stats.avgResponseTime}ms</div>
-                  <div className="stat-label">평균 응답 시간</div>
-                </div>
-              </div>
-              
-              <div className="stat-card">
-                <div className="stat-icon purple">👥</div>
-                <div className="stat-content">
-                  <div className="stat-value purple">{stats.activeUsers.toLocaleString()}</div>
-                  <div className="stat-label">현재 활성 사용자</div>
-                  <div className="stat-subtitle">125/분</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Charts Section */}
-            <div className="charts-section">
-              <h3 className="section-title">시간별 요청 현황</h3>
-              <div className="chart-container">
-                <div className="chart-placeholder">
-                  <div className="chart-line blue"></div>
-                  <div className="chart-line green"></div>
-                  <div className="chart-points">
-                    <div className="chart-point"></div>
-                    <div className="chart-point"></div>
-                    <div className="chart-point"></div>
-                    <div className="chart-point"></div>
-                    <div className="chart-point"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Real-time Alerts */}
-            <div className="alerts-section">
-              <h3 className="section-title">실시간 알림</h3>
-              <div className="alerts-list">
-                <div className="alert-item success">
-                  <span className="alert-icon">✅</span>
-                  <span className="alert-text">모든 서비스가 정상 작동 중입니다.</span>
-                </div>
-                <div className="alert-item warning">
-                  <span className="alert-icon">⚠️</span>
-                  <span className="alert-text">GPU 풀 사용률이 85%에 도달했습니다.</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div style={{height: 12}} />
     </div>
   );
 };
