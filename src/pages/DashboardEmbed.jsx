@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import DashboardHeader from '../components/DashboardHeader';
+import './DashboardEmbed.css';
 
 const DashboardEmbed = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -79,7 +80,7 @@ const DashboardEmbed = () => {
     };
   }, [logout]);
 
-  // iframe 로드 완료 시 토큰 전달
+  // iframe 로드 완료 시 토큰 전달 및 내부 헤더 숨기기
   const handleIframeLoad = () => {
     setIsLoading(false);
     
@@ -97,6 +98,68 @@ const DashboardEmbed = () => {
           }, 'https://dashboard.realcatcha.com');
         }, 1000); // iframe이 완전히 로드될 때까지 잠시 대기
       }
+
+      // iframe 내부의 헤더 숨기기
+      setTimeout(() => {
+        try {
+          const iframeDoc = iframeRef.current.contentDocument || iframeRef.current.contentWindow.document;
+          if (iframeDoc) {
+            // CSS 스타일 주입
+            const style = iframeDoc.createElement('style');
+            style.textContent = `
+              /* Real Captcha Dashboard 헤더 숨기기 */
+              header, 
+              .header, 
+              [class*="header"], 
+              [class*="Header"],
+              .dashboard-header,
+              .main-header,
+              .top-header,
+              .app-header {
+                display: none !important;
+              }
+              
+              /* 사용자 정보 영역 숨기기 */
+              .user-info,
+              .user-profile,
+              .account-info,
+              .profile-section,
+              [class*="user"],
+              [class*="User"],
+              [class*="profile"],
+              [class*="Profile"] {
+                display: none !important;
+              }
+              
+              /* 메인 콘텐츠 영역을 전체 화면으로 확장 */
+              main, 
+              .main, 
+              .content, 
+              .main-content,
+              [class*="main"],
+              [class*="Main"],
+              [class*="content"],
+              [class*="Content"] {
+                margin-top: 0 !important;
+                padding-top: 0 !important;
+                height: 100vh !important;
+                min-height: 100vh !important;
+              }
+              
+              /* body와 html의 여백 제거 */
+              body, html {
+                margin: 0 !important;
+                padding: 0 !important;
+                height: 100% !important;
+                overflow: hidden !important;
+              }
+            `;
+            iframeDoc.head.appendChild(style);
+          }
+        } catch (error) {
+          console.warn('iframe 내부 스타일 주입 실패:', error);
+        }
+      }, 2000); // iframe 로드 후 2초 뒤에 스타일 주입
     }
   };
 
@@ -129,9 +192,9 @@ const DashboardEmbed = () => {
   return (
     <div style={{height: '100vh', display:'flex', flexDirection:'column', overflow: 'hidden'}}>
       <DashboardHeader />
-      <div style={{position:'relative', flex:1, overflow:'hidden'}}>
+      <div className="dashboard-iframe-container" style={{position:'relative', flex:1, overflow:'hidden'}}>
         {isLoading && (
-          <div style={{position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center', background:'linear-gradient(135deg, rgba(138,43,226,0.08), rgba(32,223,223,0.08))', zIndex: 1000}}>
+          <div className="dashboard-loading">
             <div className="spinner" />
           </div>
         )}
@@ -139,7 +202,7 @@ const DashboardEmbed = () => {
           ref={iframeRef}
           title="Realcatcha Dashboard"
           src="https://dashboard.realcatcha.com"
-          style={{ width: '100%', height: '100%', border: 'none', background:'#fff' }}
+          className="dashboard-iframe"
           onLoad={handleIframeLoad}
         />
       </div>

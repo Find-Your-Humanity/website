@@ -16,13 +16,17 @@ const DashboardHeader = () => {
     navigate('/');
   };
 
+  const handleContactUsClick = () => {
+    navigate('/contact');
+  };
+
   return (
     <header className="dashboard-header">
       <div className="dashboard-header-left">
         <h1 className="dashboard-title">대시보드</h1>
         <div className="dashboard-nav">
           <h2 className="nav-item" onClick={handleHomeClick}>realcatcha</h2>
-          <h2 className="nav-item">contact-us</h2>
+          <h2 className="nav-item" onClick={handleContactUsClick}>contact-us</h2>
           <h2 className="nav-item">대시보드</h2>
         </div>
       </div>

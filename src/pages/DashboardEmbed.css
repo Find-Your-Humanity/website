@@ -1,0 +1,60 @@
+/* iframe 내부의 헤더 숨기기 */
+.dashboard-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #fff;
+}
+
+/* iframe 내부의 Real Captcha Dashboard 헤더 숨기기 */
+.dashboard-iframe iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* iframe 내부 스타일 주입을 위한 스타일 */
+.dashboard-iframe-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* iframe 로드 후 내부 요소 숨기기 */
+.dashboard-iframe-container iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* iframe 내부의 헤더 영역 숨기기 (JavaScript로 주입할 스타일) */
+.dashboard-iframe-container iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* 로딩 스피너 스타일 */
+.dashboard-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(138,43,226,0.08), rgba(32,223,223,0.08));
+  z-index: 1000;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #DFFF00;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
