@@ -274,33 +274,17 @@ const SignUpPage = () => {
             </form>
 
             <div className="divider">
-              <span>or continue with</span>
+              <span>or</span>
             </div>
 
-            <div className="social-login">
-              <button 
-                type="button"
-                className="social-button facebook" 
-                title="Facebook 로그인 (준비 중)"
-              >
-                <FaFacebook />
-              </button>
-              <button 
-                type="button"
-                className="social-button apple" 
-                title="Apple 로그인 (준비 중)"
-              >
-                <FaApple />
-              </button>
-              <button 
-                type="button"
-                className="social-button google" 
-                onClick={handleGoogleLogin}
-                title="Google로 로그인"
-              >
-                <FaGoogle />
-              </button>
-            </div>
+            <button 
+              type="button"
+              className="google-login-button" 
+              onClick={handleGoogleLogin}
+            >
+              <FaGoogle />
+              <span>Google로 시작하기</span>
+            </button>
           </div>
         </div>
       </div>
