@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import '../styles/pages/ForgotPasswordPage.css';
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState('');
@@ -113,113 +114,106 @@ const ForgotPasswordPage = () => {
   };
 
   return (
-    <div className="signin-page" style={{ display:'flex', alignItems:'center', justifyContent:'center', minHeight:'80vh' }}>
-      <div className="signin-container" style={{ width:'100%', maxWidth:920 }}>
-        <div className="form-side" style={{ width: '100%', display:'flex', justifyContent:'center' }}>
-          <div className="signin-form" style={{ width:'100%', maxWidth:520, margin:'0 auto' }}>
-            <h1 className="signin-title">Forgot password</h1>
-            {message && <div className="error-message">{message}</div>}
+    <div className="forgot-password-page">
+      <div className="forgot-password-container">
+        <div className="forgot-password-form">
+          <h1 className="forgot-password-title">Forgot password</h1>
+          {message && <div className="error-message">{message}</div>}
 
-            {step === 'request' ? (
-              <form onSubmit={(e)=>e.preventDefault()}>
-                <div className="form-group">
-                  <input
-                    type="email"
-                    placeholder="Enter your E-mail"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="form-input"
-                    required
-                    disabled={loading}
-                  />
-                </div>
-                <div style={{ display:'flex', gap:12, flexWrap:'wrap', justifyContent:'center' }}>
-                  <button onClick={handleRequestLink} className="signin-button" style={{ maxWidth:520 }} disabled={loading}>
-                    {loading && mode==='token' ? 'Submitting...' : 'Send reset link'}
-                  </button>
-                  <button onClick={handleRequestCode} className="signin-button" style={{ maxWidth:520 }} disabled={loading}>
-                    {loading && mode==='code' ? 'Submitting...' : 'Send 6-digit code'}
-                  </button>
-                </div>
-              </form>
-            ) : step === 'sent' ? (
-              <div style={{ textAlign:'center', padding:'24px 0' }}>
-                <div style={{ fontSize:28, fontWeight:700, marginBottom:8 }}>비밀번호 재설정 메일 발송 완료</div>
-                <div style={{ color:'#666', marginBottom:24 }}>비밀번호 재설정 이메일을 확인해 주세요. 링크 유효기간은 발송 후 12시간입니다.</div>
-                <div style={{ display:'flex', justifyContent:'center' }}>
-                  <button onClick={()=>setStep('request')} className="signin-button" style={{ maxWidth:300 }}>다시 보내기</button>
-                </div>
+          {step === 'request' ? (
+            <form onSubmit={(e)=>e.preventDefault()}>
+              <div className="form-group">
+                <input
+                  type="email"
+                  placeholder="Enter your E-mail"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="form-input"
+                  required
+                  disabled={loading}
+                />
               </div>
-            ) : step === 'reset-token' ? (
-              <form onSubmit={handleResetToken}>
-                <div className="form-group">
-                  <input
-                    type="text"
-                    placeholder="Enter reset token"
-                    value={token}
-                    onChange={(e) => setToken(e.target.value)}
-                    className="form-input"
-                    required
-                    disabled={loading}
-                  />
-                </div>
-                <div className="form-group">
-                  <input
-                    type="password"
-                    placeholder="New password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    className="form-input"
-                    required
-                    disabled={loading}
-                  />
-                </div>
-                <button type="submit" className="signin-button" disabled={loading}>
-                  {loading ? 'Changing...' : 'Change password'}
-                </button>
-              </form>
-            ) : (
-              <form onSubmit={handleResetCode}>
-                <div className="form-group">
-                  <input
-                    type="email"
-                    placeholder="Enter your E-mail"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="form-input"
-                    required
-                    disabled={loading}
-                  />
-                </div>
-                <div className="form-group">
-                  <input
-                    type="text"
-                    placeholder="Enter 6-digit code"
-                    value={code}
-                    onChange={(e) => setCode(e.target.value)}
-                    className="form-input"
-                    required
-                    disabled={loading}
-                    maxLength={6}
-                  />
-                </div>
-                <div className="form-group">
-                  <input
-                    type="password"
-                    placeholder="New password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    className="form-input"
-                    required
-                    disabled={loading}
-                  />
-                </div>
-                <button type="submit" className="signin-button" disabled={loading}>
-                  {loading ? 'Changing...' : 'Change password'}
-                </button>
-              </form>
-            )}
-          </div>
+              <button onClick={handleRequestLink} className="forgot-password-button" disabled={loading}>
+                {loading && mode==='token' ? 'Submitting...' : 'Send reset link'}
+              </button>
+            </form>
+          ) : step === 'sent' ? (
+            <div style={{ textAlign:'center', padding:'24px 0' }}>
+              <div style={{ fontSize:28, fontWeight:700, marginBottom:8 }}>비밀번호 재설정 메일 발송 완료</div>
+              <div style={{ color:'#666', marginBottom:24 }}>비밀번호 재설정 이메일을 확인해 주세요. 링크 유효기간은 발송 후 12시간입니다.</div>
+              <div style={{ display:'flex', justifyContent:'center' }}>
+                <button onClick={()=>setStep('request')} className="forgot-password-button" style={{ maxWidth:300 }}>다시 보내기</button>
+              </div>
+            </div>
+          ) : step === 'reset-token' ? (
+            <form onSubmit={handleResetToken}>
+              <div className="form-group">
+                <input
+                  type="text"
+                  placeholder="Enter reset token"
+                  value={token}
+                  onChange={(e) => setToken(e.target.value)}
+                  className="form-input"
+                  required
+                  disabled={loading}
+                />
+              </div>
+              <div className="form-group">
+                <input
+                  type="password"
+                  placeholder="New password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="form-input"
+                  required
+                  disabled={loading}
+                />
+              </div>
+              <button type="submit" className="forgot-password-button" disabled={loading}>
+                {loading ? 'Changing...' : 'Change password'}
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={handleResetCode}>
+              <div className="form-group">
+                <input
+                  type="email"
+                  placeholder="Enter your E-mail"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="form-input"
+                  required
+                  disabled={loading}
+                />
+              </div>
+              <div className="form-group">
+                <input
+                  type="text"
+                  placeholder="Enter 6-digit code"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  className="form-input"
+                  required
+                  disabled={loading}
+                  maxLength={6}
+                />
+              </div>
+              <div className="form-group">
+                <input
+                  type="password"
+                  placeholder="New password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="form-input"
+                  required
+                  disabled={loading}
+                />
+              </div>
+              <button type="submit" className="forgot-password-button" disabled={loading}>
+                {loading ? 'Changing...' : 'Change password'}
+              </button>
+            </form>
+          )}
         </div>
       </div>
     </div>
