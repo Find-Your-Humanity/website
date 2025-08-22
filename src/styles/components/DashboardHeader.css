@@ -43,6 +43,10 @@
 }
 
 .nav-item:first-child {
+  color: #666666;
+}
+
+.nav-item:last-child {
   color: #DFFF00;
 }
 
