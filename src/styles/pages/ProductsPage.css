@@ -5,7 +5,7 @@
 
 /* Products Hero */
 .products-hero {
-  padding: 4rem 0;
+  padding: 8rem 0;
   text-align: center;
   background-color: #ffffff;
 }
@@ -17,19 +17,22 @@
 }
 
 .products-title {
-  font-size: 3.5rem;
-  font-weight: bold;
-  margin-bottom: 1.5rem;
-  color: #000000;
-  line-height: 1.4;
+  font-size: 4.6rem !important;
+  font-weight: bold !important;
+  margin-bottom: 1rem !important;
+  margin-top: 6rem !important;
+  line-height: 1.2 !important;
+  color: #000000 !important;
+  text-align: center !important;
 }
 
 .products-subtitle {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #9e9e9e;
-  line-height: 1.8;
-  margin-bottom: 2rem;
+  font-size: 1.6rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 4rem !important;
+  margin-top: 2rem !important;
+  color: #6b6b6b !important;
+  text-align: center !important;
 }
 
 .human-text {
@@ -128,16 +131,53 @@
 .period { font-size: 1rem; color: #666666; }
 
 /* Video Section */
-.video-section { position: relative; height: 80vh; min-height: 600px; overflow: hidden; }
-.video-background { position: relative; width: 100%; height: 100%; }
-.background-video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; }
-.video-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)); display: flex; align-items: center; justify-content: center; }
+.video-section { 
+  position: relative; 
+  height: 80vh; 
+  min-height: 600px; 
+  overflow: hidden; 
+}
+
+.video-background { 
+  position: relative; 
+  width: 100%; 
+  height: 100%; 
+}
+
+.background-video { 
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover; 
+  object-position: center; 
+}
+
+.video-overlay { 
+  position: absolute; 
+  top: 0; 
+  left: 0;
+  width: 100%; 
+  height: 100%; 
+  background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)); 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+}
+
 .video-content { text-align: center; color: #ffffff; max-width: 800px; padding: 0 2rem; }
+
 .video-title { font-size: 3rem; font-weight: bold; margin-bottom: 1rem; line-height: 1.2; }
+
 .video-description { font-size: 1.2rem; margin-bottom: 3rem; line-height: 1.6; opacity: 0.9; }
+
 .video-stats { display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap; }
+
 .stat-item { text-align: center; }
+
 .stat-number { display: block; font-size: 2.5rem; font-weight: bold; color: #DFFF00; margin-bottom: 0.5rem; }
+
 .stat-label { font-size: 1rem; opacity: 0.8; }
 
 /* How to Use Section */
@@ -158,7 +198,16 @@
 .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
 .feature-card { background-color: #f9f9f9; padding: 2rem; border-radius: 12px; text-align: center; transition: transform .3s, background-color .3s; }
 .feature-card:hover { transform: translateY(-5px); background-color: #f0f0f0; }
-.feature-icon { font-size: 3rem; margin-bottom: 1rem; }
+
+.feature-icon { 
+  font-size: 3rem; 
+  margin-bottom: 1rem; 
+  color: #b0b0b0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .feature-card-title { font-size: 1.25rem; font-weight: bold; color: #000000; margin-bottom: 1rem; }
 .feature-card-description { color: #666666; line-height: 1.6; }
 
@@ -181,8 +230,8 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .products-title { font-size: 2.5rem; }
-  .products-subtitle { font-size: 1.1rem; }
+  .products-title { font-size: 2.5rem !important; }
+  .products-subtitle { font-size: 1.25rem !important; }
   .products-grid { grid-template-columns: 1fr; padding: 2rem 1rem; }
   .product-card.featured { transform: none; }
   .product-card.featured:hover { transform: translateY(-8px); }
@@ -193,7 +242,8 @@
 }
 
 @media (max-width: 480px) {
-  .products-title { font-size: 2rem; }
+  .products-title { font-size: 2rem !important; }
+  .products-subtitle { font-size: 1.1rem !important; }
   .product-card { padding: 1.5rem; }
   .comparison-title { font-size: 1.5rem; }
 }

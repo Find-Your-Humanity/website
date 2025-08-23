@@ -31,7 +31,13 @@
   color: #DFFF00;
 }
 
-.nav { display: flex; align-items: center; justify-content: center; gap: 3rem; }
+.nav { 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  gap: 5rem; 
+  margin-left: 5rem;
+}
 
 .nav a,
 .nav .nav-link {

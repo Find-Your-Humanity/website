@@ -1,4 +1,5 @@
 import React from 'react';
+import { FaRobot, FaBullseye, FaBolt, FaShieldAlt, FaChartBar, FaTools } from 'react-icons/fa';
 import '../styles/pages/ProductsPage.css';
 
 const ProductsPage = () => {
@@ -12,9 +13,8 @@ const ProductsPage = () => {
             for <span className="human-text">Human</span>
           </h1>
           <p className="products-subtitle">
-            Protect your service with AI-powered image classification
-            <br />
-            CAPTCHAs that bots can't solve — but humans can.
+              REAL은 이미지 분류 기반의 단계구분형 CAPTCHA 서비스로 행동 패턴 분석을 통해 <br />
+              사람이 자연스럽게 풀 수 있고, 봇은 통과하기 어려운 단계구분형 CAPTCHA 문제를 제공합니다.
           </p>
           <button className="btn btn-primary">Start Service</button>
         </div>
@@ -101,42 +101,54 @@ const ProductsPage = () => {
           <h2 className="features-title">주요 특징</h2>
           <div className="features-grid">
             <div className="feature-card">
-              <div className="feature-icon">🤖</div>
+              <div className="feature-icon">
+                <FaRobot />
+              </div>
               <h3 className="feature-card-title">AI 기반 봇 탐지</h3>
               <p className="feature-card-description">
                 딥러닝 알고리즘을 통해 봇의 행동 패턴을 정확하게 분석하고 차단합니다.
               </p>
             </div>
             <div className="feature-card">
-              <div className="feature-icon">🎯</div>
+              <div className="feature-icon">
+                <FaBullseye />
+              </div>
               <h3 className="feature-card-title">맞춤형 난이도</h3>
               <p className="feature-card-description">
                 사용자의 행동 패턴에 따라 실시간으로 난이도를 조절하여 최적의 경험을 제공합니다.
               </p>
             </div>
             <div className="feature-card">
-              <div className="feature-icon">⚡</div>
+              <div className="feature-icon">
+                <FaBolt />
+              </div>
               <h3 className="feature-card-title">빠른 응답</h3>
               <p className="feature-card-description">
                 평균 0.5초 이내의 빠른 응답 시간으로 사용자 경험을 해치지 않습니다.
               </p>
             </div>
             <div className="feature-card">
-              <div className="feature-icon">🔒</div>
+              <div className="feature-icon">
+                <FaShieldAlt />
+              </div>
               <h3 className="feature-card-title">보안 강화</h3>
               <p className="feature-card-description">
                 다중 레이어 보안 시스템으로 봇 공격을 효과적으로 차단합니다.
               </p>
             </div>
             <div className="feature-card">
-              <div className="feature-icon">📊</div>
+              <div className="feature-icon">
+                <FaChartBar />
+              </div>
               <h3 className="feature-card-title">상세한 분석</h3>
               <p className="feature-card-description">
                 실시간 대시보드를 통해 보안 상황과 성능 지표를 한눈에 확인할 수 있습니다.
               </p>
             </div>
             <div className="feature-card">
-              <div className="feature-icon">🛠️</div>
+              <div className="feature-icon">
+                <FaTools />
+              </div>
               <h3 className="feature-card-title">쉬운 연동</h3>
               <p className="feature-card-description">
                 다양한 프로그래밍 언어와 프레임워크를 지원하여 쉽게 연동할 수 있습니다.

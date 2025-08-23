@@ -45,9 +45,6 @@ const Header = () => {
         <Link to="/" className="logo">REALCATCHA</Link>
 
         <nav className="nav">
-          <Link to="/" className={location.pathname === '/' ? 'nav-link active' : 'nav-link'}>
-            realcatcha
-          </Link>
           <Link to="/products" className={location.pathname === '/products' ? 'nav-link active' : 'nav-link'}>
             Products
           </Link>
@@ -58,7 +55,7 @@ const Header = () => {
             Document
           </Link>
           <Link to="/contact" className={location.pathname === '/contact' ? 'nav-link active' : 'nav-link'}>
-            Contact-us
+            Contact Us
           </Link>
           {isAuthenticated && (
             <Link to="/dashboard" className={location.pathname === '/dashboard' ? 'nav-link active' : 'nav-link'}>

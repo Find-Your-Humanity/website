@@ -1,7 +1,14 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/pages/HomePage.css';
 
 const HomePage = () => {
+  const navigate = useNavigate();
+
+  const handleStartFreePlan = () => {
+    navigate('/signup');
+  };
+
   return (
     <div className="home-page">
       {/* Hero Section */}
@@ -18,7 +25,7 @@ const HomePage = () => {
             >
               Try CAPTCHA
             </button>
-            <button className="btn btn-primary">Start Free Plan</button>
+            <button className="btn btn-primary" onClick={handleStartFreePlan}>Start Free Plan</button>
           </div>
         </div>
       </section>
@@ -26,14 +33,29 @@ const HomePage = () => {
       {/* Main Content */}
       <section className="main-content">
         <div className="content-wrapper">
-          <h2 className="main-title">
-            사람은 지나가고, 봇은 멈추는 <br />
-            이미지 기반 AI CAPTCHA 서비스
-          </h2>
-          <p className="main-description">
-            REAL은 딥러닝 기반 이미지 분류와 행동 패턴 분석을 통해 사람이 자연스럽게 풀 수 있고,<br />
-            봇은 통과하기 어려운 맞춤형 CAPTCHA 문제를 제공합니다.
-          </p>
+          <div className="main-content-left">
+            <h2 className="main-title">
+              사람은 지나가고, 봇은 멈추는 <br />
+              이미지 기반 AI CAPTCHA 서비스
+            </h2>
+            <p className="main-description">
+              REAL은 딥러닝 기반 이미지 분류와 행동 패턴 분석을 통해 <br />
+              사람이 자연스럽게 풀 수 있고, 봇은 통과하기 어려운  <br />
+              단계구분형 CAPTCHA 문제를 제공합니다.
+            </p>
+          </div>
+          <div className="video-container">
+            <video 
+              className="demo-video" 
+              autoPlay 
+              loop 
+              muted 
+              playsInline
+            >
+              <source src="/captcha.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
         </div>
       </section>
 

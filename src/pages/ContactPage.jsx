@@ -8,9 +8,10 @@ const ContactPage = () => {
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
   const [form, setForm] = useState({ subject: '', contact: '', email: '', message: '' });
-  const [attachedFile, setAttachedFile] = useState(null);
+  const [attachedFiles, setAttachedFiles] = useState([]);
   const [status, setStatus] = useState('idle'); // idle | submitting | success | error
   const [error, setError] = useState('');
+  const [isDragOver, setIsDragOver] = useState(false);
 
   // 로그인 되어 있으면 이메일 자동 채움(수정 불가)
   useEffect(() => {
@@ -26,9 +27,40 @@ const ContactPage = () => {
 
   const handleChooseFile = () => fileInputRef.current?.click();
 
+
   const handleFileChange = (e) => {
-    const file = e.target.files?.[0];
-    setAttachedFile(file || null);
+    const files = Array.from(e.target.files || []);
+    setAttachedFiles(prev => [...prev, ...files]);
+  };
+
+  const handleDragEnter = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+    
+    const files = Array.from(e.dataTransfer.files || []);
+    setAttachedFiles(prev => [...prev, ...files]);
+  };
+
+  const removeFile = (indexToRemove) => {
+    setAttachedFiles(prev => prev.filter((_, index) => index !== indexToRemove));
   };
 
   const handleSubmit = async (e) => {
@@ -58,10 +90,10 @@ const ContactPage = () => {
       formData.append('contact', form.contact);
       formData.append('email', form.email);
       formData.append('message', form.message);
-      
-      if (attachedFile) {
-        formData.append('file', attachedFile);
-      }
+
+      attachedFiles.forEach((file, index) => {
+        formData.append(`file_${index}`, file);
+      });
       
       // 백엔드 API 호출
       const response = await fetch('https://gateway.realcatcha.com/api/contact', {
@@ -80,7 +112,7 @@ const ContactPage = () => {
           email: form.email, // 이메일은 유지하여 상태 조회 링크에 사용
           message: '' 
         });
-        setAttachedFile(null);
+        setAttachedFiles([]);
         if (fileInputRef.current) {
           fileInputRef.current.value = '';
         }
@@ -127,23 +159,6 @@ const ContactPage = () => {
                 />
               </div>
 
-              <div className="form-group file-row">
-                <label className="label">파일 첨부</label>
-                <div className="file-inputs">
-                  <input
-                    type="text"
-                    className="form-input file-name"
-                    placeholder="파일 이름"
-                    value={attachedFile ? attachedFile.name : ''}
-                    readOnly
-                  />
-                  <input ref={fileInputRef} type="file" onChange={handleFileChange} hidden />
-                  <button type="button" className="file-button" onClick={handleChooseFile}>파일 첨부</button>
-                </div>
-              </div>
-
-
-
               <div className="form-group">
                 <label className="label">연락처</label>
                 <input
@@ -172,6 +187,55 @@ const ContactPage = () => {
                 />
               </div>
 
+              <div className="form-group">
+                <label className="label">파일 첨부</label>
+                <div 
+                  className={`file-drop-area ${isDragOver ? 'drag-over' : ''} ${attachedFiles.length > 0 ? 'has-file' : ''}`}
+                  onDragEnter={handleDragEnter}
+                  onDragLeave={handleDragLeave}
+                  onDragOver={handleDragOver}
+                  onDrop={handleDrop}
+                  onClick={handleChooseFile}
+                >
+                  <input ref={fileInputRef} type="file" onChange={handleFileChange} multiple hidden />
+                  <div className="file-drop-content">
+                    {attachedFiles.length > 0 ? (
+                      <>
+                        <div className="file-list">
+                          {attachedFiles.map((file, index) => (
+                            <div key={index} className="file-item">
+                              <div className="file-info-inline">
+                                <span className="file-name">{file.name}</span>
+                                <span className="file-size">({(file.size / 1024 / 1024).toFixed(2)} MB)</span>
+                              </div>
+                              <button 
+                                type="button" 
+                                className="file-remove-btn"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  removeFile(index);
+                                }}
+                              >
+                                ×
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="add-more-indicator">
+                          <span className="add-more-text">+ 더 추가하려면 클릭하거나 드래그하세요</span>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="file-placeholder">
+                        <div className="file-text">
+                          <div>파일을 드래그하거나 클릭하여 첨부하세요</div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
               <h2 className="section-title" style={{ marginTop: '1.5rem' }}>문의 내용</h2>
               <div className="form-group">
                 <textarea
@@ -186,7 +250,6 @@ const ContactPage = () => {
               </div>
 
               <div className="actions">
-                <button type="button" className="secondary-button" onClick={() => navigate(-1)}>이전</button>
                 {isAuthenticated ? (
                   <button type="submit" className="primary-button" disabled={status === 'submitting'}>
                     {status === 'submitting' ? '제출 중...' : '문의하기'}
@@ -197,7 +260,7 @@ const ContactPage = () => {
                     className="primary-button" 
                     onClick={() => navigate('/signin?next=/contact')}
                   >
-                    로그인 후 문의하기
+                    문의하기
                   </button>
                 )}
               </div>

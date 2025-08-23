@@ -16,14 +16,34 @@
 /* Top Section - Navigation Links */
 .footer-nav {
   margin-bottom: 2rem;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .footer-nav a {
   color: #666666;
   text-decoration: none;
-  margin: 0 1.5rem;
   font-size: 0.9rem;
   transition: color 0.3s ease;
+}
+
+/* 첫 번째 링크 (서비스 이용약관) - 개인정보처리방침 기준 왼쪽 */
+.footer-nav a:nth-child(1) {
+  position: absolute;
+  right: calc(50% + 10rem); /* 중앙에서 3rem 만큼 왼쪽 */
+}
+
+/* 두 번째 링크 (개인정보처리방침) - 중앙 고정 */
+.footer-nav a:nth-child(2) {
+  position: relative;
+}
+
+/* 세 번째 링크 (FAQ) - 개인정보처리방침 기준 오른쪽 */
+.footer-nav a:nth-child(3) {
+  position: absolute;
+  left: calc(50% + 10rem); /* 중앙에서 3rem 만큼 오른쪽 */
 }
 
 .footer-nav a:hover {
@@ -32,7 +52,7 @@
 
 /* Middle Section - Logo */
 .footer-logo {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .real-logo {
@@ -55,8 +75,15 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .footer-nav a:nth-child(1) {
+    right: calc(50% + 1.5rem); /* 모바일에서 간격 줄임 */
+  }
+  
+  .footer-nav a:nth-child(3) {
+    left: calc(50% + 1.5rem); /* 모바일에서 간격 줄임 */
+  }
+  
   .footer-nav a {
-    margin: 0 1rem;
     font-size: 0.8rem;
   }
 } 
