@@ -5,7 +5,7 @@
 
 /* Products Hero */
 .products-hero {
-  padding: 8rem 0;
+  padding: 10rem 0;
   text-align: center;
   background-color: #ffffff;
 }
@@ -20,7 +20,7 @@
   font-size: 4.6rem !important;
   font-weight: bold !important;
   margin-bottom: 1rem !important;
-  margin-top: 6rem !important;
+  margin-top: 0 !important;
   line-height: 1.2 !important;
   color: #000000 !important;
   text-align: center !important;
@@ -37,6 +37,50 @@
 
 .human-text {
   color: #DFFF00;
+}
+
+/* Hero Buttons */
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.btn {
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-primary {
+  background: #DFFF00;
+  color: #333;
+}
+
+.btn-primary:hover {
+  background: #b8cc00;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(223, 255, 0, 0.3);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #333;
+  border: 2px solid #333;
+}
+
+.btn-secondary:hover {
+  background: #333;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
 /* Products Grid */
@@ -152,6 +196,7 @@
   height: 100%; 
   object-fit: cover; 
   object-position: center; 
+  filter: blur(5px);
 }
 
 .video-overlay { 

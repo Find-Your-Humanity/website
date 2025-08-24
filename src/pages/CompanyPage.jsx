@@ -37,16 +37,16 @@ const CompanyPage = () => {
   return (
     <div className="company-page">
       {/* Hero Section with Team Photo Background */}
-      <section className="hero-section">
-        <div className="hero-background">
-          <img src="/company.jpg" alt="Team Photo Background" className="hero-bg-image" />
-          <div className="hero-overlay">
-            <div className="hero-content">
-              <h1 className="hero-title">
+      <section className="company-hero-section">
+        <div className="company-hero-background">
+          <img src="/company.jpg" alt="Team Photo Background" className="company-hero-bg-image" />
+          <div className="company-hero-overlay">
+            <div className="company-hero-content">
+              <h1 className="company-hero-title">
                 <span className="highlight-text">CAPTCHA</span>, 그 이상의 <br />
                 솔루션을 만들고 있습니다
               </h1>
-              <p className="hero-subtitle">
+              <p className="company-hero-subtitle">
                 혁신적인 CAPTCHA 솔루션으로 인터넷을 더 안전하게 만드는<br />
                 REAL 팀의 멤버들을 만나보세요
               </p>

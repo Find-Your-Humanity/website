@@ -17,7 +17,7 @@ const HomePage = () => {
           <h1 className="hero-title">
             <span className="real-text">REAL</span> or <span className="not-text">Not</span>?
           </h1>
-          <p className="hero-subtitle">Bots won't know.</p>
+          <p className="home-hero-subtitle">Bots won't know.</p>
           <div className="hero-buttons">
             <button 
               className="btn btn-primary" 

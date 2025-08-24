@@ -4,6 +4,147 @@
   background-color: #ffffff;
   display: flex;
   flex-direction: column;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  scroll-behavior: smooth;
+}
+
+/* Dark Mode Styles */
+.document-page.dark-mode {
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
+
+.document-page.dark-mode .docs-header {
+  background-color: #2d2d2d;
+  border-bottom-color: #404040;
+}
+
+.document-page.dark-mode .docs-sidebar {
+  background-color: #2d2d2d;
+  border-right-color: #404040;
+}
+
+.document-page.dark-mode .toc-sidebar {
+  background-color: #2d2d2d;
+  border-left-color: #404040;
+}
+
+.document-page.dark-mode .docs-sidebar-item {
+  color: #cccccc;
+}
+
+.document-page.dark-mode .docs-sidebar-item:hover {
+  background-color: #404040;
+  color: #ffffff;
+}
+
+.document-page.dark-mode .docs-sidebar-item.active {
+  background-color: #DFFF00;
+  color: #000000;
+}
+
+.document-page.dark-mode .main-title {
+  color: #ffffff;
+}
+
+.document-page.dark-mode .section-title {
+  color: #ffffff;
+}
+
+.document-page.dark-mode .content-section p {
+  color: #cccccc;
+}
+
+.document-page.dark-mode .principles-list li {
+  color: #cccccc;
+}
+
+.document-page.dark-mode .toc-title {
+  color: #ffffff;
+}
+
+.document-page.dark-mode .toc-link {
+  color: #cccccc;
+}
+
+.document-page.dark-mode .toc-link:hover {
+  color: #DFFF00;
+}
+
+.document-page.dark-mode .docs-main-content {
+  background-color: #1a1a1a;
+}
+
+.document-page.dark-mode .docs-content-wrapper {
+  background-color: transparent;
+}
+
+.document-page.dark-mode .docs-content-wrapper .main-title {
+  color: #ffffff;
+}
+
+.document-page.dark-mode .docs-content-wrapper .section-title {
+  color: #ffffff;
+}
+
+.document-page.dark-mode .docs-content-wrapper .intro-text,
+.document-page.dark-mode .docs-content-wrapper .installation-text,
+.document-page.dark-mode .docs-content-wrapper .framework-intro {
+  color: #cccccc;
+}
+
+.document-page.dark-mode .docs-content-wrapper .content-section p {
+  color: #cccccc;
+}
+
+.document-page.dark-mode .docs-content-wrapper .principles-list li {
+  color: #cccccc;
+}
+
+.document-page.dark-mode .docs-content-wrapper .integration-link {
+  color: #DFFF00;
+}
+
+.document-page.dark-mode .docs-content-wrapper .integration-link:hover {
+  color: #ffffff;
+}
+
+.document-page.dark-mode .docs-search-input {
+  background-color: #404040;
+  border-color: #404040;
+  color: #ffffff;
+}
+
+.document-page.dark-mode .docs-search-input:focus {
+  background-color: #2d2d2d;
+  border-color: #DFFF00;
+}
+
+.document-page.dark-mode .theme-toggle {
+  color: #ffffff;
+}
+
+.document-page.dark-mode .theme-toggle:hover {
+  background-color: #404040;
+}
+
+.document-page.dark-mode .language-dropdown {
+  background-color: #2d2d2d;
+  border-color: #404040;
+}
+
+.document-page.dark-mode .language-option {
+  color: #ffffff;
+  border-bottom-color: #404040;
+}
+
+.document-page.dark-mode .language-option:hover {
+  background-color: #404040;
+}
+
+.document-page.dark-mode .language-option.active {
+  background-color: #DFFF00;
+  color: #000000;
 }
 
 /* Top Header Bar */
@@ -11,7 +152,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
+  padding: 0.6rem 1.5rem;
   background-color: #ffffff;
   border-bottom: 1px solid #e0e0e0;
   position: sticky;
@@ -30,42 +171,85 @@
   gap: 0.5rem;
 }
 
-.logo-text {
-  font-weight: bold;
-  font-size: 1.5rem;
-  color: #000000;
-  text-transform: uppercase;
-}
-
-.docs-text {
-  font-size: 1rem;
-  color: #9e9e9e;
-  font-weight: 500;
-}
-
 .header-right {
   display: flex;
   align-items: center;
+  width: 100%;
   gap: 1.5rem;
+  position: relative;
 }
 
 .language-selector {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.5rem;
   cursor: pointer;
   padding: 0.5rem;
   border-radius: 4px;
   transition: background-color 0.3s ease;
+  position: relative;
+  user-select: none;
 }
 
 .language-selector:hover {
   background-color: #f5f5f5;
 }
 
+.language-flag {
+  font-size: 1.2rem;
+}
+
+.language-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
 .dropdown-arrow {
   font-size: 0.75rem;
   color: #9e9e9e;
+  transition: transform 0.3s ease;
+}
+
+.language-selector.dropdown-open .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.language-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+  margin-top: 0.25rem;
+  min-width: 120px;
+}
+
+.language-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.language-option:last-child {
+  border-bottom: none;
+}
+
+.language-option:hover {
+  background-color: #f5f5f5;
+}
+
+.language-option.active {
+  background-color: #DFFF00;
+  color: #000000;
+  font-weight: 600;
 }
 
 .header-link {
@@ -101,47 +285,47 @@
 }
 
 .search-container {
-  position: relative;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   align-items: center;
+  max-width: 500px;
+  width: 100%;
 }
 
 .search-icon {
   position: absolute;
-  left: 0.75rem;
+  left: 1rem;
   color: #9e9e9e;
   font-size: 0.9rem;
+  z-index: 1;
 }
 
-.search-input {
-  padding: 0.5rem 0.75rem 0.5rem 2rem;
+.docs-search-input {
+  padding: 0.5rem 0.75rem 0.5rem 2.5rem;
   border: 1px solid #e0e0e0;
-  border-radius: 4px;
+  border-radius: 25px;
   font-size: 0.9rem;
-  width: 200px;
+  width: 100%;
   background-color: #f9f9f9;
 }
 
-.search-input:focus {
+.docs-search-input:focus {
   outline: none;
   border-color: #DFFF00;
   background-color: #ffffff;
 }
 
-.keyboard-shortcut {
-  background: none;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.75rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: auto;
 }
 
-.keyboard-shortcut:hover {
-  background-color: #f5f5f5;
-  border-color: #DFFF00;
-}
+
 
 /* Main Container */
 .docs-container {
@@ -152,18 +336,18 @@
 }
 
 /* Left Sidebar */
-.sidebar {
+.docs-sidebar {
   background-color: #f9f9f9;
   border-right: 1px solid #e0e0e0;
   padding: 2rem 0;
   overflow-y: auto;
 }
 
-.sidebar-section {
+.docs-sidebar-section {
   padding: 0 1.5rem;
 }
 
-.sidebar-item {
+.docs-sidebar-item {
   padding: 0.75rem 1rem;
   margin-bottom: 0.25rem;
   border-radius: 6px;
@@ -176,33 +360,49 @@
   gap: 0.5rem;
 }
 
-.sidebar-item:hover {
+.docs-sidebar-item:hover {
   background-color: #f0f0f0;
   color: #000000;
 }
 
-.sidebar-item.active {
+.docs-sidebar-item.active {
   background-color: #DFFF00;
   color: #000000;
   font-weight: 600;
 }
 
-.sidebar-icon {
+.docs-sidebar-icon {
   font-size: 1rem;
 }
 
 /* Main Content */
-.document-page .main-content {
+.document-page .docs-main-content {
   padding: 2rem;
   overflow-y: auto;
   background-color: #ffffff;
   text-align: left;
+  display: block !important;
 }
 
-.document-page .content-wrapper {
+.document-page .docs-content-wrapper {
   max-width: 800px;
   margin: 0;
   text-align: left !important;
+  display: block !important;
+}
+
+.document-page .docs-content-wrapper * {
+  text-align: left !important;
+}
+
+.document-page .docs-content-wrapper p,
+.document-page .docs-content-wrapper h1,
+.document-page .docs-content-wrapper h2,
+.document-page .docs-content-wrapper section {
+  display: block !important;
+  width: 100% !important;
+  float: none !important;
+  clear: both !important;
 }
 
 /* Breadcrumbs */
@@ -213,6 +413,7 @@
   margin-bottom: 2rem;
   font-size: 0.9rem;
   color: #9e9e9e;
+  justify-content: flex-start;
 }
 
 .breadcrumb-icon {
@@ -224,8 +425,9 @@
   font-size: 2.5rem;
   font-weight: bold;
   color: #000000;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   line-height: 1.2;
+  text-align: left;
 }
 
 /* Introduction Text */
@@ -234,6 +436,7 @@
   color: #000000;
   line-height: 1.6;
   margin-bottom: 1.5rem;
+  text-align: left;
 }
 
 .installation-text {
@@ -241,6 +444,7 @@
   color: #666666;
   line-height: 1.6;
   margin-bottom: 1.5rem;
+  text-align: left;
 }
 
 .framework-intro {
@@ -248,6 +452,7 @@
   color: #000000;
   line-height: 1.6;
   margin-bottom: 1rem;
+  text-align: left;
 }
 
 /* Framework Badges */
@@ -298,6 +503,7 @@
 /* Content Sections */
 .content-section {
   margin-bottom: 3rem;
+  scroll-margin-top: 100px; /* 헤더 높이만큼 여백 추가 */
 }
 
 .section-title {
@@ -457,6 +663,5 @@
   }
 }
 
-/* Moved from pages/DocumentPage.css */
-[...]
+
 

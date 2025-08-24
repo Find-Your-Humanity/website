@@ -1,8 +1,28 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import { FaRobot, FaBullseye, FaBolt, FaShieldAlt, FaChartBar, FaTools } from 'react-icons/fa';
 import '../styles/pages/ProductsPage.css';
 
 const ProductsPage = () => {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+
+  const handleStartFreePlan = () => {
+    if (isAuthenticated) {
+      // 로그인된 상태: 결제페이지로 이동
+      navigate('/payment');
+    } else {
+      // 로그인되지 않은 상태: 로그인페이지로 이동
+      navigate('/signin?next=/payment');
+    }
+  };
+
+  const handleLearnMore = () => {
+    // ContactUs Page로 이동
+    navigate('/contact');
+  };
+
   return (
     <div className="products-page">
       {/* Hero Section */}
@@ -16,7 +36,10 @@ const ProductsPage = () => {
               REAL은 이미지 분류 기반의 단계구분형 CAPTCHA 서비스로 행동 패턴 분석을 통해 <br />
               사람이 자연스럽게 풀 수 있고, 봇은 통과하기 어려운 단계구분형 CAPTCHA 문제를 제공합니다.
           </p>
-          <button className="btn btn-primary">Start Service</button>
+          <div className="hero-buttons">
+            <button className="btn btn-primary" onClick={handleStartFreePlan}>Start Free Plan</button>
+            <button className="btn btn-secondary" onClick={handleLearnMore}>Learn More</button>
+          </div>
         </div>
       </section>
 
@@ -30,8 +53,8 @@ const ProductsPage = () => {
             loop
             playsInline
           >
-            <source src="/captcha-demo.mp4" type="video/mp4" />
-            <source src="/captcha-demo.webm" type="video/webm" />
+            <source src="/product_page_mv.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
           </video>
           <div className="video-overlay">
             <div className="video-content">

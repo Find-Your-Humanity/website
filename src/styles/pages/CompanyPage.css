@@ -8,21 +8,21 @@
 }
 
 /* Hero Section */
-.hero-section {
+.company-hero-section {
   position: relative;
-  height: calc(100vh - 80px); /* fill viewport below navbar */
+  height: calc(100vh - 60px); /* fill viewport below navbar */
   min-height: 480px;
   overflow: hidden;
   margin: 0;
 }
 
-.hero-background {
+.company-hero-background {
   position: relative;
   width: 100%;
   height: 100%;
 }
 
-.hero-bg-image {
+.company-hero-bg-image {
   display: block;           /* remove baseline gap */
   width: 100%;
   height: 100%;
@@ -30,7 +30,7 @@
   object-position: center;
 }
 
-.hero-overlay {
+.company-hero-overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -48,14 +48,14 @@
   justify-content: center;
 }
 
-.hero-content {
+.company-hero-content {
   text-align: center;
   color: #ffffff;
   max-width: 1200px;
   padding: 0 2rem;
 }
 
-.company-page .hero-title {
+.company-page .company-hero-title {
   font-size: 4rem !important;
   font-weight: bold !important;
   margin-bottom: 1rem !important;
@@ -63,16 +63,17 @@
   color: #ffffff !important;
 }
 
-/* .company-page .hero-title .highlight-text {
+/* .company-page .company-hero-title .highlight-text {
   color: #DFFF00 !important;
 } */
 
-.hero-subtitle {
-  font-size: 1.2rem;
+.company-hero-subtitle {
+  font-size: 2rem;
+  font-weight: 700;
   line-height: 1.6;
   opacity: 0.9;
   margin: 0 auto;
-  color: #ffffff !important;
+  color: #ffffff
 }
 
 /* Team Section */
@@ -259,11 +260,11 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .company-page .hero-title {
+  .company-page .company-hero-title {
     font-size: 2rem;
   }
   
-  .hero-subtitle {
+  .company-hero-subtitle {
     font-size: 1rem;
   }
   
@@ -287,22 +288,22 @@
     padding: 0 1rem;
   }
   
-  .hero-content {
+  .company-hero-content {
     padding: 0 1rem;
   }
 }
 
 @media (max-width: 480px) {
-  .hero-section {
+  .company-hero-section {
     height: 50vh;
     min-height: 300px;
   }
   
-  .company-page .hero-title {
+  .company-page .company-hero-title {
     font-size: 1.8rem;
   }
   
-  .hero-subtitle {
+  .company-hero-subtitle {
     font-size: 0.9rem;
   }
   

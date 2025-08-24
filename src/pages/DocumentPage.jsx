@@ -1,9 +1,58 @@
-import React, { useState } from 'react';
-import { FaSearch, FaMoon, FaHome, FaReact, FaVuejs, FaWordpress, FaAngular, FaNodeJs } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { FaSearch, FaMoon, FaSun, FaHome, FaReact, FaVuejs, FaWordpress, FaAngular, FaNodeJs } from 'react-icons/fa';
 import '../styles/pages/DocumentPage.css';
 
 const DocumentPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState('ko');
+
+  // 테마 토글 함수
+  const toggleTheme = () => {
+    const newDarkMode = !isDarkMode;
+    setIsDarkMode(newDarkMode);
+    localStorage.setItem('darkMode', JSON.stringify(newDarkMode));
+    
+    // HTML 요소에 클래스 추가/제거
+    const documentPage = document.querySelector('.document-page');
+    if (documentPage) {
+      if (newDarkMode) {
+        documentPage.classList.add('dark-mode');
+      } else {
+        documentPage.classList.remove('dark-mode');
+      }
+    }
+  };
+
+  // 컴포넌트 마운트 시 저장된 테마 설정 불러오기
+  useEffect(() => {
+    const savedDarkMode = localStorage.getItem('darkMode');
+    if (savedDarkMode !== null) {
+      const darkMode = JSON.parse(savedDarkMode);
+      setIsDarkMode(darkMode);
+      
+      const documentPage = document.querySelector('.document-page');
+      if (documentPage && darkMode) {
+        documentPage.classList.add('dark-mode');
+      }
+    }
+  }, []);
+
+  // 드롭다운 외부 클릭 시 닫기
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.language-selector')) {
+        setIsLanguageDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const frameworks = [
     { name: 'ReactJS', icon: FaReact, color: '#61DAFB' },
@@ -12,6 +61,33 @@ const DocumentPage = () => {
     { name: 'Angular', icon: FaAngular, color: '#DD0031' },
     { name: 'Node.js', icon: FaNodeJs, color: '#339933' }
   ];
+
+  const languages = [
+    { code: 'ko', name: '한국어', flag: '🇰🇷' },
+    { code: 'en', name: 'English', flag: '🇺🇸' }
+  ];
+
+  const currentLanguage = languages.find(lang => lang.code === selectedLanguage);
+
+  // Sidebar item 클릭 핸들러
+  const handleSidebarItemClick = (item) => {
+    console.log(`Clicked: ${item}`);
+    // 여기에 각 항목별 페이지 이동 로직을 추가할 수 있습니다
+    // 예: window.location.href = `/docs/${item.toLowerCase().replace(/\s+/g, '-')}`;
+  };
+
+  // TOC 링크 클릭 핸들러
+  const handleTocClick = (item) => {
+    const sectionId = item.toLowerCase().replace(/\s+/g, '-');
+    const element = document.getElementById(sectionId);
+    
+    if (element) {
+      element.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  };
 
   const sidebarItems = [
     'Configuration',
@@ -53,26 +129,8 @@ const DocumentPage = () => {
     <div className="document-page">
       {/* Top Header Bar */}
       <header className="docs-header">
-        <div className="header-left">
-          <div className="logo-section">
-            <span className="logo-text">REAL</span>
-            <span className="docs-text">Docs</span>
-          </div>
-        </div>
         
         <div className="header-right">
-          <div className="language-selector">
-            <span>English</span>
-            <span className="dropdown-arrow">▼</span>
-          </div>
-          <a href="#faq" className="header-link">FAQ</a>
-          <a href="#login" className="header-link">
-            Login
-            <span className="external-icon">↗</span>
-          </a>
-          <button className="theme-toggle">
-            <FaMoon />
-          </button>
           <div className="search-container">
             <FaSearch className="search-icon" />
             <input
@@ -80,24 +138,60 @@ const DocumentPage = () => {
               placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="search-input"
+              className="docs-search-input"
             />
           </div>
-          <button className="keyboard-shortcut">æ</button>
-          <button className="keyboard-shortcut">K</button>
+          <div className="header-controls">
+            <div className={`language-selector ${isLanguageDropdownOpen ? 'dropdown-open' : ''}`} onClick={() => setIsLanguageDropdownOpen(!isLanguageDropdownOpen)}>
+              <span className="language-flag">{currentLanguage.flag}</span>
+              <span className="language-name">{currentLanguage.name}</span>
+              <span className="dropdown-arrow">▼</span>
+              
+              {isLanguageDropdownOpen && (
+                <div className="language-dropdown">
+                  {languages.map((language) => (
+                    <div
+                      key={language.code}
+                      className={`language-option ${selectedLanguage === language.code ? 'active' : ''}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedLanguage(language.code);
+                        setIsLanguageDropdownOpen(false);
+                      }}
+                    >
+                      <span className="language-flag">{language.flag}</span>
+                      <span className="language-name">{language.name}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <Link to="/faq" className="header-link">FAQ</Link>
+            <Link to="/signin" className="header-link">
+              Login
+              <span className="external-icon">↗</span>
+            </Link>
+            <button className="theme-toggle" onClick={toggleTheme}>
+              {isDarkMode ? <FaSun /> : <FaMoon />}
+            </button>
+          </div>
         </div>
       </header>
 
       <div className="docs-container">
         {/* Left Sidebar */}
-        <aside className="sidebar">
-          <div className="sidebar-section">
-            <div className="sidebar-item active">
-              <FaHome className="sidebar-icon" />
+        <aside className="docs-sidebar">
+          <div className="docs-sidebar-section">
+            <div className="docs-sidebar-item active">
+              <FaHome className="docs-sidebar-icon" />
               Developer Guide
             </div>
             {sidebarItems.map((item, index) => (
-              <div key={index} className="sidebar-item">
+              <div 
+                key={index} 
+                className="docs-sidebar-item"
+                onClick={() => handleSidebarItemClick(item)}
+              >
                 {item}
               </div>
             ))}
@@ -105,8 +199,8 @@ const DocumentPage = () => {
         </aside>
 
         {/* Main Content */}
-        <main className="main-content">
-          <div className="content-wrapper">
+        <main className="docs-main-content">
+          <div className="docs-content-wrapper">
             {/* Breadcrumbs */}
             <nav className="breadcrumbs">
               <FaHome className="breadcrumb-icon" />
@@ -146,7 +240,7 @@ const DocumentPage = () => {
             </p>
 
             {/* Switching from reCAPTCHA Section */}
-            <section className="content-section">
+            <section id="switching-from-recaptcha" className="content-section">
               <h2 className="section-title">Switching from reCAPTCHA</h2>
               <p>
                 Existing Google reCAPTCHA code can be used with only a few changes. REAL methods are API-compatible 
@@ -156,7 +250,7 @@ const DocumentPage = () => {
             </section>
 
             {/* Basic Principles Section */}
-            <section className="content-section">
+            <section id="basic-principles" className="content-section">
               <h2 className="section-title">Basic Principles</h2>
               <ol className="principles-list">
                 <li>You embed the REAL widget on your site. For example, on a login form.</li>
@@ -168,7 +262,7 @@ const DocumentPage = () => {
             </section>
 
             {/* Request Flow Section */}
-            <section className="content-section">
+            <section id="request-flow" className="content-section">
               <h2 className="section-title">Request Flow</h2>
               <p>
                 The typical request flow involves client-side widget rendering, user interaction, 
@@ -177,7 +271,7 @@ const DocumentPage = () => {
             </section>
 
             {/* Content Security Policy Section */}
-            <section className="content-section">
+            <section id="content-security-policy-settings" className="content-section">
               <h2 className="section-title">Content-Security-Policy Settings</h2>
               <p>
                 Configure your CSP headers to allow REAL scripts and resources to load properly 
@@ -186,7 +280,7 @@ const DocumentPage = () => {
             </section>
 
             {/* Add Widget Section */}
-            <section className="content-section">
+            <section id="add-the-real-widget-to-your-webpage" className="content-section">
               <h2 className="section-title">Add the REAL Widget to your Webpage</h2>
               <p>
                 Include the REAL script and add the widget container to your HTML. 
@@ -195,7 +289,7 @@ const DocumentPage = () => {
             </section>
 
             {/* Verify Response Section */}
-            <section className="content-section">
+            <section id="verify-the-user-response-server-side" className="content-section">
               <h2 className="section-title">Verify the User Response Server Side</h2>
               <p>
                 Send the response token to REAL's verification endpoint to confirm 
@@ -317,7 +411,15 @@ const DocumentPage = () => {
             <h3 className="toc-title">On this page</h3>
             <nav className="toc-nav">
               {tocItems.map((item, index) => (
-                <a key={index} href={`#${item.toLowerCase().replace(/\s+/g, '-')}`} className="toc-link">
+                <a 
+                  key={index} 
+                  href={`#${item.toLowerCase().replace(/\s+/g, '-')}`} 
+                  className="toc-link"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleTocClick(item);
+                  }}
+                >
                   {item}
                 </a>
               ))}
