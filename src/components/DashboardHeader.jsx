@@ -16,27 +16,18 @@ const DashboardHeader = () => {
     navigate('/');
   };
 
-  const handleContactUsClick = () => {
-    navigate('/contact');
-  };
+
 
   return (
     <header className="dashboard-header">
       <div className="dashboard-header-left">
-        <h1 className="dashboard-title">대시보드</h1>
-        <div className="dashboard-nav">
-          <h2 className="nav-item" onClick={handleHomeClick}>realcatcha</h2>
-          <h2 className="nav-item" onClick={handleContactUsClick}>contact-us</h2>
-          <h2 className="nav-item">대시보드</h2>
-        </div>
+        <h1 className="dashboard-title" onClick={handleHomeClick}>REALCATCHA</h1>
       </div>
       <div className="dashboard-header-right">
-        <div className="user-info">
-          <span className="user-name">{user?.name || user?.email}</span>
+        <div className="user-button" onClick={handleLogout}>
+          <span className="user-button-text">{user?.name || user?.email}</span>
+          <span className="user-button-icon">▼</span>
         </div>
-        <button className="logout-button" onClick={handleLogout}>
-          로그아웃
-        </button>
       </div>
     </header>
   );
