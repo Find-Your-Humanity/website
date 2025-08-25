@@ -200,9 +200,9 @@ const SignUpPage = () => {
                     onClick={requestEmailCode}
                     disabled={codeRequesting}
                     className="inline-btn"
-                    style={{ width: 180 }}
+                    style={{ width: 120 }}
                   >
-                    {codeRequesting ? 'Sending...' : '인증번호 받기'}
+                    {codeRequesting ? 'Sending...' : '인증번호 전송'}
                   </button>
                 </div>
                 {fieldErrors.email && <div className="field-error">{fieldErrors.email}</div>}

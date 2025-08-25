@@ -77,32 +77,32 @@ const SignInPage = () => {
             )}
 
             <form onSubmit={handleSubmit}>
-              <div className="form-group">
+              <div className="signin-form-group">
                 <input
                   type="email"
                   placeholder="Enter E-mail"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="form-input"
+                  className="signin-form-input"
                   required
                   disabled={isLoading}
                 />
               </div>
 
-              <div className="form-group">
-                <div className="password-input-container">
+              <div className="signin-form-group">
+                <div className="signin-password-input-container">
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="form-input"
+                    className="signin-form-input"
                     required
                     disabled={isLoading}
                   />
                   <button
                     type="button"
-                    className="password-toggle"
+                    className="signin-password-toggle"
                     onClick={() => setShowPassword(!showPassword)}
                     disabled={isLoading}
                   >
