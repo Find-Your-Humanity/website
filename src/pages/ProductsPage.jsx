@@ -119,8 +119,81 @@ const ProductsPage = () => {
     }]
   };
 
+  // 성능 비교 차트 데이터 - Epoch vs Accuracy
+  const performanceComparisonData = {
+    labels: ['Epoch 1', 'Epoch 5', 'Epoch 10', 'Epoch 15', 'Epoch 20', 'Epoch 25', 'Epoch 30'],
+    datasets: [
+      {
+        label: 'MobileNetV2',
+        data: [75, 82, 88, 92, 95, 97, 98.7],
+        borderColor: '#FF6B6B',
+        backgroundColor: 'rgba(255, 107, 107, 0.1)',
+        borderWidth: 3,
+        fill: false,
+        tension: 0.4
+      },
+      {
+        label: 'BERT-Large',
+        data: [70, 78, 85, 90, 94, 97, 99.2],
+        borderColor: '#4ECDC4',
+        backgroundColor: 'rgba(78, 205, 196, 0.1)',
+        borderWidth: 3,
+        fill: false,
+        tension: 0.4
+      },
+      {
+        label: 'YOLO v8',
+        data: [80, 85, 89, 92, 94, 96, 97.5],
+        borderColor: '#45B7D1',
+        backgroundColor: 'rgba(69, 183, 209, 0.1)',
+        borderWidth: 3,
+        fill: false,
+        tension: 0.4
+      },
+      {
+        label: 'Transformer-XL',
+        data: [72, 80, 87, 91, 94, 97, 99.1],
+        borderColor: '#96CEB4',
+        backgroundColor: 'rgba(150, 206, 180, 0.1)',
+        borderWidth: 3,
+        fill: false,
+        tension: 0.4
+      }
+    ]
+  };
+
+  // 성능 비교 차트 옵션 - 간단한 설정
+  const performanceChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top'
+      }
+    },
+    scales: {
+      x: {
+        display: true,
+        title: {
+          display: true,
+          text: 'Epoch'
+        }
+      },
+      y: {
+        display: true,
+        title: {
+          display: true,
+          text: 'Accuracy (%)'
+        },
+        min: 60,
+        max: 100
+      }
+    }
+  };
+
   // 디버깅을 위한 콘솔 로그
-  console.log('Chart Data Loaded:', { resnetData, bertData, yoloData, transformerData });
+  console.log('Chart Data Loaded:', { resnetData, bertData, yoloData, transformerData, performanceComparisonData });
 
   const handleStartFreePlan = () => {
     if (isAuthenticated) {
@@ -515,20 +588,6 @@ const ProductsPage = () => {
                   <div className="chart-container">
                     <Line data={resnetData} options={chartOptions} />
                   </div>
-                  <div className="performance-metrics">
-                    <div className="performance-metric">
-                      <span className="metric-value">98.7%</span>
-                      <span className="metric-label">정확도</span>
-                    </div>
-                    <div className="performance-metric">
-                      <span className="metric-value">0.3초</span>
-                      <span className="metric-label">응답시간</span>
-                    </div>
-                    <div className="performance-metric">
-                      <span className="metric-value">152</span>
-                      <span className="metric-label">레이어</span>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -541,20 +600,6 @@ const ProductsPage = () => {
                 <div className="model-stats-card">
                   <div className="chart-container">
                     <Line data={bertData} options={chartOptions} />
-                  </div>
-                  <div className="performance-metrics">
-                    <div className="performance-metric">
-                      <span className="metric-value">99.2%</span>
-                      <span className="metric-label">정확도</span>
-                    </div>
-                    <div className="performance-metric">
-                      <span className="metric-value">0.5초</span>
-                      <span className="metric-label">응답시간</span>
-                    </div>
-                    <div className="performance-metric">
-                      <span className="metric-value">340M</span>
-                      <span className="metric-label">파라미터</span>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -589,20 +634,6 @@ const ProductsPage = () => {
                   <div className="chart-container">
                     <Line data={yoloData} options={chartOptions} />
                   </div>
-                  <div className="performance-metrics">
-                    <div className="performance-metric">
-                      <span className="metric-value">97.5%</span>
-                      <span className="metric-label">정확도</span>
-                    </div>
-                    <div className="performance-metric">
-                      <span className="metric-value">0.2초</span>
-                      <span className="metric-label">응답시간</span>
-                    </div>
-                    <div className="performance-metric">
-                      <span className="metric-value">8.0</span>
-                      <span className="metric-label">버전</span>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -615,20 +646,6 @@ const ProductsPage = () => {
                 <div className="model-stats-card">
                   <div className="chart-container">
                     <Line data={transformerData} options={chartOptions} />
-                  </div>
-                  <div className="performance-metrics">
-                    <div className="performance-metric">
-                      <span className="metric-value">99.1%</span>
-                      <span className="metric-label">정확도</span>
-                    </div>
-                    <div className="performance-metric">
-                      <span className="metric-value">0.4초</span>
-                      <span className="metric-label">응답시간</span>
-                    </div>
-                    <div className="performance-metric">
-                      <span className="metric-value">512</span>
-                      <span className="metric-label">컨텍스트</span>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -647,28 +664,10 @@ const ProductsPage = () => {
 
           {/* Performance Summary */}
           <div className="ai-performance-summary">
-            <h3 className="summary-title">통합 성능 지표</h3>
+            <h3 className="summary-title">모델별 정확도 비교</h3>
             <p className="summary-description">
-              4개의 AI 모델이 협력하여 최고의 봇 차단 성능을 제공합니다
+              각 AI 모델의 학습 과정에서 정확도 변화를 확인할 수 있습니다
             </p>
-            <div className="performance-metrics">
-              <div className="metric-item">
-                <span className="metric-number">99.9%</span>
-                <span className="metric-label">전체 봇 차단률</span>
-              </div>
-              <div className="metric-item">
-                <span className="metric-number">0.3초</span>
-                <span className="metric-label">평균 응답시간</span>
-              </div>
-              <div className="metric-item">
-                <span className="metric-number">24/7</span>
-                <span className="metric-label">실시간 모니터링</span>
-              </div>
-              <div className="metric-item">
-                <span className="metric-number">4</span>
-                <span className="metric-label">AI 모델</span>
-              </div>
-            </div>
           </div>
         </div>
       </section>
