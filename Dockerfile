@@ -1,5 +1,5 @@
 # 멀티스테이지 빌드
-FROM node:18-alpine as builder
+FROM node:20-alpine as builder
 
 # 작업 디렉토리 설정
 WORKDIR /app
@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # 의존성 설치 (개발 의존성 포함)
-RUN npm ci --legacy-peer-deps
+RUN npm install --legacy-peer-deps
 
 # 소스 코드 복사
 COPY . .
