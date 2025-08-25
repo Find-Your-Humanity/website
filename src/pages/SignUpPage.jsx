@@ -22,6 +22,9 @@ const SignUpPage = () => {
   const [emailVerified, setEmailVerified] = useState(false);
   const [codeRequesting, setCodeRequesting] = useState(false);
   const [verifyCode, setVerifyCode] = useState('');
+  const [showVerificationModal, setShowVerificationModal] = useState(false);
+  const [verificationCodes, setVerificationCodes] = useState(['', '', '', '', '', '']);
+  const [activeCodeIndex, setActiveCodeIndex] = useState(0);
   const GATEWAY = 'https://gateway.realcatcha.com';
 
   const handleChange = (e) => {
@@ -82,6 +85,9 @@ const SignUpPage = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data?.detail || '인증코드 발송에 실패했습니다.');
       alert('인증코드를 이메일로 발송했습니다.');
+      setShowVerificationModal(true);
+      setVerificationCodes(['', '', '', '', '', '']);
+      setActiveCodeIndex(0);
     } catch (e) {
       setServerError(e.message);
     } finally {
@@ -89,9 +95,34 @@ const SignUpPage = () => {
     }
   };
 
+  const handleCodeInput = (index, value) => {
+    if (value.length > 1) return; // 한 글자만 입력 가능
+    
+    const newCodes = [...verificationCodes];
+    newCodes[index] = value;
+    setVerificationCodes(newCodes);
+    
+    // 다음 입력 필드로 이동
+    if (value && index < 5) {
+      setActiveCodeIndex(index + 1);
+    }
+    
+    // 이전 입력 필드로 이동 (백스페이스 시)
+    if (!value && index > 0) {
+      setActiveCodeIndex(index - 1);
+    }
+  };
+
+  const handleKeyDown = (index, e) => {
+    if (e.key === 'Backspace' && !verificationCodes[index] && index > 0) {
+      setActiveCodeIndex(index - 1);
+    }
+  };
+
   const verifyEmailCode = async () => {
-    if (!verifyCode || verifyCode.length !== 6) {
-      setServerError('6자리 인증코드를 입력해 주세요.');
+    const code = verificationCodes.join('');
+    if (code.length !== 6) {
+      setServerError('6자리 인증코드를 모두 입력해 주세요.');
       return;
     }
     setServerError('');
@@ -99,11 +130,12 @@ const SignUpPage = () => {
       const res = await fetch(`${GATEWAY}/api/auth/verify-email`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: formData.email, code: verifyCode })
+        body: JSON.stringify({ email: formData.email, code: code })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.detail || '이메일 인증에 실패했습니다.');
       setEmailVerified(true);
+      setShowVerificationModal(false);
       alert('이메일 인증이 완료되었습니다. 회원가입을 진행하세요.');
     } catch (e) {
       setServerError(e.message);
@@ -150,15 +182,16 @@ const SignUpPage = () => {
 
             <form onSubmit={handleSubmit} noValidate>
               {/* 1) 이메일 입력 + 인증번호 받기 버튼 (분리) */}
-              <div className="form-group">
+              <div className="signup-form-group">
+                <label className="signup-form-label">이메일</label>
                 <div style={{ display:'flex', gap:14, alignItems:'center' }}>
                   <input
                     type="email"
                     name="email"
-                    placeholder="Enter Email"
+                    placeholder="example@email.com"
                     value={formData.email}
                     onChange={handleChange}
-                    className="form-input"
+                    className="signup-form-input"
                     style={{ flex: 1 }}
                     required
                   />
@@ -175,64 +208,46 @@ const SignUpPage = () => {
                 {fieldErrors.email && <div className="field-error">{fieldErrors.email}</div>}
               </div>
 
-              {/* 2) 코드 입력 + 인증 버튼 (한 줄, 분리) */}
-              <div className="form-group">
-                <div style={{ display:'flex', gap:14, alignItems:'center' }}>
-                  <input
-                    type="text"
-                    placeholder="6-digit code"
-                    value={verifyCode}
-                    onChange={(e)=>setVerifyCode(e.target.value)}
-                    className="form-input"
-                    style={{ flex: 1 }}
-                  />
-                  <button
-                    type="button"
-                    className="inline-btn"
-                    onClick={verifyEmailCode}
-                    disabled={emailVerified}
-                    style={{ width: 180 }}
-                  >
-                    {emailVerified ? '인증 완료' : '인증하기'}
-                  </button>
-                </div>
-              </div>
 
-              <div className="form-group">
+
+              <div className="signup-form-group">
+                <label className="signup-form-label">이름</label>
                 <input
                   type="text"
                   name="username"
-                  placeholder="Create User name"
+                  placeholder="이름을 입력하세요"
                   value={formData.username}
                   onChange={handleChange}
-                  className="form-input"
+                  className="signup-form-input"
                   required
                 />
                 {fieldErrors.username && <div className="field-error">{fieldErrors.username}</div>}
               </div>
 
-              <div className="form-group">
+              <div className="signup-form-group">
+                <label className="signup-form-label">연락처</label>
                 <input
                   type="tel"
                   name="contact"
-                  placeholder="Contact number"
+                  placeholder="연락처를 입력하세요"
                   value={formData.contact}
                   onChange={handleChange}
-                  className="form-input"
+                  className="signup-form-input"
                   required
                 />
                 {fieldErrors.contact && <div className="field-error">{fieldErrors.contact}</div>}
               </div>
 
-              <div className="form-group">
+              <div className="signup-form-group">
+                <label className="signup-form-label">비밀번호</label>
                 <div className="password-input-container">
                   <input
                     type={showPassword ? "text" : "password"}
                     name="password"
-                    placeholder="Password"
+                    placeholder="비밀번호를 입력하세요"
                     value={formData.password}
                     onChange={handleChange}
-                    className="form-input"
+                    className="signup-form-input"
                     required
                   />
                   <button
@@ -246,15 +261,16 @@ const SignUpPage = () => {
                 {fieldErrors.password && <div className="field-error">{fieldErrors.password}</div>}
               </div>
 
-              <div className="form-group">
+              <div className="signup-form-group">
+                <label className="signup-form-label">비밀번호 확인</label>
                 <div className="password-input-container">
                   <input
                     type={showConfirmPassword ? "text" : "password"}
                     name="confirmPassword"
-                    placeholder="Confirm Password"
+                    placeholder="비밀번호를 다시 입력하세요"
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    className="form-input"
+                    className="signup-form-input"
                     required
                   />
                   <button
@@ -284,6 +300,57 @@ const SignUpPage = () => {
           </div>
         </div>
       </div>
+
+      {/* 인증코드 입력 모달 */}
+      {showVerificationModal && (
+        <div className="verification-modal-overlay">
+          <div className="verification-modal">
+            <div className="verification-modal-header">
+              <h2 className="verification-modal-title">인증코드 입력</h2>
+              <p className="verification-modal-subtitle">
+                {formData.email}로 인증코드를 발송했습니다.
+              </p>
+            </div>
+            
+            <div className="verification-codes-container">
+              {verificationCodes.map((code, index) => (
+                <input
+                  key={index}
+                  type="text"
+                  maxLength={1}
+                  value={code}
+                  onChange={(e) => handleCodeInput(index, e.target.value)}
+                  onKeyDown={(e) => handleKeyDown(index, e)}
+                  className={`verification-code-input ${index === activeCodeIndex ? 'active' : ''}`}
+                  ref={(el) => {
+                    if (el && index === activeCodeIndex) {
+                      el.focus();
+                    }
+                  }}
+                />
+              ))}
+            </div>
+
+            <div className="verification-modal-actions">
+              <button
+                type="button"
+                className="verification-submit-btn"
+                onClick={verifyEmailCode}
+                disabled={verificationCodes.some(code => !code)}
+              >
+                인증하기
+              </button>
+              <button
+                type="button"
+                className="verification-cancel-btn"
+                onClick={() => setShowVerificationModal(false)}
+              >
+                취소
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
