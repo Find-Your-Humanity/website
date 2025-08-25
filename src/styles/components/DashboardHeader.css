@@ -49,6 +49,11 @@
   user-select: none;
 }
 
+.user-profile-icon {
+  font-size: 1rem;
+  color: #666666;
+}
+
 .user-button:hover {
   background-color: #e8e8e8;
   border-color: #d0d0d0;
@@ -66,8 +71,43 @@
   transition: transform 0.3s ease;
 }
 
-.user-button:hover .user-button-icon {
+.user-button:hover .user-button-icon,
+.user-button.dropdown-open .user-button-icon {
   transform: rotate(180deg);
+}
+
+.user-button {
+  position: relative;
+}
+
+.user-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-top: 0.5rem;
+  min-width: 120px;
+  z-index: 1000;
+}
+
+.dropdown-item {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 0.9rem;
+  color: #333333;
+}
+
+.dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.dropdown-item:hover {
+  background-color: #f5f5f5;
 }
 
 /* 반응형 디자인 */
