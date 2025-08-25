@@ -2,22 +2,133 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { FaRobot, FaBullseye, FaBolt, FaShieldAlt, FaChartBar, FaTools } from 'react-icons/fa';
+import { Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+} from 'chart.js';
 import '../styles/pages/ProductsPage.css';
+
+// Chart.js 등록
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
 
 const ProductsPage = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const [isVideoActive, setIsVideoActive] = useState(false);
+  const [visibleLevels, setVisibleLevels] = useState(new Set());
+  const [playingVideos, setPlayingVideos] = useState(new Set());
   const videoSectionRef = useRef(null);
   const videoTimerRef = useRef(null);
+  const levelRefs = useRef({});
+  const levelVideoRefs = useRef({});
+
+  // Chart.js 데이터 및 옵션 - 간단한 설정
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false
+      }
+    },
+    scales: {
+      x: {
+        display: false
+      },
+      y: {
+        display: false
+      }
+    },
+    elements: {
+      point: {
+        radius: 0
+      }
+    }
+  };
+
+  // ResNet-152 차트 데이터 - 간단한 테스트 데이터
+  const resnetData = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    datasets: [{
+      label: 'ResNet-152',
+      data: [85, 88, 92, 89, 95, 98.7],
+      borderColor: '#DFFF00',
+      backgroundColor: 'rgba(223, 255, 0, 0.2)',
+      borderWidth: 3,
+      fill: true,
+      tension: 0.3
+    }]
+  };
+
+  // BERT-Large 차트 데이터 - 간단한 테스트 데이터
+  const bertData = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    datasets: [{
+      label: 'BERT-Large',
+      data: [70, 75, 80, 85, 88, 99.2],
+      borderColor: '#DFFF00',
+      backgroundColor: 'rgba(223, 255, 0, 0.2)',
+      borderWidth: 3,
+      fill: true,
+      tension: 0.3
+    }]
+  };
+
+  // YOLO v8 차트 데이터 - 간단한 테스트 데이터
+  const yoloData = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    datasets: [{
+      label: 'YOLO v8',
+      data: [90, 92, 94, 93, 96, 97.5],
+      borderColor: '#DFFF00',
+      backgroundColor: 'rgba(223, 255, 0, 0.2)',
+      borderWidth: 3,
+      fill: true,
+      tension: 0.3
+    }]
+  };
+
+  // Transformer-XL 차트 데이터 - 간단한 테스트 데이터
+  const transformerData = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    datasets: [{
+      label: 'Transformer-XL',
+      data: [80, 85, 88, 90, 93, 99.1],
+      borderColor: '#DFFF00',
+      backgroundColor: 'rgba(223, 255, 0, 0.2)',
+      borderWidth: 3,
+      fill: true,
+      tension: 0.3
+    }]
+  };
+
+  // 디버깅을 위한 콘솔 로그
+  console.log('Chart Data Loaded:', { resnetData, bertData, yoloData, transformerData });
 
   const handleStartFreePlan = () => {
     if (isAuthenticated) {
-      // 로그인된 상태: 결제페이지로 이동
-      navigate('/payment');
+      // 로그인된 상태: PayPage로 이동
+      navigate('/pay');
     } else {
       // 로그인되지 않은 상태: 로그인페이지로 이동
-      navigate('/signin?next=/payment');
+      navigate('/signin?next=/pay');
     }
   };
 
@@ -35,7 +146,7 @@ const ProductsPage = () => {
             // 화면에 보이기 시작하면 3초 타이머 시작
             videoTimerRef.current = setTimeout(() => {
               setIsVideoActive(true);
-            }, 3500);
+            }, 2500);
           } else {
             // 화면에서 벗어나면 타이머 취소 및 상태 초기화
             if (videoTimerRef.current) {
@@ -57,6 +168,77 @@ const ProductsPage = () => {
         clearTimeout(videoTimerRef.current);
       }
       observer.disconnect();
+    };
+  }, []);
+
+  // 레벨 아이템들의 스크롤 애니메이션 감지
+  useEffect(() => {
+    const levelObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const level = parseInt(entry.target.dataset.level);
+            setVisibleLevels(prev => new Set([...prev, level]));
+          }
+        });
+      },
+      { 
+        threshold: 0.3, // 30% 이상 보일 때 감지
+        rootMargin: '0px 0px -100px 0px' // 하단에서 100px 전에 감지
+      }
+    );
+
+    // 모든 레벨 아이템들을 관찰
+    Object.values(levelRefs.current).forEach(ref => {
+      if (ref) {
+        levelObserver.observe(ref);
+      }
+    });
+
+    return () => {
+      levelObserver.disconnect();
+    };
+  }, []);
+
+  // Level 비디오들의 재생 제어
+  useEffect(() => {
+    const videoObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const level = parseInt(entry.target.dataset.level);
+          const video = entry.target;
+          
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+            // 50% 이상 보일 때 비디오 재생
+            setPlayingVideos(prev => new Set([...prev, level]));
+            video.play().catch(e => console.log('Video play failed:', e));
+          } else {
+            // 화면에서 벗어나거나 50% 미만일 때 비디오 일시정지
+            setPlayingVideos(prev => {
+              const newSet = new Set(prev);
+              newSet.delete(level);
+              return newSet;
+            });
+            video.pause();
+            video.currentTime = 0; // 처음으로 되돌리기
+          }
+        });
+      },
+      { 
+        threshold: 0.5, // 50% 이상 보일 때 감지
+        rootMargin: '0px 0px -50px 0px' // 하단에서 50px 전에 감지
+      }
+    );
+
+    // 모든 Level 비디오들을 관찰
+    Object.values(levelVideoRefs.current).forEach(videoRef => {
+      if (videoRef) {
+        videoObserver.observe(videoRef);
+      }
+    });
+
+    return () => {
+      videoObserver.disconnect();
     };
   }, []);
 
@@ -118,38 +300,127 @@ const ProductsPage = () => {
         </div>
       </section>
 
-      {/* How to Use Section */}
-      <section className="how-to-use-section">
-        <div className="how-to-use-container">
-          <h2 className="how-to-use-title">사용 방법</h2>
-          <div className="steps-grid">
-            <div className="step-card">
-              <div className="step-number">1</div>
-              <h3 className="step-title">계정 생성</h3>
-              <p className="step-description">
-                REAL 웹사이트에서 계정을 생성하고 API 키를 발급받습니다.
-              </p>
+      {/* CAPTCHA Levels Section */}
+      <section className="captcha-levels-section">
+        <div className="captcha-levels-container">
+          
+          {/* Level 0 */}
+          <div 
+            ref={(el) => (levelRefs.current[0] = el)}
+            className={`level-item level-0 ${visibleLevels.has(0) ? 'visible' : ''}`} 
+            data-level="0"
+          >
+            <div className="level-content">
+              <div className="level-text">
+                <h3 className="level-title">Level 0 - I'm not a robot</h3>
+                <p className="level-description">
+                  가장 기본적인 CAPTCHA 단계로, 간단한 이미지 분류 문제를 제공합니다. 
+                  사용자가 쉽게 해결할 수 있도록 설계되어 있으며, 기본적인 봇 차단 기능을 수행합니다.
+                </p>
+              </div>
+              <div className="level-image">
+                <video 
+                  ref={(el) => (levelVideoRefs.current[0] = el)}
+                  className="level-video"
+                  muted
+                  loop
+                  playsInline
+                  data-level="0"
+                >
+                  <source src="/captcha.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
             </div>
-            <div className="step-card">
-              <div className="step-number">2</div>
-              <h3 className="step-title">코드 연동</h3>
-              <p className="step-description">
-                제공되는 SDK나 API를 사용하여 웹사이트에 CAPTCHA를 추가합니다.
-              </p>
+          </div>
+
+          {/* Level 1 */}
+          <div 
+            ref={(el) => (levelRefs.current[1] = el)}
+            className={`level-item level-1 ${visibleLevels.has(1) ? 'visible' : ''}`} 
+            data-level="1"
+          >
+            <div className="level-content">
+              <div className="level-image">
+                <video 
+                  ref={(el) => (levelVideoRefs.current[1] = el)}
+                  className="level-video"
+                  muted
+                  loop
+                  playsInline
+                  data-level="1"
+                >
+                  <source src="/basic_captcha.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+              <div className="level-text">
+                <h3 className="level-title">Level 1 - Basic CAPTCHA</h3>
+                <p className="level-description">
+                  중간 난이도의 CAPTCHA로, 더 복잡한 이미지 분석이 요구됩니다. 
+                  행동 패턴 분석을 통해 봇과 인간을 구분하는 능력이 향상됩니다.
+                </p>
+              </div>
             </div>
-            <div className="step-card">
-              <div className="step-number">3</div>
-              <h3 className="step-title">설정 조정</h3>
-              <p className="step-description">
-                난이도와 스타일을 조정하여 사용자 경험을 최적화합니다.
-              </p>
+          </div>
+
+          {/* Level 2 */}
+          <div 
+            ref={(el) => (levelRefs.current[2] = el)}
+            className={`level-item level-2 ${visibleLevels.has(2) ? 'visible' : ''}`} 
+            data-level="2"
+          >
+            <div className="level-content">
+              <div className="level-text">
+                <h3 className="level-title">Level 2 - Writing CAPTCHA</h3>
+                <p className="level-description">
+                  고난이도 CAPTCHA로, 다중 단계 검증과 복잡한 패턴 인식이 필요합니다. 
+                  AI 기반 봇 탐지 시스템과 연동되어 고급 보안을 제공합니다.
+                </p>
+              </div>
+              <div className="level-image">
+                <video 
+                  ref={(el) => (levelVideoRefs.current[2] = el)}
+                  className="level-video"
+                  muted
+                  loop
+                  playsInline
+                  data-level="2"
+                >
+                  <source src="/writing_captcha.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
             </div>
-            <div className="step-card">
-              <div className="step-number">4</div>
-              <h3 className="step-title">모니터링</h3>
-              <p className="step-description">
-                대시보드에서 성능과 보안 지표를 실시간으로 확인합니다.
-              </p>
+          </div>
+
+          {/* Level 3 */}
+          <div 
+            ref={(el) => (levelRefs.current[3] = el)}
+            className={`level-item level-3 ${visibleLevels.has(3) ? 'visible' : ''}`} 
+            data-level="3"
+          >
+            <div className="level-content">
+              <div className="level-image">
+                <video 
+                  ref={(el) => (levelVideoRefs.current[3] = el)}
+                  className="level-video"
+                  muted
+                  loop
+                  playsInline
+                  data-level="3"
+                >
+                  <source src="/abstract_captcha.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+              <div className="level-text">
+                <h3 className="level-title">Level 3 - Abstract CAPTCHA</h3>
+                <p className="level-description">
+                  최고 난이도의 CAPTCHA로, 실시간 학습과 적응형 보안을 제공합니다. 
+                  딥러닝 알고리즘을 통해 지속적으로 진화하며, 최고 수준의 봇 차단 성능을 보여줍니다.
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -218,64 +489,187 @@ const ProductsPage = () => {
         </div>
       </section>
 
-      {/* Products Grid */}
-      <section className="products-grid">
-        <div className="product-card">
-          <div className="product-icon">🛡️</div>
-          <h3 className="product-name">Basic CAPTCHA</h3>
-          <p className="product-description">
-            기본적인 봇 차단 기능을 제공하는 CAPTCHA 서비스입니다.
+      {/* AI Models Section */}
+      <section className="ai-models-section">
+        <div className="ai-models-container">
+          <h2 className="ai-models-title">AI 모델 성능</h2>
+          <p className="ai-models-subtitle">
+            REAL CAPTCHA는 최첨단 AI 모델을 통해 뛰어난 봇 차단 성능을 제공합니다
           </p>
-          <ul className="product-features">
-            <li>이미지 기반 문제</li>
-            <li>기본 봇 차단</li>
-            <li>간편한 연동</li>
-            <li>무료 플랜 제공</li>
-          </ul>
-          <div className="product-price">
-            <span className="price">무료</span>
+          
+          {/* Model 1 - ResNet-152 */}
+          <div className="ai-model-item model-1">
+            <div className="model-content">
+              <div className="model-text">
+                <div className="model-header">
+                  <h3 className="model-name">MobileNetV2</h3>
+                  <div className="model-badge">Image Classification</div>
+                </div>
+                <p className="model-description">
+                  이미지 분류를 위한 고성능 CNN 모델로, 복잡한 시각적 패턴을 정확하게 인식합니다. 
+                  깊은 레이어 구조를 통해 이미지의 세밀한 특징까지 포착하여 봇의 자동화된 이미지 처리 시도를 효과적으로 차단합니다.
+                </p>
+              </div>
+              <div className="model-visual">
+                <div className="model-stats-card">
+                  <div className="chart-container">
+                    <Line data={resnetData} options={chartOptions} />
+                  </div>
+                  <div className="performance-metrics">
+                    <div className="performance-metric">
+                      <span className="metric-value">98.7%</span>
+                      <span className="metric-label">정확도</span>
+                    </div>
+                    <div className="performance-metric">
+                      <span className="metric-value">0.3초</span>
+                      <span className="metric-label">응답시간</span>
+                    </div>
+                    <div className="performance-metric">
+                      <span className="metric-value">152</span>
+                      <span className="metric-label">레이어</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <button className="btn btn-primary">시작하기</button>
-        </div>
 
-        <div className="product-card featured">
-          <div className="featured-badge">인기</div>
-          <div className="product-icon">🚀</div>
-          <h3 className="product-name">Advanced CAPTCHA</h3>
-          <p className="product-description">
-            딥러닝 기반 고급 봇 차단 기능을 제공하는 프리미엄 서비스입니다.
-          </p>
-          <ul className="product-features">
-            <li>AI 기반 행동 분석</li>
-            <li>3단계 난이도 조절</li>
-            <li>실시간 학습</li>
-            <li>고급 API</li>
-            <li>24/7 모니터링</li>
-          </ul>
-          <div className="product-price">
-            <span className="price">₩99,000</span>
-            <span className="period">/월</span>
+          {/* Model 2 - BERT-Large */}
+          <div className="ai-model-item model-2">
+            <div className="model-content">
+              <div className="model-visual">
+                <div className="model-stats-card">
+                  <div className="chart-container">
+                    <Line data={bertData} options={chartOptions} />
+                  </div>
+                  <div className="performance-metrics">
+                    <div className="performance-metric">
+                      <span className="metric-value">99.2%</span>
+                      <span className="metric-label">정확도</span>
+                    </div>
+                    <div className="performance-metric">
+                      <span className="metric-value">0.5초</span>
+                      <span className="metric-label">응답시간</span>
+                    </div>
+                    <div className="performance-metric">
+                      <span className="metric-value">340M</span>
+                      <span className="metric-label">파라미터</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="model-text">
+                <div className="model-header">
+                  <h3 className="model-name">BERT-Large</h3>
+                  <div className="model-badge">Behavior Analysis</div>
+                </div>
+                <p className="model-description">
+                  사용자 행동 패턴을 분석하여 봇과 인간을 구분하는 핵심 AI 모델입니다. 
+                  자연어 처리와 행동 분석을 결합하여 사용자의 입력 패턴, 타이핑 속도, 마우스 움직임 등을 종합적으로 분석합니다.
+                </p>
+              </div>
+            </div>
           </div>
-          <button className="btn btn-primary">자세히 보기</button>
-        </div>
 
-        <div className="product-card">
-          <div className="product-icon">⚡</div>
-          <h3 className="product-name">Enterprise CAPTCHA</h3>
-          <p className="product-description">
-            대규모 기업을 위한 맞춤형 CAPTCHA 솔루션입니다.
-          </p>
-          <ul className="product-features">
-            <li>맞춤형 개발</li>
-            <li>24/7 지원</li>
-            <li>SLA 보장</li>
-            <li>전담 매니저</li>
-            <li>무제한 요청</li>
-          </ul>
-          <div className="product-price">
-            <span className="price">문의</span>
+          {/* Model 3 - YOLO v8 */}
+          <div className="ai-model-item model-3">
+            <div className="model-content">
+              <div className="model-text">
+                <div className="model-header">
+                  <h3 className="model-name">YOLO v8</h3>
+                  <div className="model-badge">Real-time Detection</div>
+                </div>
+                <p className="model-description">
+                  실시간 객체 탐지를 위한 경량화된 모델로, 빠른 응답 속도를 보장합니다. 
+                  이미지 내 객체를 실시간으로 감지하고 분류하여 CAPTCHA 문제의 동적 요소를 효과적으로 처리합니다.
+                </p>
+              </div>
+              <div className="model-visual">
+                <div className="model-stats-card">
+                  <div className="chart-container">
+                    <Line data={yoloData} options={chartOptions} />
+                  </div>
+                  <div className="performance-metrics">
+                    <div className="performance-metric">
+                      <span className="metric-value">97.5%</span>
+                      <span className="metric-label">정확도</span>
+                    </div>
+                    <div className="performance-metric">
+                      <span className="metric-value">0.2초</span>
+                      <span className="metric-label">응답시간</span>
+                    </div>
+                    <div className="performance-metric">
+                      <span className="metric-value">8.0</span>
+                      <span className="metric-label">버전</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <button className="btn btn-primary">문의하기</button>
+
+          {/* Model 4 - Transformer-XL */}
+          <div className="ai-model-item model-4">
+            <div className="model-content">
+              <div className="model-visual">
+                <div className="model-stats-card">
+                  <div className="chart-container">
+                    <Line data={transformerData} options={chartOptions} />
+                  </div>
+                  <div className="performance-metrics">
+                    <div className="performance-metric">
+                      <span className="metric-value">99.1%</span>
+                      <span className="metric-label">정확도</span>
+                    </div>
+                    <div className="performance-metric">
+                      <span className="metric-value">0.4초</span>
+                      <span className="metric-label">응답시간</span>
+                    </div>
+                    <div className="performance-metric">
+                      <span className="metric-value">512</span>
+                      <span className="metric-label">컨텍스트</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="model-text">
+                <div className="model-header">
+                  <h3 className="model-name">Transformer-XL</h3>
+                  <div className="model-badge">Sequence Analysis</div>
+                </div>
+                <p className="model-description">
+                  시퀀스 데이터 분석을 통해 사용자의 상호작용 패턴을 학습합니다. 
+                  긴 시퀀스의 의존성을 효과적으로 모델링하여 사용자의 행동 흐름을 정확하게 예측하고 봇을 식별합니다.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Performance Summary */}
+          <div className="ai-performance-summary">
+            <h3 className="summary-title">통합 성능 지표</h3>
+            <p className="summary-description">
+              4개의 AI 모델이 협력하여 최고의 봇 차단 성능을 제공합니다
+            </p>
+            <div className="performance-metrics">
+              <div className="metric-item">
+                <span className="metric-number">99.9%</span>
+                <span className="metric-label">전체 봇 차단률</span>
+              </div>
+              <div className="metric-item">
+                <span className="metric-number">0.3초</span>
+                <span className="metric-label">평균 응답시간</span>
+              </div>
+              <div className="metric-item">
+                <span className="metric-number">24/7</span>
+                <span className="metric-label">실시간 모니터링</span>
+              </div>
+              <div className="metric-item">
+                <span className="metric-number">4</span>
+                <span className="metric-label">AI 모델</span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

@@ -83,96 +83,203 @@
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
-/* Products Grid */
-.products-grid {
+/* AI Models Section */
+.ai-models-section {
+  padding: 6rem 0;
+  background-color: #ffffff;
+}
+
+.ai-models-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 4rem 2rem;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 2rem;
+  padding: 0 2rem;
 }
 
-.product-card {
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
-  padding: 2rem;
+.ai-models-title {
   text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  position: relative;
-}
-
-.product-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
-}
-
-.product-card.featured {
-  border: 2px solid #DFFF00;
-  transform: scale(1.05);
-}
-
-.product-card.featured:hover {
-  transform: scale(1.05) translateY(-8px);
-}
-
-.featured-badge {
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #DFFF00;
-  color: #000000;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: bold;
-}
-
-.product-icon {
   font-size: 3rem;
-  margin-bottom: 1rem;
-}
-
-.product-name {
-  font-size: 1.5rem;
   font-weight: bold;
-  margin-bottom: 1rem;
   color: #000000;
+  margin-bottom: 1rem;
 }
 
-.product-description {
+.ai-models-subtitle {
+  text-align: center;
+  font-size: 1.3rem;
   color: #666666;
+  margin-bottom: 4rem;
   line-height: 1.6;
+}
+
+/* AI Model Items */
+.ai-model-item {
+  margin-bottom: 8rem;
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.8s ease;
+}
+
+/* featured 스타일 제거됨 */
+
+.model-content {
+  display: flex;
+  align-items: center;
+  gap: 4rem;
+}
+
+.model-text {
+  flex: 1;
+}
+
+.model-header {
   margin-bottom: 1.5rem;
 }
 
-.product-features {
-  list-style: none;
-  padding: 0;
-  margin-bottom: 2rem;
-  text-align: left;
-}
-
-.product-features li {
-  padding: 0.5rem 0;
-  color: #000000;
-  position: relative;
-  padding-left: 1.5rem;
-}
-
-.product-features li::before {
-  content: "✓";
-  position: absolute;
-  left: 0;
-  color: #DFFF00;
+.model-name {
+  font-size: 2.5rem;
   font-weight: bold;
+  color: #000000;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
 }
 
-.product-price { margin-bottom: 1.5rem; }
-.price { font-size: 2rem; font-weight: bold; color: #000000; }
-.period { font-size: 1rem; color: #666666; }
+.model-badge {
+  display: inline-block;
+  background-color: #f0f0f0;
+  color: #666666;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.model-description {
+  color: #666666;
+  line-height: 1.8;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+}
+
+.model-visual {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.model-stats-card {
+  background: #f8f9fa;
+  color: #333333;
+  padding: 2.5rem;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  min-width: 280px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 성능 그래프 배경 - 제거됨 */
+
+.model-stats-card .stat-item {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.model-stats-card .stat-item:last-child {
+  margin-bottom: 0;
+}
+
+.model-stats-card .stat-value {
+  display: block;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #DFFF00;
+  margin-bottom: 0.5rem;
+}
+
+.model-stats-card .stat-label {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+}
+
+/* Chart.js 컨테이너 */
+.chart-container {
+  width: 100%;
+  height: 120px;
+  margin-bottom: 1.5rem;
+  position: relative;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+/* Chart.js 캔버스 스타일링 */
+.chart-container canvas {
+  border-radius: 8px;
+  max-height: 100px;
+}
+
+/* Model Layout Alternation */
+.model-1 .model-content,
+.model-3 .model-content {
+  flex-direction: row;
+}
+
+.model-2 .model-content,
+.model-4 .model-content {
+  flex-direction: row-reverse;
+}
+
+/* Performance Summary */
+.ai-performance-summary {
+  text-align: center;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  padding: 4rem;
+  border-radius: 20px;
+  margin-top: 3rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+.summary-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #000000;
+  margin-bottom: 1rem;
+}
+
+.summary-description {
+  font-size: 1.2rem;
+  color: #666666;
+  margin-bottom: 3rem;
+  line-height: 1.6;
+}
+
+.performance-metrics {
+  display: flex;
+  justify-content: center;
+  gap: 4rem;
+  flex-wrap: wrap;
+}
+
+.metric-item {
+  text-align: center;
+}
+
+.metric-number {
+  display: block;
+  font-size: 3.5rem;
+  font-weight: bold;
+  color: #DFFF00;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.metric-label {
+  font-size: 1.1rem;
+  color: #666666;
+  font-weight: 500;
+}
 
 /* Video Section */
 .video-section { 
@@ -258,16 +365,187 @@
 
 .stat-label { font-size: 1rem; opacity: 0.8; }
 
-/* How to Use Section */
-.how-to-use-section { padding: 4rem 0; background-color: #f9f9f9; }
-.how-to-use-container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
-.how-to-use-title { text-align: center; font-size: 2.5rem; font-weight: bold; color: #000000; margin-bottom: 3rem; }
-.steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; }
-.step-card { background-color: #ffffff; padding: 2rem; border-radius: 12px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform .3s, box-shadow .3s; }
-.step-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
-.step-number { width: 60px; height: 60px; background-color: #DFFF00; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; margin: 0 auto 1.5rem; }
-.step-title { font-size: 1.25rem; font-weight: bold; color: #000000; margin-bottom: 1rem; }
-.step-description { color: #666666; line-height: 1.6; }
+/* CAPTCHA Levels Section */
+.captcha-levels-section { 
+  padding: 6rem 0; 
+  background-color: #f9f9f9; 
+}
+
+.captcha-levels-container { 
+  max-width: 1200px; 
+  margin: 0 auto; 
+  padding: 0 2rem; 
+}
+
+.level-item {
+  margin-bottom: 8rem;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 1.0s ease;
+}
+
+.level-item.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.level-content {
+  display: flex;
+  align-items: center;
+  gap: 4rem;
+}
+
+.level-text {
+  flex: 1;
+}
+
+.level-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #000000;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.level-description {
+  font-size: 1.2rem;
+  color: #666666;
+  line-height: 1.8;
+  margin-bottom: 0;
+}
+
+.level-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.level-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  transition: transform 0.3s ease;
+  width: 340px;
+}
+
+.level-image video {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  transition: transform 0.3s ease;
+}
+
+.level-image img:hover,
+.level-image video:hover {
+  transform: scale(1.05);
+}
+
+/* 비디오 전용 스타일 */
+.level-video {
+  object-fit: cover;
+  background-color: #f0f0f0;
+  width: 400px;
+}
+
+/* Level 0과 Level 2: 텍스트(왼쪽) + 이미지(오른쪽) */
+.level-0 .level-content,
+.level-2 .level-content {
+  flex-direction: row;
+}
+
+/* Level 1과 Level 3: 이미지(왼쪽) + 텍스트(오른쪽) - order 속성 사용 */
+.level-1 .level-content,
+.level-3 .level-content {
+  flex-direction: row;
+}
+
+.level-1 .level-text,
+.level-3 .level-text {
+  order: 2; /* 텍스트를 오른쪽으로 */
+}
+
+.level-1 .level-image,
+.level-3 .level-image {
+  order: 1; /* 이미지를 왼쪽으로 */
+}
+
+.level-0 {
+  margin-bottom: 16rem;
+  margin-top: 10rem;
+}
+
+.level-1 {
+  margin-bottom: 16rem;
+}
+
+.level-2 {
+  margin-bottom: 16rem;
+}
+
+.level-3 {
+  margin-bottom: 10rem;
+}
+
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .level-content {
+    flex-direction: column !important;
+    gap: 2rem;
+    text-align: center;
+  }
+  
+  .captcha-levels-title {
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+  }
+  
+  .level-title {
+    font-size: 2rem;
+  }
+  
+  .level-description {
+    font-size: 1.1rem;
+  }
+
+  /* AI Models 반응형 */
+  .ai-models-title {
+    font-size: 2.5rem;
+  }
+  
+  .ai-models-subtitle {
+    font-size: 1.1rem;
+  }
+  
+  .model-content {
+    flex-direction: column !important;
+    gap: 2rem;
+    text-align: center;
+  }
+  
+  .model-name {
+    font-size: 2rem;
+  }
+  
+  .model-description {
+    font-size: 1rem;
+  }
+  
+  .model-stats-card {
+    min-width: 100%;
+  }
+  
+  .performance-metrics {
+    gap: 2rem;
+  }
+  
+  .metric-number {
+    font-size: 2.5rem;
+  }
+}
 
 /* Features Section */
 .features-section { padding: 4rem 0; background-color: #ffffff; }
