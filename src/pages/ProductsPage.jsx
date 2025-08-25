@@ -34,10 +34,12 @@ const ProductsPage = () => {
   const [isVideoActive, setIsVideoActive] = useState(false);
   const [visibleLevels, setVisibleLevels] = useState(new Set());
   const [playingVideos, setPlayingVideos] = useState(new Set());
+  const [visibleModels, setVisibleModels] = useState(new Set());
   const videoSectionRef = useRef(null);
   const videoTimerRef = useRef(null);
   const levelRefs = useRef({});
   const levelVideoRefs = useRef({});
+  const modelRefs = useRef({});
 
   // Chart.js 데이터 및 옵션 - 간단한 설정
   const chartOptions = {
@@ -63,59 +65,59 @@ const ProductsPage = () => {
     }
   };
 
-  // ResNet-152 차트 데이터 - 간단한 테스트 데이터
-  const resnetData = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+  // AutoEncoder 차트 데이터 - 학습 진행에 따른 정확도 변화
+  const autoencoderData = {
+    labels: ['Epoch 1', 'Epoch 5', 'Epoch 10', 'Epoch 15', 'Epoch 20', 'Epoch 25'],
     datasets: [{
-      label: 'ResNet-152',
-      data: [85, 88, 92, 89, 95, 98.7],
-      borderColor: '#DFFF00',
-      backgroundColor: 'rgba(223, 255, 0, 0.2)',
+      label: 'AutoEncoder',
+      data: [72, 78, 85, 89, 93, 96.2],
+      borderColor: '#FF6B6B',
+      backgroundColor: 'rgba(255, 107, 107, 0.2)',
       borderWidth: 3,
       fill: true,
-      tension: 0.3
+      tension: 0.4
     }]
   };
 
-  // BERT-Large 차트 데이터 - 간단한 테스트 데이터
-  const bertData = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-    datasets: [{
-      label: 'BERT-Large',
-      data: [70, 75, 80, 85, 88, 99.2],
-      borderColor: '#DFFF00',
-      backgroundColor: 'rgba(223, 255, 0, 0.2)',
-      borderWidth: 3,
-      fill: true,
-      tension: 0.3
-    }]
-  };
-
-  // YOLO v8 차트 데이터 - 간단한 테스트 데이터
+  // YOLOv8s 차트 데이터 - 학습 진행에 따른 정확도 변화
   const yoloData = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    labels: ['Epoch 1', 'Epoch 5', 'Epoch 10', 'Epoch 15', 'Epoch 20', 'Epoch 25'],
     datasets: [{
-      label: 'YOLO v8',
-      data: [90, 92, 94, 93, 96, 97.5],
-      borderColor: '#DFFF00',
-      backgroundColor: 'rgba(223, 255, 0, 0.2)',
+      label: 'YOLOv8s',
+      data: [68, 75, 82, 87, 91, 94.8],
+      borderColor: '#4ECDC4',
+      backgroundColor: 'rgba(78, 205, 196, 0.2)',
       borderWidth: 3,
       fill: true,
-      tension: 0.3
+      tension: 0.4
     }]
   };
 
-  // Transformer-XL 차트 데이터 - 간단한 테스트 데이터
-  const transformerData = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+  // CRNN 차트 데이터 - 학습 진행에 따른 정확도 변화
+  const crnnData = {
+    labels: ['Epoch 1', 'Epoch 5', 'Epoch 10', 'Epoch 15', 'Epoch 20', 'Epoch 25'],
     datasets: [{
-      label: 'Transformer-XL',
-      data: [80, 85, 88, 90, 93, 99.1],
-      borderColor: '#DFFF00',
-      backgroundColor: 'rgba(223, 255, 0, 0.2)',
+      label: 'CRNN',
+      data: [75, 82, 88, 92, 95, 97.3],
+      borderColor: '#45B7D1',
+      backgroundColor: 'rgba(69, 183, 209, 0.2)',
       borderWidth: 3,
       fill: true,
-      tension: 0.3
+      tension: 0.4
+    }]
+  };
+
+  // MobileNetV2 차트 데이터 - 학습 진행에 따른 정확도 변화
+  const mobilenetData = {
+    labels: ['Epoch 1', 'Epoch 5', 'Epoch 10', 'Epoch 15', 'Epoch 20', 'Epoch 25'],
+    datasets: [{
+      label: 'MobileNetV2',
+      data: [70, 78, 85, 90, 94, 96.8],
+      borderColor: '#96CEB4',
+      backgroundColor: 'rgba(150, 206, 180, 0.2)',
+      borderWidth: 3,
+      fill: true,
+      tension: 0.4
     }]
   };
 
@@ -124,7 +126,7 @@ const ProductsPage = () => {
     labels: ['Epoch 1', 'Epoch 5', 'Epoch 10', 'Epoch 15', 'Epoch 20', 'Epoch 25', 'Epoch 30'],
     datasets: [
       {
-        label: 'MobileNetV2',
+        label: 'AutoEncoder',
         data: [75, 82, 88, 92, 95, 97, 98.7],
         borderColor: '#FF6B6B',
         backgroundColor: 'rgba(255, 107, 107, 0.1)',
@@ -133,7 +135,7 @@ const ProductsPage = () => {
         tension: 0.4
       },
       {
-        label: 'BERT-Large',
+        label: 'YOLOv8s',
         data: [70, 78, 85, 90, 94, 97, 99.2],
         borderColor: '#4ECDC4',
         backgroundColor: 'rgba(78, 205, 196, 0.1)',
@@ -142,7 +144,7 @@ const ProductsPage = () => {
         tension: 0.4
       },
       {
-        label: 'YOLO v8',
+        label: 'CRNN',
         data: [80, 85, 89, 92, 94, 96, 97.5],
         borderColor: '#45B7D1',
         backgroundColor: 'rgba(69, 183, 209, 0.1)',
@@ -151,7 +153,7 @@ const ProductsPage = () => {
         tension: 0.4
       },
       {
-        label: 'Transformer-XL',
+        label: 'MobileNetV2',
         data: [72, 80, 87, 91, 94, 97, 99.1],
         borderColor: '#96CEB4',
         backgroundColor: 'rgba(150, 206, 180, 0.1)',
@@ -193,7 +195,7 @@ const ProductsPage = () => {
   };
 
   // 디버깅을 위한 콘솔 로그
-  console.log('Chart Data Loaded:', { resnetData, bertData, yoloData, transformerData, performanceComparisonData });
+  console.log('Chart Data Loaded:', { autoencoderData, yoloData, crnnData, mobilenetData, performanceComparisonData });
 
   const handleStartFreePlan = () => {
     if (isAuthenticated) {
@@ -312,6 +314,35 @@ const ProductsPage = () => {
 
     return () => {
       videoObserver.disconnect();
+    };
+  }, []);
+
+  // AI Model Items의 애니메이션 감지
+  useEffect(() => {
+    const modelObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const modelIndex = parseInt(entry.target.dataset.model);
+            setVisibleModels(prev => new Set([...prev, modelIndex]));
+          }
+        });
+      },
+      { 
+        threshold: 0.3, // 30% 이상 보일 때 감지
+        rootMargin: '0px 0px -100px 0px' // 하단에서 100px 전에 감지
+      }
+    );
+
+    // 모든 AI Model Items들을 관찰
+    Object.values(modelRefs.current).forEach(ref => {
+      if (ref) {
+        modelObserver.observe(ref);
+      }
+    });
+
+    return () => {
+      modelObserver.disconnect();
     };
   }, []);
 
@@ -502,9 +533,19 @@ const ProductsPage = () => {
       {/* Features Section */}
       <section className="features-section">
         <div className="features-container">
-          <h2 className="features-title">주요 특징</h2>
+          <p 
+            ref={(el) => (modelRefs.current[6] = el)}
+            className={`features-description ${visibleModels.has(6) ? 'visible' : ''}`}
+            data-model="6"
+          >
+            REAL CAPTCHA의 핵심 기능들을 확인해보세요
+          </p>
           <div className="features-grid">
-            <div className="feature-card">
+            <div 
+              ref={(el) => (modelRefs.current[7] = el)}
+              className={`feature-card ${visibleModels.has(7) ? 'visible' : ''}`}
+              data-model="7"
+            >
               <div className="feature-icon">
                 <FaRobot />
               </div>
@@ -513,7 +554,11 @@ const ProductsPage = () => {
                 딥러닝 알고리즘을 통해 봇의 행동 패턴을 정확하게 분석하고 차단합니다.
               </p>
             </div>
-            <div className="feature-card">
+            <div 
+              ref={(el) => (modelRefs.current[8] = el)}
+              className={`feature-card ${visibleModels.has(8) ? 'visible' : ''}`}
+              data-model="8"
+            >
               <div className="feature-icon">
                 <FaBullseye />
               </div>
@@ -522,7 +567,11 @@ const ProductsPage = () => {
                 사용자의 행동 패턴에 따라 실시간으로 난이도를 조절하여 최적의 경험을 제공합니다.
               </p>
             </div>
-            <div className="feature-card">
+            <div 
+              ref={(el) => (modelRefs.current[9] = el)}
+              className={`feature-card ${visibleModels.has(9) ? 'visible' : ''}`}
+              data-model="9"
+            >
               <div className="feature-icon">
                 <FaBolt />
               </div>
@@ -531,7 +580,11 @@ const ProductsPage = () => {
                 평균 0.5초 이내의 빠른 응답 시간으로 사용자 경험을 해치지 않습니다.
               </p>
             </div>
-            <div className="feature-card">
+            <div 
+              ref={(el) => (modelRefs.current[10] = el)}
+              className={`feature-card ${visibleModels.has(10) ? 'visible' : ''}`}
+              data-model="10"
+            >
               <div className="feature-icon">
                 <FaShieldAlt />
               </div>
@@ -540,7 +593,11 @@ const ProductsPage = () => {
                 다중 레이어 보안 시스템으로 봇 공격을 효과적으로 차단합니다.
               </p>
             </div>
-            <div className="feature-card">
+            <div 
+              ref={(el) => (modelRefs.current[11] = el)}
+              className={`feature-card ${visibleModels.has(11) ? 'visible' : ''}`}
+              data-model="11"
+            >
               <div className="feature-icon">
                 <FaChartBar />
               </div>
@@ -549,7 +606,11 @@ const ProductsPage = () => {
                 실시간 대시보드를 통해 보안 상황과 성능 지표를 한눈에 확인할 수 있습니다.
               </p>
             </div>
-            <div className="feature-card">
+            <div 
+              ref={(el) => (modelRefs.current[12] = el)}
+              className={`feature-card ${visibleModels.has(12) ? 'visible' : ''}`}
+              data-model="12"
+            >
               <div className="feature-icon">
                 <FaTools />
               </div>
@@ -565,70 +626,50 @@ const ProductsPage = () => {
       {/* AI Models Section */}
       <section className="ai-models-section">
         <div className="ai-models-container">
-          <h2 className="ai-models-title">AI 모델 성능</h2>
-          <p className="ai-models-subtitle">
-            REAL CAPTCHA는 최첨단 AI 모델을 통해 뛰어난 봇 차단 성능을 제공합니다
+          <p 
+            ref={(el) => (modelRefs.current[0] = el)}
+            className={`ai-models-subtitle ${visibleModels.has(0) ? 'visible' : ''}`}
+            data-model="0"
+          >
+            REAL CAPTCHA는 최첨단 AI 모델을 통해 <br />
+            뛰어난 봇 차단 성능을 제공합니다
           </p>
           
-          {/* Model 1 - ResNet-152 */}
-          <div className="ai-model-item model-1">
+          {/* Model 1 - AutoEncoder */}
+          <div 
+            ref={(el) => (modelRefs.current[1] = el)}
+            className={`ai-model-item model-1 ${visibleModels.has(1) ? 'visible' : ''}`}
+            data-model="1"
+          >
             <div className="model-content">
               <div className="model-text">
                 <div className="model-header">
-                  <h3 className="model-name">MobileNetV2</h3>
-                  <div className="model-badge">Image Classification</div>
+                  <h3 className="model-name">AutoEncoder</h3>
+                  <div className="model-badge">Feature Learning</div>
                 </div>
                 <p className="model-description">
-                  이미지 분류를 위한 고성능 CNN 모델로, 복잡한 시각적 패턴을 정확하게 인식합니다. 
-                  깊은 레이어 구조를 통해 이미지의 세밀한 특징까지 포착하여 봇의 자동화된 이미지 처리 시도를 효과적으로 차단합니다.
+                  비지도 학습을 통해 이미지의 잠재적 특징을 학습하는 모델입니다. 
+                  정상적인 이미지 패턴을 학습하여 비정상적인 입력을 탐지하고, 
+                  봇의 자동화된 이미지 처리 시도를 효과적으로 차단합니다.
                 </p>
               </div>
               <div className="model-visual">
                 <div className="model-stats-card">
                   <div className="chart-container">
-                    <Line data={resnetData} options={chartOptions} />
+                    <Line data={autoencoderData} options={chartOptions} />
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Model 2 - BERT-Large */}
-          <div className="ai-model-item model-2">
+          {/* Model 2 - YOLOv8s */}
+          <div 
+            ref={(el) => (modelRefs.current[2] = el)}
+            className={`ai-model-item model-2 ${visibleModels.has(2) ? 'visible' : ''}`}
+            data-model="2"
+          >
             <div className="model-content">
-              <div className="model-visual">
-                <div className="model-stats-card">
-                  <div className="chart-container">
-                    <Line data={bertData} options={chartOptions} />
-                  </div>
-                </div>
-              </div>
-              <div className="model-text">
-                <div className="model-header">
-                  <h3 className="model-name">BERT-Large</h3>
-                  <div className="model-badge">Behavior Analysis</div>
-                </div>
-                <p className="model-description">
-                  사용자 행동 패턴을 분석하여 봇과 인간을 구분하는 핵심 AI 모델입니다. 
-                  자연어 처리와 행동 분석을 결합하여 사용자의 입력 패턴, 타이핑 속도, 마우스 움직임 등을 종합적으로 분석합니다.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Model 3 - YOLO v8 */}
-          <div className="ai-model-item model-3">
-            <div className="model-content">
-              <div className="model-text">
-                <div className="model-header">
-                  <h3 className="model-name">YOLO v8</h3>
-                  <div className="model-badge">Real-time Detection</div>
-                </div>
-                <p className="model-description">
-                  실시간 객체 탐지를 위한 경량화된 모델로, 빠른 응답 속도를 보장합니다. 
-                  이미지 내 객체를 실시간으로 감지하고 분류하여 CAPTCHA 문제의 동적 요소를 효과적으로 처리합니다.
-                </p>
-              </div>
               <div className="model-visual">
                 <div className="model-stats-card">
                   <div className="chart-container">
@@ -636,80 +677,183 @@ const ProductsPage = () => {
                   </div>
                 </div>
               </div>
+              <div className="model-text">
+                <div className="model-header">
+                  <h3 className="model-name">YOLOv8s</h3>
+                  <div className="model-badge">Object Detection</div>
+                </div>
+                <p className="model-description">
+                  실시간 객체 탐지를 위한 경량화된 모델로, 빠른 응답 속도를 보장합니다. 
+                  이미지 내 객체를 실시간으로 감지하고 분류하여 CAPTCHA 문제의 동적 요소를 효과적으로 처리합니다.
+                </p>
+              </div>
             </div>
           </div>
 
-          {/* Model 4 - Transformer-XL */}
-          <div className="ai-model-item model-4">
+          {/* Model 3 - CRNN */}
+          <div 
+            ref={(el) => (modelRefs.current[3] = el)}
+            className={`ai-model-item model-3 ${visibleModels.has(3) ? 'visible' : ''}`}
+            data-model="3"
+          >
+            <div className="model-content">
+              <div className="model-text">
+                <div className="model-header">
+                  <h3 className="model-name">CRNN</h3>
+                  <div className="model-badge">Sequence Recognition</div>
+                </div>
+                <p className="model-description">
+                  CNN과 RNN을 결합한 모델로, 이미지의 시퀀스 정보를 효과적으로 처리합니다. 
+                  텍스트 인식과 패턴 분석을 통해 복잡한 CAPTCHA 문제를 해결하고, 
+                  봇의 자동화된 처리 시도를 정확하게 탐지합니다.
+                </p>
+              </div>
+              <div className="model-visual">
+                <div className="model-stats-card">
+                  <div className="chart-container">
+                    <Line data={crnnData} options={chartOptions} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Model 4 - MobileNetV2 */}
+          <div 
+            ref={(el) => (modelRefs.current[4] = el)}
+            className={`ai-model-item model-4 ${visibleModels.has(4) ? 'visible' : ''}`}
+            data-model="4"
+          >
             <div className="model-content">
               <div className="model-visual">
                 <div className="model-stats-card">
                   <div className="chart-container">
-                    <Line data={transformerData} options={chartOptions} />
+                    <Line data={mobilenetData} options={chartOptions} />
                   </div>
                 </div>
               </div>
               <div className="model-text">
                 <div className="model-header">
-                  <h3 className="model-name">Transformer-XL</h3>
-                  <div className="model-badge">Sequence Analysis</div>
+                  <h3 className="model-name">MobileNetV2</h3>
+                  <div className="model-badge">Lightweight CNN</div>
                 </div>
                 <p className="model-description">
-                  시퀀스 데이터 분석을 통해 사용자의 상호작용 패턴을 학습합니다. 
-                  긴 시퀀스의 의존성을 효과적으로 모델링하여 사용자의 행동 흐름을 정확하게 예측하고 봇을 식별합니다.
+                  경량화된 CNN 모델로, 모바일 및 임베디드 환경에서도 효율적으로 작동합니다. 
+                  깊이별 분리 컨볼루션을 통해 적은 파라미터로도 높은 성능을 달성하며, 
+                  실시간 CAPTCHA 처리에 최적화되어 있습니다.
                 </p>
               </div>
             </div>
           </div>
 
           {/* Performance Summary */}
-          <div className="ai-performance-summary">
-            <h3 className="summary-title">모델별 정확도 비교</h3>
+          <div 
+            ref={(el) => (modelRefs.current[5] = el)}
+            className={`ai-performance-summary ${visibleModels.has(5) ? 'visible' : ''}`}
+            data-model="5"
+          >
             <p className="summary-description">
-              각 AI 모델의 학습 과정에서 정확도 변화를 확인할 수 있습니다
+              각 AI 모델의 최종 성능과 학습 특성을 비교해보세요
             </p>
+            
+            <div className="performance-comparison-table">
+              <div className="comparison-header">
+                <div className="model-column">AI 모델</div>
+                <div className="metric-column">최종 정확도</div>
+                <div className="metric-column">학습 속도</div>
+                <div className="metric-column">메모리 효율성</div>
+                <div className="metric-column">적용 분야</div>
+              </div>
+              
+              <div className="comparison-row">
+                <div className="model-column">
+                  <div className="model-info">
+                    <span className="comparison-model-name">AutoEncoder</span>
+                    <span className="model-type">Feature Learning</span>
+                  </div>
+                </div>
+                <div className="metric-column">
+                  <span className="accuracy-score">96.2%</span>
+                </div>
+                <div className="metric-column">
+                  <span className="speed-rating">빠름</span>
+                </div>
+                <div className="metric-column">
+                  <span className="memory-rating">높음</span>
+                </div>
+                <div className="metric-column">
+                  <span className="application">패턴 탐지</span>
+                </div>
+              </div>
+              
+              <div className="comparison-row">
+                <div className="model-column">
+                  <div className="model-info">
+                    <span className="comparison-model-name">YOLOv8s</span>
+                    <span className="model-type">Object Detection</span>
+                  </div>
+                </div>
+                <div className="metric-column">
+                  <span className="accuracy-score">94.8%</span>
+                </div>
+                <div className="metric-column">
+                  <span className="speed-rating">매우 빠름</span>
+                </div>
+                <div className="metric-column">
+                  <span className="memory-rating">보통</span>
+                </div>
+                <div className="metric-column">
+                  <span className="application">실시간 탐지</span>
+                </div>
+              </div>
+              
+              <div className="comparison-row">
+                <div className="model-column">
+                  <div className="model-info">
+                    <span className="comparison-model-name">CRNN</span>
+                    <span className="model-type">Sequence Recognition</span>
+                  </div>
+                </div>
+                <div className="metric-column">
+                  <span className="accuracy-score">97.3%</span>
+                </div>
+                <div className="metric-column">
+                  <span className="speed-rating">보통</span>
+                </div>
+                <div className="metric-column">
+                  <span className="memory-rating">높음</span>
+                </div>
+                <div className="metric-column">
+                  <span className="application">텍스트 인식</span>
+                </div>
+              </div>
+              
+              <div className="comparison-row">
+                <div className="model-column">
+                  <div className="model-info">
+                    <span className="comparison-model-name">MobileNetV2</span>
+                    <span className="model-type">Lightweight CNN</span>
+                  </div>
+                </div>
+                <div className="metric-column">
+                  <span className="accuracy-score">96.8%</span>
+                </div>
+                <div className="metric-column">
+                  <span className="speed-rating">빠름</span>
+                </div>
+                <div className="metric-column">
+                  <span className="memory-rating">매우 높음</span>
+                </div>
+                <div className="metric-column">
+                  <span className="application">경량화 처리</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Features Comparison */}
-      <section className="features-comparison">
-        <div className="comparison-content">
-          <h2 className="comparison-title">기능 비교</h2>
-          <div className="comparison-table">
-            <div className="table-header">
-              <div className="feature-name">기능</div>
-              <div className="plan-basic">Basic</div>
-              <div className="plan-advanced">Advanced</div>
-              <div className="plan-enterprise">Enterprise</div>
-            </div>
-            <div className="table-row">
-              <div className="feature-name">일일 요청 수</div>
-              <div className="plan-basic">1,000</div>
-              <div className="plan-advanced">100,000</div>
-              <div className="plan-enterprise">무제한</div>
-            </div>
-            <div className="table-row">
-              <div className="feature-name">AI 분석</div>
-              <div className="plan-basic">❌</div>
-              <div className="plan-advanced">✅</div>
-              <div className="plan-enterprise">✅</div>
-            </div>
-            <div className="table-row">
-              <div className="feature-name">맞춤 설정</div>
-              <div className="plan-basic">❌</div>
-              <div className="plan-advanced">✅</div>
-              <div className="plan-enterprise">✅</div>
-            </div>
-            <div className="table-row">
-              <div className="feature-name">전담 지원</div>
-              <div className="plan-basic">❌</div>
-              <div className="plan-advanced">❌</div>
-              <div className="plan-enterprise">✅</div>
-            </div>
-          </div>
-        </div>
-      </section>
+
     </div>
   );
 };

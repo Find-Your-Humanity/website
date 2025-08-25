@@ -104,19 +104,34 @@
 }
 
 .ai-models-subtitle {
-  text-align: center;
-  font-size: 1.3rem;
+  text-align: left;
+  font-size: 2.2rem;
+  font-weight: bold;
   color: #666666;
-  margin-bottom: 4rem;
+  margin-bottom: 12rem;
+  margin-top: 10rem;
   line-height: 1.6;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 1.2s ease;
+}
+
+.ai-models-subtitle.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* AI Model Items */
 .ai-model-item {
-  margin-bottom: 8rem;
+  margin-bottom: 10rem;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 1.2s ease;
+}
+
+.ai-model-item.visible {
   opacity: 1;
   transform: translateY(0);
-  transition: all 0.8s ease;
 }
 
 /* featured 스타일 제거됨 */
@@ -241,17 +256,19 @@
   border-radius: 20px;
   margin-top: 3rem;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 1.2s ease;
 }
 
-.summary-title {
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: #000000;
-  margin-bottom: 1rem;
+.ai-performance-summary.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .summary-description {
-  font-size: 1.2rem;
+  font-size: 1.8rem;
+  font-weight: bold;
   color: #666666;
   margin-bottom: 3rem;
   line-height: 1.6;
@@ -266,6 +283,130 @@
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* 성능 비교 표 */
+.performance-comparison-table {
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  margin-top: 2rem;
+}
+
+.comparison-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  background: #DFFF00;
+  color: #000000;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.comparison-header > div {
+  padding: 1.5rem 1rem;
+  text-align: center;
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.comparison-header > div:last-child {
+  border-right: none;
+}
+
+.comparison-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.3s ease;
+}
+
+.comparison-row:hover {
+  background-color: #f8f9fa;
+}
+
+.comparison-row:last-child {
+  border-bottom: none;
+}
+
+.comparison-row > div {
+  padding: 1.5rem 1rem;
+  text-align: center;
+  border-right: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.comparison-row > div:last-child {
+  border-right: none;
+}
+
+.model-column {
+  justify-content: flex-start !important;
+  padding-left: 2rem !important;
+}
+
+.model-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3rem;
+}
+
+.comparison-model-name {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #000000;
+}
+
+.model-type {
+  font-size: 0.9rem;
+  color: #666666;
+  font-weight: 500;
+}
+
+.accuracy-score {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #000000;
+  text-shadow: none;
+}
+
+.speed-rating,
+.memory-rating,
+.application {
+  font-weight: 500;
+  color: #333333;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .comparison-header,
+  .comparison-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  
+  .comparison-header > div,
+  .comparison-row > div {
+    border-right: none;
+    border-bottom: 1px solid #f0f0f0;
+    padding: 1rem;
+  }
+  
+  .comparison-header > div:last-child,
+  .comparison-row > div:last-child {
+    border-bottom: none;
+  }
+  
+  .model-column {
+    justify-content: center !important;
+    padding-left: 1rem !important;
+  }
+  
+  .model-info {
+    align-items: center;
+  }
 }
 
 /* 간단한 성능 메트릭 - 제거됨 */
@@ -538,11 +679,46 @@
 
 /* Features Section */
 .features-section { padding: 4rem 0; background-color: #ffffff; }
+
 .features-container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
-.features-title { text-align: center; font-size: 2.5rem; font-weight: bold; color: #000000; margin-bottom: 3rem; }
+
+.features-description { 
+  text-align: left; 
+  font-size: 2.2rem; 
+  font-weight: bold; 
+  color: #666666; 
+  margin-bottom: 6rem; 
+  margin-top: 8rem;
+  line-height: 1.6;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 1.2s ease;
+}
+
+.features-description.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
 .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
-.feature-card { background-color: #f9f9f9; padding: 2rem; border-radius: 12px; text-align: center; transition: transform .3s, background-color .3s; }
-.feature-card:hover { transform: translateY(-5px); background-color: #f0f0f0; }
+.feature-card { 
+  background-color: #f9f9f9; 
+  padding: 2rem; 
+  border-radius: 12px; 
+  text-align: center; 
+  transition: all 1.2s ease, transform 0.2s ease;
+  opacity: 0;
+  transform: translateY(50px);
+}
+
+.feature-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.feature-card:hover { 
+  transform: translateY(-5px); 
+  background-color: #f0f0f0; 
+}
 
 .feature-icon { 
   font-size: 3rem; 

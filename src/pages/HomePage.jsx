@@ -1,12 +1,20 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import '../styles/pages/HomePage.css';
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   const handleStartFreePlan = () => {
-    navigate('/signin');
+    if (isAuthenticated) {
+      // 로그인된 상태: PayPage로 이동
+      navigate('/pay');
+    } else {
+      // 로그인되지 않은 상태: 로그인페이지로 이동
+      navigate('/signin?next=/pay');
+    }
   };
 
   return (
