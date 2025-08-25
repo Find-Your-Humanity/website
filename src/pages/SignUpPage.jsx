@@ -185,16 +185,25 @@ const SignUpPage = () => {
               <div className="signup-form-group">
                 <label className="signup-form-label">이메일</label>
                 <div style={{ display:'flex', gap:14, alignItems:'center' }}>
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="example@email.com"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="signup-form-input"
-                    style={{ flex: 1 }}
-                    required
-                  />
+                  <div className="email-input-container">
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="example@email.com"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="signup-form-input"
+                      style={{ flex: 1 }}
+                      required
+                    />
+                    <div className={`email-verification-status ${emailVerified ? 'verified' : 'unverified'}`}>
+                      {emailVerified ? (
+                        <span className="verification-check">✓</span>
+                      ) : (
+                        <span className="verification-pending">○</span>
+                      )}
+                    </div>
+                  </div>
                   <button
                     type="button"
                     onClick={requestEmailCode}
@@ -202,7 +211,13 @@ const SignUpPage = () => {
                     className="inline-btn"
                     style={{ width: 120 }}
                   >
-                    {codeRequesting ? 'Sending...' : '인증번호 전송'}
+                    {codeRequesting ? (
+                      <div className="loading-spinner">
+                        <div className="spinner"></div>
+                      </div>
+                    ) : (
+                      '인증번호 전송'
+                    )}
                   </button>
                 </div>
                 {fieldErrors.email && <div className="field-error">{fieldErrors.email}</div>}
