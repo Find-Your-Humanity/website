@@ -61,6 +61,14 @@
   margin-bottom: 1rem !important;
   line-height: 1.4 !important;
   color: #ffffff !important;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 1.2s ease;
+}
+
+.company-page .company-hero-title.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* .company-page .company-hero-title .highlight-text {
@@ -71,9 +79,16 @@
   font-size: 2rem;
   font-weight: 700;
   line-height: 1.6;
-  opacity: 0.9;
+  opacity: 0;
   margin: 0 auto;
-  color: #ffffff
+  color: #ffffff;
+  transform: translateY(50px);
+  transition: all 1.2s ease;
+}
+
+.company-hero-subtitle.visible {
+  opacity: 0.9;
+  transform: translateY(0);
 }
 
 /* Team Section */

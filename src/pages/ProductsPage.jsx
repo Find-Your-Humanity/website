@@ -35,11 +35,13 @@ const ProductsPage = () => {
   const [visibleLevels, setVisibleLevels] = useState(new Set());
   const [playingVideos, setPlayingVideos] = useState(new Set());
   const [visibleModels, setVisibleModels] = useState(new Set());
+  const [heroVisible, setHeroVisible] = useState(false);
   const videoSectionRef = useRef(null);
   const videoTimerRef = useRef(null);
   const levelRefs = useRef({});
   const levelVideoRefs = useRef({});
   const modelRefs = useRef({});
+  const heroRef = useRef(null);
 
   // Chart.js 데이터 및 옵션 - 간단한 설정
   const chartOptions = {
@@ -197,6 +199,15 @@ const ProductsPage = () => {
   // 디버깅을 위한 콘솔 로그
   console.log('Chart Data Loaded:', { autoencoderData, yoloData, crnnData, mobilenetData, performanceComparisonData });
 
+  // Hero section은 페이지 로드 시 약간의 지연 후 애니메이션
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setHeroVisible(true);
+    }, 100); // 100ms 지연
+    
+    return () => clearTimeout(timer);
+  }, []);
+
   const handleStartFreePlan = () => {
     if (isAuthenticated) {
       // 로그인된 상태: PayPage로 이동
@@ -350,7 +361,10 @@ const ProductsPage = () => {
     <div className="products-page">
       {/* Hero Section */}
       <section className="products-hero">
-        <div className="products-hero-content">
+        <div 
+          ref={heroRef}
+          className={`products-hero-content ${heroVisible ? 'visible' : ''}`}
+        >
           <h1 className="products-title">
             Smart CAPTCHA tools <br />
             for <span className="human-text">Human</span>

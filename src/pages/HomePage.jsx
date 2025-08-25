@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import '../styles/pages/HomePage.css';
@@ -6,6 +6,10 @@ import '../styles/pages/HomePage.css';
 const HomePage = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const [visibleSections, setVisibleSections] = useState(new Set());
+  const heroRef = useRef(null);
+  const mainContentRef = useRef(null);
+  const featuresRef = useRef(null);
 
   const handleStartFreePlan = () => {
     if (isAuthenticated) {
@@ -17,11 +21,54 @@ const HomePage = () => {
     }
   };
 
+  // Hero section은 페이지 로드 시 약간의 지연 후 애니메이션
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setVisibleSections(prev => new Set([...prev, 'hero']));
+    }, 100); // 100ms 지연
+    
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Main content와 features의 스크롤 애니메이션
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const section = entry.target.dataset.section;
+            setVisibleSections(prev => new Set([...prev, section]));
+          }
+        });
+      },
+      { 
+        threshold: 0.3, // 30% 이상 보일 때 감지
+        rootMargin: '0px 0px -100px 0px' // 하단에서 100px 전에 감지
+      }
+    );
+
+    // Main content와 features 관찰
+    if (mainContentRef.current) {
+      observer.observe(mainContentRef.current);
+    }
+    if (featuresRef.current) {
+      observer.observe(featuresRef.current);
+    }
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   return (
     <div className="home-page">
       {/* Hero Section */}
       <section className="hero">
-        <div className="hero-content">
+        <div 
+          ref={heroRef}
+          className={`hero-content ${visibleSections.has('hero') ? 'visible' : ''}`}
+          data-section="hero"
+        >
           <h1 className="hero-title">
             <span className="real-text">REAL</span> or <span className="not-text">Not</span>?
           </h1>
@@ -40,7 +87,11 @@ const HomePage = () => {
 
       {/* Main Content */}
       <section className="main-content">
-        <div className="content-wrapper">
+        <div 
+          ref={mainContentRef}
+          className={`content-wrapper ${visibleSections.has('main') ? 'visible' : ''}`}
+          data-section="main"
+        >
           <div className="main-content-left">
             <h2 className="main-title">
               사람은 지나가고, 봇은 멈추는 <br />
@@ -69,7 +120,11 @@ const HomePage = () => {
 
       {/* Feature Boxes */}
       <section className="features">
-        <div className="features-grid">
+        <div 
+          ref={featuresRef}
+          className={`features-grid ${visibleSections.has('features') ? 'visible' : ''}`}
+          data-section="features"
+        >
           <div className="feature-box">
             <h3 className="feature-title">맞춤형 3단계 CAPTCHA</h3>
             <p className="feature-description">

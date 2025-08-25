@@ -9,6 +9,14 @@
   max-width: 800px;
   margin: 0 auto;
   padding: 0 2rem;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 1.2s ease;
+}
+
+.hero-content.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .hero-title {
@@ -119,6 +127,14 @@
   justify-content: flex-start; /* 왼쪽 기준으로 정렬 */
   gap: 3rem; /* 간격 줄임 */
   min-height: 400px;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 1.2s ease;
+}
+
+.content-wrapper.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .main-content-left {
@@ -179,6 +195,14 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 3rem; /* 더 구체적인 선택자로 !important 제거 */
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 1.2s ease;
+}
+
+.features-grid.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .feature-box {

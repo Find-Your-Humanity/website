@@ -14,6 +14,14 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 1.2s ease;
+}
+
+.products-hero-content.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .products-title {
