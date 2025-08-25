@@ -9,21 +9,50 @@ const DashboardEmbed = () => {
   const iframeRef = useRef(null);
   const { user, isAuthenticated, logout } = useAuth();
 
-  // 인증 상태 확인 및 검증
+  // 인증 상태 확인 및 검증 - 즉시 실행
   useEffect(() => {
     const verifyAuth = async () => {
       try {
-        // 로컬 스토리지에 토큰이 있는지 확인
+        // 1. 먼저 로컬 스토리지 확인 (빠른 응답)
         const token = localStorage.getItem('authToken');
         const userData = localStorage.getItem('userData');
         
-        if (!token || !userData) {
-          console.log('토큰 또는 사용자 데이터가 없음');
-          setAuthVerified(true);
-          return;
+        if (token && userData) {
+          try {
+            const parsedUser = JSON.parse(userData);
+            // 로컬 스토리지에 유효한 데이터가 있으면 즉시 인증 완료로 처리
+            console.log('로컬 스토리지에서 인증 정보 확인됨');
+            setAuthVerified(true);
+            
+            // 백그라운드에서 서버 검증 (선택적)
+            setTimeout(async () => {
+              try {
+                const response = await fetch('https://gateway.realcatcha.com/api/auth/me', {
+                  method: 'GET',
+                  credentials: 'include',
+                });
+                
+                if (!response.ok) {
+                  console.log('서버 인증 실패, 로컬 데이터 정리');
+                  localStorage.removeItem('authToken');
+                  localStorage.removeItem('userData');
+                  setAuthVerified(false);
+                }
+              } catch (error) {
+                console.warn('서버 인증 확인 중 오류:', error);
+              }
+            }, 1000);
+            
+            return;
+          } catch (error) {
+            console.log('로컬 데이터 파싱 실패');
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userData');
+          }
         }
 
-        // 서버에 인증 상태 확인
+        // 2. 로컬 스토리지에 데이터가 없으면 서버 확인
+        console.log('서버에서 인증 상태 확인');
         const response = await fetch('https://gateway.realcatcha.com/api/auth/me', {
           method: 'GET',
           credentials: 'include',
@@ -32,7 +61,12 @@ const DashboardEmbed = () => {
         if (response.ok) {
           const data = await response.json();
           if (data && data.success && data.user) {
-            console.log('인증 상태 확인 성공');
+            console.log('서버 인증 성공');
+            // 서버에서 받은 데이터로 로컬 스토리지 업데이트
+            if (data.access_token) {
+              localStorage.setItem('authToken', data.access_token);
+            }
+            localStorage.setItem('userData', JSON.stringify(data.user));
             setAuthVerified(true);
           } else {
             console.log('서버 응답에 사용자 정보 없음');
@@ -41,7 +75,7 @@ const DashboardEmbed = () => {
             setAuthVerified(true);
           }
         } else {
-          console.log('인증 상태 확인 실패:', response.status);
+          console.log('서버 인증 실패:', response.status);
           localStorage.removeItem('authToken');
           localStorage.removeItem('userData');
           setAuthVerified(true);
@@ -56,7 +90,7 @@ const DashboardEmbed = () => {
   }, []);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 1200);
+    const timer = setTimeout(() => setIsLoading(false), 800); // 로딩 시간 단축
     
     // 대시보드에서 로그아웃 메시지 수신 처리
     const handleMessage = (event) => {
@@ -96,7 +130,7 @@ const DashboardEmbed = () => {
             token: token,
             user: JSON.parse(userData)
           }, 'https://dashboard.realcatcha.com');
-        }, 1000); // iframe이 완전히 로드될 때까지 잠시 대기
+        }, 500); // 대기 시간 단축
       }
 
       // iframe 내부의 헤더 숨기기
@@ -159,7 +193,7 @@ const DashboardEmbed = () => {
         } catch (error) {
           console.warn('iframe 내부 스타일 주입 실패:', error);
         }
-      }, 2000); // iframe 로드 후 2초 뒤에 스타일 주입
+      }, 1500); // 스타일 주입 시간 단축
     }
   };
 

@@ -8,5 +8,17 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 5173,
     open: true
+  },
+  css: {
+    postcss: {
+      plugins: []
+    }
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: undefined
+      }
+    }
   }
 })

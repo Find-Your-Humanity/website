@@ -8,13 +8,15 @@ WORKDIR /app
 COPY package*.json ./
 
 # 의존성 설치 (개발 의존성 포함)
-RUN npm ci
+RUN npm ci --legacy-peer-deps
 
 # 소스 코드 복사
 COPY . .
 
-# 빌드
-RUN npm run build
+# 캐시 정리 및 빌드
+RUN npm cache clean --force && \
+    rm -rf node_modules/.cache && \
+    npm run build
 
 # 프로덕션 이미지
 FROM nginx:alpine
