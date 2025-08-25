@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { FaRobot, FaBullseye, FaBolt, FaShieldAlt, FaChartBar, FaTools } from 'react-icons/fa';
 import { Line } from 'react-chartjs-2';
+import useScrollToTop from '../hooks/useScrollToTop';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -42,6 +43,9 @@ const ProductsPage = () => {
   const levelVideoRefs = useRef({});
   const modelRefs = useRef({});
   const heroRef = useRef(null);
+  
+  // 페이지 이동 시 스크롤을 맨 위로 올림
+  useScrollToTop();
 
   // Chart.js 데이터 및 옵션 - 간단한 설정
   const chartOptions = {

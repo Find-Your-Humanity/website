@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import useScrollToTop from '../hooks/useScrollToTop';
 import '../styles/pages/HomePage.css';
 
 const HomePage = () => {
@@ -10,6 +11,9 @@ const HomePage = () => {
   const heroRef = useRef(null);
   const mainContentRef = useRef(null);
   const featuresRef = useRef(null);
+  
+  // 페이지 이동 시 스크롤을 맨 위로 올림
+  useScrollToTop();
 
   const handleStartFreePlan = () => {
     if (isAuthenticated) {

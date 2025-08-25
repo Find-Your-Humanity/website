@@ -1,11 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FaUser } from 'react-icons/fa';
+import useScrollToTop from '../hooks/useScrollToTop';
 import '../styles/pages/CompanyPage.css';
 
 const CompanyPage = () => {
   const [heroVisible, setHeroVisible] = useState(false);
   const heroTitleRef = useRef(null);
   const heroSubtitleRef = useRef(null);
+  
+  // 페이지 이동 시 스크롤을 맨 위로 올림
+  useScrollToTop();
   
   const teamMembers = [
     {
@@ -77,7 +81,7 @@ const CompanyPage = () => {
       {/* Team Members Section */}
       <section className="team-section">
         <div className="team-container">
-          <h2 className="team-title">팀 멤버</h2>
+          <h2 className="team-title">Team Members</h2>
           <div className="team-grid">
             {teamMembers.map((member) => (
               <div key={member.id} className="team-member-card">

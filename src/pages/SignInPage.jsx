@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash, FaFacebook, FaApple, FaGoogle } from 'react-icons/fa';
 import { useAuth } from '../contexts/AuthContext';
+import useScrollToTop from '../hooks/useScrollToTop';
 import '../styles/pages/SignInPage.css';
 
 const SignInPage = () => {
@@ -13,6 +14,9 @@ const SignInPage = () => {
   
   const { login } = useAuth();
   const navigate = useNavigate();
+  
+  // 페이지 이동 시 스크롤을 맨 위로 올림
+  useScrollToTop();
 
   const handleSubmit = async (e) => {
     e.preventDefault();

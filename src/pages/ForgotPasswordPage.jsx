@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FaArrowLeft } from 'react-icons/fa';
+import useScrollToTop from '../hooks/useScrollToTop';
 import '../styles/pages/ForgotPasswordPage.css';
 
 const ForgotPasswordPage = () => {
@@ -14,6 +15,9 @@ const ForgotPasswordPage = () => {
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  
+  // 페이지 이동 시 스크롤을 맨 위로 올림
+  useScrollToTop();
 
   useEffect(() => {
     try {
