@@ -212,8 +212,8 @@ const SignUpPage = () => {
                     style={{ width: 120 }}
                   >
                     {codeRequesting ? (
-                      <div className="loading-spinner">
-                        <div className="spinner"></div>
+                      <div className="signup-loading-spinner">
+                        <div className="signup-spinner"></div>
                       </div>
                     ) : (
                       '인증번호 전송'
