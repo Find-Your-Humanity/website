@@ -15,6 +15,7 @@ import PrivacyPage from './pages/PrivacyPage';
 import FAQPage from './pages/FAQPage';
 import MyInquiriesPage from './pages/MyInquiriesPage';
 import DashboardEmbed from './pages/DashboardEmbed';
+import PayPage from './pages/PayPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import GoogleCallbackPage from './pages/GoogleCallbackPage';
@@ -41,6 +42,7 @@ function App() {
             <Route path="/faq" element={<FAQPage />} />
             <Route path="/my-inquiries" element={<MyInquiriesPage />} />
             <Route path="/dashboard" element={<DashboardEmbed />} />
+            <Route path="/pay" element={<PayPage />} />
             <Route path="/auth/google/callback" element={<GoogleCallbackPage />} />
           </Routes>
         </MainLayout>
