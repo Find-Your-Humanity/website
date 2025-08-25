@@ -133,67 +133,67 @@ const DashboardEmbed = () => {
         }, 500); // 대기 시간 단축
       }
 
-      // iframe 내부의 헤더 숨기기
-      setTimeout(() => {
-        try {
-          const iframeDoc = iframeRef.current.contentDocument || iframeRef.current.contentWindow.document;
-          if (iframeDoc) {
-            // CSS 스타일 주입
-            const style = iframeDoc.createElement('style');
-            style.textContent = `
-              /* Real Captcha Dashboard 헤더 숨기기 */
-              header, 
-              .header, 
-              [class*="header"], 
-              [class*="Header"],
-              .dashboard-header,
-              .main-header,
-              .top-header,
-              .app-header {
-                display: none !important;
-              }
-              
-              /* 사용자 정보 영역 숨기기 */
-              .user-info,
-              .user-profile,
-              .account-info,
-              .profile-section,
-              [class*="user"],
-              [class*="User"],
-              [class*="profile"],
-              [class*="Profile"] {
-                display: none !important;
-              }
-              
-              /* 메인 콘텐츠 영역을 전체 화면으로 확장 */
-              main, 
-              .main, 
-              .content, 
-              .main-content,
-              [class*="main"],
-              [class*="Main"],
-              [class*="content"],
-              [class*="Content"] {
-                margin-top: 0 !important;
-                padding-top: 0 !important;
-                height: 100vh !important;
-                min-height: 100vh !important;
-              }
-              
-              /* body와 html의 여백 제거 */
-              body, html {
-                margin: 0 !important;
-                padding: 0 !important;
-                height: 100% !important;
-                overflow: hidden !important;
-              }
-            `;
-            iframeDoc.head.appendChild(style);
-          }
-        } catch (error) {
-          console.warn('iframe 내부 스타일 주입 실패:', error);
-        }
-      }, 1500); // 스타일 주입 시간 단축
+      // iframe 내부의 헤더 숨기기 (크로스 오리진 보안 정책으로 인해 제거)
+      // setTimeout(() => {
+      //   try {
+      //     const iframeDoc = iframeRef.current.contentDocument || iframeRef.current.contentWindow.document;
+      //     if (iframeDoc) {
+      //       // CSS 스타일 주입
+      //       const style = iframeDoc.createElement('style');
+      //       style.textContent = `
+      //         /* Real Captcha Dashboard 헤더 숨기기 */
+      //         header, 
+      //         .header, 
+      //         [class*="header"], 
+      //         [class*="Header"],
+      //         .dashboard-header,
+      //         .main-header,
+      //         .top-header,
+      //         .app-header {
+      //           display: none !important;
+      //         }
+      //         
+      //         /* 사용자 정보 영역 숨기기 */
+      //         .user-info,
+      //         .user-profile,
+      //         .account-info,
+      //         .profile-section,
+      //         [class*="user"],
+      //         [class*="User"],
+      //         [class*="profile"],
+      //         [class*="Profile"] {
+      //           display: none !important;
+      //         }
+      //         
+      //         /* 메인 콘텐츠 영역을 전체 화면으로 확장 */
+      //         main, 
+      //         .main, 
+      //         .content, 
+      //         .main-content,
+      //         [class*="main"],
+      //         [class*="Main"],
+      //         [class*="content"],
+      //         [class*="Content"] {
+      //           margin-top: 0 !important;
+      //           padding-top: 0 !important;
+      //           height: 100vh !important;
+      //           min-height: 100vh !important;
+      //         }
+      //         
+      //         /* body와 html의 여백 제거 */
+      //         body, html {
+      //           margin: 0 !important;
+      //           padding: 0 !important;
+      //           height: 100% !important;
+      //           overflow: hidden !important;
+      //         }
+      //       `;
+      //       iframeDoc.head.appendChild(style);
+      //     }
+      //   } catch (error) {
+      //     console.warn('iframe 내부 스타일 주입 실패:', error);
+      //   }
+      // }, 1500); // 스타일 주입 시간 단축
     }
   };
 
