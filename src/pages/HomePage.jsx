@@ -6,7 +6,7 @@ const HomePage = () => {
   const navigate = useNavigate();
 
   const handleStartFreePlan = () => {
-    navigate('/signup');
+    navigate('/signin');
   };
 
   return (

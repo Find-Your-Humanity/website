@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { FaRobot, FaBullseye, FaBolt, FaShieldAlt, FaChartBar, FaTools } from 'react-icons/fa';
@@ -7,6 +7,9 @@ import '../styles/pages/ProductsPage.css';
 const ProductsPage = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const [isVideoActive, setIsVideoActive] = useState(false);
+  const videoSectionRef = useRef(null);
+  const videoTimerRef = useRef(null);
 
   const handleStartFreePlan = () => {
     if (isAuthenticated) {
@@ -22,6 +25,40 @@ const ProductsPage = () => {
     // ContactUs Page로 이동
     navigate('/contact');
   };
+
+  // 비디오 섹션 감지 및 타이머 설정
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // 화면에 보이기 시작하면 3초 타이머 시작
+            videoTimerRef.current = setTimeout(() => {
+              setIsVideoActive(true);
+            }, 3500);
+          } else {
+            // 화면에서 벗어나면 타이머 취소 및 상태 초기화
+            if (videoTimerRef.current) {
+              clearTimeout(videoTimerRef.current);
+            }
+            setIsVideoActive(false);
+          }
+        });
+      },
+      { threshold: 0.5 } // 50% 이상 보일 때 감지
+    );
+
+    if (videoSectionRef.current) {
+      observer.observe(videoSectionRef.current);
+    }
+
+    return () => {
+      if (videoTimerRef.current) {
+        clearTimeout(videoTimerRef.current);
+      }
+      observer.disconnect();
+    };
+  }, []);
 
   return (
     <div className="products-page">
@@ -44,10 +81,10 @@ const ProductsPage = () => {
       </section>
 
       {/* Video Section */}
-      <section className="video-section">
+      <section ref={videoSectionRef} className={`video-section ${isVideoActive ? 'video-active' : ''}`}>
         <div className="video-background">
           <video 
-            className="background-video" 
+            className={`background-video ${isVideoActive ? 'video-clear' : ''}`}
             autoPlay
             muted
             loop
@@ -56,7 +93,7 @@ const ProductsPage = () => {
             <source src="/product_page_mv.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
-          <div className="video-overlay">
+          <div className={`video-overlay ${isVideoActive ? 'overlay-fade' : ''}`}>
             <div className="video-content">
               <h2 className="video-title">REAL CAPTCHA 작동 영상</h2>
               <p className="video-description">
