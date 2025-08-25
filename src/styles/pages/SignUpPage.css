@@ -190,9 +190,9 @@
   color: #000 !important;
   border: 1px solid #000000 !important;
   border-radius: 8px !important;
-  font-weight: 700 !important;
+  font-weight: 600 !important;
   box-sizing: border-box !important;
-  font-size: 0.85rem !important;
+  font-size: 0.75rem !important;
   cursor: pointer !important;
   transition: all .3s ease !important;
   overflow: hidden !important;

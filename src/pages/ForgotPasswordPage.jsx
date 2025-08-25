@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { FaArrowLeft } from 'react-icons/fa';
 import '../styles/pages/ForgotPasswordPage.css';
 
 const ForgotPasswordPage = () => {
@@ -12,6 +13,7 @@ const ForgotPasswordPage = () => {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     try {
@@ -116,8 +118,12 @@ const ForgotPasswordPage = () => {
   return (
     <div className="forgot-password-page">
       <div className="forgot-password-container">
+        <button className="back-arrow" onClick={() => navigate(-1)}>
+          <FaArrowLeft />
+        </button>
         <div className="forgot-password-form">
-          <h1 className="forgot-password-title">Forgot password</h1>
+          <h1 className="forgot-password-title">비밀번호 재설정</h1>
+          <p className="forgot-password-description">이메일 주소를 입력하시면 비밀번호 재설정 링크를 전송해 드립니다</p>
           {message && <div className="error-message">{message}</div>}
 
           {step === 'request' ? (
@@ -133,9 +139,12 @@ const ForgotPasswordPage = () => {
                   disabled={loading}
                 />
               </div>
-              <button onClick={handleRequestLink} className="forgot-password-button" disabled={loading}>
+              <button onClick={handleRequestLink} className="forgot-password-button" disabled={loading || !email.trim()}>
                 {loading && mode==='token' ? 'Submitting...' : 'Send reset link'}
               </button>
+              <div className="help-link-container">
+                <span className="help-link" onClick={() => navigate('/contact')}>도움이 필요하신가요?</span>
+              </div>
             </form>
           ) : step === 'sent' ? (
             <div style={{ textAlign:'center', padding:'24px 0' }}>
@@ -169,7 +178,7 @@ const ForgotPasswordPage = () => {
                   disabled={loading}
                 />
               </div>
-              <button type="submit" className="forgot-password-button" disabled={loading}>
+              <button type="submit" className="forgot-password-button" disabled={loading || !newPassword.trim()}>
                 {loading ? 'Changing...' : 'Change password'}
               </button>
             </form>
@@ -209,7 +218,7 @@ const ForgotPasswordPage = () => {
                   disabled={loading}
                 />
               </div>
-              <button type="submit" className="forgot-password-button" disabled={loading}>
+              <button type="submit" className="forgot-password-button" disabled={loading || !email.trim() || !code.trim() || !newPassword.trim()}>
                 {loading ? 'Changing...' : 'Change password'}
               </button>
             </form>

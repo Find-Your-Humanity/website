@@ -209,7 +209,7 @@ const SignUpPage = () => {
                     onClick={requestEmailCode}
                     disabled={codeRequesting}
                     className="inline-btn"
-                    style={{ width: 120 }}
+                    style={{ width: 100 }}
                   >
                     {codeRequesting ? (
                       <div className="signup-loading-spinner">
