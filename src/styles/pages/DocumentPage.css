@@ -147,6 +147,14 @@
   color: #000000;
 }
 
+.document-page.dark-mode .framework-badge {
+  color: #000000;
+}
+
+.document-page.dark-mode .framework-badge span {
+  color: #000000;
+}
+
 /* Top Header Bar */
 .docs-header {
   display: flex;
@@ -321,7 +329,7 @@
 .header-controls {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 2rem;
   margin-left: auto;
 }
 

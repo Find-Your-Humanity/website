@@ -190,9 +190,9 @@
   color: #000 !important;
   border: 1px solid #000000 !important;
   border-radius: 8px !important;
-  font-weight: 700 !important;
+  font-weight: 600 !important;
   box-sizing: border-box !important;
-  font-size: 0.85rem !important;
+  font-size: 0.75rem !important;
   cursor: pointer !important;
   transition: all .3s ease !important;
   overflow: hidden !important;
@@ -385,7 +385,7 @@
 }
 
 /* 로딩 스피너 */
-.loading-spinner {
+.signup-loading-spinner {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -393,14 +393,19 @@
   height: 100%;
 }
 
-.spinner {
-  width: 10px;
-  height: 10px;
-  border: 1.5px solid transparent;
-  border-top: 1.5px solid #000000;
+.signup-spinner {
+  width: 8px;
+  height: 8px;
+  border: 1px solid transparent;
+  border-top: 1px solid #000000;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: signup-spin 1s linear infinite;
   flex-shrink: 0;
+}
+
+@keyframes signup-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 @keyframes spin {

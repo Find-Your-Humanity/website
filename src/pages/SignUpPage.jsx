@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { FaEye, FaEyeSlash, FaFacebook, FaApple, FaGoogle } from 'react-icons/fa';
 import { validateSignupForm, hasErrors } from '../utils/validation';
+import useScrollToTop from '../hooks/useScrollToTop';
 import '../styles/pages/SignUpPage.css';
 
 const SignUpPage = () => {
@@ -10,6 +11,9 @@ const SignUpPage = () => {
   const { signup } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  
+  // 페이지 이동 시 스크롤을 맨 위로 올림
+  useScrollToTop();
   const [formData, setFormData] = useState({
     email: '',
     username: '',
@@ -209,11 +213,11 @@ const SignUpPage = () => {
                     onClick={requestEmailCode}
                     disabled={codeRequesting}
                     className="inline-btn"
-                    style={{ width: 120 }}
+                    style={{ width: 100 }}
                   >
                     {codeRequesting ? (
-                      <div className="loading-spinner">
-                        <div className="spinner"></div>
+                      <div className="signup-loading-spinner">
+                        <div className="signup-spinner"></div>
                       </div>
                     ) : (
                       '인증번호 전송'
