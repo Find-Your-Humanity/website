@@ -8,12 +8,14 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   height: 80px;
   box-sizing: border-box;
+  position: relative;
 }
 
 .dashboard-header-left {
   display: flex;
   align-items: center;
   gap: 2rem;
+  flex: 1;
 }
 
 .dashboard-title {
@@ -29,11 +31,52 @@
   color: #DFFF00;
 }
 
+/* 검색 입력창 스타일 */
+.dashboard-search-container {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  max-width: 500px;
+  width: 100%;
+}
 
+.dashboard-search-icon {
+  position: absolute;
+  left: 1rem;
+  color: #9e9e9e;
+  font-size: 0.9rem;
+  z-index: 1;
+}
+
+.dashboard-search-input {
+  padding: 0.5rem 0.75rem 0.5rem 2.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  width: 100%;
+  background-color: #f9f9f9;
+  transition: all 0.3s ease;
+}
+
+.dashboard-search-input:focus {
+  outline: none;
+  border-color: #DFFF00;
+  background-color: #ffffff;
+}
+
+.dashboard-search-input:hover {
+  border-color: #d0d0d0;
+  background-color: #f0f0f0;
+}
 
 .dashboard-header-right {
   display: flex;
   align-items: center;
+  flex: 1;
+  justify-content: flex-end;
 }
 
 .user-button {
