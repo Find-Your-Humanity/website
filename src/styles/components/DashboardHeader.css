@@ -79,78 +79,288 @@
   justify-content: flex-end;
 }
 
+/* 모바일 메뉴 버튼 */
+.mobile-menu-button {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #333;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.mobile-menu-button:hover {
+  background-color: #f0f0f0;
+}
+
+/* User Menu - Header.css와 동일한 스타일 */
+.user-menu {
+  position: relative;
+}
+
 .user-button {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem 1rem;
-  background-color: #f5f5f5;
+  background: none;
   border: 1px solid #e0e0e0;
+  padding: 0.5rem 1rem;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
-  user-select: none;
-}
-
-.user-profile-icon {
-  font-size: 1rem;
-  color: #666666;
+  color: #333;
+  font-size: 0.9rem;
 }
 
 .user-button:hover {
-  background-color: #e8e8e8;
-  border-color: #d0d0d0;
+  border-color: #DFFF00;
+  background-color: #f9f9f9;
 }
 
-.user-button-text {
-  font-size: 0.9rem;
+.user-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background-color: #f0f0f0;
+  border-radius: 50%;
+  color: #666;
+}
+
+.user-name {
   font-weight: 500;
-  color: #333333;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.user-button-icon {
-  font-size: 0.75rem;
-  color: #666666;
+.dropdown-arrow {
   transition: transform 0.3s ease;
+  color: #999;
 }
 
-.user-button:hover .user-button-icon,
-.user-button.dropdown-open .user-button-icon {
+.dropdown-arrow.open {
   transform: rotate(180deg);
 }
 
-.user-button {
-  position: relative;
-}
-
+/* User Dropdown - Header.css와 동일한 스타일 */
 .user-dropdown {
   position: absolute;
   top: 100%;
   right: 0;
-  background-color: #ffffff;
+  background: white;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  min-width: 280px;
   margin-top: 0.5rem;
-  min-width: 120px;
   z-index: 1000;
+  overflow: hidden;
+}
+
+.dropdown-header {
+  padding: 1rem;
+  border-bottom: 1px solid #f0f0f0;
+  background-color: #fafafa;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.user-avatar-large {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: #e0e0e0;
+  border-radius: 50%;
+  color: #666;
+}
+
+.user-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.user-display-name {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.95rem;
+  margin-bottom: 0.25rem;
+}
+
+.user-email {
+  color: #666;
+  font-size: 0.85rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dropdown-menu {
+  padding: 0.5rem 0;
 }
 
 .dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
   padding: 0.75rem 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  border-bottom: 1px solid #f0f0f0;
+  border: none;
+  background: none;
+  color: #333;
   font-size: 0.9rem;
-  color: #333333;
-}
-
-.dropdown-item:last-child {
-  border-bottom: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
 .dropdown-item:hover {
-  background-color: #f5f5f5;
+  background-color: #f8f9fa;
+}
+
+.dropdown-item.logout-item {
+  color: #dc3545;
+}
+
+.dropdown-item.logout-item:hover {
+  background-color: #fff5f5;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background-color: #e9ecef;
+  margin: 0.5rem 0;
+}
+
+/* 모바일 메뉴 */
+.mobile-menu {
+  display: none;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+}
+
+.mobile-search-container {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.mobile-search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9e9e9e;
+  font-size: 0.9rem;
+  z-index: 1;
+}
+
+.mobile-search-input {
+  padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  width: 100%;
+  background-color: #f9f9f9;
+  transition: all 0.3s ease;
+}
+
+.mobile-search-input:focus {
+  outline: none;
+  border-color: #DFFF00;
+  background-color: #ffffff;
+}
+
+.mobile-user-menu {
+  border-top: 1px solid #f0f0f0;
+  padding-top: 1rem;
+}
+
+.mobile-user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background-color: #fafafa;
+  border-radius: 8px;
+}
+
+.mobile-user-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: #e0e0e0;
+  border-radius: 50%;
+  color: #666;
+}
+
+.mobile-user-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.mobile-user-name {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.95rem;
+  margin-bottom: 0.25rem;
+}
+
+.mobile-user-email {
+  color: #666;
+  font-size: 0.85rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobile-menu-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mobile-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  background: none;
+  color: #333;
+  font-size: 0.9rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border-radius: 6px;
+}
+
+.mobile-menu-item:hover {
+  background-color: #f8f9fa;
+}
+
+.mobile-menu-item.logout-item {
+  color: #dc3545;
+}
+
+.mobile-menu-item.logout-item:hover {
+  background-color: #fff5f5;
 }
 
 /* 반응형 디자인 */
@@ -168,11 +378,46 @@
     font-size: 1.5rem;
   }
   
+  .desktop-only {
+    display: none;
+  }
+  
+  .mobile-menu-button {
+    display: block;
+  }
+  
+  .mobile-menu {
+    display: block;
+  }
+  
   .user-button {
     padding: 0.5rem 0.75rem;
   }
   
-  .user-button-text {
+  .user-name {
     font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-header {
+    padding: 0.75rem;
+    height: 60px;
+  }
+  
+  .dashboard-title {
+    font-size: 1.25rem;
+  }
+  
+  .mobile-menu {
+    padding: 0.75rem;
+  }
+  
+  .mobile-user-info {
+    padding: 0.5rem;
+  }
+  
+  .mobile-menu-item {
+    padding: 0.5rem;
   }
 }
