@@ -24,7 +24,7 @@ const DashboardEmbed = () => {
             console.log('로컬 스토리지에서 인증 정보 확인됨');
             setAuthVerified(true);
             
-            // 백그라운드에서 서버 검증 (선택적)
+            // 백그라운드에서 서버 검증 (선택적) - 실패해도 리다이렉션하지 않음
             setTimeout(async () => {
               try {
                 const response = await fetch('https://gateway.realcatcha.com/api/auth/me', {
@@ -36,10 +36,11 @@ const DashboardEmbed = () => {
                   console.log('서버 인증 실패, 로컬 데이터 정리');
                   localStorage.removeItem('authToken');
                   localStorage.removeItem('userData');
-                  setAuthVerified(false);
+                  // setAuthVerified(false); // 리다이렉션 방지를 위해 주석 처리
                 }
               } catch (error) {
                 console.warn('서버 인증 확인 중 오류:', error);
+                // 네트워크 오류 시에도 리다이렉션하지 않음
               }
             }, 1000);
             
@@ -198,7 +199,27 @@ const DashboardEmbed = () => {
   };
 
   // 인증 상태 확인 중이거나 로그인되지 않은 경우
-  if (!authVerified || !isAuthenticated) {
+  if (!authVerified) {
+    return (
+      <div style={{height: '100vh', display:'flex', alignItems:'center', justifyContent:'center'}}>
+        <div style={{textAlign: 'center', padding: 40}}>
+          <div className="spinner" style={{
+            width: '40px',
+            height: '40px',
+            border: '4px solid #f3f3f3',
+            borderTop: '4px solid #1976d2',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto 20px'
+          }} />
+          <h3>대시보드 로딩 중...</h3>
+          <p>인증 상태를 확인하고 있습니다.</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
     return (
       <div style={{height: '100vh', display:'flex', alignItems:'center', justifyContent:'center'}}>
         <div style={{textAlign: 'center', padding: 40}}>
