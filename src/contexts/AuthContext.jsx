@@ -18,9 +18,9 @@ export const AuthProvider = ({ children }) => {
   // 사용자 정보 복원 (로컬 스토리지 + 쿠키 자동 로그인)
   useEffect(() => {
     const initAuth = async () => {
-      // 1. 로컬 스토리지 확인
-      const token = localStorage.getItem('authToken');
-      const userData = localStorage.getItem('userData');
+      // 1. 로컬 스토리지 확인 - Dashboard와 동일한 키 사용
+      const token = localStorage.getItem('captcha_dashboard_token');
+      const userData = localStorage.getItem('captcha_dashboard_user');
       
       if (token && userData) {
         try {
@@ -29,8 +29,8 @@ export const AuthProvider = ({ children }) => {
           return;
         } catch (error) {
           console.error('사용자 데이터 파싱 오류:', error);
-          localStorage.removeItem('authToken');
-          localStorage.removeItem('userData');
+          localStorage.removeItem('captcha_dashboard_token');
+          localStorage.removeItem('captcha_dashboard_user');
         }
       }
       
@@ -45,27 +45,27 @@ export const AuthProvider = ({ children }) => {
           const data = await response.json();
           if (data && data.success && data.user) {
             setUser(data.user);
-            // 토큰이 있다면 로컬 스토리지에도 저장
+            // 토큰이 있다면 로컬 스토리지에도 저장 - Dashboard와 동일한 키 사용
             if (data.access_token) {
-              localStorage.setItem('authToken', data.access_token);
-              localStorage.setItem('userData', JSON.stringify(data.user));
+              localStorage.setItem('captcha_dashboard_token', data.access_token);
+              localStorage.setItem('captcha_dashboard_user', JSON.stringify(data.user));
             }
-            console.log('PostMessage로 자동 로그인 완료:', data.user);
+            console.log('쿠키 기반 자동 로그인 완료:', data.user);
           } else {
             // 서버 응답에 사용자 정보가 없는 경우
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('userData');
+            localStorage.removeItem('captcha_dashboard_token');
+            localStorage.removeItem('captcha_dashboard_user');
           }
         } else {
           // 401 에러 등으로 인증 실패 시 로컬 스토리지 정리
-          localStorage.removeItem('authToken');
-          localStorage.removeItem('userData');
+          localStorage.removeItem('captcha_dashboard_token');
+          localStorage.removeItem('captcha_dashboard_user');
         }
       } catch (error) {
         console.warn('쿠키 기반 자동 로그인 실패:', error);
         // 네트워크 오류 시에도 로컬 스토리지 정리
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('userData');
+        localStorage.removeItem('captcha_dashboard_token');
+        localStorage.removeItem('captcha_dashboard_user');
       }
       
       setLoading(false);
@@ -108,9 +108,9 @@ export const AuthProvider = ({ children }) => {
         data = await response.json();
       }
       
-      // 토큰과 사용자 정보 저장
-      localStorage.setItem('authToken', data.access_token);
-      localStorage.setItem('userData', JSON.stringify(data.user));
+      // 토큰과 사용자 정보 저장 - Dashboard와 동일한 키 사용
+      localStorage.setItem('captcha_dashboard_token', data.access_token);
+      localStorage.setItem('captcha_dashboard_user', JSON.stringify(data.user));
       
       setUser(data.user);
       return { success: true };
@@ -127,8 +127,9 @@ export const AuthProvider = ({ children }) => {
     try {
       setError(null);
       setUser(userData);
-      localStorage.setItem('userData', JSON.stringify(userData));
-      localStorage.setItem('authToken', 'google-oauth');
+      localStorage.setItem('captcha_dashboard_user', JSON.stringify(userData));
+      localStorage.setItem('captcha_dashboard_token', 'google-oauth');
+      
       return { success: true };
     } catch (error) {
       setError(error.message);
@@ -149,9 +150,9 @@ export const AuthProvider = ({ children }) => {
       // API 실패해도 로컬 상태는 정리
     }
     
-    // 로컬 스토리지 및 상태 정리
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('userData');
+    // 로컬 스토리지 및 상태 정리 - Dashboard와 동일한 키 사용
+    localStorage.removeItem('captcha_dashboard_token');
+    localStorage.removeItem('captcha_dashboard_user');
     setUser(null);
     setError(null);
   };
