@@ -9,7 +9,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 9999; /* 1000 → 9999로 수정하여 Header보다 위에 표시 */
   padding: 1rem;
 }
 
@@ -76,16 +76,16 @@
 
 /* Modal Content */
 .modal-content {
-  padding: 2rem;
+  padding: 1.5rem; /* 2rem → 1.5rem으로 줄여서 더 컴팩트하게 */
 }
 
 .modal-payment-method {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem; /* 1.5rem → 1rem으로 줄여서 간격 조정 */
   min-height: 200px; /* 결제 방법 UI가 렌더링될 공간 확보 */
 }
 
 .modal-agreement {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem; /* 1.5rem → 1rem으로 줄여서 간격 조정 */
   min-height: 50px; /* 약관 동의 UI가 렌더링될 공간 확보 */
 }
 
@@ -98,21 +98,21 @@
 
 .modal-ready {
   text-align: center;
-  padding: 2rem;
+  padding: 1rem; /* 2rem → 1rem으로 줄여서 더 컴팩트하게 */
   background: #f8f9fa;
   border-radius: 12px;
-  margin-top: 1rem;
+  margin-top: 0.5rem; /* 1rem → 0.5rem으로 줄여서 간격 조정 */
 }
 
 .modal-ready p {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem; /* 1.5rem → 1rem으로 줄여서 간격 조정 */
   color: #333;
-  font-size: 1.1rem;
+  font-size: 0.95rem; /* 1.1rem → 0.95rem으로 줄여서 더 컴팩트하게 */
 }
 
 .modal-payment-btn {
-  padding: 1rem 2rem;
-  font-size: 1.1rem;
+  padding: 0.75rem 1.5rem; /* 1rem 2rem → 0.75rem 1.5rem으로 줄여서 더 컴팩트하게 */
+  font-size: 1rem; /* 1.1rem → 1rem으로 줄여서 적절한 크기로 */
   font-weight: 600;
   background: #28a745;
   color: white;
