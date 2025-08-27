@@ -16,6 +16,8 @@ import FAQPage from './pages/FAQPage';
 import MyInquiriesPage from './pages/MyInquiriesPage';
 import DashboardEmbed from './pages/DashboardEmbed';
 import PayPage from './pages/PayPage';
+import PaymentSuccessPage from './pages/PaymentSuccessPage';
+import PaymentFailPage from './pages/PaymentFailPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import GoogleCallbackPage from './pages/GoogleCallbackPage';

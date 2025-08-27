@@ -8,6 +8,7 @@ const HomePage = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const [visibleSections, setVisibleSections] = useState(new Set());
+  const [showCaptcha, setShowCaptcha] = useState(false);
   const heroRef = useRef(null);
   const mainContentRef = useRef(null);
   const featuresRef = useRef(null);
@@ -24,6 +25,34 @@ const HomePage = () => {
       navigate('/signin?next=/pay');
     }
   };
+
+  const handleTryCaptcha = () => {
+    setShowCaptcha(prev => !prev); // true면 false로, false면 true로 토글
+  };
+
+  // Captcha 렌더링
+  useEffect(() => {
+    if (showCaptcha && window.renderRealCaptcha) {
+      // 약간의 지연 후 captcha 렌더링 (DOM이 준비된 후)
+      const timer = setTimeout(() => {
+        try {
+          window.renderRealCaptcha('captcha-container', {
+            theme: 'light',
+            size: 'normal'
+          }, function(result) {
+            if (result.success) {
+              console.log('캡차 성공!', result.token);
+              // 서버로 토큰 전송
+            }
+          });
+        } catch (error) {
+          console.error('Captcha 렌더링 오류:', error);
+        }
+      }, 100);
+
+      return () => clearTimeout(timer);
+    }
+  }, [showCaptcha]);
 
   // Hero section은 페이지 로드 시 약간의 지연 후 애니메이션
   useEffect(() => {
@@ -80,12 +109,19 @@ const HomePage = () => {
           <div className="hero-buttons">
             <button 
               className="btn btn-primary" 
-              onClick={() => window.open('https://test.realcatcha.com/', '_blank')}
+              onClick={handleTryCaptcha}
             >
               Try CAPTCHA
             </button>
             <button className="btn btn-primary" onClick={handleStartFreePlan}>Start Free Plan</button>
           </div>
+          
+          {/* Captcha Container */}
+          {showCaptcha && (
+            <div className="captcha-section">
+              <div id="captcha-container"></div>
+            </div>
+          )}
         </div>
       </section>
 

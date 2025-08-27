@@ -112,6 +112,34 @@
   box-shadow: 0 6px 12px rgba(223, 255, 0, 0.3);
 }
 
+/* Captcha Section */
+.captcha-section {
+  margin-top: 2rem;
+  padding: 2rem;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  border: 2px solid #e9ecef;
+  animation: fadeInUp 0.5s ease-out;
+}
+
+.captcha-section #captcha-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Main Content */
 .home-page .main-content {
   padding: 4rem 0;

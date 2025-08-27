@@ -1,21 +1,118 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { FaCheck, FaChevronDown, FaChevronRight } from 'react-icons/fa';
 import '../styles/pages/PayPage.css';
 
+// Toss Payments SDK 동적 import
+let PaymentWidget;
+
 const PayPage = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const [openFaqs, setOpenFaqs] = useState({});
+  const [paymentWidget, setPaymentWidget] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSelectPlan = (planType) => {
-    if (isAuthenticated) {
-      // 로그인된 상태: 결제 진행
-      navigate('/payment/checkout', { state: { plan: planType } });
-    } else {
+  // Toss Payments SDK 초기화
+  useEffect(() => {
+    const initPaymentWidget = async () => {
+      try {
+        const { default: PaymentWidgetClass } = await import('@tosspayments/payment-widget-sdk');
+        PaymentWidget = PaymentWidgetClass;
+        
+        const widget = PaymentWidget(
+          "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm", // 클라이언트 키
+          "ANONYMOUS" // customerKey
+        );
+        
+        setPaymentWidget(widget);
+        console.log("✅ Toss Payments SDK 초기화 완료");
+      } catch (error) {
+        console.error("❌ Toss Payments SDK 초기화 실패:", error);
+      }
+    };
+
+    initPaymentWidget();
+  }, []);
+
+  // 주문 ID 생성
+  const generateOrderId = () => {
+    return `ORDER_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  };
+
+  // 요금제별 plan_id 매핑
+  const getPlanId = (planType) => {
+    const planMapping = {
+      'basic': 1,
+      'plus': 2,
+      'pro': 3
+    };
+    return planMapping[planType];
+  };
+
+  // 요금제별 가격 매핑 (실제 가격은 0원으로 설정)
+  const getPlanPrice = (planType) => {
+    const priceMapping = {
+      'basic': 0,
+      'plus': 0,
+      'pro': 0
+    };
+    return priceMapping[planType];
+  };
+
+  // 요금제별 이름 매핑
+  const getPlanName = (planType) => {
+    const nameMapping = {
+      'basic': 'Basic Plan',
+      'plus': 'Plus Plan',
+      'pro': 'Pro Plan'
+    };
+    return nameMapping[planType];
+  };
+
+  const handleSelectPlan = async (planType) => {
+    if (!isAuthenticated) {
       // 로그인되지 않은 상태: 로그인페이지로 이동
       navigate('/signin?next=/payment/checkout', { state: { plan: planType } });
+      return;
+    }
+
+    if (!paymentWidget) {
+      alert("결제 시스템을 초기화하는 중입니다. 잠시 후 다시 시도해주세요.");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      
+      const orderId = generateOrderId();
+      const amount = getPlanPrice(planType);
+      const planName = getPlanName(planType);
+      const planId = getPlanId(planType);
+
+      console.log(`🔍 결제 요청 - 플랜: ${planName}, 금액: ${amount}원, 주문ID: ${orderId}`);
+
+      // 결제창 렌더링
+      paymentWidget.renderPaymentMethods("#payment-method", { value: amount });
+      paymentWidget.renderAgreement("#agreement");
+
+      // 결제 요청
+      await paymentWidget.requestPayment({
+        orderId: orderId,
+        orderName: `${planName} - CAPTCHA 서비스`,
+        amount: amount,
+        successUrl: `${window.location.origin}/payment/success?planType=${planType}&planId=${planId}`,
+        failUrl: `${window.location.origin}/payment/fail?planType=${planType}&planId=${planId}`,
+        customerEmail: "test@example.com", // 실제로는 사용자 이메일 사용
+        customerName: "테스트 사용자" // 실제로는 사용자 이름 사용
+      });
+
+    } catch (error) {
+      console.error("❌ 결제 요청 오류:", error);
+      alert("결제 요청 중 오류가 발생했습니다. 다시 시도해주세요.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -42,6 +139,10 @@ const PayPage = () => {
               귀하의 비즈니스 규모와 요구사항에 맞는 최적의 CAPTCHA 솔루션을 선택하세요
             </p>
           </div>
+
+          {/* Toss Payments 결제 위젯 컨테이너 */}
+          <div id="payment-method" style={{ marginBottom: '20px' }}></div>
+          <div id="agreement" style={{ marginBottom: '20px' }}></div>
 
           <div className="pricing-grid">
             {/* Basic Plan */}
@@ -72,8 +173,9 @@ const PayPage = () => {
               <button 
                 className="btn btn-primary plan-btn"
                 onClick={() => handleSelectPlan('basic')}
+                disabled={isLoading}
               >
-                무료로 시작하기
+                {isLoading ? '처리 중...' : '무료로 시작하기'}
               </button>
               
               <button 
@@ -114,9 +216,10 @@ const PayPage = () => {
 
               <button 
                 className="btn btn-primary plan-btn"
-                onClick={() => handleSelectPlan('advanced')}
+                onClick={() => handleSelectPlan('plus')}
+                disabled={isLoading}
               >
-                Plus Plan 시작하기
+                {isLoading ? '처리 중...' : 'Plus Plan 시작하기'}
               </button>
               
               <button 
@@ -157,8 +260,9 @@ const PayPage = () => {
               <button 
                 className="btn btn-primary plan-btn"
                 onClick={() => handleSelectPlan('pro')}
+                disabled={isLoading}
               >
-                Pro Plan 시작하기
+                {isLoading ? '처리 중...' : 'Pro Plan 시작하기'}
               </button>
               
               <button 
