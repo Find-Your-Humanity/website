@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { FaCheck, FaChevronDown, FaChevronRight } from 'react-icons/fa';
 import '../styles/pages/PayPage.css';
 
-// Toss Payments SDK 올바른 import 방식
+// Toss Payments SDK 공식 문서 패턴으로 import
 import { loadPaymentWidget } from '@tosspayments/payment-widget-sdk';
 
 const PayPage = () => {
@@ -12,45 +12,63 @@ const PayPage = () => {
   const { isAuthenticated } = useAuth();
   const [openFaqs, setOpenFaqs] = useState({});
   const [paymentWidget, setPaymentWidget] = useState(null);
+  const [paymentMethods, setPaymentMethods] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isPaymentUIReady, setIsPaymentUIReady] = useState(false); // 결제 UI 준비 상태 추가
+  const [isPaymentUIReady, setIsPaymentUIReady] = useState(false);
 
-  // Toss Payments SDK 초기화
+  // Toss Payments SDK 초기화 (공식 문서 패턴)
   useEffect(() => {
-    try {
-      console.log("🔍 Toss Payments SDK 초기화 시작...");
-      
-      // loadPaymentWidget 함수를 사용하여 SDK 초기화
-      loadPaymentWidget(
-        "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm", // 클라이언트 키
-        "ANONYMOUS" // customerKey
-      ).then((widget) => {
+    const initializePaymentWidget = async () => {
+      try {
+        console.log("🔍 Toss Payments SDK 초기화 시작...");
+        
+        // 1. 결제위젯 SDK 초기화
+        const widget = loadPaymentWidget(
+          "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm", // 클라이언트 키
+          "ANONYMOUS" // customerKey (비회원 구매자)
+        );
+        
         setPaymentWidget(widget);
         console.log("✅ Toss Payments SDK 초기화 완료:", widget);
         
-        // 결제 UI 렌더링
-        const paymentMethods = widget.renderPaymentMethods("#payment-method", { value: 0 });
+        // 2. 결제 UI 렌더링 (공식 문서 패턴)
+        const methods = widget.renderPaymentMethods(
+          "#payment-method", 
+          { value: 100 }, // 결제 금액
+          { variantKey: "DEFAULT" } // 기본 결제 UI
+        );
+        
+        // 3. 이용약관 UI 렌더링
         widget.renderAgreement("#agreement");
         
-        // 결제 UI 렌더링 완료 이벤트 리스너
-        paymentMethods.on('ready', () => {
+        setPaymentMethods(methods);
+        
+        // 4. 결제 UI 렌더링 완료 이벤트 리스너 (공식 문서 권장)
+        methods.on('ready', () => {
           console.log("✅ 결제 UI 렌더링 완료 - 이제 결제 요청 가능");
-          setIsPaymentUIReady(true); // 결제 UI 준비 상태를 true로 설정
+          setIsPaymentUIReady(true);
         });
         
-      }).catch((error) => {
+        // 5. 결제 금액 변경 이벤트 리스너 (선택사항)
+        methods.on('amountChange', (amount) => {
+          console.log("💰 결제 금액 변경:", amount);
+        });
+        
+      } catch (error) {
         console.error("❌ Toss Payments SDK 초기화 실패:", error);
-      });
-      
-    } catch (error) {
-      console.error("❌ Toss Payments SDK 초기화 실패:", error);
-      console.error("에러 상세:", error.message, error.stack);
-    }
+        console.error("에러 상세:", error.message, error.stack);
+      }
+    };
+
+    initializePaymentWidget();
   }, []);
 
-  // 주문 ID 생성
+  // 주문 ID 생성 (공식 문서 권장: 충분히 무작위적인 고유 값)
   const generateOrderId = () => {
-    return `ORDER_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const timestamp = Date.now();
+    const random = Math.random().toString(36).substr(2, 9);
+    const userId = isAuthenticated ? 'user' : 'anonymous';
+    return `ORDER_${timestamp}_${random}_${userId}`;
   };
 
   // 요금제별 plan_id 매핑
@@ -63,12 +81,12 @@ const PayPage = () => {
     return planMapping[planType];
   };
 
-  // 요금제별 가격 매핑 (실제 가격은 0원으로 설정)
+  // 요금제별 가격 매핑 (테스트용으로 100원으로 설정)
   const getPlanPrice = (planType) => {
     const priceMapping = {
-      'basic': 0,
-      'plus': 0,
-      'pro': 0
+      'basic': 100,
+      'plus': 100,
+      'pro': 100
     };
     return priceMapping[planType];
   };
@@ -83,6 +101,7 @@ const PayPage = () => {
     return nameMapping[planType];
   };
 
+  // 결제 요청 처리 (공식 문서 패턴)
   const handleSelectPlan = async (planType) => {
     if (!isAuthenticated) {
       // 로그인되지 않은 상태: 로그인페이지로 이동
@@ -90,12 +109,12 @@ const PayPage = () => {
       return;
     }
 
-    if (!paymentWidget) {
+    if (!paymentWidget || !paymentMethods) {
       alert("결제 시스템을 초기화하는 중입니다. 잠시 후 다시 시도해주세요.");
       return;
     }
 
-    // 결제 UI가 준비되지 않았으면 대기
+    // 결제 UI가 준비되지 않았으면 대기 (공식 문서 권장)
     if (!isPaymentUIReady) {
       alert("결제 시스템이 아직 준비되지 않았습니다. 잠시 후 다시 시도해주세요.");
       return;
@@ -111,7 +130,10 @@ const PayPage = () => {
 
       console.log(`🔍 결제 요청 - 플랜: ${planName}, 금액: ${amount}원, 주문ID: ${orderId}`);
 
-      // 결제 요청 (결제 UI는 이미 렌더링되어 있음)
+      // 공식 문서 권장: 결제 요청 전 orderId와 amount를 서버에 임시 저장
+      // TODO: 서버에 주문 정보 임시 저장 로직 구현 필요
+
+      // 결제 요청 (공식 문서 패턴)
       await paymentWidget.requestPayment({
         orderId: orderId,
         orderName: `${planName} - CAPTCHA 서비스`,
@@ -119,12 +141,26 @@ const PayPage = () => {
         successUrl: `${window.location.origin}/payment/success?planType=${planType}&planId=${planId}`,
         failUrl: `${window.location.origin}/payment/fail?planType=${planType}&planId=${planId}`,
         customerEmail: "test@example.com", // 실제로는 사용자 이메일 사용
-        customerName: "테스트 사용자" // 실제로는 사용자 이름 사용
+        customerName: "테스트 사용자", // 실제로는 사용자 이름 사용
+        // 추가 파라미터 (선택사항)
+        windowTarget: 'iframe', // iframe으로 결제창 열기
+        useInternationalCardOnly: false, // 국제카드 전용 여부
+        flowMode: 'BILLING' // 결제 흐름 모드
       });
 
     } catch (error) {
       console.error("❌ 결제 요청 오류:", error);
-      alert("결제 요청 중 오류가 발생했습니다. 다시 시도해주세요.");
+      
+      // 공식 문서 권장: 에러 타입별 사용자 친화적 메시지
+      let errorMessage = "결제 요청 중 오류가 발생했습니다. 다시 시도해주세요.";
+      
+      if (error.message && error.message.includes('UNAUTHORIZED_KEY')) {
+        errorMessage = "결제 시스템 인증에 실패했습니다. 관리자에게 문의해주세요.";
+      } else if (error.message && error.message.includes('NOT_REGISTERED_PAYMENT_WIDGET')) {
+        errorMessage = "결제 UI가 등록되지 않았습니다. 관리자에게 문의해주세요.";
+      }
+      
+      alert(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -160,7 +196,7 @@ const PayPage = () => {
               <div className="plan-header">
                 <h3 className="plan-name">Basic Plan</h3>
                 <div className="plan-price">
-                  <span className="price">무료</span>
+                  <span className="price">₩100</span>
                   <span className="period">/월</span>
                 </div>
                 <p className="plan-description">
@@ -183,9 +219,9 @@ const PayPage = () => {
               <button 
                 className="btn btn-primary plan-btn"
                 onClick={() => handleSelectPlan('basic')}
-                disabled={isLoading}
+                disabled={isLoading || !isPaymentUIReady}
               >
-                {isLoading ? '처리 중...' : '무료로 시작하기'}
+                {isLoading ? '처리 중...' : '100원으로 시작하기'}
               </button>
               
               <button 
@@ -227,7 +263,7 @@ const PayPage = () => {
               <button 
                 className="btn btn-primary plan-btn"
                 onClick={() => handleSelectPlan('plus')}
-                disabled={isLoading}
+                disabled={isLoading || !isPaymentUIReady}
               >
                 {isLoading ? '처리 중...' : 'Plus Plan 시작하기'}
               </button>
@@ -270,7 +306,7 @@ const PayPage = () => {
               <button 
                 className="btn btn-primary plan-btn"
                 onClick={() => handleSelectPlan('pro')}
-                disabled={isLoading}
+                disabled={isLoading || !isPaymentUIReady}
               >
                 {isLoading ? '처리 중...' : 'Pro Plan 시작하기'}
               </button>
@@ -289,6 +325,13 @@ const PayPage = () => {
             <h3 className="payment-widget-title">결제 방법 선택</h3>
             <div id="payment-method" className="payment-method-container"></div>
             <div id="agreement" className="agreement-container"></div>
+            
+            {/* 결제 UI 상태 표시 */}
+            {!isPaymentUIReady && (
+              <div className="payment-loading">
+                <p>결제 시스템을 초기화하는 중입니다...</p>
+              </div>
+            )}
           </div>
 
           {/* FAQ Section */}
