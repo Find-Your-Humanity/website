@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaSearch, FaMoon, FaSun, FaHome, FaReact, FaVuejs, FaWordpress, FaAngular, FaNodeJs } from 'react-icons/fa';
+import useScrollToTop from '../hooks/useScrollToTop';
 import '../styles/pages/DocumentPage.css';
 
 const DocumentPage = () => {
@@ -9,6 +10,9 @@ const DocumentPage = () => {
   const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('ko');
   const [selectedSidebarItem, setSelectedSidebarItem] = useState('Developer Guide');
+  
+  // 페이지 이동 시 스크롤을 맨 위로 올림
+  useScrollToTop();
   
   // 한국어 콘텐츠
   const koreanContent = {

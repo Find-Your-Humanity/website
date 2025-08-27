@@ -5,7 +5,9 @@
   display: flex;
   flex-direction: column;
   transition: background-color 0.3s ease, color 0.3s ease;
-  scroll-behavior: smooth;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
 }
 
 /* Dark Mode Styles */
@@ -164,8 +166,6 @@
   background-color: #ffffff;
   border-bottom: 1px solid #e0e0e0;
   position: sticky;
-  top: 0;
-  z-index: 1000;
 }
 
 .header-left {
@@ -340,7 +340,8 @@
   display: grid;
   grid-template-columns: 280px 1fr 280px;
   flex: 1;
-  min-height: calc(100vh - 80px);
+  height: calc(100vh - 80px);
+  overflow: hidden;
 }
 
 /* Left Sidebar */
@@ -349,6 +350,9 @@
   border-right: 1px solid #e0e0e0;
   padding: 2rem 0;
   overflow-y: auto;
+  position: sticky;
+  top: 70px;
+  height: calc(100vh - 80px);
 }
 
 .docs-sidebar-section {
@@ -390,6 +394,7 @@
   background-color: #ffffff;
   text-align: left;
   display: block !important;
+  height: calc(100vh - 80px);
 }
 
 .document-page .docs-content-wrapper {
@@ -556,6 +561,9 @@
   border-left: 1px solid #e0e0e0;
   padding: 2rem 1.5rem;
   overflow-y: auto;
+  position: sticky;
+  top: 70px;
+  height: calc(100vh - 80px);
 }
 
 .toc-container {

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import useScrollToTop from '../hooks/useScrollToTop';
 import '../styles/pages/ContactPage.css';
 
 const ContactPage = () => {
@@ -12,6 +13,9 @@ const ContactPage = () => {
   const [status, setStatus] = useState('idle'); // idle | submitting | success | error
   const [error, setError] = useState('');
   const [isDragOver, setIsDragOver] = useState(false);
+
+  // 페이지 이동 시 스크롤을 맨 위로 올림
+  useScrollToTop();
 
   // 로그인 되어 있으면 이메일 자동 채움(수정 불가)
   useEffect(() => {
