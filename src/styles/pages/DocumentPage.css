@@ -5,9 +5,7 @@
   display: flex;
   flex-direction: column;
   transition: background-color 0.3s ease, color 0.3s ease;
-  position: relative;
-  z-index: 1;
-  overflow: hidden;
+  scroll-behavior: smooth;
 }
 
 /* Dark Mode Styles */
@@ -166,6 +164,8 @@
   background-color: #ffffff;
   border-bottom: 1px solid #e0e0e0;
   position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .header-left {
@@ -231,7 +231,7 @@
   border: 1px solid #e0e0e0;
   border-radius: 4px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 1002; /* 1001 → 1002로 수정하여 toc sidebar 위에 표시 */
+  z-index: 1001;
   margin-top: 0.25rem;
   min-width: 120px;
 }
@@ -340,8 +340,7 @@
   display: grid;
   grid-template-columns: 280px 1fr 280px;
   flex: 1;
-  height: calc(100vh - 80px);
-  overflow: hidden;
+  min-height: calc(100vh - 80px);
 }
 
 /* Left Sidebar */
@@ -350,9 +349,10 @@
   border-right: 1px solid #e0e0e0;
   padding: 2rem 0;
   overflow-y: auto;
-  position: sticky;
-  top: 0; /* 70px → 0으로 수정하여 컨테이너 상단에 바로 붙도록 */
+  position: sticky; /* sticky로 설정하여 스크롤 따라다니면서 고정 */
+  top: 70px; /* 상단에 고정 */
   height: calc(100vh - 80px);
+  z-index: 100; /* 적절한 z-index 설정 */
 }
 
 .docs-sidebar-section {
@@ -394,7 +394,6 @@
   background-color: #ffffff;
   text-align: left;
   display: block !important;
-  height: calc(100vh - 80px);
 }
 
 .document-page .docs-content-wrapper {
@@ -561,9 +560,10 @@
   border-left: 1px solid #e0e0e0;
   padding: 2rem 1.5rem;
   overflow-y: auto;
-  position: sticky;
-  top: 0; /* 70px → 0으로 수정하여 컨테이너 상단에 바로 붙도록 */
+  position: sticky; /* sticky로 설정하여 스크롤 따라다니면서 고정 */
+  top: 70px; /* 상단에 고정 */
   height: calc(100vh - 80px);
+  z-index: 100; /* 적절한 z-index 설정 */
 }
 
 .toc-container {
