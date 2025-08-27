@@ -13,6 +13,7 @@ const PayPage = () => {
   const [openFaqs, setOpenFaqs] = useState({});
   const [paymentWidget, setPaymentWidget] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isPaymentUIReady, setIsPaymentUIReady] = useState(false); // 결제 UI 준비 상태 추가
 
   // Toss Payments SDK 초기화
   useEffect(() => {
@@ -34,6 +35,7 @@ const PayPage = () => {
         // 결제 UI 렌더링 완료 이벤트 리스너
         paymentMethods.on('ready', () => {
           console.log("✅ 결제 UI 렌더링 완료 - 이제 결제 요청 가능");
+          setIsPaymentUIReady(true); // 결제 UI 준비 상태를 true로 설정
         });
         
       }).catch((error) => {
@@ -93,6 +95,12 @@ const PayPage = () => {
       return;
     }
 
+    // 결제 UI가 준비되지 않았으면 대기
+    if (!isPaymentUIReady) {
+      alert("결제 시스템이 아직 준비되지 않았습니다. 잠시 후 다시 시도해주세요.");
+      return;
+    }
+
     try {
       setIsLoading(true);
       
@@ -145,10 +153,6 @@ const PayPage = () => {
               귀하의 비즈니스 규모와 요구사항에 맞는 최적의 CAPTCHA 솔루션을 선택하세요
             </p>
           </div>
-
-          {/* Toss Payments 결제 위젯 컨테이너 */}
-          <div id="payment-method" style={{ marginBottom: '20px' }}></div>
-          <div id="agreement" style={{ marginBottom: '20px' }}></div>
 
           <div className="pricing-grid">
             {/* Basic Plan */}
@@ -278,6 +282,13 @@ const PayPage = () => {
                 문의하기
               </button>
             </div>
+          </div>
+
+          {/* Toss Payments 결제 위젯 섹션 */}
+          <div className="payment-widget-section">
+            <h3 className="payment-widget-title">결제 방법 선택</h3>
+            <div id="payment-method" className="payment-method-container"></div>
+            <div id="agreement" className="agreement-container"></div>
           </div>
 
           {/* FAQ Section */}

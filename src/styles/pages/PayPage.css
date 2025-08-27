@@ -39,6 +39,33 @@
   margin-bottom: 6rem;
 }
 
+/* Payment Widget Section */
+.payment-widget-section {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 3rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.payment-widget-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #000000;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.payment-method-container {
+  margin-bottom: 1.5rem;
+  min-height: 200px; /* 결제 방법 UI가 렌더링될 공간 확보 */
+}
+
+.agreement-container {
+  min-height: 50px; /* 약관 동의 UI가 렌더링될 공간 확보 */
+}
+
 .pricing-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
