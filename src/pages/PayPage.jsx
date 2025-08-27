@@ -22,37 +22,53 @@ const PayPage = () => {
       try {
         console.log("🔍 Toss Payments SDK 초기화 시작...");
         
-        // 1. 결제위젯 SDK 초기화
-        const widget = loadPaymentWidget(
+        // 1. 결제위젯 SDK 초기화 (Promise 기반)
+        const widget = await loadPaymentWidget(
           "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm", // 클라이언트 키
           "ANONYMOUS" // customerKey (비회원 구매자)
         );
         
-        setPaymentWidget(widget);
         console.log("✅ Toss Payments SDK 초기화 완료:", widget);
+        console.log("🔍 widget 객체의 메서드들:", Object.getOwnPropertyNames(widget));
+        console.log("🔍 widget.renderPaymentMethods 타입:", typeof widget.renderPaymentMethods);
         
-        // 2. 결제 UI 렌더링 (공식 문서 패턴)
-        const methods = widget.renderPaymentMethods(
-          "#payment-method", 
-          { value: 100 }, // 결제 금액
-          { variantKey: "DEFAULT" } // 기본 결제 UI
-        );
+        setPaymentWidget(widget);
         
-        // 3. 이용약관 UI 렌더링
-        widget.renderAgreement("#agreement");
-        
-        setPaymentMethods(methods);
-        
-        // 4. 결제 UI 렌더링 완료 이벤트 리스너 (공식 문서 권장)
-        methods.on('ready', () => {
-          console.log("✅ 결제 UI 렌더링 완료 - 이제 결제 요청 가능");
-          setIsPaymentUIReady(true);
-        });
-        
-        // 5. 결제 금액 변경 이벤트 리스너 (선택사항)
-        methods.on('amountChange', (amount) => {
-          console.log("💰 결제 금액 변경:", amount);
-        });
+        // 2. 결제 UI 렌더링 (메서드 존재 여부 확인 후)
+        if (typeof widget.renderPaymentMethods === 'function') {
+          const methods = widget.renderPaymentMethods(
+            "#payment-method", 
+            { value: 100 }, // 결제 금액
+            { variantKey: "DEFAULT" } // 기본 결제 UI
+          );
+          
+          // 3. 이용약관 UI 렌더링
+          if (typeof widget.renderAgreement === 'function') {
+            widget.renderAgreement("#agreement");
+          }
+          
+          setPaymentMethods(methods);
+          
+          // 4. 결제 UI 렌더링 완료 이벤트 리스너 (공식 문서 권장)
+          if (methods && typeof methods.on === 'function') {
+            methods.on('ready', () => {
+              console.log("✅ 결제 UI 렌더링 완료 - 이제 결제 요청 가능");
+              setIsPaymentUIReady(true);
+            });
+            
+            // 5. 결제 금액 변경 이벤트 리스너 (선택사항)
+            methods.on('amountChange', (amount) => {
+              console.log("💰 결제 금액 변경:", amount);
+            });
+          } else {
+            console.warn("⚠️ paymentMethods.on 메서드가 없습니다:", methods);
+            // 이벤트 리스너가 없어도 결제는 가능할 수 있음
+            setIsPaymentUIReady(true);
+          }
+        } else {
+          console.error("❌ widget.renderPaymentMethods가 함수가 아닙니다:", widget.renderPaymentMethods);
+          throw new Error("renderPaymentMethods 메서드를 찾을 수 없습니다");
+        }
         
       } catch (error) {
         console.error("❌ Toss Payments SDK 초기화 실패:", error);
