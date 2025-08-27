@@ -4,8 +4,8 @@ import { useAuth } from '../contexts/AuthContext';
 import { FaCheck, FaChevronDown, FaChevronRight } from 'react-icons/fa';
 import '../styles/pages/PayPage.css';
 
-// Toss Payments SDK 동적 import
-let PaymentWidget;
+// Toss Payments SDK 정적 import
+import PaymentWidget from '@tosspayments/payment-widget-sdk';
 
 const PayPage = () => {
   const navigate = useNavigate();
@@ -16,24 +16,25 @@ const PayPage = () => {
 
   // Toss Payments SDK 초기화
   useEffect(() => {
-    const initPaymentWidget = async () => {
-      try {
-        const { default: PaymentWidgetClass } = await import('@tosspayments/payment-widget-sdk');
-        PaymentWidget = PaymentWidgetClass;
-        
+    try {
+      console.log("🔍 Toss Payments SDK 초기화 시작...");
+      console.log("PaymentWidget 타입:", typeof PaymentWidget);
+      
+      if (typeof PaymentWidget === 'function') {
         const widget = PaymentWidget(
           "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm", // 클라이언트 키
           "ANONYMOUS" // customerKey
         );
         
         setPaymentWidget(widget);
-        console.log("✅ Toss Payments SDK 초기화 완료");
-      } catch (error) {
-        console.error("❌ Toss Payments SDK 초기화 실패:", error);
+        console.log("✅ Toss Payments SDK 초기화 완료:", widget);
+      } else {
+        console.error("❌ PaymentWidget이 함수가 아닙니다:", PaymentWidget);
       }
-    };
-
-    initPaymentWidget();
+    } catch (error) {
+      console.error("❌ Toss Payments SDK 초기화 실패:", error);
+      console.error("에러 상세:", error.message, error.stack);
+    }
   }, []);
 
   // 주문 ID 생성
