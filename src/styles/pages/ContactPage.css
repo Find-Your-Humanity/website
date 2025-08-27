@@ -152,9 +152,7 @@
 
 .contact-page .primary-button:hover { opacity: .95; }
 
-.contact-page .error-message { background: rgba(255,0,0,0.1); color: #ffb3b3; padding:10px; border-radius:8px; margin-bottom:10px; border:1px solid rgba(255,0,0,0.2); text-align:center; }
-
-.contact-page .success-message { background: rgba(0,180,0,0.1); color:#b9f6ca; padding:10px; border-radius:8px; margin-bottom:10px; border:1px solid rgba(0,180,0,0.2); text-align:center; }
+/* 성공/에러 메시지 스타일 제거 - 모달로 대체됨 */
 
 @media (max-width: 768px){ 
   .contact-page .file-drop-area{ 

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import useScrollToTop from '../hooks/useScrollToTop';
+import MessageModal from '../components/MessageModal';
 import '../styles/pages/ContactPage.css';
 
 const ContactPage = () => {
@@ -13,6 +14,12 @@ const ContactPage = () => {
   const [status, setStatus] = useState('idle'); // idle | submitting | success | error
   const [error, setError] = useState('');
   const [isDragOver, setIsDragOver] = useState(false);
+  
+  // 모달 상태 관리
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState('success');
+  const [modalMessage, setModalMessage] = useState('');
+  const [modalTitle, setModalTitle] = useState('');
 
   // 페이지 이동 시 스크롤을 맨 위로 올림
   useScrollToTop();
@@ -30,7 +37,6 @@ const ContactPage = () => {
   };
 
   const handleChooseFile = () => fileInputRef.current?.click();
-
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files || []);
@@ -67,21 +73,37 @@ const ContactPage = () => {
     setAttachedFiles(prev => prev.filter((_, index) => index !== indexToRemove));
   };
 
+  // 모달 열기 함수
+  const openModal = (type, title, message) => {
+    setModalType(type);
+    setModalTitle(title);
+    setModalMessage(message);
+    setIsModalOpen(true);
+  };
+
+  // 모달 닫기 함수
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setModalType('success');
+    setModalMessage('');
+    setModalTitle('');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
     if (!isAuthenticated) {
-      setError('로그인 후 문의를 제출할 수 있습니다. 로그인해 주세요.');
+      openModal('error', '로그인 필요', '로그인 후 문의를 제출할 수 있습니다. 로그인해 주세요.');
       return;
     }
 
     if (!form.subject || !form.contact || !form.email || !form.message) {
-      setError('모든 필드를 입력해주세요.');
+      openModal('error', '입력 오류', '모든 필드를 입력해주세요.');
       return;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-      setError('올바른 이메일 형식이 아닙니다.');
+      openModal('error', '이메일 형식 오류', '올바른 이메일 형식이 아닙니다.');
       return;
     }
 
@@ -121,13 +143,15 @@ const ContactPage = () => {
           fileInputRef.current.value = '';
         }
         
-        // 성공 처리 완료
+        // 성공 모달 표시
+        openModal('success', '문의 접수 완료', '문의가 접수되었습니다. 빠르게 답변드리겠습니다.');
+        
       } else {
         throw new Error(result.message || '문의 제출에 실패했습니다.');
       }
     } catch (e) {
       setStatus('error');
-      setError(e.message || '제출 중 오류가 발생했습니다.');
+      openModal('error', '제출 실패', e.message || '제출 중 오류가 발생했습니다.');
     }
   };
 
@@ -139,16 +163,7 @@ const ContactPage = () => {
 
           <section className="section">
             <h2 className="section-title">문의 정보</h2>
-            {status === 'success' && (
-                          <div className="success-message">
-              문의가 접수되었습니다. 빠르게 답변드리겠습니다.
-              <div style={{ marginTop: '1rem', fontSize: '0.9rem', color: '#666' }}>
-                💡 답변 확인은 로그인 후 상단 프로필 메뉴에서 "문의사항 확인"을 클릭하세요.
-              </div>
-            </div>
-            )}
-            {error && <div className="error-message">{error}</div>}
-
+            
             <form onSubmit={handleSubmit} noValidate>
               <div className="form-group">
                 <label className="label">제목</label>
@@ -262,7 +277,13 @@ const ContactPage = () => {
                   <button 
                     type="button" 
                     className="primary-button" 
-                    onClick={() => navigate('/signin?next=/contact')}
+                    onClick={() => {
+                      openModal('error', '로그인 필요', '문의하기를 위해 로그인이 필요합니다. 3초 후 로그인 페이지로 이동합니다.');
+                      // 3초 후 로그인 페이지로 자동 이동
+                      setTimeout(() => {
+                        navigate('/signin?next=/contact');
+                      }, 3000);
+                    }}
                   >
                     문의하기
                   </button>
@@ -272,6 +293,15 @@ const ContactPage = () => {
           </section>
         </div>
       </div>
+
+      {/* Message Modal */}
+      <MessageModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        type={modalType}
+        title={modalTitle}
+        message={modalMessage}
+      />
     </div>
   );
 };
