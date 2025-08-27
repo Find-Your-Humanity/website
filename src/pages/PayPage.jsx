@@ -26,6 +26,16 @@ const PayPage = () => {
       ).then((widget) => {
         setPaymentWidget(widget);
         console.log("✅ Toss Payments SDK 초기화 완료:", widget);
+        
+        // 결제 UI 렌더링
+        const paymentMethods = widget.renderPaymentMethods("#payment-method", { value: 0 });
+        widget.renderAgreement("#agreement");
+        
+        // 결제 UI 렌더링 완료 이벤트 리스너
+        paymentMethods.on('ready', () => {
+          console.log("✅ 결제 UI 렌더링 완료 - 이제 결제 요청 가능");
+        });
+        
       }).catch((error) => {
         console.error("❌ Toss Payments SDK 초기화 실패:", error);
       });
@@ -93,11 +103,7 @@ const PayPage = () => {
 
       console.log(`🔍 결제 요청 - 플랜: ${planName}, 금액: ${amount}원, 주문ID: ${orderId}`);
 
-      // 결제창 렌더링
-      paymentWidget.renderPaymentMethods("#payment-method", { value: amount });
-      paymentWidget.renderAgreement("#agreement");
-
-      // 결제 요청
+      // 결제 요청 (결제 UI는 이미 렌더링되어 있음)
       await paymentWidget.requestPayment({
         orderId: orderId,
         orderName: `${planName} - CAPTCHA 서비스`,
