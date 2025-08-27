@@ -231,7 +231,7 @@
   border: 1px solid #e0e0e0;
   border-radius: 4px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 1001;
+  z-index: 1002; /* 1001 → 1002로 수정하여 toc sidebar 위에 표시 */
   margin-top: 0.25rem;
   min-width: 120px;
 }
@@ -351,7 +351,7 @@
   padding: 2rem 0;
   overflow-y: auto;
   position: sticky;
-  top: 70px;
+  top: 0; /* 70px → 0으로 수정하여 컨테이너 상단에 바로 붙도록 */
   height: calc(100vh - 80px);
 }
 
@@ -562,7 +562,7 @@
   padding: 2rem 1.5rem;
   overflow-y: auto;
   position: sticky;
-  top: 70px;
+  top: 0; /* 70px → 0으로 수정하여 컨테이너 상단에 바로 붙도록 */
   height: calc(100vh - 80px);
 }
 
