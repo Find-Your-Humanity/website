@@ -268,3 +268,24 @@ const DashboardEmbed = () => {
 export default DashboardEmbed;
 
 
+
+        {isLoading && (
+          <div className="dashboard-loading">
+            <div className="spinner" />
+          </div>
+        )}
+        <iframe
+          ref={iframeRef}
+          title="Realcatcha Dashboard"
+          src="https://dashboard.realcatcha.com"
+          className="dashboard-iframe"
+          onLoad={handleIframeLoad}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default DashboardEmbed;
+
+

@@ -864,35 +864,35 @@ const DocumentPage = () => {
               if (selectedSidebarItem === 'Developer Guide') {
                 return (
                   <>
-                    {/* Main Title */}
+            {/* Main Title */}
                     <h1 className="main-title">{currentContent.mainTitle}</h1>
 
-                    {/* Introduction */}
-                    <p className="intro-text">
+            {/* Introduction */}
+            <p className="intro-text">
                       {currentContent.introText}
-                    </p>
+            </p>
 
-                    {/* Installation Info */}
-                    <p className="installation-text">
+            {/* Installation Info */}
+            <p className="installation-text">
                       {currentContent.installationText}
-                    </p>
+            </p>
 
-                    {/* Framework Integrations */}
-                    <p className="framework-intro">
+            {/* Framework Integrations */}
+            <p className="framework-intro">
                       {currentContent.frameworkIntro}
-                    </p>
+            </p>
 
-                    {/* Framework Badges */}
-                    <div className="framework-badges">
-                      {frameworks.map((framework, index) => (
-                        <div key={index} className="framework-badge" style={{ '--framework-color': framework.color }}>
-                          <framework.icon className="framework-icon" />
-                          <span>{framework.name}</span>
-                        </div>
-                      ))}
-                    </div>
+            {/* Framework Badges */}
+            <div className="framework-badges">
+              {frameworks.map((framework, index) => (
+                <div key={index} className="framework-badge" style={{ '--framework-color': framework.color }}>
+                  <framework.icon className="framework-icon" />
+                  <span>{framework.name}</span>
+                </div>
+              ))}
+            </div>
 
-                    <p className="integration-link">
+            <p className="integration-link">
                       {currentContent.integrationLink}
                     </p>
 
@@ -901,15 +901,15 @@ const DocumentPage = () => {
                       <section key={key} id={key.replace(/-/g, '-')} className="content-section">
                         <h2 className="section-title">{section.title}</h2>
                         {Array.isArray(section.content) ? (
-                          <ol className="principles-list">
+              <ol className="principles-list">
                             {section.content.map((item, index) => (
                               <li key={index}>{item}</li>
                             ))}
-                          </ol>
+              </ol>
                         ) : (
                           <p>{section.content}</p>
                         )}
-                      </section>
+            </section>
                     ))}
                   </>
                 );
@@ -931,7 +931,7 @@ const DocumentPage = () => {
                     <section key={key} id={key} className="content-section">
                       <h2 className="section-title">{section.title}</h2>
                       <p>{section.content}</p>
-                    </section>
+            </section>
                   ))}
                 </>
               );
@@ -967,8 +967,8 @@ const DocumentPage = () => {
                           handleTocClick(item);
                         }}
                       >
-                        {item}
-                      </a>
+                  {item}
+                </a>
                     );
                   });
                 }
