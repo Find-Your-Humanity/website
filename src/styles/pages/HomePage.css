@@ -114,8 +114,8 @@
 
 /* Captcha Section */
 .captcha-section {
-  margin-top: 2rem;
-  padding: 1.5rem;
+  margin-top: 1.5rem; 
+  padding: 1rem;  
   background-color: #f8f9fa;
   border-radius: 12px;
   border: 2px solid #e9ecef;
@@ -126,7 +126,60 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 250px;
+  min-height: 200px; 
+}
+
+/* Consent Section */
+.consent-section {
+  margin-top: 1rem;
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  border: 2px solid #e9ecef;
+  animation: fadeInUp 0.5s ease-out;
+  text-align: center;
+}
+
+.consent-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  font-size: 1rem;
+  color: #495057;
+  font-weight: 500;
+}
+
+.consent-checkbox input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #28a745;
+  border: 2px solid #ced4da;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.consent-checkbox input[type="checkbox"]:checked {
+  background-color: #28a745;
+  border-color: #28a745;
+  transform: scale(1.1);
+}
+
+.consent-checkbox input[type="checkbox"]:hover {
+  border-color: #28a745;
+  box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.2);
+}
+
+.consent-checkbox .consent-text {
+  user-select: none;
+  color: #495057;
+  transition: color 0.2s ease;
+  cursor: default;
+}
+
+.consent-checkbox .consent-text:hover {
+  color: #495057;
 }
 
 @keyframes fadeInUp {
