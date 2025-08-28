@@ -92,7 +92,7 @@ const Header = () => {
                     <path d="M12 14C7.58172 14 4 17.5817 4 22H20C20 17.5817 16.4183 14 12 14Z" fill="currentColor"/>
                   </svg>
                 </div>
-                <span className="user-name">{user?.name || user?.email || '사용자'}</span>
+                                 <span className="user-name">{user?.name || user?.username || user?.email || '사용자'}</span>
                 <svg className={`dropdown-arrow ${dropdownOpen ? 'open' : ''}`} width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M7 10L12 15L17 10H7Z" fill="currentColor"/>
                 </svg>
@@ -109,7 +109,7 @@ const Header = () => {
                         </svg>
                       </div>
                       <div className="user-details">
-                        <div className="user-display-name">{user?.name || '사용자'}</div>
+                                                 <div className="user-display-name">{user?.name || user?.username || '사용자'}</div>
                         <div className="user-email">{user?.email}</div>
                       </div>
                     </div>
@@ -179,7 +179,7 @@ const Header = () => {
                     </svg>
                   </div>
                   <div className="mobile-user-details">
-                    <div className="mobile-user-name">{user?.name || '사용자'}</div>
+                                         <div className="mobile-user-name">{user?.name || user?.username || '사용자'}</div>
                     <div className="mobile-user-email">{user?.email}</div>
                   </div>
                 </div>
