@@ -4,7 +4,7 @@ import { FaSearch, FaMoon, FaSun, FaHome, FaReact, FaVuejs, FaWordpress, FaAngul
 import useScrollToTop from '../hooks/useScrollToTop';
 import { koreanContent, englishContent } from '../data/documentContent';
 import { sidebarItems, sidebarContent } from '../data/sidebarContent';
-import '../styles/pages/DocumentPage.css';
+ import '../styles/pages/DocumentPage.css';
 
 const DocumentPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -219,35 +219,35 @@ const DocumentPage = () => {
               if (selectedSidebarItem === 'developer_guide') {
                 return (
                   <>
-                    {/* Main Title */}
+            {/* Main Title */}
                     <h1 className="main-title">{currentContent.mainTitle}</h1>
 
-                    {/* Introduction */}
-                    <p className="intro-text">
+            {/* Introduction */}
+            <p className="intro-text">
                       {currentContent.introText}
-                    </p>
+            </p>
 
-                    {/* Installation Info */}
-                    <p className="installation-text">
+            {/* Installation Info */}
+            <p className="installation-text">
                       {currentContent.installationText}
-                    </p>
+            </p>
 
-                    {/* Framework Integrations */}
-                    <p className="framework-intro">
+            {/* Framework Integrations */}
+            <p className="framework-intro">
                       {currentContent.frameworkIntro}
-                    </p>
+            </p>
 
-                    {/* Framework Badges */}
-                    <div className="framework-badges">
-                      {frameworks.map((framework, index) => (
-                        <div key={index} className="framework-badge" style={{ '--framework-color': framework.color }}>
-                          <framework.icon className="framework-icon" />
-                          <span>{framework.name}</span>
-                        </div>
-                      ))}
-                    </div>
+            {/* Framework Badges */}
+            <div className="framework-badges">
+              {frameworks.map((framework, index) => (
+                <div key={index} className="framework-badge" style={{ '--framework-color': framework.color }}>
+                  <framework.icon className="framework-icon" />
+                  <span>{framework.name}</span>
+                </div>
+              ))}
+            </div>
 
-                    <p className="integration-link">
+            <p className="integration-link">
                       {currentContent.integrationLink}
                     </p>
 
@@ -256,15 +256,15 @@ const DocumentPage = () => {
                       <section key={key} id={key.replace(/-/g, '-')} className="content-section">
                         <h2 className="section-title">{section.title}</h2>
                         {Array.isArray(section.content) ? (
-                          <ol className="principles-list">
+              <ol className="principles-list">
                             {section.content.map((item, index) => (
                               <li key={index}>{item}</li>
                             ))}
-                          </ol>
+              </ol>
                         ) : (
                           <p>{section.content}</p>
                         )}
-                      </section>
+            </section>
                     ))}
                   </>
                 );
@@ -288,11 +288,16 @@ const DocumentPage = () => {
                       <div dangerouslySetInnerHTML={{ 
                         __html: section.content
                           .replace(/```(\w+)\n([\s\S]*?)```/g, (match, lang, code) => {
-                            return `<pre data-language="${lang}"><code class="language-${lang}">${code.trim()}</code></pre>`;
+                            const escaped = code
+                              .replace(/&/g, '&amp;')
+                              .replace(/</g, '&lt;')
+                              .replace(/>/g, '&gt;')
+                              .replace(/\"/g, '&quot;')
+                              .replace(/'/g, '&#39;');
+                            return `<pre data-language="${lang}"><code class="language-${lang}">${escaped}</code></pre>`;
                           })
-                          .replace(/\n/g, '<br>')
                       }} />
-                    </section>
+            </section>
                   ))}
                 </>
               );
@@ -328,8 +333,8 @@ const DocumentPage = () => {
                           handleTocClick(item);
                         }}
                       >
-                        {item}
-                      </a>
+                  {item}
+                </a>
                     );
                   });
                 }
