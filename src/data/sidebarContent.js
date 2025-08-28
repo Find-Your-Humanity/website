@@ -320,6 +320,51 @@ export default {
       }
     }
   }
+  ,
+  '설정': {
+    ko: { title: '설정', content: 'REAL 캡차 기본 설정 가이드입니다.', sections: {} },
+    en: { title: 'Configuration', content: 'Basic configuration guide for REAL captcha.', sections: {} }
+  },
+  'invisible_captcha': {
+    ko: { title: '보이지 않는 캡차', content: '보이지 않는 캡차 구현 가이드입니다.', sections: {} },
+    en: { title: 'Invisible Captcha', content: 'Guide to implementing invisible captcha.', sections: {} }
+  },
+  'custom_theme': {
+    ko: { title: '사용자 정의 테마', content: '위젯 테마 커스터마이징 가이드입니다.', sections: {} },
+    en: { title: 'Custom Themes', content: 'Customize widget theme to match your site.', sections: {} }
+  },
+  'language_codes': {
+    ko: { title: '언어 코드', content: '지원 언어 및 지역화 옵션 안내입니다.', sections: {} },
+    en: { title: 'Language Codes', content: 'Supported languages and localization options.', sections: {} }
+  },
+  'faq': {
+    ko: { title: '자주 묻는 질문', content: 'REAL 캡차 FAQ 입니다.', sections: {} },
+    en: { title: 'Frequently Asked Questions', content: 'REAL captcha FAQ.', sections: {} }
+  },
+  'enterprise_account_management': {
+    ko: { title: '계정 관리 및 메트릭 API', content: '엔터프라이즈 계정 관리/메트릭 안내입니다.', sections: {} },
+    en: { title: 'Account Management and Metrics APIs', content: 'Enterprise account management/metrics.', sections: {} }
+  },
+  'recaptcha_migration': {
+    ko: { title: 'reCAPTCHA에서 REAL로 전환', content: '전환 가이드 요약입니다.', sections: {} },
+    en: { title: 'Switch from reCAPTCHA to REAL', content: 'Migration guide summary.', sections: {} }
+  },
+  'mobile_sdk': {
+    ko: { title: '모바일 앱 SDK', content: 'iOS/Android 통합 가이드 요약입니다.', sections: {} },
+    en: { title: 'Mobile App SDKs', content: 'iOS/Android integration overview.', sections: {} }
+  },
+  '통합': {
+    ko: { title: '통합', content: '프레임워크별 통합 가이드 요약입니다.', sections: {} },
+    en: { title: 'Integrations', content: 'Framework integrations overview.', sections: {} }
+  },
+  'pro_features': {
+    ko: { title: 'Pro 기능', content: 'Pro 계정 전용 기능 요약입니다.', sections: {} },
+    en: { title: 'Pro Features', content: 'Overview of Pro features.', sections: {} }
+  },
+  'enterprise_overview': {
+    ko: { title: '엔터프라이즈 개요', content: '엔터프라이즈 기능 개요입니다.', sections: {} },
+    en: { title: 'Enterprise Overview', content: 'Overview of enterprise features.', sections: {} }
+  }
 };
 </script>
 \`\`\``
