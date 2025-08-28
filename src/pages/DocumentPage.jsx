@@ -319,14 +319,15 @@ const DocumentPage = () => {
             title: 'API 키 개요',
             content: 'API 키는 프론트엔드에서 위젯을 렌더링하는 데 사용되고, Secret 키는 서버 사이드에서 토큰을 검증하는 데 사용됩니다. 두 키 모두 안전하게 보관해야 합니다.'
           },
-          'frontend-integration': {
-            title: '프론트엔드 통합',
-            content: `1. HTML에 REAL 스크립트 추가
+                     'frontend-integration': {
+             title: '프론트엔드 통합',
+             content: `1. HTML에 REAL 스크립트 추가
 2. 위젯 컨테이너 생성
 3. API 키로 위젯 초기화
 4. 콜백 함수 설정
 
 예시 코드:
+
 \`\`\`html
 <!DOCTYPE html>
 <html>
@@ -365,6 +366,7 @@ const DocumentPage = () => {
 </body>
 </html>
 \`\`\``
+           },
           },
           'backend-verification': {
             title: '백엔드 검증',
@@ -1725,13 +1727,19 @@ if (window.REAL) {
                     {content.content}
                   </p>
 
-                  {/* Sub-sections */}
-                  {content.sections && Object.entries(content.sections).map(([key, section]) => (
-                    <section key={key} id={key} className="content-section">
-                      <h2 className="section-title">{section.title}</h2>
-                      <p>{section.content}</p>
-            </section>
-                  ))}
+                                     {/* Sub-sections */}
+                   {content.sections && Object.entries(content.sections).map(([key, section]) => (
+                     <section key={key} id={key} className="content-section">
+                       <h2 className="section-title">{section.title}</h2>
+                       <div dangerouslySetInnerHTML={{ 
+                         __html: section.content
+                           .replace(/```(\w+)\n([\s\S]*?)```/g, (match, lang, code) => {
+                             return `<pre data-language="${lang}"><code class="language-${lang}">${code.trim()}</code></pre>`;
+                           })
+                           .replace(/\n/g, '<br>')
+                       }} />
+                     </section>
+                   ))}
                 </>
               );
             })()}
