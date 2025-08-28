@@ -190,7 +190,9 @@ const DocumentPage = () => {
                 className={`docs-sidebar-item ${selectedSidebarItem === item ? 'active' : ''}`}
                 onClick={() => handleSidebarItemClick(item)}
               >
-                {item}
+                {(
+                  sidebarContent[item] && sidebarContent[item][selectedLanguage]
+                ) ? sidebarContent[item][selectedLanguage].title : item}
               </div>
             ))}
           </div>
@@ -202,7 +204,7 @@ const DocumentPage = () => {
             {/* Breadcrumbs */}
             <nav className="breadcrumbs">
               <FaHome className="breadcrumb-icon" />
-              <span>{selectedSidebarItem}</span>
+              <span>{(sidebarContent[selectedSidebarItem] && sidebarContent[selectedSidebarItem][selectedLanguage]) ? sidebarContent[selectedSidebarItem][selectedLanguage].title : selectedSidebarItem}</span>
             </nav>
 
             {/* 선택된 사이드바 아이템에 따른 콘텐츠 표시 */}
