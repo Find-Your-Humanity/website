@@ -13,74 +13,9 @@ const DashboardEmbed = () => {
   useEffect(() => {
     const verifyAuth = async () => {
       try {
-        // 1. 먼저 로컬 스토리지 확인 (빠른 응답)
-        const token = localStorage.getItem('authToken');
-        const userData = localStorage.getItem('userData');
-        
-        if (token && userData) {
-          try {
-            const parsedUser = JSON.parse(userData);
-            // 로컬 스토리지에 유효한 데이터가 있으면 즉시 인증 완료로 처리
-            console.log('로컬 스토리지에서 인증 정보 확인됨');
-            setAuthVerified(true);
-            
-            // 백그라운드에서 서버 검증 (선택적) - 실패해도 리다이렉션하지 않음
-            setTimeout(async () => {
-              try {
-                const response = await fetch('https://gateway.realcatcha.com/api/auth/me', {
-                  method: 'GET',
-                  credentials: 'include',
-                });
-                
-                if (!response.ok) {
-                  console.log('서버 인증 실패, 로컬 데이터 정리');
-                  localStorage.removeItem('authToken');
-                  localStorage.removeItem('userData');
-                  // setAuthVerified(false); // 리다이렉션 방지를 위해 주석 처리
-                }
-              } catch (error) {
-                console.warn('서버 인증 확인 중 오류:', error);
-                // 네트워크 오류 시에도 리다이렉션하지 않음
-              }
-            }, 1000);
-            
-            return;
-          } catch (error) {
-            console.log('로컬 데이터 파싱 실패');
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('userData');
-          }
-        }
-
-        // 2. 로컬 스토리지에 데이터가 없으면 서버 확인
-        console.log('서버에서 인증 상태 확인');
-        const response = await fetch('https://gateway.realcatcha.com/api/auth/me', {
-          method: 'GET',
-          credentials: 'include',
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          if (data && data.success && data.user) {
-            console.log('서버 인증 성공');
-            // 서버에서 받은 데이터로 로컬 스토리지 업데이트
-            if (data.access_token) {
-              localStorage.setItem('authToken', data.access_token);
-            }
-            localStorage.setItem('userData', JSON.stringify(data.user));
-            setAuthVerified(true);
-          } else {
-            console.log('서버 응답에 사용자 정보 없음');
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('userData');
-            setAuthVerified(true);
-          }
-        } else {
-          console.log('서버 인증 실패:', response.status);
-          localStorage.removeItem('authToken');
-          localStorage.removeItem('userData');
-          setAuthVerified(true);
-        }
+        // AuthContext의 인증 상태를 그대로 사용
+        console.log('AuthContext 인증 상태 확인:', isAuthenticated);
+        setAuthVerified(true);
       } catch (error) {
         console.warn('인증 상태 확인 중 오류:', error);
         setAuthVerified(true);
@@ -88,14 +23,14 @@ const DashboardEmbed = () => {
     };
 
     verifyAuth();
-  }, []);
+  }, [isAuthenticated]);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 800); // 로딩 시간 단축
     
     // 대시보드에서 로그아웃 메시지 수신 처리
     const handleMessage = (event) => {
-      if (event.origin !== 'https://dashboard.realcatcha.com') {
+      if (event.origin !== 'https://dashboard.realcatcha.com' && event.origin !== 'https://www.dashboard.realcatcha.com') {
         return;
       }
       
@@ -120,17 +55,18 @@ const DashboardEmbed = () => {
     setIsLoading(false);
     
     if (authVerified && isAuthenticated && iframeRef.current) {
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem('captcha_token');
       const userData = localStorage.getItem('userData');
       
       if (token && userData) {
         // 대시보드로 인증 정보 전달
         setTimeout(() => {
+          const dashboardOrigin = 'https://dashboard.realcatcha.com';
           iframeRef.current.contentWindow.postMessage({
             type: 'AUTH_TOKEN',
             token: token,
             user: JSON.parse(userData)
-          }, 'https://dashboard.realcatcha.com');
+          }, dashboardOrigin);
         }, 500); // 대기 시간 단축
       }
     }
@@ -194,7 +130,7 @@ const DashboardEmbed = () => {
         <iframe
           ref={iframeRef}
           title="Realcatcha Dashboard"
-          src="https://dashboard.realcatcha.com"
+          src="https://dashboard.realcatcha.com/"
           className="dashboard-iframe"
           onLoad={handleIframeLoad}
         />
