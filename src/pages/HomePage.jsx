@@ -9,6 +9,7 @@ const HomePage = () => {
   const { isAuthenticated } = useAuth();
   const [visibleSections, setVisibleSections] = useState(new Set());
   const [showCaptcha, setShowCaptcha] = useState(false);
+  const [consentGiven, setConsentGiven] = useState(false); // 동의 상태 추가
   const heroRef = useRef(null);
   const mainContentRef = useRef(null);
   const featuresRef = useRef(null);
@@ -28,11 +29,16 @@ const HomePage = () => {
 
   const handleTryCaptcha = () => {
     setShowCaptcha(prev => !prev); // true면 false로, false면 true로 토글
+    setConsentGiven(false); // CAPTCHA 토글 시 동의 상태 초기화
+  };
+
+  const handleConsentChange = (e) => {
+    setConsentGiven(e.target.checked);
   };
 
   // Captcha 렌더링
   useEffect(() => {
-    if (showCaptcha && window.renderRealCaptcha) {
+    if (showCaptcha && consentGiven && window.renderRealCaptcha) {
       // 약간의 지연 후 captcha 렌더링 (DOM이 준비된 후)
       const timer = setTimeout(() => {
         try {
@@ -52,7 +58,7 @@ const HomePage = () => {
 
       return () => clearTimeout(timer);
     }
-  }, [showCaptcha]);
+  }, [showCaptcha, consentGiven]);
 
   // Hero section은 페이지 로드 시 약간의 지연 후 애니메이션
   useEffect(() => {
@@ -116,8 +122,25 @@ const HomePage = () => {
             <button className="btn btn-primary" onClick={handleStartFreePlan}>Start Free Plan</button>
           </div>
           
+          {/* 동의 UI */}
+          {showCaptcha && !consentGiven && (
+            <div className="consent-section">
+              <div className="consent-checkbox">
+                <input 
+                  type="checkbox" 
+                  checked={consentGiven} 
+                  onChange={handleConsentChange}
+                  id="consent-checkbox"
+                />
+                <span className="consent-text">
+                  AI 모델 학습을 위한 데이터 수집에 동의합니다
+                </span>
+              </div>
+            </div>
+          )}
+          
           {/* Captcha Container */}
-          {showCaptcha && (
+          {showCaptcha && consentGiven && (
             <div className="captcha-section">
               <div id="captcha-container"></div>
             </div>
