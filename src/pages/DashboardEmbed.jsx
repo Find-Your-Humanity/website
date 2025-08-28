@@ -28,15 +28,22 @@ const DashboardEmbed = () => {
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 800); // 로딩 시간 단축
     
-    // 대시보드에서 로그아웃 메시지 수신 처리
+    // 대시보드에서 메시지 수신 처리
     const handleMessage = (event) => {
       if (event.origin !== 'https://dashboard.realcatcha.com' && event.origin !== 'https://www.dashboard.realcatcha.com') {
         return;
       }
       
+      console.log('DashboardEmbed: 메시지 수신', event.data);
+      
       if (event.data.type === 'LOGOUT') {
         // 대시보드에서 로그아웃했으면 웹사이트도 로그아웃
         logout();
+        // 로그인 페이지로 리다이렉트
+        window.location.href = '/signin';
+      } else if (event.data.type === 'NEED_LOGIN') {
+        // 대시보드에서 로그인이 필요하다고 요청
+        console.log('DashboardEmbed: 로그인 필요 메시지 수신');
         // 로그인 페이지로 리다이렉트
         window.location.href = '/signin';
       }
