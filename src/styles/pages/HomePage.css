@@ -115,7 +115,7 @@
 /* Captcha Section */
 .captcha-section {
   margin-top: 2rem;
-  padding: 2rem;
+  padding: 1.5rem;
   background-color: #f8f9fa;
   border-radius: 12px;
   border: 2px solid #e9ecef;
@@ -126,7 +126,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 300px;
+  min-height: 250px;
 }
 
 @keyframes fadeInUp {
