@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { FaCheck, FaChevronDown, FaChevronRight } from 'react-icons/fa';
+import PaymentModal from '../components/PaymentModal';
 import '../styles/pages/PayPage.css';
 
 // Toss Payments SDK 공식 문서 패턴으로 import
@@ -12,9 +13,11 @@ const PayPage = () => {
   const { isAuthenticated } = useAuth();
   const [openFaqs, setOpenFaqs] = useState({});
   const [paymentWidget, setPaymentWidget] = useState(null);
-  const [paymentMethods, setPaymentMethods] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isPaymentUIReady, setIsPaymentUIReady] = useState(false);
+  
+  // 모달 상태 관리
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState(null);
 
   // Toss Payments SDK 초기화 (공식 문서 패턴)
   useEffect(() => {
@@ -33,42 +36,6 @@ const PayPage = () => {
         console.log("🔍 widget.renderPaymentMethods 타입:", typeof widget.renderPaymentMethods);
         
         setPaymentWidget(widget);
-        
-        // 2. 결제 UI 렌더링 (메서드 존재 여부 확인 후)
-        if (typeof widget.renderPaymentMethods === 'function') {
-          const methods = widget.renderPaymentMethods(
-            "#payment-method", 
-            { value: 100 }, // 결제 금액
-            { variantKey: "DEFAULT" } // 기본 결제 UI
-          );
-          
-          // 3. 이용약관 UI 렌더링
-          if (typeof widget.renderAgreement === 'function') {
-            widget.renderAgreement("#agreement");
-          }
-          
-          setPaymentMethods(methods);
-          
-          // 4. 결제 UI 렌더링 완료 이벤트 리스너 (공식 문서 권장)
-          if (methods && typeof methods.on === 'function') {
-            methods.on('ready', () => {
-              console.log("✅ 결제 UI 렌더링 완료 - 이제 결제 요청 가능");
-              setIsPaymentUIReady(true);
-            });
-            
-            // 5. 결제 금액 변경 이벤트 리스너 (선택사항)
-            methods.on('amountChange', (amount) => {
-              console.log("💰 결제 금액 변경:", amount);
-            });
-          } else {
-            console.warn("⚠️ paymentMethods.on 메서드가 없습니다:", methods);
-            // 이벤트 리스너가 없어도 결제는 가능할 수 있음
-            setIsPaymentUIReady(true);
-          }
-        } else {
-          console.error("❌ widget.renderPaymentMethods가 함수가 아닙니다:", widget.renderPaymentMethods);
-          throw new Error("renderPaymentMethods 메서드를 찾을 수 없습니다");
-        }
         
       } catch (error) {
         console.error("❌ Toss Payments SDK 초기화 실패:", error);
@@ -117,69 +84,43 @@ const PayPage = () => {
     return nameMapping[planType];
   };
 
-  // 결제 요청 처리 (공식 문서 패턴)
-  const handleSelectPlan = async (planType) => {
+  // 요금제 선택 시 모달 열기
+  const handleSelectPlan = (planType) => {
     if (!isAuthenticated) {
       // 로그인되지 않은 상태: 로그인페이지로 이동
       navigate('/signin?next=/payment/checkout', { state: { plan: planType } });
       return;
     }
 
-    if (!paymentWidget || !paymentMethods) {
+    if (!paymentWidget) {
       alert("결제 시스템을 초기화하는 중입니다. 잠시 후 다시 시도해주세요.");
       return;
     }
 
-    // 결제 UI가 준비되지 않았으면 대기 (공식 문서 권장)
-    if (!isPaymentUIReady) {
-      alert("결제 시스템이 아직 준비되지 않았습니다. 잠시 후 다시 시도해주세요.");
-      return;
-    }
+    // 선택된 요금제 정보 설정
+    const planInfo = {
+      type: planType,
+      id: getPlanId(planType),
+      name: getPlanName(planType),
+      price: getPlanPrice(planType)
+    };
+    
+    setSelectedPlan(planInfo);
+    setIsModalOpen(true);
+  };
 
-    try {
-      setIsLoading(true);
-      
-      const orderId = generateOrderId();
-      const amount = getPlanPrice(planType);
-      const planName = getPlanName(planType);
-      const planId = getPlanId(planType);
+  // 모달 닫기
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedPlan(null);
+  };
 
-      console.log(`🔍 결제 요청 - 플랜: ${planName}, 금액: ${amount}원, 주문ID: ${orderId}`);
-
-      // 공식 문서 권장: 결제 요청 전 orderId와 amount를 서버에 임시 저장
-      // TODO: 서버에 주문 정보 임시 저장 로직 구현 필요
-
-      // 결제 요청 (공식 문서 패턴)
-      await paymentWidget.requestPayment({
-        orderId: orderId,
-        orderName: `${planName} - CAPTCHA 서비스`,
-        amount: amount,
-        successUrl: `${window.location.origin}/payment/success?planType=${planType}&planId=${planId}`,
-        failUrl: `${window.location.origin}/payment/fail?planType=${planType}&planId=${planId}`,
-        customerEmail: "test@example.com", // 실제로는 사용자 이메일 사용
-        customerName: "테스트 사용자", // 실제로는 사용자 이름 사용
-        // 추가 파라미터 (선택사항)
-        windowTarget: 'iframe', // iframe으로 결제창 열기
-        useInternationalCardOnly: false, // 국제카드 전용 여부
-        flowMode: 'BILLING' // 결제 흐름 모드
-      });
-
-    } catch (error) {
-      console.error("❌ 결제 요청 오류:", error);
-      
-      // 공식 문서 권장: 에러 타입별 사용자 친화적 메시지
-      let errorMessage = "결제 요청 중 오류가 발생했습니다. 다시 시도해주세요.";
-      
-      if (error.message && error.message.includes('UNAUTHORIZED_KEY')) {
-        errorMessage = "결제 시스템 인증에 실패했습니다. 관리자에게 문의해주세요.";
-      } else if (error.message && error.message.includes('NOT_REGISTERED_PAYMENT_WIDGET')) {
-        errorMessage = "결제 UI가 등록되지 않았습니다. 관리자에게 문의해주세요.";
-      }
-      
-      alert(errorMessage);
-    } finally {
-      setIsLoading(false);
-    }
+  // 결제 성공 시 처리
+  const handlePaymentSuccess = () => {
+    // 결제 성공 후 처리 로직
+    console.log("✅ 결제 성공:", selectedPlan);
+    handleCloseModal();
+    // 필요시 성공 페이지로 이동
   };
 
   const handleContactUs = () => {
@@ -235,7 +176,7 @@ const PayPage = () => {
               <button 
                 className="btn btn-primary plan-btn"
                 onClick={() => handleSelectPlan('basic')}
-                disabled={isLoading || !isPaymentUIReady}
+                disabled={isLoading}
               >
                 {isLoading ? '처리 중...' : '100원으로 시작하기'}
               </button>
@@ -279,7 +220,7 @@ const PayPage = () => {
               <button 
                 className="btn btn-primary plan-btn"
                 onClick={() => handleSelectPlan('plus')}
-                disabled={isLoading || !isPaymentUIReady}
+                disabled={isLoading}
               >
                 {isLoading ? '처리 중...' : 'Plus Plan 시작하기'}
               </button>
@@ -322,7 +263,7 @@ const PayPage = () => {
               <button 
                 className="btn btn-primary plan-btn"
                 onClick={() => handleSelectPlan('pro')}
-                disabled={isLoading || !isPaymentUIReady}
+                disabled={isLoading}
               >
                 {isLoading ? '처리 중...' : 'Pro Plan 시작하기'}
               </button>
@@ -334,20 +275,6 @@ const PayPage = () => {
                 문의하기
               </button>
             </div>
-          </div>
-
-          {/* Toss Payments 결제 위젯 섹션 */}
-          <div className="payment-widget-section">
-            <h3 className="payment-widget-title">결제 방법 선택</h3>
-            <div id="payment-method" className="payment-method-container"></div>
-            <div id="agreement" className="agreement-container"></div>
-            
-            {/* 결제 UI 상태 표시 */}
-            {!isPaymentUIReady && (
-              <div className="payment-loading">
-                <p>결제 시스템을 초기화하는 중입니다...</p>
-              </div>
-            )}
           </div>
 
           {/* FAQ Section */}
@@ -417,6 +344,15 @@ const PayPage = () => {
           </div>
         </div>
       </section>
+
+      {/* Payment Modal */}
+      <PaymentModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        selectedPlan={selectedPlan}
+        paymentWidget={paymentWidget}
+        onPaymentSuccess={handlePaymentSuccess}
+      />
     </div>
   );
 };
