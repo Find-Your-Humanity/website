@@ -662,25 +662,3 @@ const DocumentPage = () => {
 };
 
 export default DocumentPage; 
-                            block: 'start'
-                          });
-                        }
-                      }}
-                    >
-                      {section.title}
-                    </a>
-                  ));
-                }
-                
-                return null;
-              })()}
-            </nav>
-          </div>
-        </aside>
-      </div>
-    </div>
-  );
-};
-
-
-export default DocumentPage; 
