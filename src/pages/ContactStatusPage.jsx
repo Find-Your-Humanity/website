@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import useScrollToTop from '../hooks/useScrollToTop';
 import '../styles/pages/ContactStatusPage.css';
 
 const ContactStatusPage = () => {
@@ -10,6 +11,9 @@ const ContactStatusPage = () => {
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // 페이지 이동 시 스크롤을 맨 위로 올림
+  useScrollToTop();
 
   // URL 파라미터가 있으면 자동으로 조회
   useEffect(() => {

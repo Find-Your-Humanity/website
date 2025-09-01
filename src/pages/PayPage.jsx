@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { FaCheck, FaChevronDown, FaChevronRight } from 'react-icons/fa';
 import PaymentModal from '../components/PaymentModal';
+import useScrollToTop from '../hooks/useScrollToTop';
 import '../styles/pages/PayPage.css';
 
 // Toss Payments SDK 공식 문서 패턴으로 import
@@ -18,6 +19,9 @@ const PayPage = () => {
   // 모달 상태 관리
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
+
+  // 페이지 이동 시 스크롤을 맨 위로 올림
+  useScrollToTop();
 
   // Toss Payments SDK 초기화 (공식 문서 패턴)
   useEffect(() => {

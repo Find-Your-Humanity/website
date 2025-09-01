@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FaSearch, FaMoon, FaSun, FaHome, FaReact, FaVuejs, FaWordpress, FaAngular, FaNodeJs } from 'react-icons/fa';
+import { FaSearch, FaMoon, FaSun, FaHome, FaReact, FaVuejs, FaWordpress, FaAngular, FaNodeJs, FaEdit, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
 import useScrollToTop from '../hooks/useScrollToTop';
 import { koreanContent, englishContent } from '../data/documentContent';
 import { sidebarItems, sidebarContent } from '../data/sidebarContent';
- import '../styles/pages/DocumentPage.css';
+import { useAuth } from '../contexts/AuthContext';
+import { updateDocument, getDocument } from '../services/documentService';
+import '../styles/pages/DocumentPage.css';
 
 const DocumentPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -12,11 +14,21 @@ const DocumentPage = () => {
   const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('ko');
   const [selectedSidebarItem, setSelectedSidebarItem] = useState('developer_guide');
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [showSaveModal, setShowSaveModal] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [markdownContent, setMarkdownContent] = useState('');
+  const [apiContent, setApiContent] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // 인증 컨텍스트에서 사용자 정보 가져오기
+  const { user } = useAuth();
+  const isAdmin = user && (user.is_admin === true || user.is_admin === 1 || user.role === 'admin');
   
   // 페이지 이동 시 스크롤을 맨 위로 올림
   useScrollToTop();
   
-  // 현재 언어에 따른 콘텐츠 선택
+  // 현재 언어에 따른 콘텐츠 선택 (기본값)
   const currentContent = selectedLanguage === 'ko' ? koreanContent : englishContent;
 
   // 테마 토글 함수
@@ -36,7 +48,132 @@ const DocumentPage = () => {
     }
   };
 
-  // 컴포넌트 마운트 시 저장된 테마 설정 불러오기
+  // API에서 문서 로딩하는 함수
+  const loadDocumentFromAPI = async () => {
+    try {
+      setIsLoading(true);
+      const result = await getDocument(selectedLanguage, selectedSidebarItem);
+      
+      if (result.success && result.data.content) {
+        setApiContent(result.data.content);
+        console.log('API에서 문서 로딩 성공:', result.data);
+      } else {
+        console.log('API에서 문서가 없거나 비어있음, 기본 콘텐츠 사용');
+        setApiContent(null);
+      }
+    } catch (error) {
+      console.error('API에서 문서 로딩 실패:', error);
+      setApiContent(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 편집 모드 토글 함수
+  const toggleEditMode = () => {
+    if (!isEditMode) {
+      // 편집 모드 시작 시 현재 콘텐츠를 마크다운으로 변환
+      const currentContent = selectedLanguage === 'ko' ? koreanContent : englishContent;
+      const selectedContent = sidebarContent[selectedSidebarItem];
+      
+      if (selectedSidebarItem === 'developer_guide') {
+        // Developer Guide인 경우 기존 콘텐츠를 마크다운으로 변환
+        let markdown = `# ${currentContent.mainTitle}\n\n`;
+        markdown += `${currentContent.introText}\n\n`;
+        markdown += `${currentContent.installationText}\n\n`;
+        markdown += `${currentContent.frameworkIntro}\n\n`;
+        
+        // 섹션들을 마크다운으로 변환
+        Object.entries(currentContent.sections).forEach(([key, section]) => {
+          markdown += `## ${section.title}\n\n`;
+          if (Array.isArray(section.content)) {
+            section.content.forEach((item, index) => {
+              markdown += `${index + 1}. ${item}\n`;
+            });
+          } else {
+            markdown += `${section.content}\n`;
+          }
+          markdown += '\n';
+        });
+        
+        setMarkdownContent(markdown);
+      } else if (selectedContent && selectedContent[selectedLanguage]) {
+        // 다른 사이드바 아이템인 경우 해당 콘텐츠를 마크다운으로 변환
+        const content = selectedContent[selectedLanguage];
+        let markdown = `# ${content.title}\n\n`;
+        markdown += `${content.content}\n\n`;
+        
+        if (content.sections) {
+          Object.entries(content.sections).forEach(([key, section]) => {
+            markdown += `## ${section.title}\n\n`;
+            markdown += `${section.content}\n\n`;
+          });
+        }
+        
+        setMarkdownContent(markdown);
+      }
+    }
+    
+    setIsEditMode(prev => !prev);
+  };
+
+  // 저장 함수
+  const handleSave = async () => {
+    try {
+      console.log('문서 저장 중...');
+      
+      // 백엔드 API 호출
+      const result = await updateDocument(selectedLanguage, selectedSidebarItem, markdownContent);
+      
+      if (result.success) {
+        console.log('문서 저장 성공:', result.data);
+        
+        // 저장 완료 모달 표시
+        setShowSaveModal(true);
+        
+        // 3초 후 자동으로 모달 닫기
+        setTimeout(() => {
+          setShowSaveModal(false);
+          setIsEditMode(false); // 편집 모드 종료
+          
+          // 저장 후 API에서 최신 콘텐츠 다시 로딩
+          loadDocumentFromAPI();
+        }, 3000);
+      } else {
+        throw new Error('문서 저장 실패');
+      }
+    } catch (error) {
+      console.error('문서 저장 오류:', error);
+      
+      // 에러 모달 표시 (간단한 alert로 대체)
+      alert(`문서 저장 실패: ${error.message}`);
+    }
+  };
+
+  // 취소 함수
+  const handleCancel = () => {
+    setShowCancelModal(true);
+  };
+
+  // 편집 모드 완전 종료 (수정사항 저장 안함)
+  const exitEditMode = () => {
+    setIsEditMode(false);
+    setShowCancelModal(false);
+    
+    // 수정사항을 원래대로 되돌리기 위해 마크다운 내용 초기화
+    setMarkdownContent('');
+    
+    console.log('편집 모드 종료 - 수정사항 저장 안됨');
+  };
+
+  // 편집 모드 계속 유지
+  const continueEditMode = () => {
+    setShowCancelModal(false);
+    // 편집 모드는 그대로 유지
+    console.log('편집 모드 계속 유지');
+  };
+
+  // 컴포넌트 마운트 시 저장된 테마 설정 불러오기 및 초기 문서 로딩
   useEffect(() => {
     const savedDarkMode = localStorage.getItem('darkMode');
     if (savedDarkMode !== null) {
@@ -48,6 +185,9 @@ const DocumentPage = () => {
         documentPage.classList.add('dark-mode');
       }
     }
+    
+    // 초기 문서 로딩
+    loadDocumentFromAPI();
   }, []);
   
   // 드롭다운 외부 클릭 시 닫기
@@ -83,6 +223,8 @@ const DocumentPage = () => {
   const handleSidebarItemClick = (item) => {
     console.log(`Clicked: ${item}`);
     setSelectedSidebarItem(item);
+    // 사이드바 아이템 변경 시 API에서 문서 로딩
+    loadDocumentFromAPI();
   };
 
   // TOC 링크 클릭 핸들러
@@ -156,6 +298,8 @@ const DocumentPage = () => {
                         e.stopPropagation();
                         setSelectedLanguage(language.code);
                         setIsLanguageDropdownOpen(false);
+                        // 언어 변경 시 API에서 문서 로딩
+                        setTimeout(() => loadDocumentFromAPI(), 100);
                       }}
                     >
                       <span className="language-flag">{language.flag}</span>
@@ -169,6 +313,36 @@ const DocumentPage = () => {
             <button className="theme-toggle" onClick={toggleTheme}>
               {isDarkMode ? <FaSun /> : <FaMoon />}
             </button>
+            
+            {/* 관리자 편집 모드 컨트롤 */}
+            {isAdmin && (
+              <div className="edit-mode-controls">
+                {!isEditMode ? (
+                  <button 
+                    className="edit-mode-toggle"
+                    onClick={toggleEditMode}
+                    title="편집 모드 시작"
+                  >
+                    <FaEdit />
+                  </button>
+                ) : (
+                  <div className="edit-buttons">
+                    <button 
+                      className="save-button"
+                      onClick={handleSave}
+                    >
+                      저장
+                    </button>
+                    <button 
+                      className="cancel-button"
+                      onClick={handleCancel}
+                    >
+                      취소
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </header>
@@ -207,101 +381,125 @@ const DocumentPage = () => {
               <span>{(sidebarContent[selectedSidebarItem] && sidebarContent[selectedSidebarItem][selectedLanguage]) ? sidebarContent[selectedSidebarItem][selectedLanguage].title : selectedSidebarItem}</span>
             </nav>
 
-            {/* 선택된 사이드바 아이템에 따른 콘텐츠 표시 */}
-            {(() => {
-              const selectedContent = sidebarContent[selectedSidebarItem];
-              if (!selectedContent) return null;
-              
-              const content = selectedContent[selectedLanguage];
-              if (!content) return null;
-              
-              // Developer Guide인 경우 기존 콘텐츠 표시
-              if (selectedSidebarItem === 'developer_guide') {
-                return (
-                  <>
-            {/* Main Title */}
-                    <h1 className="main-title">{currentContent.mainTitle}</h1>
-
-            {/* Introduction */}
-            <p className="intro-text">
-                      {currentContent.introText}
-            </p>
-
-            {/* Installation Info */}
-            <p className="installation-text">
-                      {currentContent.installationText}
-            </p>
-
-            {/* Framework Integrations */}
-            <p className="framework-intro">
-                      {currentContent.frameworkIntro}
-            </p>
-
-            {/* Framework Badges */}
-            <div className="framework-badges">
-              {frameworks.map((framework, index) => (
-                <div key={index} className="framework-badge" style={{ '--framework-color': framework.color }}>
-                  <framework.icon className="framework-icon" />
-                  <span>{framework.name}</span>
-                </div>
-              ))}
-            </div>
-
-            <p className="integration-link">
-                      {currentContent.integrationLink}
-                    </p>
-
-                    {/* 동적으로 섹션 렌더링 */}
-                    {Object.entries(currentContent.sections).map(([key, section]) => (
-                      <section key={key} id={key.replace(/-/g, '-')} className="content-section">
-                        <h2 className="section-title">{section.title}</h2>
-                        {Array.isArray(section.content) ? (
-              <ol className="principles-list">
-                            {section.content.map((item, index) => (
-                              <li key={index}>{item}</li>
-                            ))}
-              </ol>
-                        ) : (
-                          <p>{section.content}</p>
-                        )}
-            </section>
-                    ))}
-                  </>
-                );
-              }
-              
-              // 다른 사이드바 아이템인 경우 해당 콘텐츠 표시
-              return (
-                <>
-                  {/* Main Title */}
-                  <h1 className="main-title">{content.title}</h1>
-
-                  {/* Introduction */}
-                  <p className="intro-text">
-                    {content.content}
+            {/* 편집 모드일 때 마크다운 에디터 표시 */}
+            {isEditMode ? (
+              <div className="markdown-editor-container">
+                <div className="editor-header">
+                  <h2>마크다운 편집기</h2>
+                  <p className="editor-description">
+                    문서 내용을 마크다운 형식으로 편집하세요.
                   </p>
+                </div>
+                <div className="editor-content">
+                  <textarea
+                    className="markdown-textarea"
+                    value={markdownContent}
+                    onChange={(e) => setMarkdownContent(e.target.value)}
+                    placeholder="마크다운 형식으로 문서를 작성하세요..."
+                    rows={30}
+                  />
+                </div>
+              </div>
+            ) : (
+              // 편집 모드가 아닐 때 기존 콘텐츠 표시
+              <>
+                {/* 선택된 사이드바 아이템에 따른 콘텐츠 표시 */}
+                {(() => {
+                  const selectedContent = sidebarContent[selectedSidebarItem];
+                  if (!selectedContent) return null;
+                  
+                  const content = selectedContent[selectedLanguage];
+                  if (!content) return null;
+                  
+                  // Developer Guide인 경우 기존 콘텐츠 표시
+                  if (selectedSidebarItem === 'developer_guide') {
+                    return (
+                      <>
+                {/* Main Title */}
+                        <h1 className="main-title">{currentContent.mainTitle}</h1>
 
-                  {/* Sub-sections */}
-                  {content.sections && Object.entries(content.sections).map(([key, section]) => (
-                    <section key={key} id={key} className="content-section">
-                      <h2 className="section-title">{section.title}</h2>
-                      <div dangerouslySetInnerHTML={{ 
-                        __html: section.content
-                          .replace(/```(\w+)\n([\s\S]*?)```/g, (match, lang, code) => {
-                            const escaped = code
-                              .replace(/&/g, '&amp;')
-                              .replace(/</g, '&lt;')
-                              .replace(/>/g, '&gt;')
-                              .replace(/\"/g, '&quot;')
-                              .replace(/'/g, '&#39;');
-                            return `<pre data-language="${lang}"><code class="language-${lang}">${escaped}</code></pre>`;
-                          })
-                      }} />
-            </section>
+                {/* Introduction */}
+                <p className="intro-text">
+                          {currentContent.introText}
+                </p>
+
+                {/* Installation Info */}
+                <p className="installation-text">
+                          {currentContent.installationText}
+                </p>
+
+                {/* Framework Integrations */}
+                <p className="framework-intro">
+                          {currentContent.frameworkIntro}
+                </p>
+
+                {/* Framework Badges */}
+                <div className="framework-badges">
+                  {frameworks.map((framework, index) => (
+                    <div key={index} className="framework-badge" style={{ '--framework-color': framework.color }}>
+                      <framework.icon className="framework-icon" />
+                      <span>{framework.name}</span>
+                    </div>
                   ))}
-                </>
-              );
-            })()}
+                </div>
+
+                <p className="integration-link">
+                          {currentContent.integrationLink}
+                        </p>
+
+                        {/* 동적으로 섹션 렌더링 */}
+                        {Object.entries(currentContent.sections).map(([key, section]) => (
+                          <section key={key} id={key.replace(/-/g, '-')} className="content-section">
+                            <h2 className="section-title">{section.title}</h2>
+                            {Array.isArray(section.content) ? (
+                  <ol className="principles-list">
+                              {section.content.map((item, index) => (
+                                <li key={index}>{item}</li>
+                              ))}
+                  </ol>
+                            ) : (
+                              <p>{section.content}</p>
+                            )}
+                </section>
+                        ))}
+                      </>
+                    );
+                  }
+                  
+                  // 다른 사이드바 아이템인 경우 해당 콘텐츠 표시
+                  return (
+                    <>
+                      {/* Main Title */}
+                      <h1 className="main-title">{content.title}</h1>
+
+                      {/* Introduction */}
+                      <p className="intro-text">
+                        {content.content}
+                      </p>
+
+                      {/* Sub-sections */}
+                      {content.sections && Object.entries(content.sections).map(([key, section]) => (
+                        <section key={key} id={key} className="content-section">
+                          <h2 className="section-title">{section.title}</h2>
+                          <div dangerouslySetInnerHTML={{ 
+                            __html: section.content
+                              .replace(/```(\w+)\n([\s\S]*?)```/g, (match, lang, code) => {
+                                const escaped = code
+                                  .replace(/&/g, '&amp;')
+                                  .replace(/</g, '&lt;')
+                                  .replace(/>/g, '&gt;')
+                                  .replace(/\"/g, '&quot;')
+                                  .replace(/'/g, '&#39;');
+                                return `<pre data-language="${lang}"><code class="language-${lang}">${escaped}</code></pre>`;
+                              })
+                          }} />
+                </section>
+                      ))}
+                    </>
+                  );
+                })()}
+              </>
+            )}
           </div>
         </main>
 
@@ -368,6 +566,62 @@ const DocumentPage = () => {
           </div>
         </aside>
       </div>
+
+      {/* 저장 완료 모달 */}
+      {showSaveModal && (
+        <div className="modal-overlay" onClick={() => setShowSaveModal(false)}>
+          <div className="modal save-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <FaCheckCircle className="success-icon" />
+              <h3>저장 완료</h3>
+            </div>
+            <div className="modal-body">
+              <p>문서가 성공적으로 저장되었습니다.</p>
+              <p className="auto-close-notice">3초 후 자동으로 닫힙니다.</p>
+            </div>
+            <div className="modal-footer">
+              <button 
+                className="modal-confirm-btn"
+                onClick={() => {
+                  setShowSaveModal(false);
+                  setIsEditMode(false); // 편집 모드 종료
+                }}
+              >
+                확인
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 취소 확인 모달 */}
+      {showCancelModal && (
+        <div className="modal-overlay" onClick={() => setShowCancelModal(false)}>
+          <div className="modal cancel-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <FaExclamationTriangle className="warning-icon" />
+              <h3>편집 취소</h3>
+            </div>
+            <div className="modal-body">
+              <p>수정사항이 저장되지 않습니다. 계속하시겠습니까?</p>
+            </div>
+            <div className="modal-footer">
+              <button 
+                className="modal-confirm-btn"
+                onClick={exitEditMode}
+              >
+                확인
+              </button>
+              <button 
+                className="modal-cancel-btn"
+                onClick={continueEditMode}
+              >
+                취소
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
