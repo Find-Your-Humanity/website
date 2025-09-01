@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { FaCheckCircle, FaSpinner } from 'react-icons/fa';
+import useScrollToTop from '../hooks/useScrollToTop';
 import '../styles/pages/PaymentSuccessPage.css';
 
 const PaymentSuccessPage = () => {
@@ -13,6 +14,9 @@ const PaymentSuccessPage = () => {
   const [isProcessing, setIsProcessing] = useState(true);
   const [paymentResult, setPaymentResult] = useState(null);
   const [error, setError] = useState(null);
+
+  // 페이지 이동 시 스크롤을 맨 위로 올림
+  useScrollToTop();
 
   // URL 파라미터에서 결제 정보 추출
   const paymentKey = searchParams.get('paymentType') || searchParams.get('paymentKey');

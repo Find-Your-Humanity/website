@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import useScrollToTop from '../hooks/useScrollToTop';
 import '../styles/pages/GoogleCallbackPage.css';
 
 const GoogleCallbackPage = () => {
@@ -9,6 +10,9 @@ const GoogleCallbackPage = () => {
   const { loginWithGoogle } = useAuth();
   const [status, setStatus] = useState('processing'); // processing, success, error
   const [message, setMessage] = useState('Google 로그인 처리 중...');
+
+  // 페이지 이동 시 스크롤을 맨 위로 올림
+  useScrollToTop();
 
   useEffect(() => {
     const handleGoogleCallback = async () => {

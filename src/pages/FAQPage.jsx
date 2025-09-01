@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
+import useScrollToTop from '../hooks/useScrollToTop';
 import '../styles/pages/FAQPage.css';
 
 const FAQPage = () => {
   const [openFAQ, setOpenFAQ] = useState(null);
+
+  // 페이지 이동 시 스크롤을 맨 위로 올림
+  useScrollToTop();
 
   const toggleFAQ = (index) => {
     setOpenFAQ(openFAQ === index ? null : index);

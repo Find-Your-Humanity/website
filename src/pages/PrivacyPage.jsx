@@ -1,7 +1,11 @@
 import React from 'react';
+import useScrollToTop from '../hooks/useScrollToTop';
 import '../styles/pages/LegalPage.css';
 
 const PrivacyPage = () => {
+  // 페이지 이동 시 스크롤을 맨 위로 올림
+  useScrollToTop();
+
   return (
     <div className="legal-page">
       <div className="legal-container">

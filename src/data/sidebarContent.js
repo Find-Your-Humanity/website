@@ -1,5 +1,6 @@
 // 사이드바 아이템 목록
 export const sidebarItems = [
+  'developer_guide',
   'api_key_usage_guide',
   '설정',
   'invisible_captcha',
@@ -16,6 +17,52 @@ export const sidebarItems = [
 
 // 사이드바 콘텐츠 데이터
 export const sidebarContent = {
+  'developer_guide': {
+    ko: {
+      title: '개발자 가이드',
+      content: 'REAL 캡차를 사용하여 웹사이트를 보호하는 방법을 알아보세요.',
+      sections: {
+        'introduction': {
+          title: '소개',
+          content: 'REAL은 봇, 스팸 및 기타 자동화된 악용으로부터 애플리케이션을 보호하는 데 도움을 줄 수 있습니다.'
+        },
+        'basic-principles': {
+          title: '기본 원칙',
+          content: '1. 사이트에 REAL 위젯을 임베드합니다. 예를 들어 로그인 폼에 배치합니다.\n2. 위젯은 사용자가 인간임을 증명하도록 도전합니다.\n3. 완료 시 REAL은 응답 토큰을 제공합니다.\n4. 서버에서 토큰을 확인하여 유효성을 검증합니다.\n5. 유효한 경우 사용자가 의도한 작업을 진행할 수 있도록 허용합니다.'
+        },
+        'installation': {
+          title: '설치 방법',
+          content: 'SDK 설치는 빠르고 간단합니다. HTML/서버 사이드 코드 또는 네이티브 도구를 사용할 수 있습니다.'
+        },
+        'usage': {
+          title: '사용 방법',
+          content: '많은 프레임워크에 대한 플러그인과 코드 예제를 사용할 수 있습니다.'
+        }
+      }
+    },
+    en: {
+      title: 'Developer Guide',
+      content: 'Learn how to protect your website using REAL captcha.',
+      sections: {
+        'introduction': {
+          title: 'Introduction',
+          content: 'REAL can help protect your applications from bots, spam, and other forms of automated abuse.'
+        },
+        'basic-principles': {
+          title: 'Basic Principles',
+          content: '1. You embed the REAL widget on your site. For example, on a login form.\n2. The widget challenges the user to prove they are human.\n3. Upon completion, REAL provides a response token.\n4. You verify the token on your server to ensure it\'s valid.\n5. If valid, you allow the user to proceed with their intended action.'
+        },
+        'installation': {
+          title: 'Installation',
+          content: 'SDK installation is fast and easy. You can use HTML/server-side code or native tools.'
+        },
+        'usage': {
+          title: 'Usage',
+          content: 'Plugins and code examples are available for many frameworks.'
+        }
+      }
+    }
+  },
   'api_key_usage_guide': {
     ko: {
       title: 'API 키 사용 가이드',

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import useScrollToTop from '../hooks/useScrollToTop';
 import '../styles/pages/MyInquiriesPage.css';
 
 const MyInquiriesPage = () => {
@@ -8,6 +9,9 @@ const MyInquiriesPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedInquiry, setSelectedInquiry] = useState(null);
+
+  // 페이지 이동 시 스크롤을 맨 위로 올림
+  useScrollToTop();
 
   useEffect(() => {
     if (!isAuthenticated) {

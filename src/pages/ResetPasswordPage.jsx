@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import useScrollToTop from '../hooks/useScrollToTop';
 
 const ResetPasswordPage = () => {
   const navigate = useNavigate();
@@ -9,6 +10,9 @@ const ResetPasswordPage = () => {
   const [confirm, setConfirm] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // 페이지 이동 시 스크롤을 맨 위로 올림
+  useScrollToTop();
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);

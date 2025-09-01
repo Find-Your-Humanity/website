@@ -1,11 +1,15 @@
 import React from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FaTimesCircle, FaExclamationTriangle } from 'react-icons/fa';
+import useScrollToTop from '../hooks/useScrollToTop';
 import '../styles/pages/PaymentFailPage.css';
 
 const PaymentFailPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  
+  // 페이지 이동 시 스크롤을 맨 위로 올림
+  useScrollToTop();
   
   // URL 파라미터에서 에러 정보 추출
   const errorCode = searchParams.get('code');

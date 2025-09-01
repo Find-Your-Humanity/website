@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import DashboardHeader from '../components/DashboardHeader';
+import useScrollToTop from '../hooks/useScrollToTop';
 import './DashboardEmbed.css';
 
 const DashboardEmbed = () => {
@@ -8,6 +9,9 @@ const DashboardEmbed = () => {
   const [authVerified, setAuthVerified] = useState(false);
   const iframeRef = useRef(null);
   const { user, isAuthenticated, logout } = useAuth();
+
+  // 페이지 이동 시 스크롤을 맨 위로 올림
+  useScrollToTop();
 
   // 인증 상태 확인 및 검증 - 즉시 실행
   useEffect(() => {
@@ -140,6 +144,7 @@ const DashboardEmbed = () => {
           src="https://dashboard.realcatcha.com/"
           className="dashboard-iframe"
           onLoad={handleIframeLoad}
+          allow="clipboard-read; clipboard-write"
         />
       </div>
     </div>
