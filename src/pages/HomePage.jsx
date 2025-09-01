@@ -39,41 +39,6 @@ const HomePage = () => {
     setConsentGiven(e.target.checked);
   };
 
-  // Captcha 렌더링
-  useEffect(() => {
-    if (showCaptcha && consentGiven && window.renderRealCaptcha) {
-      // 약간의 지연 후 captcha 렌더링 (DOM이 준비된 후)
-      const timer = setTimeout(() => {
-        try {
-          console.log('캡차 렌더링 시작, siteKey:', CAPTCHA_SITE_KEY); // 디버깅용 로그
-          
-          window.renderRealCaptcha('captcha-container', {
-            siteKey: CAPTCHA_SITE_KEY, // siteKey를 첫 번째 파라미터로 명시
-            theme: 'light',
-            size: 'normal',
-            onSuccess: function(result) {
-              console.log('캡차 성공!', result.token);
-              // 성공 시 서버로 토큰 전송 (시크릿 키로 검증)
-              sendTokenToServer(result.token);
-            },
-            onError: function(error) {
-              console.error('캡차 오류:', error);
-              alert('캡차 인증 실패. 다시 시도해주세요.');
-            },
-            onExpired: function() {
-              console.log('캡차 만료됨');
-              alert('캡차가 만료되었습니다. 다시 시도해주세요.');
-            }
-          });
-        } catch (error) {
-          console.error('Captcha 렌더링 오류:', error);
-        }
-      }, 100);
-
-      return () => clearTimeout(timer);
-    }
-  }, [showCaptcha, consentGiven, CAPTCHA_SITE_KEY]);
-
   // 서버로 토큰 전송 함수
   const sendTokenToServer = async (token) => {
     try {
@@ -100,6 +65,75 @@ const HomePage = () => {
       alert('서버 통신 오류가 발생했습니다.');
     }
   };
+
+  // 대체 방법: iframe으로 위젯 로드
+  const loadCaptchaWidgetFallback = () => {
+    const container = document.getElementById('captcha-container');
+    if (container) {
+      container.innerHTML = `
+        <div style="text-align: center; padding: 20px;">
+          <h4>🎯 캡차 위젯</h4>
+          <p>위젯을 로드하는 중입니다...</p>
+          <div style="margin: 20px 0;">
+            <iframe 
+              src="https://test.realcatcha.com?siteKey=${CAPTCHA_SITE_KEY}&theme=light" 
+              width="100%" 
+              height="400" 
+              frameborder="0"
+              style="border-radius: 8px; border: 1px solid #ddd;"
+            ></iframe>
+          </div>
+          <p style="font-size: 12px; color: #666;">
+            위젯이 로드되지 않는 경우, 페이지를 새로고침하거나 잠시 후 다시 시도해주세요.
+          </p>
+        </div>
+      `;
+    }
+  };
+
+  // Captcha 렌더링
+  useEffect(() => {
+    if (showCaptcha && consentGiven) {
+      // 약간의 지연 후 captcha 렌더링 (DOM이 준비된 후)
+      const timer = setTimeout(() => {
+        try {
+          console.log('캡차 렌더링 시작, siteKey:', CAPTCHA_SITE_KEY); // 디버깅용 로그
+          
+          // 위젯 스크립트가 로드되었는지 확인
+          if (typeof window.renderRealCaptcha === 'function') {
+            window.renderRealCaptcha('captcha-container', {
+              siteKey: CAPTCHA_SITE_KEY, // siteKey를 첫 번째 파라미터로 명시
+              theme: 'light',
+              size: 'normal',
+              onSuccess: function(result) {
+                console.log('캡차 성공!', result.token);
+                // 성공 시 서버로 토큰 전송 (시크릿 키로 검증)
+                sendTokenToServer(result.token);
+              },
+              onError: function(error) {
+                console.error('캡차 오류:', error);
+                alert('캡차 인증 실패. 다시 시도해주세요.');
+              },
+              onExpired: function() {
+                console.log('캡차 만료됨');
+                alert('캡차가 만료되었습니다. 다시 시도해주세요.');
+              }
+            });
+          } else {
+            console.error('renderRealCaptcha 함수를 찾을 수 없습니다. 위젯 스크립트를 확인해주세요.');
+            // 대체 방법: iframe으로 위젯 로드
+            loadCaptchaWidgetFallback();
+          }
+        } catch (error) {
+          console.error('Captcha 렌더링 오류:', error);
+          // 오류 발생 시 대체 방법 사용
+          loadCaptchaWidgetFallback();
+        }
+      }, 100);
+
+      return () => clearTimeout(timer);
+    }
+  }, [showCaptcha, consentGiven, CAPTCHA_SITE_KEY]);
 
   // Hero section은 페이지 로드 시 약간의 지연 후 애니메이션
   useEffect(() => {
