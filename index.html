@@ -1,21 +1,28 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/logo.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Real</title>
-    
-    <!-- React 의존성 -->
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    
-    <!-- 카카오클라우드 CDN -->
-    <script src="https://1df60f5faf3b4f2f992ced2edbae22ad.kakaoiedge.com/latest/realcaptcha-widget.min.js"></script>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset= utf-8 />
+  <title>REAL Captcha Test</title>
+  <script src=https://1df60f5faf3b4f2f992ced2edbae22ad.kakaoiedge.com/latest/realcaptcha-widget.min.js></script>
+  <style> body { font-family: -apple-system, Segoe UI, Arial; padding: 24px; } #log { background:#f6f8fa; padding:12px; border-radius:6px; white-space:pre-wrap; } </style>
+</head>
+<body>
+  <h3>REAL Captcha Test</h3>
+  <div id=real-captcha></div>
+  <h4>Logs</h4>
+  <pre id=log></pre>
+  <script>
+    function log(msg){ document.getElementById(log).textContent += (msg + \n); }
+    REAL.init({
+      siteKey: rc_live_your_api_key_here,
+      container: #real-captcha,
+      callback: function(token) {
+        log(토큰 발급 성공:  + token); window.__REAL_TOKEN__ = token;
+      },
+       expired-callback: function() {
+        log(토큰 만료); REAL.reset();
+      }
+    });
+  </script>
+</body>
 </html>
-

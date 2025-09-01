@@ -14,6 +14,9 @@ const HomePage = () => {
   const mainContentRef = useRef(null);
   const featuresRef = useRef(null);
   
+  // CDN API 키 가져오기 (프론트엔드에서는 사이트 키만 사용)
+  const CAPTCHA_SITE_KEY = process.env.REACT_APP_CAPTCHA_SITE_KEY || 'rc_live_f49a055d62283fd02e8203ccaba70fc2';
+  
   // 페이지 이동 시 스크롤을 맨 위로 올림
   useScrollToTop();
 
@@ -42,13 +45,24 @@ const HomePage = () => {
       // 약간의 지연 후 captcha 렌더링 (DOM이 준비된 후)
       const timer = setTimeout(() => {
         try {
+          console.log('캡차 렌더링 시작, siteKey:', CAPTCHA_SITE_KEY); // 디버깅용 로그
+          
           window.renderRealCaptcha('captcha-container', {
+            siteKey: CAPTCHA_SITE_KEY, // siteKey를 첫 번째 파라미터로 명시
             theme: 'light',
-            size: 'normal'
-          }, function(result) {
-            if (result.success) {
+            size: 'normal',
+            onSuccess: function(result) {
               console.log('캡차 성공!', result.token);
-              // 서버로 토큰 전송
+              // 성공 시 서버로 토큰 전송 (시크릿 키로 검증)
+              sendTokenToServer(result.token);
+            },
+            onError: function(error) {
+              console.error('캡차 오류:', error);
+              alert('캡차 인증 실패. 다시 시도해주세요.');
+            },
+            onExpired: function() {
+              console.log('캡차 만료됨');
+              alert('캡차가 만료되었습니다. 다시 시도해주세요.');
             }
           });
         } catch (error) {
@@ -58,7 +72,34 @@ const HomePage = () => {
 
       return () => clearTimeout(timer);
     }
-  }, [showCaptcha, consentGiven]);
+  }, [showCaptcha, consentGiven, CAPTCHA_SITE_KEY]);
+
+  // 서버로 토큰 전송 함수
+  const sendTokenToServer = async (token) => {
+    try {
+      const response = await fetch('/api/captcha/verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token: token,
+          // 시크릿 키는 백엔드에서만 사용
+        })
+      });
+      
+      const result = await response.json();
+      if (result.success) {
+        alert('캡차 인증이 완료되었습니다! 🎉');
+        setShowCaptcha(false); // 캡차 숨기기
+      } else {
+        alert('캡차 검증 실패: ' + result.message);
+      }
+    } catch (error) {
+      console.error('서버 전송 오류:', error);
+      alert('서버 통신 오류가 발생했습니다.');
+    }
+  };
 
   // Hero section은 페이지 로드 시 약간의 지연 후 애니메이션
   useEffect(() => {
