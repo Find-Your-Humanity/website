@@ -47,10 +47,12 @@ const DocumentPage = () => {
   };
 
   // API에서 문서 로딩하는 함수
-  const loadDocumentFromAPI = async () => {
+  const loadDocumentFromAPI = async (documentType = selectedSidebarItem) => {
     try {
       setIsLoading(true);
-      const result = await getDocument(selectedLanguage, selectedSidebarItem);
+      console.log(`🔍 API 호출: language=${selectedLanguage}, documentType=${documentType}`);
+      
+      const result = await getDocument(selectedLanguage, documentType);
       
       if (result.success && result.data.content) {
         setApiContent(result.data.content);
@@ -172,6 +174,13 @@ const DocumentPage = () => {
     };
   }, []);
 
+  // 사이드바 아이템이나 언어 변경 시 API에서 문서 로딩
+  useEffect(() => {
+    if (selectedSidebarItem) {
+      loadDocumentFromAPI(selectedSidebarItem);
+    }
+  }, [selectedSidebarItem, selectedLanguage]);
+
   const frameworks = [
     { name: 'ReactJS', icon: FaReact, color: '#61DAFB' },
     { name: 'VueJS', icon: FaVuejs, color: '#4FC08D' },
@@ -191,8 +200,8 @@ const DocumentPage = () => {
   const handleSidebarItemClick = (item) => {
     console.log(`Clicked: ${item}`);
     setSelectedSidebarItem(item);
-    // 사이드바 아이템 변경 시 API에서 문서 로딩
-    loadDocumentFromAPI();
+    // 선택된 아이템으로 직접 API 호출하여 상태 동기화 문제 해결
+    loadDocumentFromAPI(item);
   };
 
   return (
@@ -226,8 +235,8 @@ const DocumentPage = () => {
                         e.stopPropagation();
                         setSelectedLanguage(language.code);
                         setIsLanguageDropdownOpen(false);
-                        // 언어 변경 시 API에서 문서 로딩
-                        setTimeout(() => loadDocumentFromAPI(), 100);
+                        // 언어 변경 시 현재 선택된 사이드바 아이템으로 API 호출
+                        setTimeout(() => loadDocumentFromAPI(selectedSidebarItem), 100);
                       }}
                     >
                       <span className="language-flag">{language.flag}</span>
