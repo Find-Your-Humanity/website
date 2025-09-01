@@ -72,7 +72,9 @@ const DocumentPage = () => {
   // 편집 모드 토글 함수
   const toggleEditMode = () => {
     if (!isEditMode) {
-      // 편집 모드 시작 시 API 콘텐츠를 우선 사용
+      // 편집 모드 시작 시
+      setIsEditMode(true);  // 편집 모드 상태를 true로 설정
+      
       if (apiContent) {
         // API에서 가져온 마크다운 콘텐츠를 그대로 사용
         setMarkdownContent(apiContent);
