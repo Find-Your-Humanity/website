@@ -71,21 +71,15 @@ const HomePage = () => {
     const container = document.getElementById('captcha-container');
     if (container) {
       container.innerHTML = `
-        <div style="text-align: center; padding: 20px;">
-          <h4>🎯 캡차 위젯</h4>
-          <p>위젯을 로드하는 중입니다...</p>
-          <div style="margin: 20px 0;">
-            <iframe 
-              src="https://test.realcatcha.com?siteKey=${CAPTCHA_SITE_KEY}&theme=light" 
-              width="100%" 
-              height="400" 
-              frameborder="0"
-              style="border-radius: 8px; border: 1px solid #ddd;"
-            ></iframe>
-          </div>
-          <p style="font-size: 12px; color: #666;">
-            위젯이 로드되지 않는 경우, 페이지를 새로고침하거나 잠시 후 다시 시도해주세요.
-          </p>
+        <div style="width: 100%; height: 100%;">
+          <iframe 
+            src="https://test.realcatcha.com?siteKey=${CAPTCHA_SITE_KEY}&theme=light" 
+            width="100%" 
+            height="100%" 
+            frameborder="0"
+            style="border: none; border-radius: 8px; min-height: 400px;"
+            allow="camera; microphone; geolocation"
+          ></iframe>
         </div>
       `;
     }
