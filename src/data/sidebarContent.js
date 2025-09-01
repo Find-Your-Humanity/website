@@ -1,7 +1,6 @@
 // 언어별 사이드바 아이템 목록
 export const sidebarItems = {
   ko: [
-    'developer_guide',
     'api_key_usage_guide',
     '설정',
     'invisible_captcha',
@@ -15,7 +14,6 @@ export const sidebarItems = {
     'enterprise_overview'
   ],
   en: [
-    'developer_guide',
     'api_key_usage_guide',
     '설정',
     'invisible_captcha',
