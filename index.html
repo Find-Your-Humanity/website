@@ -6,16 +6,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RealCaptcha - 사람은 지나가고, 봇은 멈춥니다</title>
     
+    <!-- React 18 먼저 로드 (위젯 스크립트보다 먼저) -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
     <!-- RealCaptcha 위젯 스크립트 -->
     <script src="https://1df60f5faf3b4f2f992ced2edbae22ad.kakaoiedge.com/latest/realcaptcha-widget.min.js"></script>
     
-    <!-- 위젯 스크립트 로드 확인 -->
+    <!-- 위젯 스크립트 로드 확인 및 초기화 -->
     <script>
       window.addEventListener('load', function() {
+        console.log('🔍 React 버전 확인:', {
+          'React': window.React?.version,
+          'ReactDOM': window.ReactDOM?.version
+        });
+        
+        console.log('🔍 RealCaptcha 관련 함수들:', 
+          Object.keys(window).filter(key => 
+            key.toLowerCase().includes('captcha') || 
+            key.toLowerCase().includes('real')
+          )
+        );
+        
+        console.log('🔍 RealCaptcha 객체:', window.RealCaptcha);
+        
+        // renderRealCaptcha 함수 확인
         if (typeof window.renderRealCaptcha === 'function') {
-          console.log('✅ RealCaptcha 위젯 스크립트가 성공적으로 로드되었습니다.');
+          console.log('✅ renderRealCaptcha 함수를 찾았습니다!');
         } else {
-          console.error('❌ RealCaptcha 위젯 스크립트를 찾을 수 없습니다.');
+          console.log('❌ renderRealCaptcha 함수를 찾을 수 없습니다.');
+          console.log('사용 가능한 함수들:', Object.keys(window));
         }
       });
     </script>
