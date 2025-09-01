@@ -92,13 +92,19 @@ const DocumentPage = () => {
   // 저장 함수
   const handleSave = async () => {
     try {
-      console.log('문서 저장 중...');
+      console.log('🔍 문서 저장 시작...');
+      console.log('🔍 저장할 언어:', selectedLanguage);
+      console.log('🔍 저장할 문서 타입:', selectedSidebarItem);
+      console.log('🔍 저장할 내용 길이:', markdownContent.length);
+      console.log('🔍 저장할 내용 미리보기:', markdownContent.substring(0, 100) + '...');
       
       // 백엔드 API 호출
+      console.log('🔍 updateDocument API 호출 시작...');
       const result = await updateDocument(selectedLanguage, selectedSidebarItem, markdownContent);
+      console.log('🔍 updateDocument API 응답:', result);
       
       if (result.success) {
-        console.log('문서 저장 성공:', result.data);
+        console.log('✅ 문서 저장 성공:', result.data);
         
         // 저장 완료 모달 표시
         setShowSaveModal(true);
@@ -109,13 +115,20 @@ const DocumentPage = () => {
           setIsEditMode(false); // 편집 모드 종료
           
           // 저장 후 API에서 최신 콘텐츠 다시 로딩
-          loadDocumentFromAPI();
+          console.log('🔍 저장 후 최신 콘텐츠 로딩 시작...');
+          loadDocumentFromAPI(selectedSidebarItem);
         }, 3000);
       } else {
+        console.log('❌ 문서 저장 실패 - 응답:', result);
         throw new Error('문서 저장 실패');
       }
     } catch (error) {
-      console.error('문서 저장 오류:', error);
+      console.error('❌ 문서 저장 오류:', error);
+      console.error('❌ 오류 상세:', {
+        message: error.message,
+        stack: error.stack,
+        response: error.response
+      });
       
       // 에러 모달 표시 (간단한 alert로 대체)
       alert(`문서 저장 실패: ${error.message}`);
@@ -332,7 +345,7 @@ const DocumentPage = () => {
                 </div>
               </div>
             ) : (
-              // 편집 모드가 아닐 때 기존 콘텐츠 표시
+              // 편집 모드가 아닐 때는 기존 콘텐츠 표시
               <>
                 {/* API에서 가져온 콘텐츠가 있으면 우선 표시 */}
                 {apiContent ? (
