@@ -279,19 +279,13 @@ const DocumentPage = () => {
         {/* Left Sidebar */}
         <aside className="docs-sidebar">
           <div className="docs-sidebar-section">
-            <div 
-              className={`docs-sidebar-item ${selectedSidebarItem === 'developer_guide' ? 'active' : ''}`}
-              onClick={() => handleSidebarItemClick('developer_guide')}
-            >
-              <FaHome className="docs-sidebar-icon" />
-              {selectedLanguage === 'ko' ? '개발자 가이드' : 'Developer Guide'}
-            </div>
             {sidebarItems[selectedLanguage].map((item, index) => (
               <div 
                 key={index} 
                 className={`docs-sidebar-item ${selectedSidebarItem === item ? 'active' : ''}`}
                 onClick={() => handleSidebarItemClick(item)}
               >
+                {index === 0 && <FaHome className="docs-sidebar-icon" />}
                 {sidebarDisplayNames[selectedLanguage][item] || item}
               </div>
             ))}
