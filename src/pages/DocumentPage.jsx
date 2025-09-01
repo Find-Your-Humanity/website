@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { FaSearch, FaMoon, FaSun, FaHome, FaReact, FaVuejs, FaWordpress, FaAngular, FaNodeJs, FaEdit, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
 import useScrollToTop from '../hooks/useScrollToTop';
 import { koreanContent, englishContent } from '../data/documentContent';
-import { sidebarItems, sidebarContent } from '../data/sidebarContent';
+import { sidebarItems, sidebarContent, sidebarDisplayNames } from '../data/sidebarContent';
 import { useAuth } from '../contexts/AuthContext';
 import { updateDocument, getDocument } from '../services/documentService';
 import ReactMarkdown from 'react-markdown';
@@ -364,17 +364,15 @@ const DocumentPage = () => {
               onClick={() => handleSidebarItemClick('developer_guide')}
             >
               <FaHome className="docs-sidebar-icon" />
-              Developer Guide
+              {selectedLanguage === 'ko' ? '개발자 가이드' : 'Developer Guide'}
             </div>
-            {sidebarItems.map((item, index) => (
+            {sidebarItems[selectedLanguage].map((item, index) => (
               <div 
                 key={index} 
                 className={`docs-sidebar-item ${selectedSidebarItem === item ? 'active' : ''}`}
                 onClick={() => handleSidebarItemClick(item)}
               >
-                {(
-                  sidebarContent[item] && sidebarContent[item][selectedLanguage]
-                ) ? sidebarContent[item][selectedLanguage].title : item}
+                {sidebarDisplayNames[selectedLanguage][item] || item}
               </div>
             ))}
           </div>
@@ -386,7 +384,7 @@ const DocumentPage = () => {
             {/* Breadcrumbs */}
             <nav className="breadcrumbs">
               <FaHome className="breadcrumb-icon" />
-              <span>{(sidebarContent[selectedSidebarItem] && sidebarContent[selectedSidebarItem][selectedLanguage]) ? sidebarContent[selectedSidebarItem][selectedLanguage].title : selectedSidebarItem}</span>
+              <span>{sidebarDisplayNames[selectedLanguage][selectedSidebarItem] || selectedSidebarItem}</span>
             </nav>
 
             {/* 편집 모드일 때 마크다운 에디터 표시 */}
