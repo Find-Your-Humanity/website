@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaSearch, FaMoon, FaSun, FaHome, FaReact, FaVuejs, FaWordpress, FaAngular, FaNodeJs, FaEdit, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
 import useScrollToTop from '../hooks/useScrollToTop';
-import { koreanContent, englishContent } from '../data/documentContent';
-import { sidebarItems, sidebarContent, sidebarDisplayNames } from '../data/sidebarContent';
+import { sidebarItems, sidebarDisplayNames } from '../data/sidebarContent';
 import { useAuth } from '../contexts/AuthContext';
 import { updateDocument, getDocument } from '../services/documentService';
 import ReactMarkdown from 'react-markdown';
@@ -30,9 +29,6 @@ const DocumentPage = () => {
   // 페이지 이동 시 스크롤을 맨 위로 올림
   useScrollToTop();
   
-  // 현재 언어에 따른 콘텐츠 선택 (기본값)
-  const currentContent = selectedLanguage === 'ko' ? koreanContent : englishContent;
-
   // 테마 토글 함수
   const toggleTheme = () => {
     const newDarkMode = !isDarkMode;
@@ -79,50 +75,14 @@ const DocumentPage = () => {
         // API에서 가져온 마크다운 콘텐츠를 그대로 사용
         setMarkdownContent(apiContent);
       } else {
-        // API 콘텐츠가 없으면 기존 하드코딩된 콘텐츠를 마크다운으로 변환
-        const currentContent = selectedLanguage === 'ko' ? koreanContent : englishContent;
-        const selectedContent = sidebarContent[selectedSidebarItem];
-        
-        if (selectedSidebarItem === 'developer_guide') {
-          // Developer Guide인 경우 기존 콘텐츠를 마크다운으로 변환
-          let markdown = `# ${currentContent.mainTitle}\n\n`;
-          markdown += `${currentContent.introText}\n\n`;
-          markdown += `${currentContent.installationText}\n\n`;
-          markdown += `${currentContent.frameworkIntro}\n\n`;
-          
-          // 섹션들을 마크다운으로 변환
-          Object.entries(currentContent.sections).forEach(([key, section]) => {
-            markdown += `## ${section.title}\n\n`;
-            if (Array.isArray(section.content)) {
-              section.content.forEach((item, index) => {
-                markdown += `${index + 1}. ${item}\n`;
-              });
-            } else {
-              markdown += `${section.content}\n`;
-            }
-            markdown += '\n';
-          });
-          
-          setMarkdownContent(markdown);
-        } else if (selectedContent && selectedContent[selectedLanguage]) {
-          // 다른 사이드바 아이템인 경우 해당 콘텐츠를 마크다운으로 변환
-          const content = selectedContent[selectedLanguage];
-          let markdown = `# ${content.title}\n\n`;
-          markdown += `${content.content}\n\n`;
-          
-          if (content.sections) {
-            Object.entries(content.sections).forEach(([key, section]) => {
-              markdown += `## ${section.title}\n\n`;
-              markdown += `${section.content}\n\n`;
-            });
-          }
-          
-          setMarkdownContent(markdown);
-        }
+        // API 콘텐츠가 없으면 빈 문자열로 시작
+        setMarkdownContent('');
       }
+    } else {
+      // 편집 모드 종료
+      setIsEditMode(false);
+      setMarkdownContent('');
     }
-    
-    setIsEditMode(prev => !prev);
   };
 
   // 저장 함수
@@ -234,46 +194,6 @@ const DocumentPage = () => {
     // 사이드바 아이템 변경 시 API에서 문서 로딩
     loadDocumentFromAPI();
   };
-
-  // TOC 링크 클릭 핸들러
-  const handleTocClick = (item) => {
-    // TOC 아이템을 섹션 키와 매핑
-    const sectionKey = Object.keys(currentContent.sections).find(key => 
-      currentContent.sections[key].title === item
-    );
-    
-    if (sectionKey) {
-      const element = document.getElementById(sectionKey);
-      if (element) {
-        element.scrollIntoView({ 
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }
-    }
-  };
-
-  const tocItems = [
-    'reCAPTCHA에서 전환하기',
-    '기본 원칙',
-    '요청 흐름',
-    '콘텐츠 보안 정책 설정',
-    '웹페이지에 REAL 위젯 추가하기',
-    '서버 사이드에서 사용자 응답 확인하기',
-    'Siteverify 오류 코드 테이블',
-    'Siteverify 비밀키 순환하기',
-    '로컬 개발',
-    'TypeScript 타입',
-    '설치 방법',
-    '사용 방법',
-    '통합 테스트: 테스트 키',
-    '테스트 키 세트: 퍼블리셔 또는 Pro 계정',
-    '테스트 키 세트: 엔터프라이즈 계정 (안전한 최종 사용자)',
-    '테스트 키 세트: 엔터프라이즈 계정 (봇 감지)',
-    '프론트엔드 테스트: 시각적 챌린지 강제하기',
-    '백엔드 테스트: 거부된 토큰의 올바른 처리 보장하기',
-    '다음 단계'
-  ];
 
   return (
     <div className="document-page">
@@ -435,101 +355,13 @@ const DocumentPage = () => {
                     </ReactMarkdown>
                   </div>
                 ) : (
-                  // API 콘텐츠가 없으면 기존 하드코딩된 콘텐츠 표시
-                  (() => {
-                    const selectedContent = sidebarContent[selectedSidebarItem];
-                    if (!selectedContent) return null;
-                    
-                    const content = selectedContent[selectedLanguage];
-                    if (!content) return null;
-                    
-                    // Developer Guide인 경우 기존 콘텐츠 표시
-                    if (selectedSidebarItem === 'developer_guide') {
-                      return (
-                        <>
-                          {/* Main Title */}
-                          <h1 className="main-title">{currentContent.mainTitle}</h1>
-
-                          {/* Introduction */}
-                          <p className="intro-text">
-                            {currentContent.introText}
-                          </p>
-
-                          {/* Installation Info */}
-                          <p className="installation-text">
-                            {currentContent.installationText}
-                          </p>
-
-                          {/* Framework Integrations */}
-                          <p className="framework-intro">
-                            {currentContent.frameworkIntro}
-                          </p>
-
-                          {/* Framework Badges */}
-                          <div className="framework-badges">
-                            {frameworks.map((framework, index) => (
-                              <div key={index} className="framework-badge" style={{ '--framework-color': framework.color }}>
-                                <framework.icon className="framework-icon" />
-                                <span>{framework.name}</span>
-                              </div>
-                            ))}
-                          </div>
-
-                          <p className="integration-link">
-                            {currentContent.integrationLink}
-                          </p>
-
-                          {/* 동적으로 섹션 렌더링 */}
-                          {Object.entries(currentContent.sections).map(([key, section]) => (
-                            <section key={key} id={key.replace(/-/g, '-')} className="content-section">
-                              <h2 className="section-title">{section.title}</h2>
-                              {Array.isArray(section.content) ? (
-                                <ol className="principles-list">
-                                  {section.content.map((item, index) => (
-                                    <li key={index}>{item}</li>
-                                  ))}
-                                </ol>
-                              ) : (
-                                <p>{section.content}</p>
-                              )}
-                            </section>
-                          ))}
-                        </>
-                      );
-                    }
-                    
-                    // 다른 사이드바 아이템인 경우 해당 콘텐츠 표시
-                    return (
-                      <>
-                        {/* Main Title */}
-                        <h1 className="main-title">{content.title}</h1>
-
-                        {/* Introduction */}
-                        <p className="intro-text">
-                          {content.content}
-                        </p>
-
-                        {/* Sub-sections */}
-                        {content.sections && Object.entries(content.sections).map(([key, section]) => (
-                          <section key={key} id={key} className="content-section">
-                            <h2 className="section-title">{section.title}</h2>
-                            <div dangerouslySetInnerHTML={{ 
-                              __html: section.content
-                                .replace(/```(\w+)\n([\s\S]*?)```/g, (match, lang, code) => {
-                                  const escaped = code
-                                    .replace(/&/g, '&amp;')
-                                    .replace(/</g, '&lt;')
-                                    .replace(/>/g, '&gt;')
-                                    .replace(/\"/g, '&quot;')
-                                    .replace(/'/g, '&#39;');
-                                  return `<pre data-language="${lang}"><code class="language-${lang}">${escaped}</code></pre>`;
-                                })
-                            }} />
-                          </section>
-                        ))}
-                      </>
-                    );
-                  })()
+                  // API 콘텐츠가 없을 때는 마크다운 파일을 불러올 수 없다는 메시지 표시
+                  <div className="no-content-message">
+                    <FaExclamationTriangle className="warning-icon" />
+                    <h3>콘텐츠를 불러올 수 없습니다</h3>
+                    <p>마크다운 파일을 찾을 수 없거나 로드할 수 없습니다.</p>
+                    <p>관리자에게 문의하거나 페이지를 새로고침해보세요.</p>
+                  </div>
                 )}
               </>
             )}
@@ -541,45 +373,33 @@ const DocumentPage = () => {
           <div className="toc-container">
             <h3 className="toc-title">On this page</h3>
             <nav className="toc-nav">
-              {(() => {
-                const selectedContent = sidebarContent[selectedSidebarItem];
-                if (!selectedContent) return null;
-                
-                const content = selectedContent[selectedLanguage];
-                if (!content) return null;
-                
-                // Developer Guide인 경우 기존 TOC 표시
-                if (selectedSidebarItem === 'developer_guide') {
-                  return tocItems.map((item, index) => {
-                    const sectionKey = Object.keys(currentContent.sections).find(key => 
-                      currentContent.sections[key].title === item
-                    );
-                    return (
-                      <a 
-                        key={index} 
-                        href={`#${sectionKey || item.toLowerCase().replace(/\s+/g, '-')}`} 
-                        className="toc-link"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handleTocClick(item);
-                        }}
-                      >
-                  {item}
-                </a>
-                    );
+              {/* 마크다운 파일에서 헤딩을 추출하여 TOC 생성 */}
+              {apiContent ? (
+                // 마크다운 콘텐츠에서 헤딩을 추출하여 TOC 생성
+                (() => {
+                  const headings = [];
+                  const lines = apiContent.split('\n');
+                  
+                  lines.forEach((line, index) => {
+                    const headingMatch = line.match(/^(#{1,6})\s+(.+)$/);
+                    if (headingMatch) {
+                      const level = headingMatch[1].length;
+                      const text = headingMatch[2].trim();
+                      const id = text.toLowerCase().replace(/[^a-z0-9가-힣]/g, '-').replace(/-+/g, '-');
+                      
+                      headings.push({ level, text, id, lineIndex: index });
+                    }
                   });
-                }
-                
-                // 다른 사이드바 아이템인 경우 해당 섹션들의 TOC 표시
-                if (content.sections) {
-                  return Object.entries(content.sections).map(([key, section]) => (
+                  
+                  return headings.map((heading, index) => (
                     <a 
-                      key={key} 
-                      href={`#${key}`} 
-                      className="toc-link"
+                      key={index} 
+                      href={`#${heading.id}`} 
+                      className={`toc-link toc-level-${heading.level}`}
                       onClick={(e) => {
                         e.preventDefault();
-                        const element = document.getElementById(key);
+                        // 해당 헤딩으로 스크롤
+                        const element = document.getElementById(heading.id);
                         if (element) {
                           element.scrollIntoView({ 
                             behavior: 'smooth',
@@ -588,13 +408,15 @@ const DocumentPage = () => {
                         }
                       }}
                     >
-                      {section.title}
+                      {heading.text}
                     </a>
                   ));
-                }
-                
-                return null;
-              })()}
+                })()
+              ) : (
+                <div className="no-toc-message">
+                  <p>목차를 불러올 수 없습니다</p>
+                </div>
+              )}
             </nav>
           </div>
         </aside>
