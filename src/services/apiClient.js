@@ -3,7 +3,7 @@ import axios from 'axios';
 // API 설정
 const API_CONFIG = {
   BASE_URL: process.env.NODE_ENV === 'production' 
-    ? 'https://api.realcatcha.com' 
+    ? 'https://gateway.realcatcha.com' 
     : 'http://localhost:8000',
   TIMEOUT: 10000,
 };
