@@ -6,6 +6,8 @@ import { koreanContent, englishContent } from '../data/documentContent';
 import { sidebarItems, sidebarContent } from '../data/sidebarContent';
 import { useAuth } from '../contexts/AuthContext';
 import { updateDocument, getDocument } from '../services/documentService';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import '../styles/pages/DocumentPage.css';
 
 const DocumentPage = () => {
@@ -72,45 +74,51 @@ const DocumentPage = () => {
   // 편집 모드 토글 함수
   const toggleEditMode = () => {
     if (!isEditMode) {
-      // 편집 모드 시작 시 현재 콘텐츠를 마크다운으로 변환
-      const currentContent = selectedLanguage === 'ko' ? koreanContent : englishContent;
-      const selectedContent = sidebarContent[selectedSidebarItem];
-      
-      if (selectedSidebarItem === 'developer_guide') {
-        // Developer Guide인 경우 기존 콘텐츠를 마크다운으로 변환
-        let markdown = `# ${currentContent.mainTitle}\n\n`;
-        markdown += `${currentContent.introText}\n\n`;
-        markdown += `${currentContent.installationText}\n\n`;
-        markdown += `${currentContent.frameworkIntro}\n\n`;
+      // 편집 모드 시작 시 API 콘텐츠를 우선 사용
+      if (apiContent) {
+        // API에서 가져온 마크다운 콘텐츠를 그대로 사용
+        setMarkdownContent(apiContent);
+      } else {
+        // API 콘텐츠가 없으면 기존 하드코딩된 콘텐츠를 마크다운으로 변환
+        const currentContent = selectedLanguage === 'ko' ? koreanContent : englishContent;
+        const selectedContent = sidebarContent[selectedSidebarItem];
         
-        // 섹션들을 마크다운으로 변환
-        Object.entries(currentContent.sections).forEach(([key, section]) => {
-          markdown += `## ${section.title}\n\n`;
-          if (Array.isArray(section.content)) {
-            section.content.forEach((item, index) => {
-              markdown += `${index + 1}. ${item}\n`;
-            });
-          } else {
-            markdown += `${section.content}\n`;
-          }
-          markdown += '\n';
-        });
-        
-        setMarkdownContent(markdown);
-      } else if (selectedContent && selectedContent[selectedLanguage]) {
-        // 다른 사이드바 아이템인 경우 해당 콘텐츠를 마크다운으로 변환
-        const content = selectedContent[selectedLanguage];
-        let markdown = `# ${content.title}\n\n`;
-        markdown += `${content.content}\n\n`;
-        
-        if (content.sections) {
-          Object.entries(content.sections).forEach(([key, section]) => {
+        if (selectedSidebarItem === 'developer_guide') {
+          // Developer Guide인 경우 기존 콘텐츠를 마크다운으로 변환
+          let markdown = `# ${currentContent.mainTitle}\n\n`;
+          markdown += `${currentContent.introText}\n\n`;
+          markdown += `${currentContent.installationText}\n\n`;
+          markdown += `${currentContent.frameworkIntro}\n\n`;
+          
+          // 섹션들을 마크다운으로 변환
+          Object.entries(currentContent.sections).forEach(([key, section]) => {
             markdown += `## ${section.title}\n\n`;
-            markdown += `${section.content}\n\n`;
+            if (Array.isArray(section.content)) {
+              section.content.forEach((item, index) => {
+                markdown += `${index + 1}. ${item}\n`;
+              });
+            } else {
+              markdown += `${section.content}\n`;
+            }
+            markdown += '\n';
           });
+          
+          setMarkdownContent(markdown);
+        } else if (selectedContent && selectedContent[selectedLanguage]) {
+          // 다른 사이드바 아이템인 경우 해당 콘텐츠를 마크다운으로 변환
+          const content = selectedContent[selectedLanguage];
+          let markdown = `# ${content.title}\n\n`;
+          markdown += `${content.content}\n\n`;
+          
+          if (content.sections) {
+            Object.entries(content.sections).forEach(([key, section]) => {
+              markdown += `## ${section.title}\n\n`;
+              markdown += `${section.content}\n\n`;
+            });
+          }
+          
+          setMarkdownContent(markdown);
         }
-        
-        setMarkdownContent(markdown);
       }
     }
     
@@ -403,101 +411,128 @@ const DocumentPage = () => {
             ) : (
               // 편집 모드가 아닐 때 기존 콘텐츠 표시
               <>
-                {/* 선택된 사이드바 아이템에 따른 콘텐츠 표시 */}
-                {(() => {
-                  const selectedContent = sidebarContent[selectedSidebarItem];
-                  if (!selectedContent) return null;
-                  
-                  const content = selectedContent[selectedLanguage];
-                  if (!content) return null;
-                  
-                  // Developer Guide인 경우 기존 콘텐츠 표시
-                  if (selectedSidebarItem === 'developer_guide') {
+                {/* API에서 가져온 콘텐츠가 있으면 우선 표시 */}
+                {apiContent ? (
+                  <div className="api-content">
+                    <ReactMarkdown 
+                      remarkPlugins={[remarkGfm]}
+                      components={{
+                        code({node, inline, className, children, ...props}) {
+                          const match = /language-(\w+)/.exec(className || '');
+                          return !inline && match ? (
+                            <pre data-language={match[1]}>
+                              <code className={className} {...props}>
+                                {children}
+                              </code>
+                            </pre>
+                          ) : (
+                            <code className={className} {...props}>
+                              {children}
+                            </code>
+                          );
+                        }
+                      }}
+                    >
+                      {apiContent}
+                    </ReactMarkdown>
+                  </div>
+                ) : (
+                  // API 콘텐츠가 없으면 기존 하드코딩된 콘텐츠 표시
+                  (() => {
+                    const selectedContent = sidebarContent[selectedSidebarItem];
+                    if (!selectedContent) return null;
+                    
+                    const content = selectedContent[selectedLanguage];
+                    if (!content) return null;
+                    
+                    // Developer Guide인 경우 기존 콘텐츠 표시
+                    if (selectedSidebarItem === 'developer_guide') {
+                      return (
+                        <>
+                          {/* Main Title */}
+                          <h1 className="main-title">{currentContent.mainTitle}</h1>
+
+                          {/* Introduction */}
+                          <p className="intro-text">
+                            {currentContent.introText}
+                          </p>
+
+                          {/* Installation Info */}
+                          <p className="installation-text">
+                            {currentContent.installationText}
+                          </p>
+
+                          {/* Framework Integrations */}
+                          <p className="framework-intro">
+                            {currentContent.frameworkIntro}
+                          </p>
+
+                          {/* Framework Badges */}
+                          <div className="framework-badges">
+                            {frameworks.map((framework, index) => (
+                              <div key={index} className="framework-badge" style={{ '--framework-color': framework.color }}>
+                                <framework.icon className="framework-icon" />
+                                <span>{framework.name}</span>
+                              </div>
+                            ))}
+                          </div>
+
+                          <p className="integration-link">
+                            {currentContent.integrationLink}
+                          </p>
+
+                          {/* 동적으로 섹션 렌더링 */}
+                          {Object.entries(currentContent.sections).map(([key, section]) => (
+                            <section key={key} id={key.replace(/-/g, '-')} className="content-section">
+                              <h2 className="section-title">{section.title}</h2>
+                              {Array.isArray(section.content) ? (
+                                <ol className="principles-list">
+                                  {section.content.map((item, index) => (
+                                    <li key={index}>{item}</li>
+                                  ))}
+                                </ol>
+                              ) : (
+                                <p>{section.content}</p>
+                              )}
+                            </section>
+                          ))}
+                        </>
+                      );
+                    }
+                    
+                    // 다른 사이드바 아이템인 경우 해당 콘텐츠 표시
                     return (
                       <>
-                {/* Main Title */}
-                        <h1 className="main-title">{currentContent.mainTitle}</h1>
+                        {/* Main Title */}
+                        <h1 className="main-title">{content.title}</h1>
 
-                {/* Introduction */}
-                <p className="intro-text">
-                          {currentContent.introText}
-                </p>
-
-                {/* Installation Info */}
-                <p className="installation-text">
-                          {currentContent.installationText}
-                </p>
-
-                {/* Framework Integrations */}
-                <p className="framework-intro">
-                          {currentContent.frameworkIntro}
-                </p>
-
-                {/* Framework Badges */}
-                <div className="framework-badges">
-                  {frameworks.map((framework, index) => (
-                    <div key={index} className="framework-badge" style={{ '--framework-color': framework.color }}>
-                      <framework.icon className="framework-icon" />
-                      <span>{framework.name}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <p className="integration-link">
-                          {currentContent.integrationLink}
+                        {/* Introduction */}
+                        <p className="intro-text">
+                          {content.content}
                         </p>
 
-                        {/* 동적으로 섹션 렌더링 */}
-                        {Object.entries(currentContent.sections).map(([key, section]) => (
-                          <section key={key} id={key.replace(/-/g, '-')} className="content-section">
+                        {/* Sub-sections */}
+                        {content.sections && Object.entries(content.sections).map(([key, section]) => (
+                          <section key={key} id={key} className="content-section">
                             <h2 className="section-title">{section.title}</h2>
-                            {Array.isArray(section.content) ? (
-                  <ol className="principles-list">
-                              {section.content.map((item, index) => (
-                                <li key={index}>{item}</li>
-                              ))}
-                  </ol>
-                            ) : (
-                              <p>{section.content}</p>
-                            )}
-                </section>
+                            <div dangerouslySetInnerHTML={{ 
+                              __html: section.content
+                                .replace(/```(\w+)\n([\s\S]*?)```/g, (match, lang, code) => {
+                                  const escaped = code
+                                    .replace(/&/g, '&amp;')
+                                    .replace(/</g, '&lt;')
+                                    .replace(/>/g, '&gt;')
+                                    .replace(/\"/g, '&quot;')
+                                    .replace(/'/g, '&#39;');
+                                  return `<pre data-language="${lang}"><code class="language-${lang}">${escaped}</code></pre>`;
+                                })
+                            }} />
+                          </section>
                         ))}
                       </>
                     );
-                  }
-                  
-                  // 다른 사이드바 아이템인 경우 해당 콘텐츠 표시
-                  return (
-                    <>
-                      {/* Main Title */}
-                      <h1 className="main-title">{content.title}</h1>
-
-                      {/* Introduction */}
-                      <p className="intro-text">
-                        {content.content}
-                      </p>
-
-                      {/* Sub-sections */}
-                      {content.sections && Object.entries(content.sections).map(([key, section]) => (
-                        <section key={key} id={key} className="content-section">
-                          <h2 className="section-title">{section.title}</h2>
-                          <div dangerouslySetInnerHTML={{ 
-                            __html: section.content
-                              .replace(/```(\w+)\n([\s\S]*?)```/g, (match, lang, code) => {
-                                const escaped = code
-                                  .replace(/&/g, '&amp;')
-                                  .replace(/</g, '&lt;')
-                                  .replace(/>/g, '&gt;')
-                                  .replace(/\"/g, '&quot;')
-                                  .replace(/'/g, '&#39;');
-                                return `<pre data-language="${lang}"><code class="language-${lang}">${escaped}</code></pre>`;
-                              })
-                          }} />
-                </section>
-                      ))}
-                    </>
-                  );
-                })()}
+                  })()
+                )}
               </>
             )}
           </div>
