@@ -144,6 +144,7 @@ const DashboardEmbed = () => {
           src="https://dashboard.realcatcha.com/"
           className="dashboard-iframe"
           onLoad={handleIframeLoad}
+          allow="clipboard-read; clipboard-write"
         />
       </div>
     </div>
