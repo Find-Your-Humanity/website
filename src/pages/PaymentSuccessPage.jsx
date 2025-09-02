@@ -43,6 +43,16 @@ const PaymentSuccessPage = () => {
     confirmPayment();
   }, [isAuthenticated, paymentKey, orderId, amount, planId, navigate]);
 
+  // 결제 승인 완료 후 대시보드로 자동 이동
+  useEffect(() => {
+    if (paymentResult && !error) {
+      const timer = setTimeout(() => {
+        window.location.href = 'https://dashboard.realcatcha.com';
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [paymentResult, error]);
+
   const confirmPayment = async () => {
     try {
       console.log("🔍 결제 승인 요청:", {
