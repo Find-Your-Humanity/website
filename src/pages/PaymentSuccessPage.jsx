@@ -84,7 +84,7 @@ const PaymentSuccessPage = () => {
         plan_id: parseInt(planId)
       });
 
-      const response = await fetch('/api/payments/complete', {
+      const response = await fetch('https://gateway.realcatcha.com/api/payments/complete', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -112,7 +112,17 @@ const PaymentSuccessPage = () => {
       }
     } catch (error) {
       console.error("❌ 결제 승인 요청 오류:", error);
-      setError("결제 승인 요청 중 오류가 발생했습니다.");
+      
+      // 에러 타입별 사용자 친화적 메시지
+      let errorMessage = "결제 승인 요청 중 오류가 발생했습니다.";
+      
+      if (error.message && error.message.includes('Unexpected token')) {
+        errorMessage = "서버 응답 형식 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
+      } else if (error.message && error.message.includes('fetch')) {
+        errorMessage = "네트워크 연결 오류가 발생했습니다. 인터넷 연결을 확인해주세요.";
+      }
+      
+      setError(errorMessage);
     } finally {
       setIsProcessing(false);
     }
