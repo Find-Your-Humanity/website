@@ -14,6 +14,7 @@ const PaymentSuccessPage = () => {
   const [isProcessing, setIsProcessing] = useState(true);
   const [paymentResult, setPaymentResult] = useState(null);
   const [error, setError] = useState(null);
+  const [countdown, setCountdown] = useState(3);
 
   // 페이지 이동 시 스크롤을 맨 위로 올림
   useScrollToTop();
@@ -82,10 +83,8 @@ const PaymentSuccessPage = () => {
         setPaymentResult(result);
         console.log("✅ 결제 승인 성공:", result);
         
-        // 결제 성공 후 3초 뒤 자동으로 홈페이지로 이동
-        setTimeout(() => {
-          navigate('/');
-        }, 3000);
+        // 카운트다운 시작
+        startCountdown();
       } else {
         setError(result.detail || "결제 승인에 실패했습니다.");
         console.error("❌ 결제 승인 실패:", result);
@@ -104,6 +103,23 @@ const PaymentSuccessPage = () => {
 
   const handleGoToHome = () => {
     navigate('/');
+  };
+
+  // 카운트다운 함수
+  const startCountdown = () => {
+    const timer = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          navigate('/');
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    // 컴포넌트 언마운트 시 타이머 정리
+    return () => clearInterval(timer);
   };
 
   if (isProcessing) {
@@ -171,7 +187,9 @@ const PaymentSuccessPage = () => {
           <div className="success-message">
             <p>선택하신 요금제가 즉시 적용되었습니다.</p>
             <p>이제 CAPTCHA 서비스를 이용하실 수 있습니다.</p>
-            <p className="auto-redirect-message">3초 후 자동으로 홈페이지로 이동합니다...</p>
+            <p className="auto-redirect-message">
+              {countdown}초 후 자동으로 홈페이지로 이동합니다... ({countdown})
+            </p>
           </div>
 
           <div className="payment-success-button-group">
