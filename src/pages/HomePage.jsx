@@ -210,8 +210,20 @@ const HomePage = () => {
           
           {/* Captcha Container */}
           {showCaptcha && consentGiven && (
-            <div className="captcha-section">
-              <div id="captcha-container"></div>
+            <div className="captcha-section" style={{ 
+              height: '100% !important', 
+              minHeight: '500px !important',
+              display: 'flex !important',
+              flexDirection: 'column !important'
+            }}>
+              <div id="captcha-container" style={{ 
+                width: '100% !important', 
+                height: '100% !important', 
+                minHeight: '500px !important',
+                flex: '1 !important',
+                display: 'flex !important',
+                flexDirection: 'column !important'
+              }}></div>
             </div>
           )}
         </div>
