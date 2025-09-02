@@ -283,7 +283,7 @@ const HomePage = () => {
           <div className="feature-box">
             <h3 className="feature-title">맞춤형 3단계 CAPTCHA</h3>
             <p className="feature-description">
-              사용자 행동 기반 난이도 조절을 통해 <br />
+              사용자 행동 기반 난이도 조절을 통해<br />
               봇을 탐지해낼 수 있습니다.
             </p>
           </div>
