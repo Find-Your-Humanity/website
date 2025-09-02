@@ -66,39 +66,22 @@ const HomePage = () => {
     }
   };
 
-  // 대체 방법: CDN에서 위젯 스크립트 로드
+  // 대체 방법: iframe으로 위젯 로드
   const loadCaptchaWidgetFallback = () => {
     const container = document.getElementById('captcha-container');
     if (container) {
-      // CDN에서 위젯 스크립트 로드
-      const script = document.createElement('script');
-      script.src = 'https://1df60f5faf3b4f2f992ced2edbae22ad.kakaoiedge.com/latest/realcaptcha-widget.min.js';
-      script.onload = () => {
-        if (typeof window.renderRealCaptcha === 'function') {
-          window.renderRealCaptcha('captcha-container', {
-            siteKey: CAPTCHA_SITE_KEY,
-            theme: 'light',
-            size: 'normal',
-            onSuccess: function(result) {
-              console.log('캡차 성공!', result.token);
-              sendTokenToServer(result.token);
-            },
-            onError: function(error) {
-              console.error('캡차 오류:', error);
-              alert('캡차 인증 실패. 다시 시도해주세요.');
-            },
-            onExpired: function() {
-              console.log('캡차 만료됨');
-              alert('캡차가 만료되었습니다. 다시 시도해주세요.');
-            }
-          });
-        }
-      };
-      script.onerror = () => {
-        console.error('CDN 스크립트 로드 실패');
-        container.innerHTML = '<p>캡차 위젯을 불러올 수 없습니다.</p>';
-      };
-      document.head.appendChild(script);
+      container.innerHTML = `
+        <div style="width: 100%; height: 100%;">
+          <iframe 
+            src="https://test.realcatcha.com?siteKey=${CAPTCHA_SITE_KEY}&theme=light" 
+            width="100%" 
+            height="100%" 
+            frameborder="0"
+            style="border: none; border-radius: 8px; height: 100%;"
+            allow="camera; microphone; geolocation"
+          ></iframe>
+        </div>
+      `;
     }
   };
 
