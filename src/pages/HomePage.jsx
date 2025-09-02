@@ -72,7 +72,7 @@ const HomePage = () => {
     if (container) {
       // CDN에서 위젯 스크립트 로드
       const script = document.createElement('script');
-      script.src = 'https://cdn.realcatcha.com/realcaptcha-widget.min.js';
+      script.src = 'https://1df60f5faf3b4f2f992ced2edbae22ad.kakaoiedge.com/latest/realcaptcha-widget.min.js';
       script.onload = () => {
         if (typeof window.renderRealCaptcha === 'function') {
           window.renderRealCaptcha('captcha-container', {
