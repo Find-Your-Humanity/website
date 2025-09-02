@@ -81,6 +81,11 @@ const PaymentSuccessPage = () => {
       if (response.ok && result.success) {
         setPaymentResult(result);
         console.log("✅ 결제 승인 성공:", result);
+        
+        // 결제 성공 후 3초 뒤 자동으로 홈페이지로 이동
+        setTimeout(() => {
+          navigate('/');
+        }, 3000);
       } else {
         setError(result.detail || "결제 승인에 실패했습니다.");
         console.error("❌ 결제 승인 실패:", result);
@@ -166,6 +171,7 @@ const PaymentSuccessPage = () => {
           <div className="success-message">
             <p>선택하신 요금제가 즉시 적용되었습니다.</p>
             <p>이제 CAPTCHA 서비스를 이용하실 수 있습니다.</p>
+            <p className="auto-redirect-message">3초 후 자동으로 홈페이지로 이동합니다...</p>
           </div>
 
           <div className="payment-success-button-group">
