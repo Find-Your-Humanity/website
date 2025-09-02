@@ -77,7 +77,7 @@ const HomePage = () => {
             width="100%" 
             height="100%" 
             frameborder="0"
-            style="border: none; border-radius: 8px; min-height: 400px;"
+            style="border: none; border-radius: 8px; height: 100%;"
             allow="camera; microphone; geolocation"
           ></iframe>
         </div>
