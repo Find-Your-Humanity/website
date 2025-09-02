@@ -45,6 +45,8 @@ function App() {
             <Route path="/my-inquiries" element={<MyInquiriesPage />} />
             <Route path="/dashboard" element={<DashboardEmbed />} />
             <Route path="/pay" element={<PayPage />} />
+            <Route path="/payment/success" element={<PaymentSuccessPage />} />
+            <Route path="/payment/fail" element={<PaymentFailPage />} />
             <Route path="/auth/google/callback" element={<GoogleCallbackPage />} />
           </Routes>
         </MainLayout>
