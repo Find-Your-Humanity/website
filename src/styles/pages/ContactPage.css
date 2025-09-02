@@ -152,6 +152,10 @@
 
 .contact-page .primary-button:hover { opacity: .95; }
 
+.contact-page .primary-button.disabled { background: #6c757d; color: #ffffff; cursor: pointer; opacity: 0.7; }
+
+.contact-page .primary-button.disabled:hover { opacity: 0.7; }
+
 /* 성공/에러 메시지 스타일 제거 - 모달로 대체됨 */
 
 @media (max-width: 768px){ 

@@ -276,7 +276,7 @@ const ContactPage = () => {
                 ) : (
                   <button 
                     type="button" 
-                    className="primary-button" 
+                    className="primary-button disabled" 
                     onClick={() => {
                       openModal('error', '로그인 필요', '문의하기를 위해 로그인이 필요합니다. 3초 후 로그인 페이지로 이동합니다.');
                       // 3초 후 로그인 페이지로 자동 이동
@@ -285,7 +285,7 @@ const ContactPage = () => {
                       }, 3000);
                     }}
                   >
-                    문의하기
+                    로그인 후 문의하기
                   </button>
                 )}
               </div>
