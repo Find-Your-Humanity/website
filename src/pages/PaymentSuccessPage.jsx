@@ -9,7 +9,7 @@ const PaymentSuccessPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const location = useLocation();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
   
   const [isProcessing, setIsProcessing] = useState(true);
   const [paymentResult, setPaymentResult] = useState(null);
@@ -38,6 +38,14 @@ const PaymentSuccessPage = () => {
       planId
     });
     
+    // AuthContext가 로딩 중이면 기다리기
+    if (loading) {
+      console.log("🔄 AuthContext 로딩 중...");
+      return;
+    }
+    
+    console.log("🔍 AuthContext 로딩 완료, 인증 상태:", isAuthenticated);
+    
     if (!isAuthenticated) {
       console.log("❌ 인증되지 않은 사용자");
       navigate('/signin');
@@ -54,7 +62,7 @@ const PaymentSuccessPage = () => {
     console.log("✅ 결제 정보 확인 완료, 결제 완료 처리 시작");
     // 서버로 결제 승인 요청
     confirmPayment();
-  }, [isAuthenticated, paymentKey, orderId, amount, planId, navigate]);
+  }, [loading, isAuthenticated, paymentKey, orderId, amount, planId, navigate]);
 
   // 결제 승인 완료 후 대시보드로 자동 이동
   useEffect(() => {
