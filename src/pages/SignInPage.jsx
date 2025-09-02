@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash, FaFacebook, FaApple, FaGoogle } from 'react-icons/fa';
 import { useAuth } from '../contexts/AuthContext';
@@ -17,6 +17,30 @@ const SignInPage = () => {
   
   // 페이지 이동 시 스크롤을 맨 위로 올림
   useScrollToTop();
+
+  // 쿠키 기반 자동 로그인 시도
+  useEffect(() => {
+    const checkCookieAuth = async () => {
+      try {
+        const response = await fetch('https://gateway.realcatcha.com/api/auth/me', {
+          method: 'GET',
+          credentials: 'include', // 쿠키 전송
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data && data.success && data.user) {
+            // 이미 로그인된 상태면 홈으로 이동
+            navigate('/');
+          }
+        }
+      } catch (error) {
+        // 오류 무시 (로그인되지 않은 상태)
+      }
+    };
+    
+    checkCookieAuth();
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

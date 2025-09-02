@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // 사용자 정보 복원 (로컬 스토리지 + 쿠키 자동 로그인)
+  // 사용자 정보 복원 (로컬 스토리지 우선, 쿠키는 선택적)
   useEffect(() => {
     const initAuth = async () => {
       // 1. 로컬 스토리지 확인 - Dashboard와 동일한 키 사용
@@ -34,40 +34,8 @@ export const AuthProvider = ({ children }) => {
         }
       }
       
-      // 2. 쿠키 기반 자동 로그인 시도
-      try {
-        const response = await fetch('https://gateway.realcatcha.com/api/auth/me', {
-          method: 'GET',
-          credentials: 'include', // 쿠키 전송
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          if (data && data.success && data.user) {
-            setUser(data.user);
-            // 토큰이 있다면 로컬 스토리지에도 저장 - Dashboard와 동일한 키 사용
-            if (data.access_token) {
-              localStorage.setItem('captcha_dashboard_token', data.access_token);
-              localStorage.setItem('captcha_dashboard_user', JSON.stringify(data.user));
-            }
-            console.log('쿠키 기반 자동 로그인 완료:', data.user);
-          } else {
-            // 서버 응답에 사용자 정보가 없는 경우
-            localStorage.removeItem('captcha_dashboard_token');
-            localStorage.removeItem('captcha_dashboard_user');
-          }
-        } else {
-          // 401 에러 등으로 인증 실패 시 로컬 스토리지 정리
-          localStorage.removeItem('captcha_dashboard_token');
-          localStorage.removeItem('captcha_dashboard_user');
-        }
-      } catch (error) {
-        console.warn('쿠키 기반 자동 로그인 실패:', error);
-        // 네트워크 오류 시에도 로컬 스토리지 정리
-        localStorage.removeItem('captcha_dashboard_token');
-        localStorage.removeItem('captcha_dashboard_user');
-      }
-      
+      // 2. 쿠키 기반 자동 로그인은 로그인 페이지에서만 시도
+      // 메인 페이지에서는 불필요한 API 호출 방지
       setLoading(false);
     };
     

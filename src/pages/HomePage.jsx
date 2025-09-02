@@ -66,22 +66,45 @@ const HomePage = () => {
     }
   };
 
-  // 대체 방법: iframe으로 위젯 로드
+  // CDN 방식으로 위젯 로드
   const loadCaptchaWidgetFallback = () => {
     const container = document.getElementById('captcha-container');
     if (container) {
-      container.innerHTML = `
-        <div style="width: 100%; height: 100%;">
-          <iframe 
-            src="https://test.realcatcha.com?siteKey=${CAPTCHA_SITE_KEY}&theme=light" 
-            width="100%" 
-            height="100%" 
-            frameborder="0"
-            style="border: none; border-radius: 8px; height: 100%;"
-            allow="camera; microphone; geolocation"
-          ></iframe>
-        </div>
-      `;
+      // CDN에서 위젯 스크립트 로드
+      const script = document.createElement('script');
+      script.src = 'https://1df60f5faf3b4f2f992ced2edbae22ad.kakaoiedge.com/latest/realcaptcha-widget.min.js';
+      script.async = true;
+      script.onload = () => {
+        // 스크립트 로드 완료 후 위젯 렌더링
+        if (typeof window.renderRealCaptcha === 'function') {
+          window.renderRealCaptcha('captcha-container', {
+            siteKey: CAPTCHA_SITE_KEY,
+            theme: 'light',
+            size: 'normal',
+            language: 'ko',
+            apiEndpoint: 'https://api.realcatcha.com'
+          });
+        } else {
+          console.error('renderRealCaptcha 함수를 찾을 수 없습니다');
+        }
+      };
+      script.onerror = () => {
+        console.error('CDN 스크립트 로드 실패');
+        // 폴백: iframe 방식
+        container.innerHTML = `
+          <div style="width: 100%; height: 100%;">
+            <iframe 
+              src="https://test.realcatcha.com?siteKey=${CAPTCHA_SITE_KEY}&theme=light" 
+              width="100%" 
+              height="100%" 
+              frameborder="0"
+              style="border: none; border-radius: 8px; height: 100%;"
+              allow="camera; microphone; geolocation"
+            ></iframe>
+          </div>
+        `;
+      };
+      document.head.appendChild(script);
     }
   };
 
