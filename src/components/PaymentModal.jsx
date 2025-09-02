@@ -90,6 +90,11 @@ const PaymentModal = ({
       const planId = selectedPlan.id;
 
       console.log(`🔍 모달 내 결제 요청 - 플랜: ${planName}, 금액: ${amount}원, 주문ID: ${orderId}`);
+      console.log(`🔍 결제 요청 URL 설정:`, {
+        successUrl: `${window.location.origin}/payment/success?planType=${selectedPlan.type}&planId=${planId}`,
+        failUrl: `${window.location.origin}/payment/fail?planType=${selectedPlan.type}&planId=${planId}`,
+        selectedPlan: selectedPlan
+      });
 
       // 결제 요청 (공식 문서 패턴)
       await paymentWidget.requestPayment({
@@ -101,7 +106,7 @@ const PaymentModal = ({
         customerEmail: "test@example.com", // 실제로는 사용자 이메일 사용
         customerName: "테스트 사용자", // 실제로는 사용자 이름 사용
         // 추가 파라미터 (선택사항)
-        windowTarget: 'iframe', // iframe으로 결제창 열기
+        windowTarget: 'self', // 새 창으로 결제창 열기 (iframe 대신)
         useInternationalCardOnly: false, // 국제카드 전용 여부
         flowMode: 'BILLING' // 결제 흐름 모드
       });

@@ -29,17 +29,29 @@ const PaymentSuccessPage = () => {
   const planId = searchParams.get('planId') || location.state?.planId;
 
   useEffect(() => {
+    console.log("🔍 PaymentSuccessPage 로드됨");
+    console.log("🔍 URL 파라미터:", {
+      paymentKey,
+      orderId,
+      amount,
+      planType,
+      planId
+    });
+    
     if (!isAuthenticated) {
+      console.log("❌ 인증되지 않은 사용자");
       navigate('/signin');
       return;
     }
 
     if (!paymentKey || !orderId || !amount || !planId) {
+      console.log("❌ 결제 정보 누락:", { paymentKey, orderId, amount, planId });
       setError("결제 정보가 올바르지 않습니다.");
       setIsProcessing(false);
       return;
     }
 
+    console.log("✅ 결제 정보 확인 완료, 결제 완료 처리 시작");
     // 서버로 결제 승인 요청
     confirmPayment();
   }, [isAuthenticated, paymentKey, orderId, amount, planId, navigate]);
@@ -56,6 +68,7 @@ const PaymentSuccessPage = () => {
 
   const confirmPayment = async () => {
     try {
+      console.log("🔍 결제 완료 처리 시작");
       console.log("🔍 결제 승인 요청:", {
         paymentKey,
         orderId,
