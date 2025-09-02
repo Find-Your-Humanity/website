@@ -63,7 +63,7 @@ const PaymentSuccessPage = () => {
         plan_id: parseInt(planId)
       });
 
-      const response = await fetch('/api/payments/confirm', {
+      const response = await fetch('/api/payments/complete', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
