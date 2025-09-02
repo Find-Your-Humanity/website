@@ -18,20 +18,31 @@ export const AuthProvider = ({ children }) => {
   // 사용자 정보 복원 (로컬 스토리지 + 쿠키 기반 자동 로그인)
   useEffect(() => {
     const initAuth = async () => {
-      // 1. 로컬 스토리지 확인 - Dashboard와 동일한 키 사용
-      const token = localStorage.getItem('captcha_dashboard_token');
+      // 1. 로컬 스토리지 확인 - 다양한 토큰 키 지원
+      const token = localStorage.getItem('authToken') || localStorage.getItem('captcha_dashboard_token');
       const userData = localStorage.getItem('captcha_dashboard_user');
+      
+      console.log('🔍 AuthContext 초기화 - 토큰:', token, '사용자 데이터:', userData);
       
       if (token && userData) {
         try {
-          setUser(JSON.parse(userData));
+          const parsedUser = JSON.parse(userData);
+          setUser(parsedUser);
           setLoading(false);
+          console.log('✅ 로컬 스토리지에서 사용자 정보 복원:', parsedUser);
           return;
         } catch (error) {
           console.error('사용자 데이터 파싱 오류:', error);
+          localStorage.removeItem('authToken');
           localStorage.removeItem('captcha_dashboard_token');
           localStorage.removeItem('captcha_dashboard_user');
         }
+      }
+      
+      // Google OAuth 토큰이 있는 경우 처리
+      if (token === 'google-oauth') {
+        console.log('🔍 Google OAuth 토큰 발견, 사용자 정보 확인 중...');
+        // Google OAuth 사용자는 쿠키 기반으로 사용자 정보 확인
       }
       
       // 2. 쿠키 기반 자동 로그인 시도 (401 오류 조용히 처리)
@@ -45,24 +56,30 @@ export const AuthProvider = ({ children }) => {
           const data = await response.json();
           if (data && data.success && data.user) {
             setUser(data.user);
-            // 토큰이 있다면 로컬 스토리지에도 저장 - Dashboard와 동일한 키 사용
+            // 토큰이 있다면 로컬 스토리지에도 저장 - 다양한 키 지원
             if (data.access_token) {
               localStorage.setItem('captcha_dashboard_token', data.access_token);
+              localStorage.setItem('captcha_dashboard_user', JSON.stringify(data.user));
+            } else if (token === 'google-oauth') {
+              // Google OAuth 토큰이 있는 경우 사용자 정보만 저장
               localStorage.setItem('captcha_dashboard_user', JSON.stringify(data.user));
             }
             console.log('쿠키 기반 자동 로그인 완료:', data.user);
           } else {
             // 서버 응답에 사용자 정보가 없는 경우
+            localStorage.removeItem('authToken');
             localStorage.removeItem('captcha_dashboard_token');
             localStorage.removeItem('captcha_dashboard_user');
           }
         } else {
           // 401 에러 등으로 인증 실패 시 로컬 스토리지 정리
+          localStorage.removeItem('authToken');
           localStorage.removeItem('captcha_dashboard_token');
           localStorage.removeItem('captcha_dashboard_user');
         }
       } catch (error) {
         // 네트워크 오류 시에도 로컬 스토리지 정리
+        localStorage.removeItem('authToken');
         localStorage.removeItem('captcha_dashboard_token');
         localStorage.removeItem('captcha_dashboard_user');
       }
