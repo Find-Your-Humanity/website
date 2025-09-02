@@ -18,7 +18,7 @@ const SignInPage = () => {
   // 페이지 이동 시 스크롤을 맨 위로 올림
   useScrollToTop();
 
-  // 쿠키 기반 자동 로그인 시도
+  // 쿠키 기반 자동 로그인 시도 (401 오류 조용히 처리)
   useEffect(() => {
     const checkCookieAuth = async () => {
       try {
@@ -34,8 +34,9 @@ const SignInPage = () => {
             navigate('/');
           }
         }
+        // 401 오류는 조용히 무시 (콘솔에 표시되지 않음)
       } catch (error) {
-        // 오류 무시 (로그인되지 않은 상태)
+        // 네트워크 오류 등은 조용히 무시
       }
     };
     
