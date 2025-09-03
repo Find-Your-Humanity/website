@@ -8,99 +8,6 @@
   scroll-behavior: smooth;
 }
 
-/* Dark Mode Styles */
-.document-page.dark-mode {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-}
-
-.document-page.dark-mode .docs-header {
-  background-color: var(--bg-secondary);
-  border-bottom-color: var(--border-color);
-}
-
-.document-page.dark-mode .docs-sidebar {
-  background-color: var(--bg-secondary);
-  border-right-color: var(--border-color);
-}
-
-.document-page.dark-mode .toc-sidebar {
-  background-color: var(--bg-secondary);
-  border-left-color: var(--border-color);
-}
-
-.document-page.dark-mode .docs-sidebar-item {
-  color: var(--text-secondary);
-}
-
-.document-page.dark-mode .docs-sidebar-item:hover {
-  background-color: var(--bg-tertiary);
-  color: var(--text-primary);
-}
-
-.document-page.dark-mode .docs-sidebar-item.active {
-  background-color: var(--accent-color);
-  color: var(--text-primary);
-}
-
-.document-page.dark-mode .main-title {
-  color: var(--text-primary);
-}
-
-.document-page.dark-mode .section-title {
-  color: var(--text-primary);
-}
-
-.document-page.dark-mode .content-section p {
-  color: var(--text-secondary);
-}
-
-.document-page.dark-mode .principles-list li {
-  color: var(--text-secondary);
-}
-
-.document-page.dark-mode .toc-title {
-  color: var(--text-primary);
-}
-
-.document-page.dark-mode .toc-link {
-  color: var(--text-secondary);
-}
-
-.document-page.dark-mode .toc-link:hover {
-  color: var(--accent-color);
-}
-
-.document-page.dark-mode .docs-main-content {
-  background-color: var(--bg-primary);
-}
-
-.document-page.dark-mode .docs-content-wrapper {
-  background-color: transparent;
-}
-
-.document-page.dark-mode .docs-content-wrapper .main-title {
-  color: var(--text-primary);
-}
-
-.document-page.dark-mode .docs-content-wrapper .section-title {
-  color: var(--text-primary);
-}
-
-.document-page.dark-mode .docs-content-wrapper .intro-text,
-.document-page.dark-mode .docs-content-wrapper .installation-text,
-.document-page.dark-mode .docs-content-wrapper .framework-intro {
-  color: var(--text-secondary);
-}
-
-.document-page.dark-mode .docs-content-wrapper .content-section p {
-  color: var(--text-secondary);
-}
-
-.document-page.dark-mode .docs-content-wrapper .principles-list li {
-  color: var(--text-secondary);
-}
-
 /* Code Block Styling */
 .content-section pre {
   background-color: #f6f8fa;
@@ -114,12 +21,6 @@
   line-height: 1.45;
 }
 
-.document-page.dark-mode .content-section pre {
-  background-color: #2d2d2d;
-  border-color: #404040;
-  color: #e6e6e6;
-}
-
 .content-section code {
   background-color: #f6f8fa;
   border: 1px solid #e1e4e8;
@@ -127,12 +28,6 @@
   padding: 2px 4px;
   font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
   font-size: 13px;
-}
-
-.document-page.dark-mode .content-section code {
-  background-color: #2d2d2d;
-  border-color: #404040;
-  color: #e6e6e6;
 }
 
 /* Syntax Highlighting */
@@ -158,11 +53,6 @@
   letter-spacing: 0.5px;
 }
 
-.document-page.dark-mode .content-section pre::before {
-  background-color: #404040;
-  color: #cccccc;
-}
-
 /* Improved Content Section Styling */
 .content-section {
   margin-bottom: 32px;
@@ -172,10 +62,6 @@
   margin-bottom: 16px;
   padding-bottom: 8px;
   border-bottom: 2px solid #DFFF00;
-}
-
-.document-page.dark-mode .content-section h2 {
-  border-bottom-color: #DFFF00;
 }
 
 .content-section p {

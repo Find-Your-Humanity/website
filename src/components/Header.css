@@ -38,30 +38,44 @@
   justify-content: center;
   width: 40px;
   height: 40px;
-  background: none;
+  background: linear-gradient(145deg, 
+    var(--bg-secondary) 0%, 
+    var(--bg-tertiary) 100%
+  );
   border: 1px solid var(--border-color);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
   color: var(--text-primary);
   margin-right: 1rem;
+  box-shadow: 
+    0 2px 8px var(--shadow-color),
+    0 0 0 1px rgba(223, 255, 0, 0.02) inset;
 }
 
 .theme-toggle:hover {
-  background-color: var(--bg-secondary);
+  background: linear-gradient(145deg, 
+    var(--bg-tertiary) 0%, 
+    var(--bg-secondary) 100%
+  );
   border-color: var(--accent-color);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px var(--shadow-color);
+  box-shadow: 
+    0 4px 12px var(--shadow-color),
+    0 0 0 1px rgba(223, 255, 0, 0.1) inset;
 }
 
 .theme-toggle svg {
   width: 18px;
   height: 18px;
   transition: transform 0.3s ease;
+  color: var(--accent-color);
+  filter: drop-shadow(0 0 4px rgba(223, 255, 0, 0.3));
 }
 
 .theme-toggle:hover svg {
   transform: rotate(15deg);
+  filter: drop-shadow(0 0 6px rgba(223, 255, 0, 0.5));
 }
 
 /* 모바일 메뉴 토글 버튼 */
