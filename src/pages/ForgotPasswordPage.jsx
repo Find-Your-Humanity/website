@@ -152,7 +152,7 @@ const ForgotPasswordPage = () => {
             </form>
           ) : step === 'sent' ? (
             <div style={{ textAlign:'center', padding:'24px 0' }}>
-              <div style={{ fontSize:1.6rem, fontWeight:700, marginBottom:8 }}>비밀번호 재설정 메일 발송 완료</div>
+              <div style={{ fontSize:'1.6rem', fontWeight:700, marginBottom:8 }}>비밀번호 재설정 메일 발송 완료</div>
               <div className="completion-message">비밀번호 재설정 이메일을 확인해 주세요. <br />링크 유효기간은 발송 후 12시간입니다.</div>
               <div style={{ display:'flex', justifyContent:'center' }}>
                 <button onClick={()=>setStep('request')} className="forgot-password-button" style={{ maxWidth:300 }}>다시 보내기</button>
