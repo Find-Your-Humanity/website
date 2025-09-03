@@ -1,7 +1,7 @@
 /* Company Page */
 .company-page {
   min-height: 100vh;
-  background-color: #ffffff;
+  background-color: var(--bg-primary);
   padding-top: 1px;              /* prevent margin-collapsing under sticky header */
   border-top: 1px solid transparent;
   margin-top: 0 !important;
@@ -94,7 +94,7 @@
 /* Team Section */
 .team-section {
   padding: 8rem 0;
-  background-color: #f9f9f9;
+  background-color: var(--bg-secondary);
 }
 
 .team-container {
@@ -107,7 +107,7 @@
   text-align: center;
   font-size: 2.5rem;
   font-weight: bold;
-  color: #000000;
+  color: var(--text-primary);
   margin-bottom: 3rem;
 }
 
@@ -119,17 +119,26 @@
 }
 
 .team-member-card {
-  background-color: #ffffff;
+  background: linear-gradient(145deg, 
+    var(--bg-primary) 0%, 
+    var(--bg-secondary) 100%
+  );
   border-radius: 12px;
   padding: 2rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 
+    0 4px 6px var(--shadow-color),
+    0 0 0 1px rgba(223, 255, 0, 0.05) inset;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   text-align: center;
+  border: 1px solid var(--border-color);
 }
 
 .team-member-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: 
+    0 8px 25px var(--shadow-color),
+    0 0 0 1px rgba(223, 255, 0, 0.1) inset;
+  border-color: var(--accent-color);
 }
 
 .member-image-container {
@@ -139,7 +148,11 @@
   margin: 0 auto 1.5rem;
   border-radius: 50%;
   overflow: hidden;
-  background-color: #f0f0f0;
+  background: linear-gradient(145deg, 
+    var(--bg-secondary) 0%, 
+    var(--bg-tertiary) 100%
+  );
+  border: 2px solid var(--border-color);
 }
 
 .member-image {
@@ -154,12 +167,15 @@
   height: 100%;
   align-items: center;
   justify-content: center;
-  background-color: #f0f0f0;
+  background: linear-gradient(145deg, 
+    var(--bg-secondary) 0%, 
+    var(--bg-tertiary) 100%
+  );
 }
 
 .placeholder-icon {
   font-size: 3rem;
-  color: #9e9e9e;
+  color: var(--text-secondary);
 }
 
 .member-info {
@@ -169,13 +185,13 @@
 .member-name {
   font-size: 1.4rem;
   font-weight: 700;
-  color: #000000;
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
 }
 
 .member-role {
   font-size: 1rem;
-  color: #cded00;
+  color: var(--accent-color);
   font-weight: 600;
   margin-bottom: 1rem;
 }
@@ -183,7 +199,7 @@
 .member-description {
   font-size: 0.9rem;
   font-weight: 550;
-  color: #666666;
+  color: var(--text-secondary);
   line-height: 1.6;
 }
 

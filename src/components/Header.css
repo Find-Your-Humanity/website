@@ -1,37 +1,11 @@
 /* Header */
 .header {
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--border-color);
   padding: 1rem 0;
-  background-color: #ffffff;
+  background-color: var(--bg-primary);
   position: sticky;
   top: 0;
   z-index: 2000;
-  transition: all 0.3s ease;
-}
-
-/* 드롭다운 활성화 시 헤더 스타일 */
-.header.dropdown-active {
-  background-color: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-}
-
-/* 배경 오버레이 */
-.dropdown-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.15);
-  z-index: 999;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease;
-}
-
-.dropdown-overlay.active {
-  opacity: 1;
-  visibility: visible;
 }
 
 .header-content {
@@ -46,21 +20,72 @@
 .logo {
   font-weight: bold;
   font-size: 1.5rem;
-  color: #000000;
+  color: var(--text-primary);
   text-transform: uppercase;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease;
   text-decoration: none;
 }
 
 .logo:hover {
-  color: #DFFF00;
+  color: var(--accent-color);
 }
 
-/* 드롭다운 활성화 시 로고 비활성화 */
-.header.dropdown-active .logo {
-  opacity: 0.6;
-  pointer-events: none;
+/* 테마 토글 버튼 */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(145deg, 
+    var(--bg-secondary) 0%, 
+    var(--bg-tertiary) 100%
+  );
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--text-primary);
+  margin-right: 1rem;
+  box-shadow: 
+    0 2px 8px var(--shadow-color),
+    0 0 0 1px rgba(223, 255, 0, 0.02) inset;
+}
+
+.theme-toggle:hover {
+  background: linear-gradient(145deg, 
+    var(--bg-tertiary) 0%, 
+    var(--bg-secondary) 100%
+  );
+  border-color: var(--accent-color);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 4px 12px var(--shadow-color),
+    0 0 0 1px rgba(223, 255, 0, 0.1) inset;
+}
+
+.theme-toggle svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.3s ease;
+  color: var(--text-primary);
+  filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
+}
+
+.theme-toggle:hover svg {
+  transform: rotate(15deg);
+  filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.2));
+}
+
+/* 다크 모드에서만 브랜드 컬러 적용 */
+[data-theme="dark"] .theme-toggle svg {
+  color: var(--accent-color);
+  filter: drop-shadow(0 0 4px rgba(223, 255, 0, 0.3));
+}
+
+[data-theme="dark"] .theme-toggle:hover svg {
+  filter: drop-shadow(0 0 6px rgba(223, 255, 0, 0.5));
 }
 
 /* 모바일 메뉴 토글 버튼 */
@@ -69,7 +94,7 @@
   background: none;
   border: none;
   font-size: 1.5rem;
-  color: #333;
+  color: var(--text-primary);
   cursor: pointer;
   padding: 0.5rem;
   border-radius: 4px;
@@ -77,7 +102,7 @@
 }
 
 .mobile-menu-toggle:hover {
-  background-color: #f0f0f0;
+  background-color: var(--bg-secondary);
 }
 
 .nav { 
@@ -91,25 +116,19 @@
 .nav a,
 .nav .nav-link {
   text-decoration: none;
-  color: #000000;
+  color: var(--text-primary);
   font-weight: 500;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease;
   padding: 0.5rem 0;
 }
 
 .nav a:hover,
 .nav .nav-link:hover {
-  color: #DFFF00;
+  color: var(--accent-color);
 }
 
 .nav .nav-link.active {
-  color: #9e9e9e;
-}
-
-/* 드롭다운 활성화 시 네비게이션 링크 비활성화 */
-.header.dropdown-active .nav-link {
-  opacity: 0.6;
-  pointer-events: none;
+  color: var(--text-tertiary);
 }
 
 /* 네비게이션 드롭다운 */
@@ -124,12 +143,12 @@
   gap: 0.5rem;
   background: none;
   border: none;
-  color: #000000;
+  color: var(--text-primary);
   font-weight: 500;
   font-size: 1rem;
   cursor: pointer;
   padding: 0.5rem 0;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease;
   text-decoration: none;
   outline: none; /* 파란색 외곽선 제거 */
   -webkit-tap-highlight-color: transparent; /* 모바일에서 탭 하이라이트 제거 */
@@ -137,11 +156,11 @@
 }
 
 .nav-dropdown-button:hover {
-  color: #DFFF00;
+  color: var(--accent-color);
 }
 
 .nav-dropdown-button.active {
-  color: #9e9e9e;
+  color: var(--text-tertiary);
 }
 
 .nav-dropdown-button:focus {
@@ -156,7 +175,7 @@
 .nav-dropdown-button .dropdown-arrow {
   transition: transform 0.3s ease;
   font-size: 0.8rem;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .nav-dropdown-button .dropdown-arrow.open {
@@ -168,19 +187,15 @@
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
-  background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
-  border-radius: 16px;
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.12), 
-    0 4px 16px rgba(0, 0, 0, 0.08),
-    0 2px 8px rgba(0, 0, 0, 0.04);
-  min-width: 220px;
-  margin-top: 0.75rem;
+  background: var(--bg-primary);
+  border-radius: 4px; /* border-radius 줄임 */
+  box-shadow: 0 4px 20px var(--shadow-color);
+  min-width: 160px;
+  margin-top: 0.5rem;
   z-index: 1000;
   overflow: hidden;
-  animation: dropdownSlideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  backdrop-filter: blur(10px);
+  animation: dropdownSlideDown 0.3s ease;
+  border: 1px solid var(--border-color);
 }
 
 .nav-dropdown-menu::before {
@@ -193,7 +208,7 @@
   height: 0;
   border-left: 8px solid transparent;
   border-right: 8px solid transparent;
-  border-bottom: 8px solid #ffffff;
+  border-bottom: 8px solid var(--bg-primary);
   z-index: 1001;
 }
 
@@ -207,34 +222,30 @@
   height: 0;
   border-left: 8px solid transparent;
   border-right: 8px solid transparent;
-  border-bottom: 8px solid rgba(0, 0, 0, 0.08);
+  border-bottom: 8px solid var(--border-color);
   z-index: 1000;
 }
 
 @keyframes dropdownSlideDown {
   from {
     opacity: 0;
-    transform: translateX(-50%) translateY(-10px) scale(0.95);
+    transform: translateX(-50%) translateY(-10px);
   }
   to {
     opacity: 1;
-    transform: translateX(-50%) translateY(0) scale(1);
+    transform: translateX(-50%) translateY(0);
   }
 }
 
 .nav-dropdown-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 1rem 1.5rem;
-  color: #2c2c2c;
+  display: block;
+  padding: 0.75rem 1rem;
+  color: var(--text-primary);
   text-decoration: none;
-  font-size: 1rem;
-  font-weight: 600;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
-  position: relative;
-  outline: none; /* 파란색 외곽선 제거 */
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+  border-bottom: 1px solid var(--border-color-light);
+  text-align: center; /* 텍스트 중앙 정렬 */
 }
 
 .nav-dropdown-item:last-child {
@@ -242,36 +253,14 @@
 }
 
 .nav-dropdown-item:hover {
-  background: linear-gradient(135deg, #f8f9fa 0%, #f0f0f0 100%);
-  color: #DFFF00;
-  transform: translateX(4px);
-}
-
-.nav-dropdown-item:active {
-  background: linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 100%);
-  transform: translateX(2px);
-}
-
-.dropdown-item-icon {
-  font-size: 0.9rem;
-  color: #666;
-  transition: color 0.2s ease;
-}
-
-.nav-dropdown-item:hover .dropdown-item-icon {
-  color: #DFFF00;
+  background-color: var(--bg-secondary);
+  color: var(--accent-color);
 }
 
 .auth-area { 
   display: flex; 
   justify-content: flex-end; 
   align-items: center;
-}
-
-/* 드롭다운 활성화 시 인증 영역 비활성화 */
-.header.dropdown-active .auth-area {
-  opacity: 0.6;
-  pointer-events: none;
 }
 
 /* User Menu */
@@ -284,18 +273,18 @@
   align-items: center;
   gap: 0.5rem;
   background: none;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border-color);
   padding: 0.5rem 1rem;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
-  color: #333;
+  color: var(--text-primary);
   font-size: 0.9rem;
 }
 
 .user-button:hover {
-  border-color: #DFFF00;
-  background-color: #f9f9f9;
+  border-color: var(--accent-color);
+  background-color: var(--bg-secondary);
 }
 
 .user-avatar {
@@ -304,9 +293,9 @@
   justify-content: center;
   width: 24px;
   height: 24px;
-  background-color: #f0f0f0;
+  background-color: var(--bg-tertiary);
   border-radius: 50%;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .user-name {
@@ -319,7 +308,7 @@
 
 .dropdown-arrow {
   transition: transform 0.3s ease;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .dropdown-arrow.open {
@@ -331,10 +320,10 @@
   position: absolute;
   top: 100%;
   right: 0;
-  background: white;
-  border: 1px solid #e0e0e0;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px var(--shadow-color);
   min-width: 280px;
   margin-top: 0.5rem;
   z-index: 1000;
@@ -343,8 +332,8 @@
 
 .dropdown-header {
   padding: 1rem;
-  border-bottom: 1px solid #f0f0f0;
-  background-color: #fafafa;
+  border-bottom: 1px solid var(--border-color-light);
+  background-color: var(--bg-secondary);
 }
 
 .user-info {
@@ -359,9 +348,9 @@
   justify-content: center;
   width: 40px;
   height: 40px;
-  background-color: #e0e0e0;
+  background-color: var(--bg-tertiary);
   border-radius: 50%;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .user-details {
@@ -371,13 +360,13 @@
 
 .user-display-name {
   font-weight: 600;
-  color: #333;
+  color: var(--text-primary);
   font-size: 0.95rem;
   margin-bottom: 0.25rem;
 }
 
 .user-email {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.85rem;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -396,7 +385,7 @@
   padding: 0.75rem 1rem;
   border: none;
   background: none;
-  color: #333;
+  color: var(--text-primary);
   font-size: 0.9rem;
   text-align: left;
   cursor: pointer;
@@ -404,29 +393,29 @@
 }
 
 .dropdown-item:hover {
-  background-color: #f8f9fa;
+  background-color: var(--bg-secondary);
 }
 
 .dropdown-item.logout-item {
-  color: #dc3545;
+  color: var(--error-color);
 }
 
 .dropdown-item.logout-item:hover {
-  background-color: #fff5f5;
+  background-color: var(--bg-secondary);
 }
 
 .dropdown-divider {
   height: 1px;
-  background-color: #e9ecef;
+  background-color: var(--border-color-light);
   margin: 0.5rem 0;
 }
 
 /* 모바일 메뉴 */
 .mobile-menu {
   display: none;
-  background-color: #ffffff;
-  border-bottom: 1px solid #e0e0e0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: var(--bg-primary);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: 0 2px 4px var(--shadow-color);
   padding: 1rem 2rem;
 }
 
@@ -435,13 +424,13 @@
   flex-direction: column;
   gap: 0.5rem;
   margin-bottom: 1.5rem;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--border-color-light);
   padding-bottom: 1rem;
 }
 
 .mobile-nav-link {
   text-decoration: none;
-  color: #000000;
+  color: var(--text-primary);
   font-weight: 500;
   padding: 0.75rem;
   border-radius: 6px;
@@ -449,17 +438,17 @@
 }
 
 .mobile-nav-link:hover {
-  background-color: #f8f9fa;
+  background-color: var(--bg-secondary);
 }
 
 .mobile-nav-link.active {
-  background-color: #f0f0f0;
-  color: #9e9e9e;
+  background-color: var(--bg-tertiary);
+  color: var(--text-tertiary);
 }
 
 /* 모바일 드롭다운 */
 .mobile-dropdown {
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--border-color-light);
   padding-bottom: 0.5rem;
   margin-bottom: 0.5rem;
 }
@@ -471,7 +460,7 @@
   width: 100%;
   background: none;
   border: none;
-  color: #000000;
+  color: var(--text-primary);
   font-weight: 500;
   font-size: 1rem;
   cursor: pointer;
@@ -494,18 +483,18 @@
 }
 
 .mobile-dropdown-button:hover {
-  background-color: #f8f9fa;
+  background-color: var(--bg-secondary);
 }
 
 .mobile-dropdown-button.active {
-  background-color: #f0f0f0;
-  color: #9e9e9e;
+  background-color: var(--bg-tertiary);
+  color: var(--text-tertiary);
 }
 
 .mobile-dropdown-arrow {
   transition: transform 0.3s ease;
   font-size: 0.8rem;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .mobile-dropdown-arrow.open {
@@ -515,7 +504,7 @@
 .mobile-dropdown-menu {
   margin-top: 0.5rem;
   margin-left: 1rem;
-  border-left: 2px solid #f0f0f0;
+  border-left: 2px solid var(--border-color-light);
   padding-left: 1rem;
   animation: mobileDropdownSlideDown 0.3s ease;
 }
@@ -532,11 +521,9 @@
 }
 
 .mobile-dropdown-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  display: block;
   padding: 0.5rem 0.75rem;
-  color: #333;
+  color: var(--text-primary);
   text-decoration: none;
   font-size: 0.9rem;
   border-radius: 4px;
@@ -545,28 +532,19 @@
 }
 
 .mobile-dropdown-item:hover {
-  background-color: #f8f9fa;
-  color: #DFFF00;
-}
-
-.mobile-dropdown-item .dropdown-item-icon {
-  font-size: 0.8rem;
-  color: #666;
-}
-
-.mobile-dropdown-item:hover .dropdown-item-icon {
-  color: #DFFF00;
+  background-color: var(--bg-secondary);
+  color: var(--accent-color);
 }
 
 .mobile-auth {
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid var(--border-color-light);
   padding-top: 1rem;
 }
 
 .mobile-signin {
   display: block;
   text-decoration: none;
-  color: #000000;
+  color: var(--text-primary);
   font-weight: 500;
   padding: 0.75rem;
   border-radius: 6px;
@@ -575,11 +553,11 @@
 }
 
 .mobile-signin:hover {
-  background-color: #f8f9fa;
+  background-color: var(--bg-secondary);
 }
 
 .mobile-user-menu {
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid var(--border-color-light);
   padding-top: 1rem;
 }
 
@@ -589,7 +567,7 @@
   gap: 0.75rem;
   margin-bottom: 1rem;
   padding: 0.75rem;
-  background-color: #fafafa;
+  background-color: var(--bg-secondary);
   border-radius: 8px;
 }
 
@@ -599,9 +577,9 @@
   justify-content: center;
   width: 40px;
   height: 40px;
-  background-color: #e0e0e0;
+  background-color: var(--bg-tertiary);
   border-radius: 50%;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .mobile-user-details {
@@ -611,13 +589,13 @@
 
 .mobile-user-name {
   font-weight: 600;
-  color: #333;
+  color: var(--text-primary);
   font-size: 0.95rem;
   margin-bottom: 0.25rem;
 }
 
 .mobile-user-email {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.85rem;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -638,7 +616,7 @@
   padding: 0.75rem;
   border: none;
   background: none;
-  color: #333;
+  color: var(--text-primary);
   font-size: 0.9rem;
   text-align: left;
   cursor: pointer;
@@ -647,15 +625,15 @@
 }
 
 .mobile-menu-item:hover {
-  background-color: #f8f9fa;
+  background-color: var(--bg-secondary);
 }
 
 .mobile-menu-item.logout-item {
-  color: #dc3545;
+  color: var(--error-color);
 }
 
 .mobile-menu-item.logout-item:hover {
-  background-color: #fff5f5;
+  background-color: var(--bg-secondary);
 }
 
 /* Legacy logout button for non-authenticated state */
@@ -693,6 +671,10 @@
   
   .logo {
     font-size: 1.25rem;
+  }
+  
+  .theme-toggle {
+    margin-right: 0;
   }
 }
 

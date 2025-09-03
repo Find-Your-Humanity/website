@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FaSearch, FaMoon, FaSun, FaHome, FaReact, FaVuejs, FaWordpress, FaAngular, FaNodeJs, FaEdit, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
+import { FaSearch, FaHome, FaReact, FaVuejs, FaWordpress, FaAngular, FaNodeJs, FaEdit, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
 import useScrollToTop from '../hooks/useScrollToTop';
 import { sidebarItems, sidebarDisplayNames } from '../data/sidebarContent';
 import { useAuth } from '../contexts/AuthContext';
@@ -11,7 +11,6 @@ import '../styles/pages/DocumentPage.css';
 
 const DocumentPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('ko');
   const [selectedSidebarItem, setSelectedSidebarItem] = useState('developer_guide');
@@ -29,23 +28,6 @@ const DocumentPage = () => {
   // 페이지 이동 시 스크롤을 맨 위로 올림
   useScrollToTop();
   
-  // 테마 토글 함수
-  const toggleTheme = () => {
-    const newDarkMode = !isDarkMode;
-    setIsDarkMode(newDarkMode);
-    localStorage.setItem('darkMode', JSON.stringify(newDarkMode));
-    
-    // HTML 요소에 클래스 추가/제거
-    const documentPage = document.querySelector('.document-page');
-    if (documentPage) {
-      if (newDarkMode) {
-        documentPage.classList.add('dark-mode');
-      } else {
-        documentPage.classList.remove('dark-mode');
-      }
-    }
-  };
-
   // API에서 문서 로딩하는 함수
   const loadDocumentFromAPI = async (documentType = selectedSidebarItem) => {
     try {
@@ -160,17 +142,6 @@ const DocumentPage = () => {
 
   // 컴포넌트 마운트 시 저장된 테마 설정 불러오기 및 초기 문서 로딩
   useEffect(() => {
-    const savedDarkMode = localStorage.getItem('darkMode');
-    if (savedDarkMode !== null) {
-      const darkMode = JSON.parse(savedDarkMode);
-      setIsDarkMode(darkMode);
-      
-      const documentPage = document.querySelector('.document-page');
-      if (documentPage && darkMode) {
-        documentPage.classList.add('dark-mode');
-      }
-    }
-    
     // 초기 문서 로딩
     loadDocumentFromAPI();
   }, []);
@@ -262,8 +233,12 @@ const DocumentPage = () => {
               )}
             </div>
             <Link to="/faq" className="header-link">FAQ</Link>
-            <button className="theme-toggle" onClick={toggleTheme}>
-              {isDarkMode ? <FaSun /> : <FaMoon />}
+            <button className="theme-toggle" onClick={() => {
+              const newDarkMode = !document.body.classList.contains('dark-mode');
+              document.body.classList.toggle('dark-mode');
+              localStorage.setItem('darkMode', JSON.stringify(newDarkMode));
+            }}>
+              {document.body.classList.contains('dark-mode') ? '🌙' : '☀️'}
             </button>
             
             {/* 관리자 편집 모드 컨트롤 */}
