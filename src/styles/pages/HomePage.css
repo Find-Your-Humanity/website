@@ -395,6 +395,11 @@
   line-height: 1.6;
 }
 
+/* Button Styles - Override text color to always be black */
+.btn-primary {
+  color: #000000 !important;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .hero-title {

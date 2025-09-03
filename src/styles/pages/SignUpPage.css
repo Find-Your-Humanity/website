@@ -273,6 +273,41 @@
   box-shadow: none !important;
 }
 
+.signup-button {
+  width: 100%;
+  padding: .6rem;
+  background: linear-gradient(135deg, 
+    var(--accent-color) 0%, 
+    var(--accent-hover) 100%
+  );
+  color: var(--text-primary);
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .3s ease;
+  margin-bottom: 1.5rem;
+  height: 40px;
+  box-shadow: 
+    0 4px 15px rgba(223, 255, 0, 0.3),
+    0 0 0 1px rgba(223, 255, 0, 0.1) inset;
+}
+
+.signup-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 25px rgba(223, 255, 0, 0.4),
+    0 0 0 1px rgba(223, 255, 0, 0.2) inset;
+}
+
+.signup-button:disabled {
+  background: var(--text-tertiary);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
 /* Google Login Button */
 .google-login-button {
   width: 100%;
