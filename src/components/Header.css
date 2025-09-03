@@ -69,12 +69,22 @@
   width: 18px;
   height: 18px;
   transition: transform 0.3s ease;
-  color: var(--accent-color);
-  filter: drop-shadow(0 0 4px rgba(223, 255, 0, 0.3));
+  color: var(--text-primary);
+  filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
 }
 
 .theme-toggle:hover svg {
   transform: rotate(15deg);
+  filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.2));
+}
+
+/* 다크 모드에서만 브랜드 컬러 적용 */
+[data-theme="dark"] .theme-toggle svg {
+  color: var(--accent-color);
+  filter: drop-shadow(0 0 4px rgba(223, 255, 0, 0.3));
+}
+
+[data-theme="dark"] .theme-toggle:hover svg {
   filter: drop-shadow(0 0 6px rgba(223, 255, 0, 0.5));
 }
 
