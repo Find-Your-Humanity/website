@@ -233,13 +233,6 @@ const DocumentPage = () => {
               )}
             </div>
             <Link to="/faq" className="header-link">FAQ</Link>
-            <button className="theme-toggle" onClick={() => {
-              const newDarkMode = !document.body.classList.contains('dark-mode');
-              document.body.classList.toggle('dark-mode');
-              localStorage.setItem('darkMode', JSON.stringify(newDarkMode));
-            }}>
-              {document.body.classList.contains('dark-mode') ? '🌙' : '☀️'}
-            </button>
             
             {/* 관리자 편집 모드 컨트롤 */}
             {isAdmin && (
