@@ -19,22 +19,22 @@
 }
 
 [data-theme="dark"] {
-  /* Dark Mode */
-  --bg-primary: #1a1a1a;
-  --bg-secondary: #2d2d2d;
-  --bg-tertiary: #404040;
-  --text-primary: #ffffff;
-  --text-secondary: #cccccc;
-  --text-tertiary: #999999;
-  --border-color: #404040;
-  --border-color-light: #505050;
-  --accent-color: #DFFF00;
-  --accent-hover: #e6ff33;
-  --shadow-color: rgba(0, 0, 0, 0.3);
-  --shadow-color-light: rgba(0, 0, 0, 0.2);
-  --error-color: #ff6b6b;
-  --success-color: #51cf66;
-  --warning-color: #ffd43b;
+  /* Dark Mode - 브랜드 컬러와 조화되는 세련된 다크 블루 계열 */
+  --bg-primary: #0a0f1a;        /* 메인 배경 - 깊이 있는 다크 블루 */
+  --bg-secondary: #1a2332;       /* 보조 배경 - 브랜드와 조화되는 블루 그레이 */
+  --bg-tertiary: #2a3441;        /* 3차 배경 - 중간 톤의 블루 그레이 */
+  --text-primary: #f8fafc;       /* 주요 텍스트 - 부드러운 화이트 */
+  --text-secondary: #cbd5e1;     /* 보조 텍스트 - 은은한 라이트 그레이 */
+  --text-tertiary: #94a3b8;      /* 3차 텍스트 - 미디엄 그레이 */
+  --border-color: #334155;       /* 테두리 - 다크 블루 그레이 */
+  --border-color-light: #475569; /* 밝은 테두리 */
+  --accent-color: #DFFF00;       /* 브랜드 컬러 유지 */
+  --accent-hover: #e6ff33;       /* 호버 효과 */
+  --shadow-color: rgba(0, 0, 0, 0.4);      /* 그림자 */
+  --shadow-color-light: rgba(0, 0, 0, 0.2); /* 밝은 그림자 */
+  --error-color: #ef4444;        /* 에러 - 빨간색 */
+  --success-color: #10b981;      /* 성공 - 초록색 */
+  --warning-color: #f59e0b;      /* 경고 - 주황색 */
 }
 
 /* Global Styles */

@@ -85,17 +85,25 @@
 .login-button {
   display: inline-block;
   padding: 0.75rem 2rem;
-  background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+  background: linear-gradient(135deg, 
+    var(--accent-color) 0%, 
+    var(--accent-hover) 100%
+  );
   color: var(--text-primary);
   text-decoration: none;
   border-radius: 50px;
   font-weight: 500;
   transition: all 0.3s ease;
+  box-shadow: 
+    0 4px 15px rgba(223, 255, 0, 0.3),
+    0 0 0 1px rgba(223, 255, 0, 0.1) inset;
 }
 
 .login-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(223, 255, 0, 0.3);
+  box-shadow: 
+    0 8px 25px rgba(223, 255, 0, 0.4),
+    0 0 0 1px rgba(223, 255, 0, 0.2) inset;
   text-decoration: none;
   color: var(--text-primary);
 }

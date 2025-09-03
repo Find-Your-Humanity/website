@@ -14,11 +14,17 @@
 }
 
 .contact-status-form {
-  background: var(--bg-primary);
+  background: linear-gradient(145deg, 
+    var(--bg-primary) 0%, 
+    var(--bg-secondary) 100%
+  );
   border-radius: 16px;
-  box-shadow: 0 20px 40px var(--shadow-color);
+  box-shadow: 
+    0 20px 40px var(--shadow-color),
+    0 0 0 1px rgba(223, 255, 0, 0.05) inset;
   padding: 2.5rem;
   margin-bottom: 2rem;
+  border: 1px solid var(--border-color);
 }
 
 .contact-status-title {
@@ -53,14 +59,23 @@
   font-size: 1rem;
   transition: border-color 0.2s;
   box-sizing: border-box;
-  background-color: var(--bg-primary);
+  background: linear-gradient(145deg, 
+    var(--bg-primary) 0%, 
+    var(--bg-secondary) 100%
+  );
   color: var(--text-primary);
+  box-shadow: 
+    0 2px 8px var(--shadow-color),
+    0 0 0 1px rgba(223, 255, 0, 0.02) inset;
 }
 
 .form-input:focus {
   outline: none;
   border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px rgba(223, 255, 0, 0.1);
+  box-shadow: 
+    0 0 0 3px rgba(223, 255, 0, 0.1),
+    0 4px 15px var(--shadow-color),
+    0 0 0 1px rgba(223, 255, 0, 0.05) inset;
 }
 
 .error-message {
@@ -90,13 +105,21 @@
 }
 
 .primary-button {
-  background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-hover) 100%);
+  background: linear-gradient(135deg, 
+    var(--accent-color) 0%, 
+    var(--accent-hover) 100%
+  );
   color: var(--text-primary);
+  box-shadow: 
+    0 4px 15px rgba(223, 255, 0, 0.3),
+    0 0 0 1px rgba(223, 255, 0, 0.1) inset;
 }
 
 .primary-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(223, 255, 0, 0.4);
+  box-shadow: 
+    0 8px 25px rgba(223, 255, 0, 0.4),
+    0 0 0 1px rgba(223, 255, 0, 0.2) inset;
 }
 
 .primary-button:disabled {
