@@ -14,7 +14,7 @@ const PaymentSuccessPage = () => {
   const [isProcessing, setIsProcessing] = useState(true);
   const [paymentResult, setPaymentResult] = useState(null);
   const [error, setError] = useState(null);
-  const [countdown, setCountdown] = useState(3);
+  // const [countdown, setCountdown] = useState(3); // 카운트다운 비활성화
 
   // 페이지 이동 시 스크롤을 맨 위로 올림
   useScrollToTop();
@@ -64,15 +64,15 @@ const PaymentSuccessPage = () => {
     confirmPayment();
   }, [loading, isAuthenticated, paymentKey, orderId, amount, planId, navigate]);
 
-  // 결제 승인 완료 후 대시보드로 자동 이동
-  useEffect(() => {
-    if (paymentResult && !error) {
-      const timer = setTimeout(() => {
-        window.location.href = 'https://dashboard.realcatcha.com';
-      }, 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [paymentResult, error]);
+  // 자동 리다이렉트 비활성화 - 사용자가 직접 선택하도록 함
+  // useEffect(() => {
+  //   if (paymentResult && !error) {
+  //     const timer = setTimeout(() => {
+  //       window.location.href = 'https://dashboard.realcatcha.com';
+  //     }, 1500);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [paymentResult, error]);
 
   const confirmPayment = async () => {
     try {
@@ -104,8 +104,8 @@ const PaymentSuccessPage = () => {
         setPaymentResult(result);
         console.log("✅ 결제 승인 성공:", result);
         
-        // 카운트다운 시작
-        startCountdown();
+        // 카운트다운 비활성화 (자동 리다이렉트 제거로 인해)
+        // startCountdown();
       } else {
         setError(result.detail || "결제 승인에 실패했습니다.");
         console.error("❌ 결제 승인 실패:", result);
@@ -136,22 +136,22 @@ const PaymentSuccessPage = () => {
     navigate('/');
   };
 
-  // 카운트다운 함수
-  const startCountdown = () => {
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          navigate('/');
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+  // 카운트다운 함수 (자동 리다이렉트 제거로 인해 비활성화)
+  // const startCountdown = () => {
+  //   const timer = setInterval(() => {
+  //     setCountdown((prev) => {
+  //       if (prev <= 1) {
+  //         clearInterval(timer);
+  //         navigate('/');
+  //         return 0;
+  //       }
+  //       return prev - 1;
+  //     });
+  //   }, 1000);
 
-    // 컴포넌트 언마운트 시 타이머 정리
-    return () => clearInterval(timer);
-  };
+  //   // 컴포넌트 언마운트 시 타이머 정리
+  //   return () => clearInterval(timer);
+  // };
 
   if (isProcessing) {
     return (
@@ -219,7 +219,7 @@ const PaymentSuccessPage = () => {
             <p>선택하신 요금제가 즉시 적용되었습니다.</p>
             <p>이제 CAPTCHA 서비스를 이용하실 수 있습니다.</p>
             <p className="auto-redirect-message">
-              {countdown}초 후 자동으로 홈페이지로 이동합니다... ({countdown})
+              결제가 완료되었습니다. 원하는 페이지로 이동해주세요.
             </p>
           </div>
 
