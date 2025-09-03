@@ -62,11 +62,7 @@
 }
 
 .hero-title .real-text {
-  background: linear-gradient(45deg, var(--accent-color), #b8cc00);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(0 0 8px rgba(223, 255, 0, 0.3));
+  color: var(--accent-color);
   animation: realPulse 3s ease-in-out infinite !important;
   display: inline-block !important;
   transform-origin: center !important;

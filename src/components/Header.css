@@ -38,31 +38,28 @@
   justify-content: center;
   width: 40px;
   height: 40px;
-  background: linear-gradient(145deg, 
-    var(--bg-secondary) 0%, 
-    var(--bg-tertiary) 100%
-  );
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
+  background: transparent;
+  border: none;
+  outline: none;
   cursor: pointer;
   transition: all 0.3s ease;
   color: var(--text-primary);
   margin-right: 1rem;
-  box-shadow: 
-    0 2px 8px var(--shadow-color),
-    0 0 0 1px rgba(223, 255, 0, 0.02) inset;
+  box-shadow: none;
 }
 
 .theme-toggle:hover {
-  background: linear-gradient(145deg, 
-    var(--bg-tertiary) 0%, 
-    var(--bg-secondary) 100%
-  );
-  border-color: var(--accent-color);
   transform: translateY(-2px);
-  box-shadow: 
-    0 4px 12px var(--shadow-color),
-    0 0 0 1px rgba(223, 255, 0, 0.1) inset;
+}
+
+.theme-toggle:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.theme-toggle:active {
+  outline: none;
+  box-shadow: none;
 }
 
 .theme-toggle svg {
