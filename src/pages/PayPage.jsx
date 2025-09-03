@@ -91,8 +91,8 @@ const PayPage = () => {
   // 요금제별 가격 매핑 (실제 요금제 가격으로 설정)
   const getPlanPrice = (planType) => {
     const priceMapping = {
-      'basic': 15000,
-      'plus': 25000,
+      'basic': 0,
+      'plus': 9900,
       'pro': 39000
     };
     return priceMapping[planType];
