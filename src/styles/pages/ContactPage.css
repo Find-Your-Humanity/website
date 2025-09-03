@@ -246,7 +246,50 @@
   color: var(--text-secondary);
 }
 
-/* Submit Button */
+/* Actions Container */
+.contact-page .actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+/* Primary Button */
+.contact-page .primary-button {
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, 
+    var(--accent-color) 0%, 
+    var(--accent-hover) 100%
+  );
+  color: var(--text-primary);
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 4px 15px rgba(223, 255, 0, 0.3),
+    0 0 0 1px rgba(223, 255, 0, 0.1) inset;
+  min-width: 200px;
+}
+
+.contact-page .primary-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 25px rgba(223, 255, 0, 0.4),
+    0 0 0 1px rgba(223, 255, 0, 0.2) inset;
+}
+
+.contact-page .primary-button:disabled,
+.contact-page .primary-button.disabled {
+  background: var(--text-tertiary);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Submit Button (기존 스타일 유지) */
 .contact-page .submit-btn {
   width: 100%;
   padding: 1rem 2rem;
