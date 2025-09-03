@@ -173,6 +173,69 @@ export const AuthProvider = ({ children }) => {
     setError(null);
   };
 
+  // 토큰 자동 갱신 함수
+  const refreshAccessToken = async () => {
+    try {
+      console.log('🔄 액세스 토큰 갱신 시도...');
+      const response = await fetch('https://gateway.realcatcha.com/api/auth/refresh', {
+        method: 'POST',
+        credentials: 'include', // 쿠키 전송
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.access_token) {
+          // 새 액세스 토큰을 localStorage에 저장
+          localStorage.setItem('captcha_dashboard_token', data.access_token);
+          console.log('✅ 액세스 토큰 갱신 성공');
+          return data.access_token;
+        }
+      }
+      
+      console.log('❌ 액세스 토큰 갱신 실패');
+      return null;
+    } catch (error) {
+      console.error('❌ 토큰 갱신 오류:', error);
+      return null;
+    }
+  };
+
+  // API 요청 인터셉터 (토큰 만료 시 자동 갱신)
+  const apiRequest = async (url, options = {}) => {
+    try {
+      // 첫 번째 요청 시도
+      let response = await fetch(url, {
+        ...options,
+        credentials: 'include',
+      });
+
+      // 401 에러 (토큰 만료) 시 토큰 갱신 시도
+      if (response.status === 401) {
+        console.log('🔄 401 에러 감지, 토큰 갱신 시도...');
+        const newToken = await refreshAccessToken();
+        
+        if (newToken) {
+          // 새 토큰으로 재요청
+          console.log('🔄 새 토큰으로 재요청...');
+          response = await fetch(url, {
+            ...options,
+            credentials: 'include',
+          });
+        } else {
+          // 토큰 갱신 실패 시 로그아웃
+          console.log('❌ 토큰 갱신 실패, 로그아웃 처리');
+          logout();
+          throw new Error('인증이 만료되었습니다. 다시 로그인해주세요.');
+        }
+      }
+
+      return response;
+    } catch (error) {
+      console.error('❌ API 요청 오류:', error);
+      throw error;
+    }
+  };
+
   // 회원가입 함수
   const signup = async (userData) => {
     try {
@@ -231,6 +294,8 @@ export const AuthProvider = ({ children }) => {
     loginWithGoogle,
     logout,
     signup,
+    refreshAccessToken,
+    apiRequest,
     isAuthenticated: !!user,
   };
 
