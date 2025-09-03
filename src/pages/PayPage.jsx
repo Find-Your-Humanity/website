@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { FaCheck, FaChevronDown, FaChevronRight } from 'react-icons/fa';
 import PaymentModal from '../components/PaymentModal';
@@ -11,6 +11,7 @@ import { loadPaymentWidget } from '@tosspayments/payment-widget-sdk';
 
 const PayPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { isAuthenticated } = useAuth();
   const [openFaqs, setOpenFaqs] = useState({});
   const [paymentWidget, setPaymentWidget] = useState(null);
@@ -23,7 +24,7 @@ const PayPage = () => {
   // 페이지 이동 시 스크롤을 맨 위로 올림
   useScrollToTop();
 
-  // Toss Payments SDK 초기화 (공식 문서 패턴)
+  // Toss Payments SDK 초기화 및 대시보드에서 온 경우 자동 요금제 선택
   useEffect(() => {
     const initializePaymentWidget = async () => {
       try {
@@ -41,6 +42,25 @@ const PayPage = () => {
         
         setPaymentWidget(widget);
         
+        // 2. 대시보드에서 온 경우 자동으로 요금제 선택 및 결제 모달 열기
+        const fromDashboard = searchParams.get('from');
+        const planType = searchParams.get('planType');
+        
+        if (fromDashboard === 'dashboard' && planType && isAuthenticated) {
+          console.log("🔍 대시보드에서 온 요청:", { fromDashboard, planType });
+          
+          // 요금제 정보 설정
+          const planInfo = {
+            type: planType,
+            id: getPlanId(planType),
+            name: getPlanName(planType),
+            price: getPlanPrice(planType)
+          };
+          
+          setSelectedPlan(planInfo);
+          setIsModalOpen(true);
+        }
+        
       } catch (error) {
         console.error("❌ Toss Payments SDK 초기화 실패:", error);
         console.error("에러 상세:", error.message, error.stack);
@@ -48,7 +68,7 @@ const PayPage = () => {
     };
 
     initializePaymentWidget();
-  }, []);
+  }, [searchParams, isAuthenticated]);
 
   // 주문 ID 생성 (공식 문서 권장: 충분히 무작위적인 고유 값)
   const generateOrderId = () => {
@@ -68,12 +88,12 @@ const PayPage = () => {
     return planMapping[planType];
   };
 
-  // 요금제별 가격 매핑 (테스트용으로 100원으로 설정)
+  // 요금제별 가격 매핑 (실제 요금제 가격으로 설정)
   const getPlanPrice = (planType) => {
     const priceMapping = {
-      'basic': 100,
-      'plus': 100,
-      'pro': 100
+      'basic': 15000,
+      'plus': 25000,
+      'pro': 39000
     };
     return priceMapping[planType];
   };
@@ -157,7 +177,7 @@ const PayPage = () => {
               <div className="plan-header">
                 <h3 className="plan-name">Basic Plan</h3>
                 <div className="plan-price">
-                  <span className="price">₩100</span>
+                  <span className="price">₩15,000</span>
                   <span className="period">/월</span>
                 </div>
                 <p className="plan-description">
@@ -182,7 +202,7 @@ const PayPage = () => {
                 onClick={() => handleSelectPlan('basic')}
                 disabled={isLoading}
               >
-                {isLoading ? '처리 중...' : '100원으로 시작하기'}
+                {isLoading ? '처리 중...' : 'Basic Plan 시작하기'}
               </button>
               
               <button 
@@ -199,7 +219,7 @@ const PayPage = () => {
               <div className="plan-header">
                 <h3 className="plan-name">Plus Plan</h3>
                 <div className="plan-price">
-                  <span className="price">₩9,900</span>
+                  <span className="price">₩25,000</span>
                   <span className="period">/월</span>
                 </div>
                 <p className="plan-description">
@@ -242,7 +262,7 @@ const PayPage = () => {
               <div className="plan-header">
                 <h3 className="plan-name">Pro Plan</h3>
                 <div className="plan-price">
-                  <span className="price">₩29,900</span>
+                  <span className="price">₩39,000</span>
                   <span className="period">/월</span>
                 </div>
                 <p className="plan-description">

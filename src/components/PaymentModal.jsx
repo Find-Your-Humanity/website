@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { FaTimes } from 'react-icons/fa';
 import '../styles/components/PaymentModal.css';
 
@@ -9,6 +10,7 @@ const PaymentModal = ({
   paymentWidget, 
   onPaymentSuccess 
 }) => {
+  const [searchParams] = useSearchParams();
   const [paymentMethods, setPaymentMethods] = useState(null);
   const [isPaymentUIReady, setIsPaymentUIReady] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -91,8 +93,8 @@ const PaymentModal = ({
 
       console.log(`🔍 모달 내 결제 요청 - 플랜: ${planName}, 금액: ${amount}원, 주문ID: ${orderId}`);
       console.log(`🔍 결제 요청 URL 설정:`, {
-        successUrl: `${window.location.origin}/payment/success?planType=${selectedPlan.type}&planId=${planId}`,
-        failUrl: `${window.location.origin}/payment/fail?planType=${selectedPlan.type}&planId=${planId}`,
+        successUrl: `${window.location.origin}/payment/success?planType=${selectedPlan.type}&planId=${planId}&from=${searchParams.get('from') || 'website'}`,
+        failUrl: `${window.location.origin}/payment/fail?planType=${selectedPlan.type}&planId=${planId}&from=${searchParams.get('from') || 'website'}`,
         selectedPlan: selectedPlan
       });
 
@@ -101,8 +103,8 @@ const PaymentModal = ({
         orderId: orderId,
         orderName: `${planName} - CAPTCHA 서비스`,
         amount: amount,
-        successUrl: `${window.location.origin}/payment/success?planType=${selectedPlan.type}&planId=${planId}`,
-        failUrl: `${window.location.origin}/payment/fail?planType=${selectedPlan.type}&planId=${planId}`,
+        successUrl: `${window.location.origin}/payment/success?planType=${selectedPlan.type}&planId=${planId}&from=${searchParams.get('from') || 'website'}`,
+        failUrl: `${window.location.origin}/payment/fail?planType=${selectedPlan.type}&planId=${planId}&from=${searchParams.get('from') || 'website'}`,
         customerEmail: "test@example.com", // 실제로는 사용자 이메일 사용
         customerName: "테스트 사용자", // 실제로는 사용자 이름 사용
         // 추가 파라미터 (선택사항)
