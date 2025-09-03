@@ -234,7 +234,7 @@ const SignUpPage = () => {
                 <input
                   type="text"
                   name="username"
-                  placeholder="이름을 입력하세요"
+                  placeholder="ex) 홍길동"
                   value={formData.username}
                   onChange={handleChange}
                   className="signup-form-input"
@@ -248,7 +248,7 @@ const SignUpPage = () => {
                 <input
                   type="tel"
                   name="contact"
-                  placeholder="연락처를 입력하세요"
+                  placeholder="ex) 01012345678"
                   value={formData.contact}
                   onChange={handleChange}
                   className="signup-form-input"

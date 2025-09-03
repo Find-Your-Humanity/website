@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { FaBars, FaTimes } from 'react-icons/fa';
+import { FaBars, FaTimes, FaChevronDown } from 'react-icons/fa';
 import './Header.css';
 
 const Header = () => {
@@ -10,7 +10,12 @@ const Header = () => {
   const { isAuthenticated, logout, user } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [productsDropdownOpen, setProductsDropdownOpen] = useState(false);
+  const [companyDropdownOpen, setCompanyDropdownOpen] = useState(false);
+  const [clickedDropdown, setClickedDropdown] = useState(null);
   const dropdownRef = useRef(null);
+  const productsDropdownRef = useRef(null);
+  const companyDropdownRef = useRef(null);
 
   const handleLogout = () => {
     logout();
@@ -37,11 +42,73 @@ const Header = () => {
     setMobileMenuOpen(false);
   };
 
+  // Products 드롭다운 토글
+  const toggleProductsDropdown = (e) => {
+    e.preventDefault();
+    if (clickedDropdown === 'products') {
+      setProductsDropdownOpen(false);
+      setClickedDropdown(null);
+    } else {
+      setProductsDropdownOpen(!productsDropdownOpen);
+      setClickedDropdown(productsDropdownOpen ? null : 'products');
+    }
+    setCompanyDropdownOpen(false);
+  };
+
+  // Company 드롭다운 토글
+  const toggleCompanyDropdown = (e) => {
+    e.preventDefault();
+    if (clickedDropdown === 'company') {
+      setCompanyDropdownOpen(false);
+      setClickedDropdown(null);
+    } else {
+      setCompanyDropdownOpen(!companyDropdownOpen);
+      setClickedDropdown(companyDropdownOpen ? null : 'company');
+    }
+    setProductsDropdownOpen(false);
+  };
+
+  // Products 드롭다운 호버
+  const handleProductsMouseEnter = () => {
+    if (clickedDropdown !== 'company') {
+      setProductsDropdownOpen(true);
+    }
+  };
+
+  const handleProductsMouseLeave = () => {
+    if (clickedDropdown !== 'products') {
+      setProductsDropdownOpen(false);
+    }
+  };
+
+  // Company 드롭다운 호버
+  const handleCompanyMouseEnter = () => {
+    if (clickedDropdown !== 'products') {
+      setCompanyDropdownOpen(true);
+    }
+  };
+
+  const handleCompanyMouseLeave = () => {
+    if (clickedDropdown !== 'company') {
+      setCompanyDropdownOpen(false);
+    }
+  };
+
   // 외부 클릭시 드롭다운 닫기
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setDropdownOpen(false);
+      }
+      if (productsDropdownRef.current && !productsDropdownRef.current.contains(event.target)) {
+        if (clickedDropdown !== 'products') {
+          setProductsDropdownOpen(false);
+        }
+      }
+      if (companyDropdownRef.current && !companyDropdownRef.current.contains(event.target)) {
+        if (clickedDropdown !== 'company') {
+          setCompanyDropdownOpen(false);
+        }
       }
     };
 
@@ -49,7 +116,7 @@ const Header = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [clickedDropdown]);
 
   return (
     <header className="header">
@@ -63,17 +130,60 @@ const Header = () => {
 
         {/* 데스크톱 네비게이션 */}
         <nav className="nav desktop-only">
-          <Link to="/products" className={location.pathname === '/products' ? 'nav-link active' : 'nav-link'}>
-            Products
-          </Link>
-          <Link to="/company" className={location.pathname === '/company' ? 'nav-link active' : 'nav-link'}>
-            Company
-          </Link>
+          {/* Products 드롭다운 */}
+          <div 
+            className="nav-dropdown" 
+            ref={productsDropdownRef}
+            onMouseEnter={handleProductsMouseEnter}
+            onMouseLeave={handleProductsMouseLeave}
+          >
+            <button 
+              className={`nav-dropdown-button ${location.pathname === '/products' || location.pathname === '/pay' ? 'active' : ''}`}
+              onClick={toggleProductsDropdown}
+            >
+              Products
+              <FaChevronDown className={`dropdown-arrow ${productsDropdownOpen ? 'open' : ''}`} />
+            </button>
+            {productsDropdownOpen && (
+              <div className="nav-dropdown-menu">
+                <Link to="/products" className="nav-dropdown-item" onClick={() => setProductsDropdownOpen(false)}>
+                  Products
+                </Link>
+                <Link to="/pay" className="nav-dropdown-item" onClick={() => setProductsDropdownOpen(false)}>
+                  Prices
+                </Link>
+              </div>
+            )}
+          </div>
+
+          {/* Company 드롭다운 */}
+          <div 
+            className="nav-dropdown" 
+            ref={companyDropdownRef}
+            onMouseEnter={handleCompanyMouseEnter}
+            onMouseLeave={handleCompanyMouseLeave}
+          >
+            <button 
+              className={`nav-dropdown-button ${location.pathname === '/company' || location.pathname === '/contact' ? 'active' : ''}`}
+              onClick={toggleCompanyDropdown}
+            >
+              Company
+              <FaChevronDown className={`dropdown-arrow ${companyDropdownOpen ? 'open' : ''}`} />
+            </button>
+            {companyDropdownOpen && (
+              <div className="nav-dropdown-menu">
+                <Link to="/company" className="nav-dropdown-item" onClick={() => setCompanyDropdownOpen(false)}>
+                  About Us
+                </Link>
+                <Link to="/contact" className="nav-dropdown-item" onClick={() => setCompanyDropdownOpen(false)}>
+                  Contact Us
+                </Link>
+              </div>
+            )}
+          </div>
+
           <Link to="/document" className={location.pathname === '/document' ? 'nav-link active' : 'nav-link'}>
             Document
-          </Link>
-          <Link to="/contact" className={location.pathname === '/contact' ? 'nav-link active' : 'nav-link'}>
-            Contact Us
           </Link>
           {isAuthenticated && (
             <Link to="/dashboard" className={location.pathname === '/dashboard' ? 'nav-link active' : 'nav-link'}>
@@ -92,7 +202,7 @@ const Header = () => {
                     <path d="M12 14C7.58172 14 4 17.5817 4 22H20C20 17.5817 16.4183 14 12 14Z" fill="currentColor"/>
                   </svg>
                 </div>
-                                 <span className="user-name">{user?.name || user?.username || user?.email || '사용자'}</span>
+                <span className="user-name">{user?.name || user?.username || user?.email || '사용자'}</span>
                 <svg className={`dropdown-arrow ${dropdownOpen ? 'open' : ''}`} width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M7 10L12 15L17 10H7Z" fill="currentColor"/>
                 </svg>
@@ -109,7 +219,7 @@ const Header = () => {
                         </svg>
                       </div>
                       <div className="user-details">
-                                                 <div className="user-display-name">{user?.name || user?.username || '사용자'}</div>
+                        <div className="user-display-name">{user?.name || user?.username || '사용자'}</div>
                         <div className="user-email">{user?.email}</div>
                       </div>
                     </div>
@@ -149,17 +259,50 @@ const Header = () => {
       {mobileMenuOpen && (
         <div className="mobile-menu">
           <nav className="mobile-nav">
-            <Link to="/products" className={location.pathname === '/products' ? 'mobile-nav-link active' : 'mobile-nav-link'} onClick={handleNavClick}>
-              Products
-            </Link>
-            <Link to="/company" className={location.pathname === '/company' ? 'mobile-nav-link active' : 'mobile-nav-link'} onClick={handleNavClick}>
-              Company
-            </Link>
+            {/* 모바일 Products 드롭다운 */}
+            <div className="mobile-dropdown">
+              <button 
+                className={`mobile-dropdown-button ${location.pathname === '/products' || location.pathname === '/pay' ? 'active' : ''}`}
+                onClick={() => setProductsDropdownOpen(!productsDropdownOpen)}
+              >
+                Products
+                <FaChevronDown className={`mobile-dropdown-arrow ${productsDropdownOpen ? 'open' : ''}`} />
+              </button>
+              {productsDropdownOpen && (
+                <div className="mobile-dropdown-menu">
+                  <Link to="/products" className="mobile-dropdown-item" onClick={handleNavClick}>
+                    Products
+                  </Link>
+                  <Link to="/pay" className="mobile-dropdown-item" onClick={handleNavClick}>
+                    Prices
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* 모바일 Company 드롭다운 */}
+            <div className="mobile-dropdown">
+              <button 
+                className={`mobile-dropdown-button ${location.pathname === '/company' || location.pathname === '/contact' ? 'active' : ''}`}
+                onClick={() => setCompanyDropdownOpen(!companyDropdownOpen)}
+              >
+                Company
+                <FaChevronDown className={`mobile-dropdown-arrow ${companyDropdownOpen ? 'open' : ''}`} />
+              </button>
+              {companyDropdownOpen && (
+                <div className="mobile-dropdown-menu">
+                  <Link to="/company" className="mobile-dropdown-item" onClick={handleNavClick}>
+                    About Us
+                  </Link>
+                  <Link to="/contact" className="mobile-dropdown-item" onClick={handleNavClick}>
+                    Contact Us
+                  </Link>
+                </div>
+              )}
+            </div>
+
             <Link to="/document" className={location.pathname === '/document' ? 'mobile-nav-link active' : 'mobile-nav-link'} onClick={handleNavClick}>
               Document
-            </Link>
-            <Link to="/contact" className={location.pathname === '/contact' ? 'mobile-nav-link active' : 'mobile-nav-link'} onClick={handleNavClick}>
-              Contact Us
             </Link>
             {isAuthenticated && (
               <Link to="/dashboard" className={location.pathname === '/dashboard' ? 'mobile-nav-link active' : 'mobile-nav-link'} onClick={handleNavClick}>
@@ -179,7 +322,7 @@ const Header = () => {
                     </svg>
                   </div>
                   <div className="mobile-user-details">
-                                         <div className="mobile-user-name">{user?.name || user?.username || '사용자'}</div>
+                    <div className="mobile-user-name">{user?.name || user?.username || '사용자'}</div>
                     <div className="mobile-user-email">{user?.email}</div>
                   </div>
                 </div>
