@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import MainLayout from './layouts/MainLayout';
 import HomePage from './pages/HomePage';
 import ProductsPage from './pages/ProductsPage';
@@ -26,31 +27,33 @@ import './App.css';
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <MainLayout>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/products" element={<ProductsPage />} />
-            <Route path="/document" element={<DocumentPage />} />
-            <Route path="/company" element={<CompanyPage />} />
-            <Route path="/signin" element={<SignInPage />} />
-            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-            <Route path="/reset-password" element={<ResetPasswordPage />} />
-            <Route path="/signup" element={<SignUpPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="/contact-status" element={<ContactStatusPage />} />
-            <Route path="/terms" element={<TermsPage />} />
-            <Route path="/privacy" element={<PrivacyPage />} />
-            <Route path="/faq" element={<FAQPage />} />
-            <Route path="/my-inquiries" element={<MyInquiriesPage />} />
-            <Route path="/dashboard" element={<DashboardEmbed />} />
-            <Route path="/pay" element={<PayPage />} />
-            <Route path="/payment/success" element={<PaymentSuccessPage />} />
-            <Route path="/payment/fail" element={<PaymentFailPage />} />
-            <Route path="/auth/google/callback" element={<GoogleCallbackPage />} />
-          </Routes>
-        </MainLayout>
-      </Router>
+      <ThemeProvider>
+        <Router>
+          <MainLayout>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/products" element={<ProductsPage />} />
+              <Route path="/document" element={<DocumentPage />} />
+              <Route path="/company" element={<CompanyPage />} />
+              <Route path="/signin" element={<SignInPage />} />
+              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="/reset-password" element={<ResetPasswordPage />} />
+              <Route path="/signup" element={<SignUpPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/contact-status" element={<ContactStatusPage />} />
+              <Route path="/terms" element={<TermsPage />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
+              <Route path="/faq" element={<FAQPage />} />
+              <Route path="/my-inquiries" element={<MyInquiriesPage />} />
+              <Route path="/dashboard" element={<DashboardEmbed />} />
+              <Route path="/pay" element={<PayPage />} />
+              <Route path="/payment/success" element={<PaymentSuccessPage />} />
+              <Route path="/payment/fail" element={<PaymentFailPage />} />
+              <Route path="/auth/google/callback" element={<GoogleCallbackPage />} />
+            </Routes>
+          </MainLayout>
+        </Router>
+      </ThemeProvider>
     </AuthProvider>
   );
 }

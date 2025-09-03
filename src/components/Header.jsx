@@ -1,13 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { FaBars, FaTimes, FaChevronDown } from 'react-icons/fa';
+import { useTheme } from '../contexts/ThemeContext';
+import { FaBars, FaTimes, FaChevronDown, FaSun, FaMoon } from 'react-icons/fa';
 import './Header.css';
 
 const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { isAuthenticated, logout, user } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [productsDropdownOpen, setProductsDropdownOpen] = useState(false);
@@ -202,6 +204,11 @@ const Header = () => {
         </nav>
 
         <div className="auth-area">
+          {/* 테마 토글 버튼 */}
+          <button className="theme-toggle" onClick={toggleTheme} aria-label="테마 변경">
+            {theme === 'light' ? <FaMoon /> : <FaSun />}
+          </button>
+          
           {isAuthenticated ? (
             <div className="user-menu desktop-only" ref={dropdownRef}>
               <button className="user-button" onClick={toggleDropdown}>
