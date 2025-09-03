@@ -1,6 +1,6 @@
 .contact-status-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-hover) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -14,9 +14,9 @@
 }
 
 .contact-status-form {
-  background: white;
+  background: var(--bg-primary);
   border-radius: 16px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20px 40px var(--shadow-color);
   padding: 2.5rem;
   margin-bottom: 2rem;
 }
@@ -24,7 +24,7 @@
 .contact-status-title {
   font-size: 2rem;
   font-weight: 700;
-  color: #2d3748;
+  color: var(--text-primary);
   text-align: center;
   margin-bottom: 2rem;
 }
@@ -40,7 +40,7 @@
 .label {
   display: block;
   font-weight: 600;
-  color: #374151;
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
   font-size: 0.9rem;
 }
@@ -48,22 +48,24 @@
 .form-input {
   width: 100%;
   padding: 0.75rem 1rem;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   font-size: 1rem;
   transition: border-color 0.2s;
   box-sizing: border-box;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 .form-input:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(223, 255, 0, 0.1);
 }
 
 .error-message {
-  background: #fee2e2;
-  color: #dc2626;
+  background: var(--error-color);
+  color: var(--bg-primary);
   padding: 0.75rem 1rem;
   border-radius: 8px;
   font-size: 0.9rem;
@@ -88,13 +90,13 @@
 }
 
 .primary-button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-hover) 100%);
+  color: var(--text-primary);
 }
 
 .primary-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px rgba(223, 255, 0, 0.4);
 }
 
 .primary-button:disabled {

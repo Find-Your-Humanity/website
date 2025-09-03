@@ -1,26 +1,65 @@
 /* 배경: 그라데이션 화이트 톤 */
-.contact-page { min-height: 100vh; background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 30%, #e9ecef 70%, #dee2e6 100%); display: flex; align-items: center; justify-content: center; padding: 0; padding-top: 1px; border-top: 1px solid transparent; margin-top: 0 !important; }
+.contact-page { 
+  min-height: 100vh; 
+  background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 30%, var(--bg-tertiary) 70%, var(--border-color-light) 100%); 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  padding: 0; 
+  padding-top: 1px; 
+  border-top: 1px solid transparent; 
+  margin-top: 0 !important; 
+}
 
-.contact-container { width: 100%; max-width: 980px; background: rgba(255,255,255,0.9); border: 1px solid rgba(0,0,0,0.08); backdrop-filter: blur(6px); border-radius: 16px; box-shadow: 0 12px 36px rgba(0,0,0,0.15); overflow: hidden; margin: 2rem 0; }
+.contact-container { 
+  width: 100%; 
+  max-width: 980px; 
+  background: rgba(255,255,255,0.9); 
+  border: 1px solid var(--border-color); 
+  backdrop-filter: blur(6px); 
+  border-radius: 16px; 
+  box-shadow: 0 12px 36px var(--shadow-color); 
+  overflow: hidden; 
+  margin: 2rem 0; 
+}
 
-.contact-form { padding: 2rem 2.5rem; }
+.contact-form { 
+  padding: 2rem 2.5rem; 
+}
 
-.contact-title { font-size: 2rem; font-weight: 800; margin: 0 0 1rem; color: #212529; }
+.contact-title { 
+  font-size: 2rem; 
+  font-weight: 800; 
+  margin: 0 0 1rem; 
+  color: var(--text-primary); 
+}
 
-.contact-page .section-title { font-size: 1.1rem; font-weight: 700; color: #495057; margin: 1rem 0 .6rem; }
+.contact-page .section-title { 
+  font-size: 1.1rem; 
+  font-weight: 700; 
+  color: var(--text-secondary); 
+  margin: 1rem 0 .6rem; 
+}
 
-.contact-page .label { display: block; font-size: .9rem; color: #6c757d; margin-bottom: .4rem; }
+.contact-page .label { 
+  display: block; 
+  font-size: .9rem; 
+  color: var(--text-secondary); 
+  margin-bottom: .4rem; 
+}
 
-.contact-page .form-group { margin-bottom: 1rem; }
+.contact-page .form-group { 
+  margin-bottom: 1rem; 
+}
 
 .contact-page .file-drop-area {
-  border: 2px dashed #dee2e6;
+  border: 2px dashed var(--border-color);
   border-radius: 10px;
   padding: 0.5rem;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  background: #f8f9fa;
+  background: var(--bg-secondary);
   min-height: 45px;
   display: flex;
   align-items: center;
@@ -28,17 +67,15 @@
 }
 
 .contact-page .file-drop-area:hover {
-  border-color: #DFFF00;
-  background: #ffffff;
+  border-color: var(--accent-color);
+  background: var(--bg-primary);
 }
 
 .contact-page .file-drop-area.drag-over {
-  border-color: #DFFF00;
+  border-color: var(--accent-color);
   background: rgba(223, 255, 0, 0.1);
   transform: scale(1.02);
 }
-
-
 
 .contact-page .file-drop-content {
   width: 100%;
@@ -52,20 +89,20 @@
 }
 
 .contact-page .file-text {
-  color: #6c757d;
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 
 .contact-page .file-subtext {
   font-size: 0.8rem;
-  color: #adb5bd;
+  color: var(--text-tertiary);
   margin-top: 0.125rem;
 }
 
 /* File List */
 .contact-page .file-list {
   width: 100%;
-  background: #ffffff;
+  background: var(--bg-primary);
   border-radius: 8px;
   overflow: hidden;
 }
@@ -75,7 +112,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.5rem 0.75rem;
-  border-bottom: 1px solid #f8f9fa;
+  border-bottom: 1px solid var(--bg-secondary);
   transition: background-color 0.2s ease;
 }
 
@@ -84,7 +121,7 @@
 }
 
 .contact-page .file-item:hover {
-  background-color: #f8f9fa;
+  background-color: var(--bg-secondary);
 }
 
 .contact-page .file-info-inline {
@@ -97,7 +134,7 @@
 
 .contact-page .file-name {
   font-weight: 500;
-  color: #495057;
+  color: var(--text-primary);
   font-size: 0.9rem;
   white-space: nowrap;
   overflow: hidden;

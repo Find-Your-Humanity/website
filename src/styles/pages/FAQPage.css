@@ -1,7 +1,7 @@
 /* FAQ Page */
 .faq-page {
   min-height: 100vh;
-  background-color: #f8f9fa;
+  background-color: var(--bg-secondary);
   padding-top: 1px;
   border-top: 1px solid transparent;
   margin-top: 0 !important;
@@ -21,13 +21,13 @@
 .faq-title {
   font-size: 2.5rem;
   font-weight: bold;
-  color: #212529;
+  color: var(--text-primary);
   margin-bottom: 1rem;
 }
 
 .faq-subtitle {
   font-size: 1.1rem;
-  color: #6c757d;
+  color: var(--text-secondary);
   max-width: 600px;
   margin: 0 auto;
   line-height: 1.6;
@@ -43,15 +43,17 @@
   max-width: 500px;
   padding: 1rem 1.5rem;
   font-size: 1rem;
-  border: 2px solid #dee2e6;
+  border: 2px solid var(--border-color);
   border-radius: 50px;
   outline: none;
   transition: all 0.3s ease;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 .search-input:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(223, 255, 0, 0.1);
 }
 
 .faq-content {
@@ -65,22 +67,22 @@
 .category-title {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #343a40;
+  color: var(--text-primary);
   margin-bottom: 1.5rem;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid #007bff;
+  border-bottom: 2px solid var(--accent-color);
   display: inline-block;
 }
 
 .faq-list {
-  background-color: #ffffff;
+  background-color: var(--bg-primary);
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px var(--shadow-color);
   overflow: hidden;
 }
 
 .faq-item {
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .faq-item:last-child {
@@ -94,10 +96,12 @@
   justify-content: space-between;
   align-items: center;
   transition: all 0.3s ease;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 .faq-question:hover {
-  background-color: #f8f9fa;
+  background-color: var(--bg-secondary);
 }
 
 .faq-item.active .faq-question {

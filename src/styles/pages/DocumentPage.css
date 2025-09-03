@@ -1,7 +1,7 @@
 /* Document Page */
 .document-page {
   min-height: 100vh;
-  background-color: #ffffff;
+  background-color: var(--bg-primary);
   display: flex;
   flex-direction: column;
   transition: background-color 0.3s ease, color 0.3s ease;
@@ -10,69 +10,69 @@
 
 /* Dark Mode Styles */
 .document-page.dark-mode {
-  background-color: #1a1a1a;
-  color: #ffffff;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 .document-page.dark-mode .docs-header {
-  background-color: #2d2d2d;
-  border-bottom-color: #404040;
+  background-color: var(--bg-secondary);
+  border-bottom-color: var(--border-color);
 }
 
 .document-page.dark-mode .docs-sidebar {
-  background-color: #2d2d2d;
-  border-right-color: #404040;
+  background-color: var(--bg-secondary);
+  border-right-color: var(--border-color);
 }
 
 .document-page.dark-mode .toc-sidebar {
-  background-color: #2d2d2d;
-  border-left-color: #404040;
+  background-color: var(--bg-secondary);
+  border-left-color: var(--border-color);
 }
 
 .document-page.dark-mode .docs-sidebar-item {
-  color: #cccccc;
+  color: var(--text-secondary);
 }
 
 .document-page.dark-mode .docs-sidebar-item:hover {
-  background-color: #404040;
-  color: #ffffff;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
 }
 
 .document-page.dark-mode .docs-sidebar-item.active {
-  background-color: #DFFF00;
-  color: #000000;
+  background-color: var(--accent-color);
+  color: var(--text-primary);
 }
 
 .document-page.dark-mode .main-title {
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .document-page.dark-mode .section-title {
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .document-page.dark-mode .content-section p {
-  color: #cccccc;
+  color: var(--text-secondary);
 }
 
 .document-page.dark-mode .principles-list li {
-  color: #cccccc;
+  color: var(--text-secondary);
 }
 
 .document-page.dark-mode .toc-title {
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .document-page.dark-mode .toc-link {
-  color: #cccccc;
+  color: var(--text-secondary);
 }
 
 .document-page.dark-mode .toc-link:hover {
-  color: #DFFF00;
+  color: var(--accent-color);
 }
 
 .document-page.dark-mode .docs-main-content {
-  background-color: #1a1a1a;
+  background-color: var(--bg-primary);
 }
 
 .document-page.dark-mode .docs-content-wrapper {
@@ -80,25 +80,25 @@
 }
 
 .document-page.dark-mode .docs-content-wrapper .main-title {
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .document-page.dark-mode .docs-content-wrapper .section-title {
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .document-page.dark-mode .docs-content-wrapper .intro-text,
 .document-page.dark-mode .docs-content-wrapper .installation-text,
 .document-page.dark-mode .docs-content-wrapper .framework-intro {
-  color: #cccccc;
+  color: var(--text-secondary);
 }
 
 .document-page.dark-mode .docs-content-wrapper .content-section p {
-  color: #cccccc;
+  color: var(--text-secondary);
 }
 
 .document-page.dark-mode .docs-content-wrapper .principles-list li {
-  color: #cccccc;
+  color: var(--text-secondary);
 }
 
 /* Code Block Styling */

@@ -1,6 +1,6 @@
 .payment-fail-page {
   min-height: 100vh;
-  background: #ffffff;
+  background: var(--bg-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -8,13 +8,13 @@
 }
 
 .fail-container {
-  background: white;
+  background: var(--bg-primary);
   border-radius: 20px;
   box-shadow: 
-    0 25px 50px rgba(0, 0, 0, 0.15),
-    0 10px 20px rgba(0, 0, 0, 0.1),
+    0 25px 50px var(--shadow-color),
+    0 10px 20px var(--shadow-color-light),
     0 0 0 1px rgba(255, 255, 255, 0.8) inset,
-    0 1px 3px rgba(0, 0, 0, 0.05);
+    0 1px 3px var(--shadow-color-light);
   padding: 40px;
   max-width: 600px;
   width: 100%;
@@ -30,7 +30,7 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #ef4444, #dc2626, #b91c1c);
+  background: linear-gradient(90deg, var(--error-color), var(--error-color), var(--error-color));
   border-radius: 20px 20px 0 0;
 }
 
@@ -43,7 +43,7 @@
 
 .fail-icon {
   font-size: 80px;
-  color: #ef4444;
+  color: var(--error-color);
   animation: shake 0.6s ease-in-out;
 }
 
@@ -60,14 +60,14 @@
 }
 
 .fail-content h1 {
-  color: #1f2937;
+  color: var(--text-primary);
   font-size: 2.5rem;
   font-weight: 700;
   margin: 0;
 }
 
 .error-details {
-  background: #f8fafc;
+  background: var(--bg-secondary);
   border-radius: 15px;
   padding: 25px;
   width: 100%;
@@ -75,7 +75,7 @@
 }
 
 .error-details h2 {
-  color: #1f2937;
+  color: var(--text-primary);
   font-size: 1.5rem;
   margin: 0 0 20px 0;
   text-align: center;
@@ -86,7 +86,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px 0;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .detail-item:last-child {
@@ -95,7 +95,7 @@
 
 .detail-item .label {
   font-weight: 600;
-  color: #6b7280;
+  color: var(--text-secondary);
   min-width: 100px;
 }
 

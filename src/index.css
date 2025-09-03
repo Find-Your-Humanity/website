@@ -78,12 +78,12 @@ code {
 
 a {
   font-weight: 500;
-  color: #000000;
+  color: var(--text-primary);
   text-decoration: inherit;
 }
 
 a:hover {
-  color: #DFFF00;
+  color: var(--accent-color);
 }
 
 button {
@@ -93,14 +93,14 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #DFFF00;
-  color: #000000;
+  background-color: var(--accent-color);
+  color: var(--text-primary);
   cursor: pointer;
   transition: border-color 0.25s;
 }
 
 button:hover {
-  border-color: #000000;
+  border-color: var(--border-color);
 }
 
 button:focus,
@@ -110,13 +110,13 @@ button:focus-visible {
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: #000000;
-    background-color: #ffffff;
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
   }
   a:hover {
-    color: #DFFF00;
+    color: var(--accent-color);
   }
   button {
-    background-color: #DFFF00;
+    background-color: var(--accent-color);
   }
 }

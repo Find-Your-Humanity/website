@@ -2,7 +2,7 @@
 .hero {
   padding: 8rem 0;
   text-align: center;
-  background-color: #ffffff;
+  background-color: var(--bg-primary);
 }
 
 .hero-content {
@@ -25,19 +25,19 @@
   margin-bottom: 1rem !important;
   margin-top: 6rem !important;
   line-height: 1.2 !important;
-  color: #000000 !important;
+  color: var(--text-primary) !important;
   text-align: center !important;
 }
 
 .hero-title .real-text {
-  color: #DFFF00 !important;
+  color: var(--accent-color) !important;
   animation: realPulse 3s ease-in-out infinite !important;
   display: inline-block !important;
   transform-origin: center !important;
 }
 
 .hero-title .not-text {
-  color: #000000 !important;
+  color: var(--text-primary) !important;
   animation: notPulse 3s ease-in-out infinite !important;
   display: inline-block !important;
   transform-origin: center !important;
@@ -78,7 +78,7 @@
   font-weight: 700 !important;
   margin-bottom: 4rem !important;
   margin-top: 0.5rem !important;
-  color: #6b6b6b !important;
+  color: var(--text-secondary) !important;
   text-align: center !important;
 }
 
@@ -102,8 +102,8 @@
 }
 
 .btn-primary {
-  background-color: #DFFF00;
-  color: #000000;
+  background-color: var(--accent-color);
+  color: var(--text-primary);
   box-shadow: 0 4px 6px rgba(223, 255, 0, 0.2);
 }
 
@@ -126,8 +126,8 @@
   min-height: 500px;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  background: #ffffff;
+  box-shadow: 0 4px 20px var(--shadow-color);
+  background: var(--bg-primary);
 }
 
 /* Captcha Section Styles */
@@ -138,7 +138,7 @@
   flex-direction: column !important;
   width: 100% !important;
   margin: 2rem auto !important;
-  background-color: #f0f8ff !important;
+  background-color: var(--bg-secondary) !important;
   border-radius: 12px !important;
   padding: 2rem !important;
   box-sizing: border-box !important;
@@ -151,7 +151,7 @@
   flex: 1 !important;
   display: flex !important;
   flex-direction: column !important;
-  background-color: #ffffff !important;
+  background-color: var(--bg-primary) !important;
   border-radius: 8px !important;
   overflow: hidden !important;
   box-sizing: border-box !important;
@@ -177,9 +177,9 @@
 .consent-section {
   margin-top: 1.5rem;
   padding: 1rem;
-  background: #f8f9fa;
+  background: var(--bg-secondary);
   border-radius: 8px;
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--border-color);
 }
 
 .consent-checkbox {
@@ -197,30 +197,30 @@
 
 .consent-text {
   font-size: 0.9rem;
-  color: #6c757d;
+  color: var(--text-secondary);
   cursor: pointer;
 }
 
 .consent-checkbox input[type="checkbox"]:checked {
-  background-color: #28a745;
-  border-color: #28a745;
+  background-color: var(--success-color);
+  border-color: var(--success-color);
   transform: scale(1.1);
 }
 
 .consent-checkbox input[type="checkbox"]:hover {
-  border-color: #28a745;
+  border-color: var(--success-color);
   box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.2);
 }
 
 .consent-checkbox .consent-text {
   user-select: none;
-  color: #495057;
+  color: var(--text-secondary);
   transition: color 0.2s ease;
   cursor: default;
 }
 
 .consent-checkbox .consent-text:hover {
-  color: #495057;
+  color: var(--text-secondary);
 }
 
 @keyframes fadeInUp {
@@ -237,7 +237,7 @@
 /* Main Content */
 .home-page .main-content {
   padding: 4rem 0;
-  background-color: #ffffff;
+  background-color: var(--bg-primary);
 }
 
 .content-wrapper {
@@ -280,7 +280,7 @@
   max-width: 450px; /* 크기 증가 */
   height: auto; 
   border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 24px var(--shadow-color);
   margin-left: auto; /* 컨테이너 내에서 최대한 오른쪽으로 */
   margin-right: -2rem; /* 오른쪽으로 더 많이 이동 */
 }
@@ -290,7 +290,7 @@
   font-weight: bold;
   margin-bottom: 1.5rem;
   margin-top: 2rem;
-  color: #000000;
+  color: var(--text-primary);
   line-height: 1.4;
   text-align: left; /* 왼쪽 정렬 */
 }
@@ -299,7 +299,7 @@
   font-size: 1.5rem;
   margin-top: 4rem;
   font-weight: 700;
-  color: #7a7a7a;
+  color: var(--text-secondary);
   line-height: 1.6;
   text-align: left; /* 왼쪽 정렬 */
 }
@@ -307,7 +307,7 @@
 /* Features Section */
 .features {
   padding: 4rem 0 8rem 0;
-  background-color: #ffffff;
+  background-color: var(--bg-primary);
 }
 
 .features .features-grid {
@@ -328,8 +328,8 @@
 }
 
 .feature-box {
-  border: 1px solid #e0e0e0;
-  background-color: #ffffff;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-primary);
   padding: 2rem;
   border-radius: 8px;
   text-align: center;
@@ -338,18 +338,18 @@
 
 .feature-box:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 25px var(--shadow-color);
 }
 
 .feature-title {
   font-size: 1.25rem;
   font-weight: bold;
   margin-bottom: 1rem;
-  color: #000000;
+  color: var(--text-primary);
 }
 
 .feature-description {
-  color: #000000;
+  color: var(--text-primary);
   line-height: 1.6;
 }
 

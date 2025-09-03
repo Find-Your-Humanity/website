@@ -1,7 +1,7 @@
 /* Company Page */
 .company-page {
   min-height: 100vh;
-  background-color: #ffffff;
+  background-color: var(--bg-primary);
   padding-top: 1px;              /* prevent margin-collapsing under sticky header */
   border-top: 1px solid transparent;
   margin-top: 0 !important;
@@ -94,7 +94,7 @@
 /* Team Section */
 .team-section {
   padding: 8rem 0;
-  background-color: #f9f9f9;
+  background-color: var(--bg-secondary);
 }
 
 .team-container {

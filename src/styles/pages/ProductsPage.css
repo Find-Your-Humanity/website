@@ -7,7 +7,7 @@
 .products-hero {
   padding: 10rem 0;
   text-align: center;
-  background-color: #ffffff;
+  background-color: var(--bg-primary);
 }
 
 .products-hero-content {
@@ -30,7 +30,7 @@
   margin-bottom: 1rem !important;
   margin-top: 0 !important;
   line-height: 1.2 !important;
-  color: #000000 !important;
+  color: var(--text-primary) !important;
   text-align: center !important;
 }
 
@@ -39,12 +39,12 @@
   font-weight: 700 !important;
   margin-bottom: 4rem !important;
   margin-top: 2rem !important;
-  color: #6b6b6b !important;
+  color: var(--text-secondary) !important;
   text-align: center !important;
 }
 
 .human-text {
-  color: #DFFF00;
+  color: var(--accent-color);
 }
 
 /* Hero Buttons */
@@ -68,33 +68,33 @@
 }
 
 .btn-primary {
-  background: #DFFF00;
-  color: #333;
+  background: var(--accent-color);
+  color: var(--text-primary);
 }
 
 .btn-primary:hover {
-  background: #b8cc00;
+  background: var(--accent-hover);
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(223, 255, 0, 0.3);
 }
 
 .btn-secondary {
   background: transparent;
-  color: #333;
-  border: 2px solid #333;
+  color: var(--text-primary);
+  border: 2px solid var(--text-primary);
 }
 
 .btn-secondary:hover {
-  background: #333;
-  color: #fff;
+  background: var(--text-primary);
+  color: var(--bg-primary);
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 25px var(--shadow-color);
 }
 
 /* AI Models Section */
 .ai-models-section {
   padding: 6rem 0;
-  background-color: #ffffff;
+  background-color: var(--bg-primary);
 }
 
 .ai-models-container {
@@ -107,7 +107,7 @@
   text-align: center;
   font-size: 3rem;
   font-weight: bold;
-  color: #000000;
+  color: var(--text-primary);
   margin-bottom: 1rem;
 }
 
@@ -115,7 +115,7 @@
   text-align: left;
   font-size: 2.2rem;
   font-weight: bold;
-  color: #666666;
+  color: var(--text-secondary);
   margin-bottom: 12rem;
   margin-top: 10rem;
   line-height: 1.6;
@@ -161,7 +161,7 @@
 .model-name {
   font-size: 2.5rem;
   font-weight: bold;
-  color: #000000;
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
   line-height: 1.2;
 }
@@ -177,7 +177,7 @@
 }
 
 .model-description {
-  color: #666666;
+  color: var(--text-secondary);
   line-height: 1.8;
   margin-bottom: 2rem;
   font-size: 1.1rem;
@@ -216,7 +216,7 @@
   display: block;
   font-size: 2.5rem;
   font-weight: bold;
-  color: #DFFF00;
+  color: var(--accent-color);
   margin-bottom: 0.5rem;
 }
 
@@ -277,7 +277,7 @@
 .summary-description {
   font-size: 1.8rem;
   font-weight: bold;
-  color: #666666;
+  color: var(--text-secondary);
   margin-bottom: 3rem;
   line-height: 1.6;
 }
@@ -305,8 +305,8 @@
 .comparison-header {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
-  background: #DFFF00;
-  color: #000000;
+  background: var(--accent-color);
+  color: var(--text-primary);
   font-weight: bold;
   font-size: 1.1rem;
 }
@@ -364,19 +364,19 @@
 .comparison-model-name {
   font-weight: bold;
   font-size: 1.1rem;
-  color: #000000;
+  color: var(--text-primary);
 }
 
 .model-type {
   font-size: 0.9rem;
-  color: #666666;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
 .accuracy-score {
   font-weight: bold;
   font-size: 1.2rem;
-  color: #000000;
+  color: var(--text-primary);
   text-shadow: none;
 }
 
@@ -499,7 +499,7 @@
 
 .stat-item { text-align: center; }
 
-.stat-number { display: block; font-size: 2.5rem; font-weight: bold; color: #DFFF00; margin-bottom: 0.5rem; }
+.stat-number { display: block; font-size: 2.5rem; font-weight: bold; color: var(--accent-color); margin-bottom: 0.5rem; }
 
 .stat-label { font-size: 1rem; opacity: 0.8; }
 
@@ -540,14 +540,14 @@
 .level-title {
   font-size: 2.5rem;
   font-weight: bold;
-  color: #000000;
+  color: var(--text-primary);
   margin-bottom: 1.5rem;
   line-height: 1.2;
 }
 
 .level-description {
   font-size: 1.2rem;
-  color: #666666;
+  color: var(--text-secondary);
   line-height: 1.8;
   margin-bottom: 0;
 }
@@ -694,7 +694,7 @@
   text-align: left; 
   font-size: 2.2rem; 
   font-weight: bold; 
-  color: #666666; 
+  color: var(--text-secondary); 
   margin-bottom: 6rem; 
   margin-top: 8rem;
   line-height: 1.6;
@@ -737,25 +737,25 @@
   align-items: center;
 }
 
-.feature-card-title { font-size: 1.25rem; font-weight: bold; color: #000000; margin-bottom: 1rem; }
-.feature-card-description { color: #666666; line-height: 1.6; }
+.feature-card-title { font-size: 1.25rem; font-weight: bold; color: var(--text-primary); margin-bottom: 1rem; }
+.feature-card-description { color: var(--text-secondary); line-height: 1.6; }
 
 /* Features Comparison */
 .features-comparison { padding: 4rem 0; background-color: #f8f9fa; }
 .comparison-content { max-width: 1000px; margin: 0 auto; padding: 0 2rem; }
-.comparison-title { text-align: center; font-size: 2rem; font-weight: bold; margin-bottom: 3rem; color: #000000; }
+.comparison-title { text-align: center; font-size: 2rem; font-weight: bold; margin-bottom: 3rem; color: var(--text-primary); }
 .comparison-table { background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-.table-header { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; background-color: #DFFF00; color: #000000; font-weight: bold; }
+.table-header { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; background-color: var(--accent-color); color: var(--text-primary); font-weight: bold; }
 .table-header > div { padding: 1rem; text-align: center; border-right: 1px solid #e0e0e0; }
 .table-header > div:last-child { border-right: none; }
 .table-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; border-bottom: 1px solid #e0e0e0; }
 .table-row:last-child { border-bottom: none; }
 .table-row > div { padding: 1rem; text-align: center; border-right: 1px solid #e0e0e0; }
 .table-row > div:last-child { border-right: none; }
-.feature-name { font-weight: 500; color: #000000; }
-.plan-basic { color: #666666; }
-.plan-advanced { color: #000000; font-weight: 500; }
-.plan-enterprise { color: #000000; font-weight: bold; }
+.feature-name { font-weight: 500; color: var(--text-primary); }
+.plan-basic { color: var(--text-secondary); }
+.plan-advanced { color: var(--text-primary); font-weight: 500; }
+.plan-enterprise { color: var(--text-primary); font-weight: bold; }
 
 /* Responsive Design */
 @media (max-width: 768px) {
