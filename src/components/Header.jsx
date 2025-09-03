@@ -103,18 +103,21 @@ const Header = () => {
   // 외부 클릭시 드롭다운 닫기
   useEffect(() => {
     const handleClickOutside = (event) => {
+      // 사용자 드롭다운 외부 클릭
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setDropdownOpen(false);
       }
+      
+      // Products 드롭다운 외부 클릭
       if (productsDropdownRef.current && !productsDropdownRef.current.contains(event.target)) {
-        if (clickedDropdown !== 'products') {
-          setProductsDropdownOpen(false);
-        }
+        setProductsDropdownOpen(false);
+        setClickedDropdown(null);
       }
+      
+      // Company 드롭다운 외부 클릭
       if (companyDropdownRef.current && !companyDropdownRef.current.contains(event.target)) {
-        if (clickedDropdown !== 'company') {
-          setCompanyDropdownOpen(false);
-        }
+        setCompanyDropdownOpen(false);
+        setClickedDropdown(null);
       }
     };
 
@@ -122,7 +125,7 @@ const Header = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [clickedDropdown]);
+  }, []);
 
   return (
     <header className="header">
