@@ -333,7 +333,7 @@
   font-weight: bold;
   margin-bottom: 1.5rem;
   margin-top: 2rem;
-  color: var(--text-primary);
+  color: var(--text-primary) !important;
   line-height: 1.4;
   text-align: left; /* 왼쪽 정렬 */
 }
