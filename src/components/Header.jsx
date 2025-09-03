@@ -76,9 +76,12 @@ const Header = () => {
   };
 
   const handleProductsMouseLeave = () => {
-    if (clickedDropdown !== 'products') {
-      setProductsDropdownOpen(false);
-    }
+    // 드롭다운 메뉴 내부로 마우스가 이동해도 닫히지 않도록 수정
+    setTimeout(() => {
+      if (clickedDropdown !== 'products' && !productsDropdownRef.current?.matches(':hover')) {
+        setProductsDropdownOpen(false);
+      }
+    }, 100);
   };
 
   // Company 드롭다운 호버
@@ -89,9 +92,12 @@ const Header = () => {
   };
 
   const handleCompanyMouseLeave = () => {
-    if (clickedDropdown !== 'company') {
-      setCompanyDropdownOpen(false);
-    }
+    // 드롭다운 메뉴 내부로 마우스가 이동해도 닫히지 않도록 수정
+    setTimeout(() => {
+      if (clickedDropdown !== 'company' && !companyDropdownRef.current?.matches(':hover')) {
+        setCompanyDropdownOpen(false);
+      }
+    }, 100);
   };
 
   // 외부 클릭시 드롭다운 닫기

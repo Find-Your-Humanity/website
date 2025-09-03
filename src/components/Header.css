@@ -93,6 +93,7 @@
   padding: 0.5rem 0;
   transition: color 0.3s ease;
   text-decoration: none;
+  outline: none; /* 파란색 외곽선 제거 */
 }
 
 .nav-dropdown-button:hover {
@@ -116,37 +117,69 @@
 .nav-dropdown-menu {
   position: absolute;
   top: 100%;
-  left: 0;
+  left: 50%;
+  transform: translateX(-50%);
   background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  min-width: 160px;
-  margin-top: 0.5rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.08);
+  min-width: 200px;
+  margin-top: 0.75rem;
   z-index: 1000;
   overflow: hidden;
   animation: dropdownSlideDown 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.nav-dropdown-menu::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid white;
+  z-index: 1001;
+}
+
+.nav-dropdown-menu::after {
+  content: '';
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid rgba(0, 0, 0, 0.08);
+  z-index: 1000;
 }
 
 @keyframes dropdownSlideDown {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateX(-50%) translateY(-10px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateX(-50%) translateY(0);
   }
 }
 
 .nav-dropdown-item {
   display: block;
-  padding: 0.75rem 1rem;
+  padding: 0.875rem 1.25rem;
   color: #333;
   text-decoration: none;
   font-size: 0.9rem;
-  transition: background-color 0.2s ease;
-  border-bottom: 1px solid #f0f0f0;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  position: relative;
+  outline: none; /* 파란색 외곽선 제거 */
 }
 
 .nav-dropdown-item:last-child {
@@ -156,6 +189,11 @@
 .nav-dropdown-item:hover {
   background-color: #f8f9fa;
   color: #DFFF00;
+  transform: translateX(4px);
+}
+
+.nav-dropdown-item:active {
+  background-color: #f0f0f0;
 }
 
 .auth-area { 
@@ -369,6 +407,7 @@
   border-radius: 6px;
   transition: background-color 0.3s ease;
   text-align: left;
+  outline: none; /* 파란색 외곽선 제거 */
 }
 
 .mobile-dropdown-button:hover {
