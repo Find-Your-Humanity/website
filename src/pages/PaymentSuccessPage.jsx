@@ -9,7 +9,7 @@ const PaymentSuccessPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const location = useLocation();
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, loading, apiRequest } = useAuth();
   
   const [isProcessing, setIsProcessing] = useState(true);
   const [paymentResult, setPaymentResult] = useState(null);
@@ -84,7 +84,7 @@ const PaymentSuccessPage = () => {
         plan_id: parseInt(planId)
       });
 
-      const response = await fetch('https://gateway.realcatcha.com/api/payments/complete', {
+      const response = await apiRequest('https://gateway.realcatcha.com/api/payments/complete', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -94,8 +94,7 @@ const PaymentSuccessPage = () => {
           orderId,
           amount: parseInt(amount),
           plan_id: parseInt(planId)
-        }),
-        credentials: 'include'
+        })
       });
 
       const result = await response.json();
