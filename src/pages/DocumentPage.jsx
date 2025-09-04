@@ -559,10 +559,35 @@ const DocumentPage = () => {
                       {apiContent}
                     </ReactMarkdown>
                     {isSearching && searchResults.length > 0 && (
-                      <div className="search-results-nav">
-                        <button onClick={goToPrevResult} disabled={currentSearchIndex === 0}>이전</button>
-                        <span>검색 결과 {currentSearchIndex + 1} / {searchResults.length}</span>
-                        <button onClick={goToNextResult} disabled={currentSearchIndex === searchResults.length - 1}>다음</button>
+                      <div className="search-results-section">
+                        <div className="search-results-nav">
+                          <button onClick={goToPrevResult} disabled={currentSearchIndex === 0}>이전</button>
+                          <span>검색 결과 {currentSearchIndex + 1} / {searchResults.length}</span>
+                          <button onClick={goToNextResult} disabled={currentSearchIndex === searchResults.length - 1}>다음</button>
+                        </div>
+                        <div className="search-results-list">
+                          <h4>검색 결과 목록</h4>
+                          {searchResults.map((result, index) => (
+                            <div 
+                              key={index} 
+                              className={`search-result-item ${currentSearchIndex === index ? 'active' : ''}`}
+                              onClick={() => {
+                                setCurrentSearchIndex(index);
+                                scrollToSearchResult(result);
+                              }}
+                            >
+                              <div className="result-preview">
+                                <span className="result-number">{index + 1}</span>
+                                <span className="result-text">
+                                  {result.preview}
+                                </span>
+                              </div>
+                              <div className="result-line">
+                                라인 {result.lineIndex + 1}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     )}
                   </div>

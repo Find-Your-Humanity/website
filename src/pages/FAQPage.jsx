@@ -10,8 +10,6 @@ const FAQPage = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [showSearchHistory, setShowSearchHistory] = useState(false);
   const [searchHistory, setSearchHistory] = useState([]);
-  const [expandedCategories, setExpandedCategories] = useState(new Set());
-
   // 페이지 이동 시 스크롤을 맨 위로 올림
   useScrollToTop();
 
@@ -37,7 +35,8 @@ const FAQPage = () => {
     if (!query.trim()) {
       setSearchResults([]);
       setIsSearching(false);
-      setExpandedCategories(new Set());
+      // 검색어가 없을 때는 모든 카테고리를 펼친 상태로 복원
+      setExpandedCategories(new Set(faqs.map((_, index) => index)));
       return;
     }
 
@@ -108,7 +107,8 @@ const FAQPage = () => {
     setSearchResults([]);
     setIsSearching(false);
     setShowSearchHistory(false);
-    setExpandedCategories(new Set());
+    // 모든 카테고리를 다시 펼친 상태로 복원
+    setExpandedCategories(new Set(faqs.map((_, index) => index)));
   };
 
   // 검색 히스토리에서 검색어 선택
@@ -116,6 +116,13 @@ const FAQPage = () => {
     setSearchQuery(query);
     setShowSearchHistory(false);
     saveSearchHistory(query);
+    // 검색어가 있으면 검색 결과에 맞는 카테고리만 펼치기
+    if (query.trim()) {
+      // 검색이 실행되면 performSearch에서 자동으로 카테고리 설정됨
+    } else {
+      // 검색어가 없으면 모든 카테고리 펼치기
+      setExpandedCategories(new Set(faqs.map((_, index) => index)));
+    }
   };
 
   // 검색 히스토리 삭제
@@ -321,6 +328,11 @@ const FAQPage = () => {
       ]
     }
   ];
+
+  // 모든 카테고리가 펼쳐진 상태로 초기화
+  const [expandedCategories, setExpandedCategories] = useState(
+    new Set(faqs.map((_, index) => index))
+  );
 
   // 표시할 FAQ 데이터 결정
   const displayData = isSearching && searchResults.length > 0 ? searchResults : faqs.map((category, index) => ({
