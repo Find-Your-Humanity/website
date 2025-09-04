@@ -197,18 +197,6 @@ const FAQPage = () => {
     };
   }, []);
 
-  // 표시할 FAQ 데이터 결정
-  const displayData = isSearching && searchResults.length > 0 ? searchResults : faqs.map((category, index) => ({
-    category: category.category,
-    categoryIndex: index,
-    questions: category.questions.map((faq, faqIndex) => ({
-      ...faq,
-      uniqueIndex: `${index}-${faqIndex}`,
-      questionMatch: false,
-      answerMatch: false
-    }))
-  }));
-
   const faqs = [
     {
       category: "서비스 일반",
@@ -333,6 +321,18 @@ const FAQPage = () => {
       ]
     }
   ];
+
+  // 표시할 FAQ 데이터 결정
+  const displayData = isSearching && searchResults.length > 0 ? searchResults : faqs.map((category, index) => ({
+    category: category.category,
+    categoryIndex: index,
+    questions: category.questions.map((faq, faqIndex) => ({
+      ...faq,
+      uniqueIndex: `${index}-${faqIndex}`,
+      questionMatch: false,
+      answerMatch: false
+    }))
+  }));
 
   return (
     <div className="faq-page">
