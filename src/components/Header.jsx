@@ -50,6 +50,22 @@ const Header = () => {
     }, 50);
   };
 
+  // 드롭다운 항목 클릭 핸들러
+  const handleDropdownItemClick = (path) => {
+    // 드롭다운 즉시 닫기
+    setProductsDropdownOpen(false);
+    setCompanyDropdownOpen(false);
+    setClickedDropdown(null);
+    
+    // 페이지 이동
+    navigate(path);
+    
+    // 모바일 메뉴 닫기 (지연)
+    setTimeout(() => {
+      setMobileMenuOpen(false);
+    }, 100);
+  };
+
   // Products 드롭다운 토글
   const toggleProductsDropdown = (e) => {
     e.preventDefault();
@@ -311,12 +327,18 @@ const Header = () => {
               </button>
               {productsDropdownOpen && (
                 <div className="mobile-dropdown-menu">
-                  <Link to="/products" className="mobile-dropdown-item" onClick={handleNavClick}>
+                  <button 
+                    className="mobile-dropdown-item" 
+                    onClick={() => handleDropdownItemClick('/products')}
+                  >
                     Products
-                  </Link>
-                  <Link to="/pay" className="mobile-dropdown-item" onClick={handleNavClick}>
+                  </button>
+                  <button 
+                    className="mobile-dropdown-item" 
+                    onClick={() => handleDropdownItemClick('/pay')}
+                  >
                     Prices
-                  </Link>
+                  </button>
                 </div>
               )}
             </div>
@@ -336,12 +358,18 @@ const Header = () => {
               </button>
               {companyDropdownOpen && (
                 <div className="mobile-dropdown-menu">
-                  <Link to="/company" className="mobile-dropdown-item" onClick={handleNavClick}>
+                  <button 
+                    className="mobile-dropdown-item" 
+                    onClick={() => handleDropdownItemClick('/company')}
+                  >
                     About Us
-                  </Link>
-                  <Link to="/contact" className="mobile-dropdown-item" onClick={handleNavClick}>
+                  </button>
+                  <button 
+                    className="mobile-dropdown-item" 
+                    onClick={() => handleDropdownItemClick('/contact')}
+                  >
                     Contact Us
-                  </Link>
+                  </button>
                 </div>
               )}
             </div>

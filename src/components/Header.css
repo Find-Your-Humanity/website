@@ -689,6 +689,11 @@
   border-radius: 4px;
   transition: background-color 0.2s ease;
   margin-bottom: 0.25rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
 }
 
 .mobile-dropdown-item:hover {
