@@ -46,6 +46,7 @@
   color: var(--text-primary);
   margin-right: 1rem;
   box-shadow: none;
+  font-size: 18px;
 }
 
 .theme-toggle:hover {
@@ -68,6 +69,7 @@
   transition: transform 0.3s ease;
   color: var(--text-primary);
   filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
+  fill: currentColor;
 }
 
 .theme-toggle:hover svg {
@@ -79,10 +81,12 @@
 [data-theme="dark"] .theme-toggle svg {
   color: var(--accent-color);
   filter: drop-shadow(0 0 4px rgba(223, 255, 0, 0.3));
+  fill: var(--accent-color);
 }
 
 [data-theme="dark"] .theme-toggle:hover svg {
   filter: drop-shadow(0 0 6px rgba(223, 255, 0, 0.5));
+  fill: var(--accent-hover);
 }
 
 /* 모바일 메뉴 토글 버튼 */
