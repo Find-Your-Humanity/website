@@ -206,7 +206,7 @@ const Header = () => {
         <div className="auth-area">
           {/* 테마 토글 버튼 */}
           <button className="theme-toggle" onClick={toggleTheme} aria-label="테마 변경">
-            {theme === 'light' ? '🌙' : '☀️'}
+            {theme === 'light' ? <FaMoon /> : <FaSun />}
           </button>
           
           {isAuthenticated ? (

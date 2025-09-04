@@ -135,8 +135,8 @@
 }
 
 .contact-info {
-  background-color: #e7f3ff;
-  border: 1px solid #b3d9ff;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   padding: 1.5rem;
   margin-top: 2rem;
@@ -145,7 +145,7 @@
 .contact-info h3 {
   margin-top: 0;
   margin-bottom: 1rem;
-  color: #0d47a1;
+  color: var(--text-primary);
 }
 
 .contact-info ul {
@@ -156,30 +156,35 @@
 
 .contact-info li {
   margin-bottom: 0.5rem;
-  color: #1565c0;
+  color: var(--text-secondary);
+}
+
+.contact-info p {
+  margin-bottom: 0.5rem;
+  color: var(--text-secondary);
 }
 
 .legal-footer {
   margin-top: 3rem;
   padding-top: 2rem;
-  border-top: 2px solid #e9ecef;
+  border-top: 2px solid var(--border-color);
 }
 
 /* Links */
 .legal-content a {
-  color: #007bff;
+  color: var(--accent-color);
   text-decoration: none;
 }
 
 .legal-content a:hover {
-  color: #0056b3;
+  color: var(--accent-hover);
   text-decoration: underline;
 }
 
 /* Strong text */
 .legal-content strong {
   font-weight: 600;
-  color: #343a40;
+  color: var(--text-primary);
 }
 
 /* Responsive Design */

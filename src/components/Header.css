@@ -46,13 +46,26 @@
   color: var(--text-primary);
   margin-right: 1rem;
   box-shadow: none;
-  font-size: 20px;
-  line-height: 1;
+  font-size: 18px;
+}
+
+.theme-toggle svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.3s ease;
+  color: var(--text-primary);
+  fill: currentColor;
 }
 
 .theme-toggle:hover {
   transform: translateY(-2px);
   color: var(--accent-color);
+}
+
+.theme-toggle:hover svg {
+  transform: rotate(15deg);
+  color: var(--accent-color);
+  fill: var(--accent-color);
 }
 
 .theme-toggle:focus {
@@ -72,8 +85,18 @@
   color: var(--accent-color);
 }
 
+[data-theme="dark"] .theme-toggle svg {
+  color: var(--accent-color);
+  fill: var(--accent-color);
+}
+
 [data-theme="dark"] .theme-toggle:hover {
   color: var(--accent-hover);
+}
+
+[data-theme="dark"] .theme-toggle:hover svg {
+  color: var(--accent-hover);
+  fill: var(--accent-hover);
 }
 
 /* 모바일 메뉴 토글 버튼 */
@@ -363,6 +386,7 @@
 
 .dropdown-menu {
   padding: 0.5rem 0;
+  background-color: var(--bg-primary);
 }
 
 .dropdown-item {
@@ -396,6 +420,42 @@
   height: 1px;
   background-color: var(--border-color-light);
   margin: 0.5rem 0;
+}
+
+/* 다크모드에서 프로필 드롭다운 강화 */
+[data-theme="dark"] .user-dropdown {
+  background: var(--bg-primary);
+  border-color: var(--border-color);
+  box-shadow: 0 4px 20px var(--shadow-color);
+}
+
+[data-theme="dark"] .dropdown-header {
+  background-color: var(--bg-secondary);
+  border-bottom-color: var(--border-color-light);
+}
+
+[data-theme="dark"] .dropdown-menu {
+  background-color: var(--bg-primary);
+}
+
+[data-theme="dark"] .dropdown-item {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .dropdown-item:hover {
+  background-color: var(--bg-secondary);
+}
+
+[data-theme="dark"] .dropdown-item.logout-item {
+  color: var(--error-color);
+}
+
+[data-theme="dark"] .dropdown-item.logout-item:hover {
+  background-color: var(--bg-secondary);
+}
+
+[data-theme="dark"] .dropdown-divider {
+  background-color: var(--border-color-light);
 }
 
 /* 모바일 메뉴 */

@@ -261,7 +261,7 @@
     var(--accent-color) 0%, 
     var(--accent-hover) 100%
   );
-  color: var(--text-primary);
+  color: #000000 !important;
   border: none;
   border-radius: 8px;
   font-size: 1.1rem;
