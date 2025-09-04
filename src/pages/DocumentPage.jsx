@@ -61,6 +61,8 @@ const DocumentPage = () => {
       }
     });
 
+
+
     setSearchResults(results);
     setCurrentSearchIndex(0);
     setIsSearching(true);
@@ -81,8 +83,15 @@ const DocumentPage = () => {
     // data-line으로 찾지 못한 경우, 텍스트 내용으로 찾기
     if (!element) {
       const allElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, li, pre');
-      for (let el of allElements) {
-        if (el.textContent && el.textContent.includes(result.line)) {
+      
+      for (let i = 0; i < allElements.length; i++) {
+        const el = allElements[i];
+        const elText = el.textContent || '';
+        
+        // 정확한 라인 매칭 또는 부분 텍스트 매칭
+        if (elText.includes(result.line) || 
+            elText.includes(result.preview) ||
+            result.line.includes(elText.trim())) {
           element = el;
           break;
         }
@@ -105,8 +114,6 @@ const DocumentPage = () => {
       setTimeout(() => {
         element.classList.remove('search-highlight');
       }, 3000);
-    } else {
-      console.log('검색 결과 요소를 찾을 수 없습니다:', result);
     }
   };
 
@@ -528,10 +535,10 @@ const DocumentPage = () => {
                         <div 
                           key={index} 
                           className={`search-result-item ${currentSearchIndex === index ? 'active' : ''}`}
-                          onClick={() => {
-                            setCurrentSearchIndex(index);
-                            scrollToSearchResult(result);
-                          }}
+                                                        onClick={() => {
+                                setCurrentSearchIndex(index);
+                                scrollToSearchResult(result);
+                              }}
                         >
                           <div className="result-preview">
                             <span className="result-number">{index + 1}</span>
@@ -554,36 +561,60 @@ const DocumentPage = () => {
                     <ReactMarkdown 
                       remarkPlugins={[remarkGfm]}
                       components={{
-                        // 헤딩 요소들에 ID 자동 부여
-                        h1: ({node, ...props}) => {
-                          const text = props.children?.toString() || '';
+                        // 헤딩 요소들에 ID 자동 부여 및 검색어 하이라이팅 적용
+                        h1: ({node, children, ...props}) => {
+                          const text = children?.toString() || '';
                           const id = text.toLowerCase().replace(/[^a-z0-9가-힣]/g, '-').replace(/-+/g, '-');
-                          return <h1 id={id} data-line={node.position?.start?.line} {...props} />;
+                          return (
+                            <h1 id={id} data-line={node.position?.start?.line} {...props}>
+                              {highlightSearchTerm(text)}
+                            </h1>
+                          );
                         },
-                        h2: ({node, ...props}) => {
-                          const text = props.children?.toString() || '';
+                        h2: ({node, children, ...props}) => {
+                          const text = children?.toString() || '';
                           const id = text.toLowerCase().replace(/[^a-z0-9가-힣]/g, '-').replace(/-+/g, '-');
-                          return <h2 id={id} data-line={node.position?.start?.line} {...props} />;
+                          return (
+                            <h2 id={id} data-line={node.position?.start?.line} {...props}>
+                              {highlightSearchTerm(text)}
+                            </h2>
+                          );
                         },
-                        h3: ({node, ...props}) => {
-                          const text = props.children?.toString() || '';
+                        h3: ({node, children, ...props}) => {
+                          const text = children?.toString() || '';
                           const id = text.toLowerCase().replace(/[^a-z0-9가-힣]/g, '-').replace(/-+/g, '-');
-                          return <h3 id={id} data-line={node.position?.start?.line} {...props} />;
+                          return (
+                            <h3 id={id} data-line={node.position?.start?.line} {...props}>
+                              {highlightSearchTerm(text)}
+                            </h3>
+                          );
                         },
-                        h4: ({node, ...props}) => {
-                          const text = props.children?.toString() || '';
+                        h4: ({node, children, ...props}) => {
+                          const text = children?.toString() || '';
                           const id = text.toLowerCase().replace(/[^a-z0-9가-힣]/g, '-').replace(/-+/g, '-');
-                          return <h4 id={id} data-line={node.position?.start?.line} {...props} />;
+                          return (
+                            <h4 id={id} data-line={node.position?.start?.line} {...props}>
+                              {highlightSearchTerm(text)}
+                            </h4>
+                          );
                         },
-                        h5: ({node, ...props}) => {
-                          const text = props.children?.toString() || '';
+                        h5: ({node, children, ...props}) => {
+                          const text = children?.toString() || '';
                           const id = text.toLowerCase().replace(/[^a-z0-9가-힣]/g, '-').replace(/-+/g, '-');
-                          return <h5 id={id} data-line={node.position?.start?.line} {...props} />;
+                          return (
+                            <h5 id={id} data-line={node.position?.start?.line} {...props}>
+                              {highlightSearchTerm(text)}
+                            </h5>
+                          );
                         },
-                        h6: ({node, ...props}) => {
-                          const text = props.children?.toString() || '';
+                        h6: ({node, children, ...props}) => {
+                          const text = children?.toString() || '';
                           const id = text.toLowerCase().replace(/[^a-z0-9가-힣]/g, '-').replace(/-+/g, '-');
-                          return <h6 id={id} data-line={node.position?.start?.line} {...props} />;
+                          return (
+                            <h6 id={id} data-line={node.position?.start?.line} {...props}>
+                              {highlightSearchTerm(text)}
+                            </h6>
+                          );
                         },
                         // 텍스트 요소에 검색어 하이라이팅 적용
                         p: ({node, children, ...props}) => {
