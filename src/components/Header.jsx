@@ -2,7 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
-import { FaBars, FaTimes, FaChevronDown, FaSun, FaMoon } from 'react-icons/fa';
+import { FaBars, FaTimes, FaChevronDown } from 'react-icons/fa';
+import { BsSun, BsMoon } from 'react-icons/bs';
 import './Header.css';
 
 const Header = () => {
@@ -206,7 +207,7 @@ const Header = () => {
         <div className="auth-area">
           {/* 테마 토글 버튼 */}
           <button className="theme-toggle" onClick={toggleTheme} aria-label="테마 변경">
-            {theme === 'light' ? <FaMoon /> : <FaSun />}
+            {theme === 'light' ? <BsMoon /> : <BsSun />}
           </button>
           
           {isAuthenticated ? (

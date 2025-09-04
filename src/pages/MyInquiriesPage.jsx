@@ -61,10 +61,10 @@ const MyInquiriesPage = () => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'unread': return '#6c757d';
-      case 'in_progress': return '#ffc107';
-      case 'resolved': return '#28a745';
-      default: return '#6c757d';
+      case 'unread': return 'var(--text-secondary)';
+      case 'in_progress': return 'var(--accent-color)';
+      case 'resolved': return 'var(--success-color)';
+      default: return 'var(--text-secondary)';
     }
   };
 

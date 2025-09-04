@@ -233,7 +233,7 @@
 .inquiry-status {
   display: inline-block;
   padding: 0.25rem 0.75rem;
-  color: white;
+  color: var(--text-primary);
   border-radius: 15px;
   font-size: 0.8rem;
   font-weight: 500;

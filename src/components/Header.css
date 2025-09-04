@@ -298,6 +298,16 @@
   background-color: var(--bg-secondary);
 }
 
+.user-button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.user-button:active {
+  outline: none;
+  box-shadow: none;
+}
+
 .user-avatar {
   display: flex;
   align-items: center;
@@ -456,6 +466,24 @@
 
 [data-theme="dark"] .dropdown-divider {
   background-color: var(--border-color-light);
+}
+
+/* 다크모드에서 사용자 정보 텍스트 색상 */
+[data-theme="dark"] .user-display-name {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .user-email {
+  color: var(--text-secondary);
+}
+
+/* 다크모드에서 모바일 사용자 정보 텍스트 색상 */
+[data-theme="dark"] .mobile-user-name {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .mobile-user-email {
+  color: var(--text-secondary);
 }
 
 /* 모바일 메뉴 */

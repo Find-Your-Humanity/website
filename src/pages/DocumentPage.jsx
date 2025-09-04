@@ -167,6 +167,12 @@ const DocumentPage = () => {
     }
   }, [selectedSidebarItem, selectedLanguage]);
 
+  // 언어 변경 시 사이드바 아이템 초기화
+  useEffect(() => {
+    // 언어가 변경되면 기본 아이템(developer_guide)으로 리셋
+    setSelectedSidebarItem('developer_guide');
+  }, [selectedLanguage]);
+
   const frameworks = [
     { name: 'ReactJS', icon: FaReact, color: '#61DAFB' },
     { name: 'VueJS', icon: FaVuejs, color: '#4FC08D' },
@@ -221,8 +227,6 @@ const DocumentPage = () => {
                         e.stopPropagation();
                         setSelectedLanguage(language.code);
                         setIsLanguageDropdownOpen(false);
-                        // 언어 변경 시 현재 선택된 사이드바 아이템으로 API 호출
-                        setTimeout(() => loadDocumentFromAPI(selectedSidebarItem), 100);
                       }}
                     >
                       <span className="language-flag">{language.flag}</span>
@@ -321,6 +325,37 @@ const DocumentPage = () => {
                     <ReactMarkdown 
                       remarkPlugins={[remarkGfm]}
                       components={{
+                        // 헤딩 요소들에 ID 자동 부여
+                        h1: ({node, ...props}) => {
+                          const text = props.children?.toString() || '';
+                          const id = text.toLowerCase().replace(/[^a-z0-9가-힣]/g, '-').replace(/-+/g, '-');
+                          return <h1 id={id} {...props} />;
+                        },
+                        h2: ({node, ...props}) => {
+                          const text = props.children?.toString() || '';
+                          const id = text.toLowerCase().replace(/[^a-z0-9가-힣]/g, '-').replace(/-+/g, '-');
+                          return <h2 id={id} {...props} />;
+                        },
+                        h3: ({node, ...props}) => {
+                          const text = props.children?.toString() || '';
+                          const id = text.toLowerCase().replace(/[^a-z0-9가-힣]/g, '-').replace(/-+/g, '-');
+                          return <h3 id={id} {...props} />;
+                        },
+                        h4: ({node, ...props}) => {
+                          const text = props.children?.toString() || '';
+                          const id = text.toLowerCase().replace(/[^a-z0-9가-힣]/g, '-').replace(/-+/g, '-');
+                          return <h4 id={id} {...props} />;
+                        },
+                        h5: ({node, ...props}) => {
+                          const text = props.children?.toString() || '';
+                          const id = text.toLowerCase().replace(/[^a-z0-9가-힣]/g, '-').replace(/-+/g, '-');
+                          return <h5 id={id} {...props} />;
+                        },
+                        h6: ({node, ...props}) => {
+                          const text = props.children?.toString() || '';
+                          const id = text.toLowerCase().replace(/[^a-z0-9가-힣]/g, '-').replace(/-+/g, '-');
+                          return <h6 id={id} {...props} />;
+                        },
                         code({node, inline, className, children, ...props}) {
                           const match = /language-(\w+)/.exec(className || '');
                           return !inline && match ? (
