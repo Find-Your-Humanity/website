@@ -445,8 +445,8 @@
     max-width: 250px;
   }
   
-  .features-grid {
-    grid-template-columns: 1fr;
+  .features .features-grid {
+    grid-template-columns: 1fr !important;
     gap: 2rem;
   }
   
@@ -464,7 +464,7 @@
   }
   
   .main-title {
-    text-align: center;
+    text-align: center !important;
   }
   
   .main-description {
