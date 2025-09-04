@@ -308,12 +308,24 @@ const Header = () => {
               </button>
               {productsDropdownOpen && (
                 <div className="mobile-dropdown-menu">
-                  <Link to="/products" className="mobile-dropdown-item" onClick={handleNavClick}>
+                  <button 
+                    className="mobile-dropdown-item" 
+                    onClick={() => {
+                      navigate('/products');
+                      handleNavClick();
+                    }}
+                  >
                     Products
-                  </Link>
-                  <Link to="/pay" className="mobile-dropdown-item" onClick={handleNavClick}>
+                  </button>
+                  <button 
+                    className="mobile-dropdown-item" 
+                    onClick={() => {
+                      navigate('/pay');
+                      handleNavClick();
+                    }}
+                  >
                     Prices
-                  </Link>
+                  </button>
                 </div>
               )}
             </div>
@@ -333,23 +345,47 @@ const Header = () => {
               </button>
               {companyDropdownOpen && (
                 <div className="mobile-dropdown-menu">
-                  <Link to="/company" className="mobile-dropdown-item" onClick={handleNavClick}>
+                  <button 
+                    className="mobile-dropdown-item" 
+                    onClick={() => {
+                      navigate('/company');
+                      handleNavClick();
+                    }}
+                  >
                     About Us
-                  </Link>
-                  <Link to="/contact" className="mobile-dropdown-item" onClick={handleNavClick}>
+                  </button>
+                  <button 
+                    className="mobile-dropdown-item" 
+                    onClick={() => {
+                      navigate('/contact');
+                      handleNavClick();
+                    }}
+                  >
                     Contact Us
-                  </Link>
+                  </button>
                 </div>
               )}
             </div>
 
-            <Link to="/document" className={location.pathname === '/document' ? 'mobile-nav-link active' : 'mobile-nav-link'} onClick={handleNavClick}>
+            <button 
+              className={`mobile-nav-link ${location.pathname === '/document' ? 'active' : ''}`} 
+              onClick={() => {
+                navigate('/document');
+                handleNavClick();
+              }}
+            >
               Document
-            </Link>
+            </button>
             {isAuthenticated && (
-              <Link to="/dashboard" className={location.pathname === '/dashboard' ? 'mobile-nav-link active' : 'mobile-nav-link'} onClick={handleNavClick}>
+              <button 
+                className={`mobile-nav-link ${location.pathname === '/dashboard' ? 'active' : ''}`} 
+                onClick={() => {
+                  navigate('/dashboard');
+                  handleNavClick();
+                }}
+              >
                 Dashboard
-              </Link>
+              </button>
             )}
           </nav>
           
@@ -388,9 +424,15 @@ const Header = () => {
                 </div>
               </div>
             ) : (
-              <Link to="/signin" className="mobile-signin" onClick={handleNavClick}>
+              <button 
+                className="mobile-signin" 
+                onClick={() => {
+                  navigate('/signin');
+                  handleNavClick();
+                }}
+              >
                 Sign In
-              </Link>
+              </button>
             )}
           </div>
         </div>
