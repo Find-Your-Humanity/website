@@ -344,10 +344,28 @@
 
 /* 검색 결과 스크롤 하이라이팅 */
 .search-highlight {
-  background-color: rgba(223, 255, 0, 0.3);
-  border-left: 3px solid #DFFF00;
-  padding-left: 1rem;
+  background-color: rgba(223, 255, 0, 0.4) !important;
+  border-left: 4px solid #DFFF00 !important;
+  padding-left: 1rem !important;
   transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(223, 255, 0, 0.3) !important;
+  border-radius: 4px;
+  animation: searchHighlightPulse 0.5s ease-in-out;
+}
+
+@keyframes searchHighlightPulse {
+  0% { 
+    background-color: rgba(223, 255, 0, 0.1);
+    transform: scale(1);
+  }
+  50% { 
+    background-color: rgba(223, 255, 0, 0.6);
+    transform: scale(1.02);
+  }
+  100% { 
+    background-color: rgba(223, 255, 0, 0.4);
+    transform: scale(1);
+  }
 }
 
 /* 검색 결과가 없을 때 스타일 */
@@ -1090,11 +1108,12 @@
 
 /* 검색 결과 섹션 */
 .search-results-section {
-  margin-top: 2rem;
+  margin-bottom: 2rem;
   border: 1px solid var(--border-color);
   border-radius: 8px;
   background-color: var(--bg-secondary);
   overflow: hidden;
+  box-shadow: 0 2px 10px var(--shadow-color);
 }
 
 .search-results-nav {

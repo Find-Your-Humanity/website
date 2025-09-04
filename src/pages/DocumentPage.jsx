@@ -75,16 +75,38 @@ const DocumentPage = () => {
 
   // 검색 결과로 스크롤
   const scrollToSearchResult = (result) => {
-    const element = document.querySelector(`[data-line="${result.lineIndex}"]`);
+    // 먼저 data-line 속성으로 찾기 시도
+    let element = document.querySelector(`[data-line="${result.lineIndex}"]`);
+    
+    // data-line으로 찾지 못한 경우, 텍스트 내용으로 찾기
+    if (!element) {
+      const allElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, li, pre');
+      for (let el of allElements) {
+        if (el.textContent && el.textContent.includes(result.line)) {
+          element = el;
+          break;
+        }
+      }
+    }
+    
     if (element) {
-      element.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'center'
+      // 스크롤 위치 조정 (헤더 높이만큼 위로)
+      const headerHeight = 80;
+      const elementTop = element.getBoundingClientRect().top + window.pageYOffset;
+      const targetPosition = elementTop - headerHeight - 100; // 헤더 + 여백
+      
+      window.scrollTo({
+        top: targetPosition,
+        behavior: 'smooth'
       });
+      
+      // 하이라이팅 효과
       element.classList.add('search-highlight');
       setTimeout(() => {
         element.classList.remove('search-highlight');
-      }, 2000);
+      }, 3000);
+    } else {
+      console.log('검색 결과 요소를 찾을 수 없습니다:', result);
     }
   };
 
@@ -146,7 +168,13 @@ const DocumentPage = () => {
       // Enter로 다음 검색 결과로 이동
       if (e.key === 'Enter' && searchQuery && searchResults.length > 0) {
         e.preventDefault();
-        goToNextResult();
+        // 현재 검색 결과가 있으면 다음으로, 없으면 첫 번째로
+        if (currentSearchIndex < searchResults.length - 1) {
+          goToNextResult();
+        } else {
+          setCurrentSearchIndex(0);
+          scrollToSearchResult(searchResults[0]);
+        }
       }
       
       // Escape로 검색 초기화
@@ -486,6 +514,40 @@ const DocumentPage = () => {
             ) : (
               // 편집 모드가 아닐 때는 기존 콘텐츠 표시
               <>
+                {/* 검색 결과 섹션 - 문서 내용 위에 표시 */}
+                {isSearching && searchResults.length > 0 && (
+                  <div className="search-results-section">
+                    <div className="search-results-nav">
+                      <button onClick={goToPrevResult} disabled={currentSearchIndex === 0}>이전</button>
+                      <span>검색 결과 {currentSearchIndex + 1} / {searchResults.length}</span>
+                      <button onClick={goToNextResult} disabled={currentSearchIndex === searchResults.length - 1}>다음</button>
+                    </div>
+                    <div className="search-results-list">
+                      <h4>검색 결과 목록</h4>
+                      {searchResults.map((result, index) => (
+                        <div 
+                          key={index} 
+                          className={`search-result-item ${currentSearchIndex === index ? 'active' : ''}`}
+                          onClick={() => {
+                            setCurrentSearchIndex(index);
+                            scrollToSearchResult(result);
+                          }}
+                        >
+                          <div className="result-preview">
+                            <span className="result-number">{index + 1}</span>
+                            <span className="result-text">
+                              {result.preview}
+                            </span>
+                          </div>
+                          <div className="result-line">
+                            라인 {result.lineIndex + 1}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
                 {/* API에서 가져온 콘텐츠가 있으면 우선 표시 */}
                 {apiContent ? (
                   <div className="api-content">
@@ -558,38 +620,6 @@ const DocumentPage = () => {
                     >
                       {apiContent}
                     </ReactMarkdown>
-                    {isSearching && searchResults.length > 0 && (
-                      <div className="search-results-section">
-                        <div className="search-results-nav">
-                          <button onClick={goToPrevResult} disabled={currentSearchIndex === 0}>이전</button>
-                          <span>검색 결과 {currentSearchIndex + 1} / {searchResults.length}</span>
-                          <button onClick={goToNextResult} disabled={currentSearchIndex === searchResults.length - 1}>다음</button>
-                        </div>
-                        <div className="search-results-list">
-                          <h4>검색 결과 목록</h4>
-                          {searchResults.map((result, index) => (
-                            <div 
-                              key={index} 
-                              className={`search-result-item ${currentSearchIndex === index ? 'active' : ''}`}
-                              onClick={() => {
-                                setCurrentSearchIndex(index);
-                                scrollToSearchResult(result);
-                              }}
-                            >
-                              <div className="result-preview">
-                                <span className="result-number">{index + 1}</span>
-                                <span className="result-text">
-                                  {result.preview}
-                                </span>
-                              </div>
-                              <div className="result-line">
-                                라인 {result.lineIndex + 1}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
                   </div>
                 ) : (
                   // API 콘텐츠가 없을 때는 마크다운 파일을 불러올 수 없다는 메시지 표시
