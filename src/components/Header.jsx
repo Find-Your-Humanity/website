@@ -41,10 +41,13 @@ const Header = () => {
   };
 
   const handleNavClick = () => {
-    setMobileMenuOpen(false);
-    setProductsDropdownOpen(false);
-    setCompanyDropdownOpen(false);
-    setClickedDropdown(null);
+    // Link의 기본 동작이 완료된 후 메뉴를 닫기 위해 지연 추가
+    setTimeout(() => {
+      setMobileMenuOpen(false);
+      setProductsDropdownOpen(false);
+      setCompanyDropdownOpen(false);
+      setClickedDropdown(null);
+    }, 50);
   };
 
   // Products 드롭다운 토글
@@ -308,24 +311,12 @@ const Header = () => {
               </button>
               {productsDropdownOpen && (
                 <div className="mobile-dropdown-menu">
-                  <button 
-                    className="mobile-dropdown-item" 
-                    onClick={() => {
-                      navigate('/products');
-                      handleNavClick();
-                    }}
-                  >
+                  <Link to="/products" className="mobile-dropdown-item" onClick={handleNavClick}>
                     Products
-                  </button>
-                  <button 
-                    className="mobile-dropdown-item" 
-                    onClick={() => {
-                      navigate('/pay');
-                      handleNavClick();
-                    }}
-                  >
+                  </Link>
+                  <Link to="/pay" className="mobile-dropdown-item" onClick={handleNavClick}>
                     Prices
-                  </button>
+                  </Link>
                 </div>
               )}
             </div>
@@ -345,47 +336,23 @@ const Header = () => {
               </button>
               {companyDropdownOpen && (
                 <div className="mobile-dropdown-menu">
-                  <button 
-                    className="mobile-dropdown-item" 
-                    onClick={() => {
-                      navigate('/company');
-                      handleNavClick();
-                    }}
-                  >
+                  <Link to="/company" className="mobile-dropdown-item" onClick={handleNavClick}>
                     About Us
-                  </button>
-                  <button 
-                    className="mobile-dropdown-item" 
-                    onClick={() => {
-                      navigate('/contact');
-                      handleNavClick();
-                    }}
-                  >
+                  </Link>
+                  <Link to="/contact" className="mobile-dropdown-item" onClick={handleNavClick}>
                     Contact Us
-                  </button>
+                  </Link>
                 </div>
               )}
             </div>
 
-            <button 
-              className={`mobile-nav-link ${location.pathname === '/document' ? 'active' : ''}`} 
-              onClick={() => {
-                navigate('/document');
-                handleNavClick();
-              }}
-            >
+            <Link to="/document" className={location.pathname === '/document' ? 'mobile-nav-link active' : 'mobile-nav-link'} onClick={handleNavClick}>
               Document
-            </button>
+            </Link>
             {isAuthenticated && (
-              <button 
-                className={`mobile-nav-link ${location.pathname === '/dashboard' ? 'active' : ''}`} 
-                onClick={() => {
-                  navigate('/dashboard');
-                  handleNavClick();
-                }}
-              >
+              <Link to="/dashboard" className={location.pathname === '/dashboard' ? 'mobile-nav-link active' : 'mobile-nav-link'} onClick={handleNavClick}>
                 Dashboard
-              </button>
+              </Link>
             )}
           </nav>
           
@@ -424,15 +391,9 @@ const Header = () => {
                 </div>
               </div>
             ) : (
-              <button 
-                className="mobile-signin" 
-                onClick={() => {
-                  navigate('/signin');
-                  handleNavClick();
-                }}
-              >
+              <Link to="/signin" className="mobile-signin" onClick={handleNavClick}>
                 Sign In
-              </button>
+              </Link>
             )}
           </div>
         </div>
