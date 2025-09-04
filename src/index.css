@@ -47,6 +47,8 @@
 html {
   line-height: 1.15;
   -webkit-text-size-adjust: 100%;
+  /* 삼성 인터넷 호환성을 위한 추가 속성 */
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -56,8 +58,13 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* CSS 변수 폴백과 함께 사용 */
+  background-color: #ffffff;
   background-color: var(--bg-primary);
+  color: #000000;
   color: var(--text-primary);
+  /* 삼성 인터넷에서 부드러운 전환을 위한 개선 */
+  -webkit-transition: background-color 0.3s ease, color 0.3s ease;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -68,6 +75,7 @@ code {
 
 /* Smooth transitions for theme changes */
 * {
+  -webkit-transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -78,11 +86,13 @@ code {
 
 a {
   font-weight: 500;
+  color: #000000;
   color: var(--text-primary);
   text-decoration: inherit;
 }
 
 a:hover {
+  color: #DFFF00;
   color: var(--accent-color);
 }
 
@@ -93,13 +103,22 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
+  background-color: #DFFF00;
   background-color: var(--accent-color);
+  color: #000000;
   color: var(--text-primary);
   cursor: pointer;
+  -webkit-transition: border-color 0.25s;
   transition: border-color 0.25s;
+  /* 삼성 인터넷 터치 최적화 */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 button:hover {
+  border-color: #e0e0e0;
   border-color: var(--border-color);
 }
 
@@ -108,15 +127,28 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+/* 삼성 인터넷 브라우저 특별 처리 */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  /* WebKit 기반 브라우저 (삼성 인터넷 포함) 최적화 */
+  * {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+}
+
 @media (prefers-color-scheme: light) {
   :root {
+    color: #000000;
     color: var(--text-primary);
+    background-color: #ffffff;
     background-color: var(--bg-primary);
   }
   a:hover {
+    color: #DFFF00;
     color: var(--accent-color);
   }
   button {
+    background-color: #DFFF00;
     background-color: var(--accent-color);
   }
 }
