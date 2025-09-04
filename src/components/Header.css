@@ -44,28 +44,16 @@
   cursor: pointer;
   transition: all 0.3s ease;
   color: var(--text-primary);
-  margin-right: 1rem;
+  margin-left: 1rem;
   box-shadow: none;
-  font-size: 18px;
-}
-
-.theme-toggle svg {
-  width: 18px;
-  height: 18px;
-  transition: transform 0.3s ease;
-  color: var(--text-primary);
-  fill: currentColor;
+  font-size: 20px;
+  border-radius: 50%;
 }
 
 .theme-toggle:hover {
   transform: translateY(-2px);
   color: var(--accent-color);
-}
-
-.theme-toggle:hover svg {
-  transform: rotate(15deg);
-  color: var(--accent-color);
-  fill: var(--accent-color);
+  background-color: var(--bg-secondary);
 }
 
 .theme-toggle:focus {
@@ -76,6 +64,7 @@
 .theme-toggle:active {
   outline: none;
   box-shadow: none;
+  transform: translateY(0);
 }
 
 
@@ -85,18 +74,9 @@
   color: var(--accent-color);
 }
 
-[data-theme="dark"] .theme-toggle svg {
-  color: var(--accent-color);
-  fill: var(--accent-color);
-}
-
 [data-theme="dark"] .theme-toggle:hover {
   color: var(--accent-hover);
-}
-
-[data-theme="dark"] .theme-toggle:hover svg {
-  color: var(--accent-hover);
-  fill: var(--accent-hover);
+  background-color: var(--bg-tertiary);
 }
 
 /* 모바일 메뉴 토글 버튼 */

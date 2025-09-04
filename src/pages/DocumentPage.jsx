@@ -200,74 +200,75 @@ const DocumentPage = () => {
     <div className="document-page">
       {/* Top Header Bar */}
       <header className="docs-header">
-        <div className="header-right">
-          <div className="search-container">
-            <FaSearch className="search-icon" />
-            <input
-              type="text"
-              placeholder="Search..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="docs-search-input"
-            />
-          </div>
-          <div className="header-controls">
-            <div className={`language-selector ${isLanguageDropdownOpen ? 'dropdown-open' : ''}`} onClick={() => setIsLanguageDropdownOpen(!isLanguageDropdownOpen)}>
-              <span className="language-flag">{currentLanguage.flag}</span>
-              <span className="language-name">{currentLanguage.name}</span>
-              <span className="dropdown-arrow">▼</span>
-              
-              {isLanguageDropdownOpen && (
-                <div className="language-dropdown">
-                  {languages.map((language) => (
-                    <div
-                      key={language.code}
-                      className={`language-option ${selectedLanguage === language.code ? 'active' : ''}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedLanguage(language.code);
-                        setIsLanguageDropdownOpen(false);
-                      }}
-                    >
-                      <span className="language-flag">{language.flag}</span>
-                      <span className="language-name">{language.name}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-            <Link to="/faq" className="header-link">FAQ</Link>
+        <div className="header-left">
+          <div className={`language-selector ${isLanguageDropdownOpen ? 'dropdown-open' : ''}`} onClick={() => setIsLanguageDropdownOpen(!isLanguageDropdownOpen)}>
+            <span className="language-flag">{currentLanguage.flag}</span>
+            <span className="language-name">{currentLanguage.name}</span>
+            <span className="dropdown-arrow">▼</span>
             
-            {/* 관리자 편집 모드 컨트롤 */}
-            {isAdmin && (
-              <div className="edit-mode-controls">
-                {!isEditMode ? (
-                  <button 
-                    className="edit-mode-toggle"
-                    onClick={toggleEditMode}
-                    title="편집 모드 시작"
+            {isLanguageDropdownOpen && (
+              <div className="language-dropdown">
+                {languages.map((language) => (
+                  <div
+                    key={language.code}
+                    className={`language-option ${selectedLanguage === language.code ? 'active' : ''}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedLanguage(language.code);
+                      setIsLanguageDropdownOpen(false);
+                    }}
                   >
-                    <FaEdit />
-                  </button>
-                ) : (
-                  <div className="edit-buttons">
-                    <button 
-                      className="save-button"
-                      onClick={handleSave}
-                    >
-                      저장
-                    </button>
-                    <button 
-                      className="cancel-button"
-                      onClick={handleCancel}
-                    >
-                      취소
-                    </button>
+                    <span className="language-flag">{language.flag}</span>
+                    <span className="language-name">{language.name}</span>
                   </div>
-                )}
+                ))}
               </div>
             )}
           </div>
+          <Link to="/faq" className="header-link">FAQ</Link>
+        </div>
+        
+        <div className="search-container">
+          <FaSearch className="search-icon" />
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="docs-search-input"
+          />
+        </div>
+        
+        <div className="header-right">
+          {/* 관리자 편집 모드 컨트롤 */}
+          {isAdmin && (
+            <div className="edit-mode-controls">
+              {!isEditMode ? (
+                <button 
+                  className="edit-mode-toggle"
+                  onClick={toggleEditMode}
+                  title="편집 모드 시작"
+                >
+                  <FaEdit />
+                </button>
+              ) : (
+                <div className="edit-buttons">
+                  <button 
+                    className="save-button"
+                    onClick={handleSave}
+                  >
+                    저장
+                  </button>
+                  <button 
+                    className="cancel-button"
+                    onClick={handleCancel}
+                  >
+                    취소
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </header>
 

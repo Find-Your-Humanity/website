@@ -99,20 +99,13 @@
 .header-left {
   display: flex;
   align-items: center;
-}
-
-.logo-section {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  gap: 1.5rem;
 }
 
 .header-right {
   display: flex;
   align-items: center;
-  width: 100%;
-  gap: 1.5rem;
-  position: relative;
+  gap: 1rem;
 }
 
 .language-selector {
@@ -209,14 +202,11 @@
 
 
 .search-container {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
   display: flex;
   align-items: center;
   max-width: 500px;
   width: 100%;
+  margin: 0 auto;
 }
 
 .search-icon {
@@ -241,13 +231,6 @@
   outline: none;
   border-color: var(--accent-color);
   background-color: var(--bg-primary);
-}
-
-.header-controls {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  margin-left: 3rem;
 }
 
 /* 편집 모드 컨트롤 스타일 */

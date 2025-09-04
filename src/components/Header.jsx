@@ -3,7 +3,6 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { FaBars, FaTimes, FaChevronDown } from 'react-icons/fa';
-import { BsSun, BsMoon } from 'react-icons/bs';
 import './Header.css';
 
 const Header = () => {
@@ -205,11 +204,6 @@ const Header = () => {
         </nav>
 
         <div className="auth-area">
-          {/* 테마 토글 버튼 */}
-          <button className="theme-toggle" onClick={toggleTheme} aria-label="테마 변경">
-            {theme === 'light' ? <BsMoon /> : <BsSun />}
-          </button>
-          
           {isAuthenticated ? (
             <div className="user-menu desktop-only" ref={dropdownRef}>
               <button className="user-button" onClick={toggleDropdown}>
@@ -269,6 +263,16 @@ const Header = () => {
               Sign In
             </Link>
           )}
+          
+          {/* 테마 토글 버튼 - 프로필 버튼 우측에 배치 */}
+          <button 
+            className="theme-toggle" 
+            onClick={toggleTheme} 
+            title={theme === 'light' ? '다크모드로 변경' : '라이트모드로 변경'}
+            aria-label={theme === 'light' ? '다크모드로 변경' : '라이트모드로 변경'}
+          >
+            {theme === 'light' ? '🌙' : '☀️'}
+          </button>
         </div>
       </div>
 
