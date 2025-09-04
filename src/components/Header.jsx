@@ -264,7 +264,7 @@ const Header = () => {
             </Link>
           )}
           
-          {/* 테마 토글 버튼 - 프로필 버튼 우측에 배치 */}
+          {/* 테마 토글 버튼 - 프로필 버튼 좌측에 배치 */}
           <button 
             className="theme-toggle" 
             onClick={toggleTheme} 
