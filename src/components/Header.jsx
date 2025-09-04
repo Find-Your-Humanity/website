@@ -41,14 +41,15 @@ const Header = () => {
   };
 
   const handleNavClick = (e) => {
-    // 이벤트 버블링 방지
-    e.stopPropagation();
-    
-    // 즉시 모바일 메뉴와 드롭다운들 닫기
-    setMobileMenuOpen(false);
+    // 1. 먼저 드롭다운 상태 초기화
     setProductsDropdownOpen(false);
     setCompanyDropdownOpen(false);
     setClickedDropdown(null);
+    
+    // 2. 모바일 메뉴 닫기 (약간의 지연)
+    setTimeout(() => {
+      setMobileMenuOpen(false);
+    }, 50);
   };
 
   // Products 드롭다운 토글
@@ -112,6 +113,11 @@ const Header = () => {
   // 외부 클릭시 드롭다운 닫기
   useEffect(() => {
     const handleClickOutside = (event) => {
+      // Link 클릭인 경우는 외부 클릭으로 처리하지 않음
+      if (event.target.classList.contains('mobile-dropdown-item')) {
+        return;
+      }
+      
       // 사용자 드롭다운 외부 클릭
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setDropdownOpen(false);
@@ -301,10 +307,13 @@ const Header = () => {
             <div className="mobile-dropdown">
               <button 
                 className={`mobile-dropdown-button ${location.pathname === '/products' || location.pathname === '/pay' ? 'active' : ''}`}
-                onClick={() => {
-                  setProductsDropdownOpen(!productsDropdownOpen);
-                  setCompanyDropdownOpen(false);
-                  setClickedDropdown(productsDropdownOpen ? null : 'products');
+                onClick={(e) => {
+                  // Link 클릭이 아닌 경우에만 드롭다운 토글
+                  if (!e.target.closest('.mobile-dropdown-item')) {
+                    setProductsDropdownOpen(!productsDropdownOpen);
+                    setCompanyDropdownOpen(false);
+                    setClickedDropdown(productsDropdownOpen ? null : 'products');
+                  }
                 }}
               >
                 Products
@@ -334,10 +343,13 @@ const Header = () => {
             <div className="mobile-dropdown">
               <button 
                 className={`mobile-dropdown-button ${location.pathname === '/company' || location.pathname === '/contact' ? 'active' : ''}`}
-                onClick={() => {
-                  setCompanyDropdownOpen(!companyDropdownOpen);
-                  setProductsDropdownOpen(false);
-                  setClickedDropdown(companyDropdownOpen ? null : 'company');
+                onClick={(e) => {
+                  // Link 클릭이 아닌 경우에만 드롭다운 토글
+                  if (!e.target.closest('.mobile-dropdown-item')) {
+                    setCompanyDropdownOpen(!companyDropdownOpen);
+                    setProductsDropdownOpen(false);
+                    setClickedDropdown(companyDropdownOpen ? null : 'company');
+                  }
                 }}
               >
                 Company
