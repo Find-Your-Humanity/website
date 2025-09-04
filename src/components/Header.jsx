@@ -40,30 +40,15 @@ const Header = () => {
     setMobileMenuOpen(false);
   };
 
-  const handleNavClick = () => {
-    // Link의 기본 동작이 완료된 후 메뉴를 닫기 위해 지연 추가
-    setTimeout(() => {
-      setMobileMenuOpen(false);
-      setProductsDropdownOpen(false);
-      setCompanyDropdownOpen(false);
-      setClickedDropdown(null);
-    }, 50);
-  };
-
-  // 드롭다운 항목 클릭 핸들러
-  const handleDropdownItemClick = (path) => {
-    // 드롭다운 즉시 닫기
+  const handleNavClick = (e) => {
+    // 이벤트 버블링 방지
+    e.stopPropagation();
+    
+    // 즉시 모바일 메뉴와 드롭다운들 닫기
+    setMobileMenuOpen(false);
     setProductsDropdownOpen(false);
     setCompanyDropdownOpen(false);
     setClickedDropdown(null);
-    
-    // 페이지 이동
-    navigate(path);
-    
-    // 모바일 메뉴 닫기 (지연)
-    setTimeout(() => {
-      setMobileMenuOpen(false);
-    }, 100);
   };
 
   // Products 드롭다운 토글
@@ -327,18 +312,20 @@ const Header = () => {
               </button>
               {productsDropdownOpen && (
                 <div className="mobile-dropdown-menu">
-                  <button 
+                  <Link 
+                    to="/products" 
                     className="mobile-dropdown-item" 
-                    onClick={() => handleDropdownItemClick('/products')}
+                    onClick={handleNavClick}
                   >
                     Products
-                  </button>
-                  <button 
+                  </Link>
+                  <Link 
+                    to="/pay" 
                     className="mobile-dropdown-item" 
-                    onClick={() => handleDropdownItemClick('/pay')}
+                    onClick={handleNavClick}
                   >
                     Prices
-                  </button>
+                  </Link>
                 </div>
               )}
             </div>
@@ -358,18 +345,20 @@ const Header = () => {
               </button>
               {companyDropdownOpen && (
                 <div className="mobile-dropdown-menu">
-                  <button 
+                  <Link 
+                    to="/company" 
                     className="mobile-dropdown-item" 
-                    onClick={() => handleDropdownItemClick('/company')}
+                    onClick={handleNavClick}
                   >
                     About Us
-                  </button>
-                  <button 
+                  </Link>
+                  <Link 
+                    to="/contact" 
                     className="mobile-dropdown-item" 
-                    onClick={() => handleDropdownItemClick('/contact')}
+                    onClick={handleNavClick}
                   >
                     Contact Us
-                  </button>
+                  </Link>
                 </div>
               )}
             </div>
