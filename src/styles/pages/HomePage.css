@@ -412,6 +412,21 @@
     font-size: 2.5rem;
   }
   
+  /* 모바일에서 줄바꿈 변경 */
+  .hero-title .desktop-break {
+    display: none;
+  }
+  
+  .hero-title .or-text {
+    display: block;
+    margin-top: 0.5rem;
+  }
+  
+  .hero-title .real-text {
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  
   .hero-subtitle {
     font-size: 1.25rem;
   }
@@ -432,16 +447,28 @@
   
   .features-grid {
     grid-template-columns: 1fr;
+    gap: 2rem;
   }
   
   .content-wrapper {
     flex-direction: column;
     gap: 2rem;
     padding: 0 2rem;
+    text-align: center;
   }
   
   .main-content-left {
     max-width: 100%;
+    text-align: center;
+    margin-left: 0;
+  }
+  
+  .main-title {
+    text-align: center;
+  }
+  
+  .main-description {
+    text-align: center;
   }
   
   .video-container {
@@ -450,6 +477,8 @@
   
   .demo-video {
     max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
   }
 }
 
