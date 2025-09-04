@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FaSearch, FaHome, FaReact, FaVuejs, FaWordpress, FaAngular, FaNodeJs, FaEdit, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
+import { FaSearch, FaHome, FaReact, FaVuejs, FaWordpress, FaAngular, FaNodeJs, FaEdit, FaCheckCircle, FaExclamationTriangle, FaTimes } from 'react-icons/fa';
 import useScrollToTop from '../hooks/useScrollToTop';
 import { sidebarItems, sidebarDisplayNames } from '../data/sidebarContent';
 import { useAuth } from '../contexts/AuthContext';
@@ -21,12 +21,146 @@ const DocumentPage = () => {
   const [apiContent, setApiContent] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   
+  // 검색 관련 상태 추가
+  const [searchResults, setSearchResults] = useState([]);
+  const [currentSearchIndex, setCurrentSearchIndex] = useState(0);
+  const [isSearching, setIsSearching] = useState(false);
+  
   // 인증 컨텍스트에서 사용자 정보 가져오기
   const { user } = useAuth();
   const isAdmin = user && (user.is_admin === true || user.is_admin === 1 || user.role === 'admin');
   
   // 페이지 이동 시 스크롤을 맨 위로 올림
   useScrollToTop();
+
+  // 검색 기능 구현
+  const performSearch = (query, content) => {
+    if (!query.trim() || !content) {
+      setSearchResults([]);
+      setCurrentSearchIndex(0);
+      return;
+    }
+
+    const results = [];
+    const lines = content.split('\n');
+    const searchTerm = query.toLowerCase();
+
+    lines.forEach((line, lineIndex) => {
+      const lowerLine = line.toLowerCase();
+      let startIndex = 0;
+      
+      while ((startIndex = lowerLine.indexOf(searchTerm, startIndex)) !== -1) {
+        results.push({
+          lineIndex,
+          startIndex,
+          endIndex: startIndex + searchTerm.length,
+          line: line,
+          preview: line.substring(Math.max(0, startIndex - 20), startIndex + searchTerm.length + 20)
+        });
+        startIndex += 1;
+      }
+    });
+
+    setSearchResults(results);
+    setCurrentSearchIndex(0);
+    setIsSearching(true);
+  };
+
+  // 검색어 변경 시 검색 실행
+  useEffect(() => {
+    if (apiContent) {
+      performSearch(searchQuery, apiContent);
+    }
+  }, [searchQuery, apiContent]);
+
+  // 검색 결과로 스크롤
+  const scrollToSearchResult = (result) => {
+    const element = document.querySelector(`[data-line="${result.lineIndex}"]`);
+    if (element) {
+      element.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'center'
+      });
+      element.classList.add('search-highlight');
+      setTimeout(() => {
+        element.classList.remove('search-highlight');
+      }, 2000);
+    }
+  };
+
+  // 다음 검색 결과로 이동
+  const goToNextResult = () => {
+    if (searchResults.length > 0) {
+      const nextIndex = (currentSearchIndex + 1) % searchResults.length;
+      setCurrentSearchIndex(nextIndex);
+      scrollToSearchResult(searchResults[nextIndex]);
+    }
+  };
+
+  // 이전 검색 결과로 이동
+  const goToPrevResult = () => {
+    if (searchResults.length > 0) {
+      const prevIndex = currentSearchIndex === 0 ? searchResults.length - 1 : currentSearchIndex - 1;
+      setCurrentSearchIndex(prevIndex);
+      scrollToSearchResult(searchResults[prevIndex]);
+    }
+  };
+
+  // 검색어 하이라이팅 함수
+  const highlightSearchTerm = (text) => {
+    if (!searchQuery.trim()) return text;
+    
+    const regex = new RegExp(`(${searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    const parts = text.split(regex);
+    
+    return parts.map((part, index) => 
+      regex.test(part) ? (
+        <mark key={index} className="search-highlight-term">
+          {part}
+        </mark>
+      ) : part
+    );
+  };
+
+  // 검색 초기화
+  const clearSearch = () => {
+    setSearchQuery('');
+    setSearchResults([]);
+    setCurrentSearchIndex(0);
+    setIsSearching(false);
+  };
+
+  // 키보드 단축키 처리
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Ctrl+F 또는 Cmd+F로 검색창 포커스
+      if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+        e.preventDefault();
+        const searchInput = document.querySelector('.docs-search-input');
+        if (searchInput) {
+          searchInput.focus();
+          searchInput.select();
+        }
+      }
+      
+      // Enter로 다음 검색 결과로 이동
+      if (e.key === 'Enter' && searchQuery && searchResults.length > 0) {
+        e.preventDefault();
+        goToNextResult();
+      }
+      
+      // Escape로 검색 초기화
+      if (e.key === 'Escape' && searchQuery) {
+        e.preventDefault();
+        clearSearch();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [searchQuery, searchResults, currentSearchIndex]);
   
   // API에서 문서 로딩하는 함수
   const loadDocumentFromAPI = async (documentType = selectedSidebarItem) => {
@@ -209,6 +343,40 @@ const DocumentPage = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="docs-search-input"
           />
+          {searchQuery && (
+            <button className="clear-search-btn" onClick={clearSearch} title="검색어 지우기">
+              <FaTimes />
+            </button>
+          )}
+          {isSearching && searchResults.length > 0 && (
+            <div className="search-results-info">
+              <span className="search-count">{searchResults.length}개 결과</span>
+              <div className="search-navigation">
+                <button 
+                  className="search-nav-btn" 
+                  onClick={goToPrevResult}
+                  disabled={currentSearchIndex === 0}
+                  title="이전 결과"
+                >
+                  ↑
+                </button>
+                <span className="search-position">{currentSearchIndex + 1} / {searchResults.length}</span>
+                <button 
+                  className="search-nav-btn" 
+                  onClick={goToNextResult}
+                  disabled={currentSearchIndex === searchResults.length - 1}
+                  title="다음 결과"
+                >
+                  ↓
+                </button>
+              </div>
+            </div>
+          )}
+          {isSearching && searchQuery && searchResults.length === 0 && (
+            <div className="search-results-info">
+              <span className="search-count">검색 결과가 없습니다</span>
+            </div>
+          )}
         </div>
         
         <div className="header-controls">
@@ -328,37 +496,54 @@ const DocumentPage = () => {
                         h1: ({node, ...props}) => {
                           const text = props.children?.toString() || '';
                           const id = text.toLowerCase().replace(/[^a-z0-9가-힣]/g, '-').replace(/-+/g, '-');
-                          return <h1 id={id} {...props} />;
+                          return <h1 id={id} data-line={node.position?.start?.line} {...props} />;
                         },
                         h2: ({node, ...props}) => {
                           const text = props.children?.toString() || '';
                           const id = text.toLowerCase().replace(/[^a-z0-9가-힣]/g, '-').replace(/-+/g, '-');
-                          return <h2 id={id} {...props} />;
+                          return <h2 id={id} data-line={node.position?.start?.line} {...props} />;
                         },
                         h3: ({node, ...props}) => {
                           const text = props.children?.toString() || '';
                           const id = text.toLowerCase().replace(/[^a-z0-9가-힣]/g, '-').replace(/-+/g, '-');
-                          return <h3 id={id} {...props} />;
+                          return <h3 id={id} data-line={node.position?.start?.line} {...props} />;
                         },
                         h4: ({node, ...props}) => {
                           const text = props.children?.toString() || '';
                           const id = text.toLowerCase().replace(/[^a-z0-9가-힣]/g, '-').replace(/-+/g, '-');
-                          return <h4 id={id} {...props} />;
+                          return <h4 id={id} data-line={node.position?.start?.line} {...props} />;
                         },
                         h5: ({node, ...props}) => {
                           const text = props.children?.toString() || '';
                           const id = text.toLowerCase().replace(/[^a-z0-9가-힣]/g, '-').replace(/-+/g, '-');
-                          return <h5 id={id} {...props} />;
+                          return <h5 id={id} data-line={node.position?.start?.line} {...props} />;
                         },
                         h6: ({node, ...props}) => {
                           const text = props.children?.toString() || '';
                           const id = text.toLowerCase().replace(/[^a-z0-9가-힣]/g, '-').replace(/-+/g, '-');
-                          return <h6 id={id} {...props} />;
+                          return <h6 id={id} data-line={node.position?.start?.line} {...props} />;
+                        },
+                        // 텍스트 요소에 검색어 하이라이팅 적용
+                        p: ({node, children, ...props}) => {
+                          const text = children?.toString() || '';
+                          return (
+                            <p data-line={node.position?.start?.line} {...props}>
+                              {highlightSearchTerm(text)}
+                            </p>
+                          );
+                        },
+                        li: ({node, children, ...props}) => {
+                          const text = children?.toString() || '';
+                          return (
+                            <li data-line={node.position?.start?.line} {...props}>
+                              {highlightSearchTerm(text)}
+                            </li>
+                          );
                         },
                         code({node, inline, className, children, ...props}) {
                           const match = /language-(\w+)/.exec(className || '');
                           return !inline && match ? (
-                            <pre data-language={match[1]}>
+                            <pre data-language={match[1]} data-line={node.position?.start?.line}>
                               <code className={className} {...props}>
                                 {children}
                               </code>
@@ -373,6 +558,13 @@ const DocumentPage = () => {
                     >
                       {apiContent}
                     </ReactMarkdown>
+                    {isSearching && searchResults.length > 0 && (
+                      <div className="search-results-nav">
+                        <button onClick={goToPrevResult} disabled={currentSearchIndex === 0}>이전</button>
+                        <span>검색 결과 {currentSearchIndex + 1} / {searchResults.length}</span>
+                        <button onClick={goToNextResult} disabled={currentSearchIndex === searchResults.length - 1}>다음</button>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   // API 콘텐츠가 없을 때는 마크다운 파일을 불러올 수 없다는 메시지 표시
