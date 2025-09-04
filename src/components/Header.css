@@ -879,6 +879,10 @@
   .theme-toggle {
     display: none;
   }
+  
+  .auth-area {
+    display: none;
+  }
 }
 
 @media (max-width: 480px) {

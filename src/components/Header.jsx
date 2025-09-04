@@ -138,7 +138,6 @@ const Header = () => {
         <button 
           className="mobile-theme-toggle-header" 
           onClick={toggleTheme} 
-          onTouchStart={toggleTheme}
           title={theme === 'light' ? '다크모드로 변경' : '라이트모드로 변경'}
           aria-label={theme === 'light' ? '다크모드로 변경' : '라이트모드로 변경'}
         >
@@ -215,6 +214,16 @@ const Header = () => {
         </nav>
 
         <div className="auth-area">
+          {/* 테마 토글 버튼 - Sign In/프로필 버튼 좌측에 배치 */}
+          <button 
+            className="theme-toggle" 
+            onClick={toggleTheme} 
+            title={theme === 'light' ? '다크모드로 변경' : '라이트모드로 변경'}
+            aria-label={theme === 'light' ? '다크모드로 변경' : '라이트모드로 변경'}
+          >
+            {theme === 'light' ? '🌙' : '☀️'}
+          </button>
+          
           {isAuthenticated ? (
             <div className="user-menu desktop-only" ref={dropdownRef}>
               <button className="user-button" onClick={toggleDropdown}>
