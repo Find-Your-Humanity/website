@@ -42,6 +42,9 @@ const Header = () => {
 
   const handleNavClick = () => {
     setMobileMenuOpen(false);
+    setProductsDropdownOpen(false);
+    setCompanyDropdownOpen(false);
+    setClickedDropdown(null);
   };
 
   // Products 드롭다운 토글
@@ -294,7 +297,11 @@ const Header = () => {
             <div className="mobile-dropdown">
               <button 
                 className={`mobile-dropdown-button ${location.pathname === '/products' || location.pathname === '/pay' ? 'active' : ''}`}
-                onClick={() => setProductsDropdownOpen(!productsDropdownOpen)}
+                onClick={() => {
+                  setProductsDropdownOpen(!productsDropdownOpen);
+                  setCompanyDropdownOpen(false);
+                  setClickedDropdown(productsDropdownOpen ? null : 'products');
+                }}
               >
                 Products
                 <FaChevronDown className={`mobile-dropdown-arrow ${productsDropdownOpen ? 'open' : ''}`} />
@@ -315,7 +322,11 @@ const Header = () => {
             <div className="mobile-dropdown">
               <button 
                 className={`mobile-dropdown-button ${location.pathname === '/company' || location.pathname === '/contact' ? 'active' : ''}`}
-                onClick={() => setCompanyDropdownOpen(!companyDropdownOpen)}
+                onClick={() => {
+                  setCompanyDropdownOpen(!companyDropdownOpen);
+                  setProductsDropdownOpen(false);
+                  setClickedDropdown(companyDropdownOpen ? null : 'company');
+                }}
               >
                 Company
                 <FaChevronDown className={`mobile-dropdown-arrow ${companyDropdownOpen ? 'open' : ''}`} />
