@@ -91,9 +91,9 @@ const PayPage = () => {
   // 요금제별 가격 매핑 (실제 요금제 가격으로 설정)
   const getPlanPrice = (planType) => {
     const priceMapping = {
-      'basic': 0,
+      'basic': 100,
       'plus': 9900,
-      'pro': 39000
+      'pro': 29000
     };
     return priceMapping[planType];
   };
@@ -177,7 +177,7 @@ const PayPage = () => {
               <div className="plan-header">
                 <h3 className="plan-name">Basic Plan</h3>
                 <div className="plan-price">
-                  <span className="price">₩15,000</span>
+                  <span className="price">₩100</span>
                   <span className="period">/월</span>
                 </div>
                 <p className="plan-description">
@@ -219,7 +219,7 @@ const PayPage = () => {
               <div className="plan-header">
                 <h3 className="plan-name">Plus Plan</h3>
                 <div className="plan-price">
-                  <span className="price">₩25,000</span>
+                  <span className="price">₩9,900</span>
                   <span className="period">/월</span>
                 </div>
                 <p className="plan-description">
@@ -262,7 +262,7 @@ const PayPage = () => {
               <div className="plan-header">
                 <h3 className="plan-name">Pro Plan</h3>
                 <div className="plan-price">
-                  <span className="price">₩39,000</span>
+                  <span className="price">₩29,000</span>
                   <span className="period">/월</span>
                 </div>
                 <p className="plan-description">
