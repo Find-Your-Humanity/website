@@ -412,20 +412,7 @@
     font-size: 2.5rem;
   }
   
-  /* 모바일에서 줄바꿈 변경 */
-  .hero-title .desktop-break {
-    display: none;
-  }
-  
-  .hero-title .or-text {
-    display: block;
-    margin-top: 0.5rem;
-  }
-  
-  .hero-title .real-text {
-    display: block;
-    margin-bottom: 0.5rem;
-  }
+
   
   .hero-subtitle {
     font-size: 1.25rem;
