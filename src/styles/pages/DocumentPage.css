@@ -247,7 +247,7 @@
   display: flex;
   align-items: center;
   gap: 2rem;
-  margin-right: 3rem;
+  margin-left: 3rem;
 }
 
 /* 편집 모드 컨트롤 스타일 */
@@ -634,7 +634,7 @@
 /* Content Sections */
 .content-section {
   margin-bottom: 3rem;
-  scroll-margin-top: 140px; /* 헤더 높이만큼 여백 추가 */
+  scroll-margin-top: 100px; /* 헤더 높이만큼 여백 추가 */
 }
 
 .section-title {
