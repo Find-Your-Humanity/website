@@ -18,8 +18,9 @@
 }
 
 .logo {
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  width: fit-content;
   cursor: pointer;
   transition: transform 0.3s ease, opacity 0.3s ease;
   text-decoration: none;
