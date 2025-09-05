@@ -147,7 +147,7 @@ const Header = () => {
       <div className="header-content">
         <Link to="/" className="logo" onClick={handleNavClick}>
           <img 
-            src="/realcatcha_logo.png" 
+            src="/realcatcha_logo_2.png" 
             alt="REALCATCHA" 
             className="logo-image"
           />

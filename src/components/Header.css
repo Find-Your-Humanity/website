@@ -1,7 +1,7 @@
 /* Header */
 .header {
   border-bottom: 1px solid var(--border-color);
-  padding: 0.3rem 0;
+  padding: 1rem 0;
   background-color: var(--bg-primary);
   position: sticky;
   top: 0;
@@ -27,7 +27,7 @@
 }
 
 .logo-image {
-  height: 100px;
+  height: 60px;
   width: auto;
   transition: transform 0.3s ease;
 }
