@@ -18,17 +18,25 @@
 }
 
 .logo {
-  font-weight: bold;
-  font-size: 1.5rem;
-  color: var(--text-primary);
-  text-transform: uppercase;
+  display: flex;
+  align-items: center;
   cursor: pointer;
-  transition: color 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.3s ease;
   text-decoration: none;
 }
 
+.logo-image {
+  height: 40px;
+  width: auto;
+  transition: transform 0.3s ease;
+}
+
 .logo:hover {
-  color: var(--accent-color);
+  transform: scale(1.05);
+}
+
+.logo:hover .logo-image {
+  transform: scale(1.05);
 }
 
 /* 테마 토글 버튼 */
@@ -902,6 +910,10 @@
   
   .logo {
     font-size: 1.25rem;
+  }
+  
+  .logo-image {
+    height: 32px;
   }
   
   .theme-toggle {

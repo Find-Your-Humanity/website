@@ -15,7 +15,7 @@ const Footer = () => {
         
         {/* Middle Section - Logo */}
         <div className="footer-logo">
-          <img src="/real-logo.png" alt="REAL" className="real-logo" />
+          <img src="/realcatcha_logo_1.png" alt="REAL" className="real-logo" />
         </div>
         
         {/* Bottom Section - Copyright */}

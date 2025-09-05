@@ -145,7 +145,13 @@ const Header = () => {
   return (
     <header className="header">
       <div className="header-content">
-        <Link to="/" className="logo">REALCATCHA</Link>
+        <Link to="/" className="logo" onClick={handleNavClick}>
+          <img 
+            src="/realcatcha_logo.png" 
+            alt="REALCATCHA" 
+            className="logo-image"
+          />
+        </Link>
 
         {/* 모바일 테마 토글 버튼 */}
         <button 
