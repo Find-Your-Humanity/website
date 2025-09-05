@@ -32,14 +32,6 @@
   transition: transform 0.3s ease;
 }
 
-.logo:hover {
-  transform: scale(1.05);
-}
-
-.logo:hover .logo-image {
-  transform: scale(1.05);
-}
-
 /* 테마 토글 버튼 */
 .theme-toggle {
   display: flex;
