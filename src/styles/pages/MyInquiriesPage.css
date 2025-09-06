@@ -349,6 +349,40 @@
   --warning-color: #f59e0b;      /* 경고 - 주황색 */
 }
 
+/* 다크 테마 특정 요소 스타일 */
+.inquiry-modal-overlay.dark-theme .modal-header {
+  background: #0a0f1a;
+  color: #f8fafc;
+  border-bottom-color: #334155;
+}
+
+.inquiry-modal-overlay.dark-theme .modal-header h2 {
+  color: #f8fafc;
+}
+
+.inquiry-modal-overlay.dark-theme .inquiry-modal {
+  background: #0a0f1a;
+  border-color: #334155;
+}
+
+.inquiry-modal-overlay.dark-theme .inquiry-info {
+  background-color: #1a2332;
+  border-color: #475569;
+}
+
+.inquiry-modal-overlay.dark-theme .content-box,
+.inquiry-modal-overlay.dark-theme .response-box {
+  background-color: #1a2332;
+  color: #f8fafc;
+  border-color: #475569;
+}
+
+.inquiry-modal-overlay.dark-theme .attachment-info {
+  background-color: #1a2332;
+  color: #f8fafc;
+  border-color: #475569;
+}
+
 .inquiry-modal {
   background: var(--bg-primary);
   border-radius: 12px;
