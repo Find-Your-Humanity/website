@@ -494,10 +494,10 @@ const ProductsPage = () => {
           >
             <div className="level-content">
               <div className="level-text">
-                <h3 className="level-title">Level 2 - Writing CAPTCHA</h3>
+                <h3 className="level-title">Level 2 - Abstract CAPTCHA</h3>
                 <p className="level-description">
-                  고난이도 CAPTCHA로, 다중 단계 검증과 복잡한 패턴 인식이 필요합니다. 
-                  AI 기반 봇 탐지 시스템과 연동되어 고급 보안을 제공합니다.
+                  추상적 개념 기반의 CAPTCHA로, 인간의 직관적 판단력을 활용합니다. 
+                  "따뜻한 이미지를 모두 선택하세요"와 같이 주관적 해석이 필요한 문제를 통해 봇을 효과적으로 차단합니다.
                 </p>
               </div>
               <div className="level-image">
@@ -509,7 +509,7 @@ const ProductsPage = () => {
                   playsInline
                   data-level="2"
                 >
-                  <source src="/writing_captcha.mp4" type="video/mp4" />
+                  <source src="/abstract_captcha.mp4" type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
               </div>
@@ -532,15 +532,15 @@ const ProductsPage = () => {
                   playsInline
                   data-level="3"
                 >
-                  <source src="/abstract_captcha.mp4" type="video/mp4" />
+                  <source src="/writing_captcha.mp4" type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
               </div>
               <div className="level-text">
-                <h3 className="level-title">Level 3 - Abstract CAPTCHA</h3>
+                <h3 className="level-title">Level 3 - Writing CAPTCHA</h3>
                 <p className="level-description">
-                  최고 난이도의 CAPTCHA로, 실시간 학습과 적응형 보안을 제공합니다. 
-                  딥러닝 알고리즘을 통해 지속적으로 진화하며, 최고 수준의 봇 차단 성능을 보여줍니다.
+                  최고 난이도의 CAPTCHA로, 텍스트 인식과 의미 해석을 동시에 요구합니다. 
+                  왜곡된 문자나 복잡한 문맥 이해가 필요하여 고급 AI 봇도 통과하기 어려운 최상위 보안을 제공합니다.
                 </p>
               </div>
             </div>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useAuth } from '../contexts/AuthContext';
 import useScrollToTop from '../hooks/useScrollToTop';
 import '../styles/pages/MyInquiriesPage.css';
@@ -12,6 +13,29 @@ const MyInquiriesPage = () => {
 
   // 페이지 이동 시 스크롤을 맨 위로 올림
   useScrollToTop();
+
+  // 모달이 열릴 때 body 스크롤 방지 및 ESC 키 이벤트
+  useEffect(() => {
+    if (selectedInquiry) {
+      document.body.style.overflow = 'hidden';
+      
+      // ESC 키로 모달 닫기
+      const handleEscKey = (event) => {
+        if (event.key === 'Escape') {
+          closeInquiryDetail();
+        }
+      };
+      
+      document.addEventListener('keydown', handleEscKey);
+      
+      return () => {
+        document.body.style.overflow = 'unset';
+        document.removeEventListener('keydown', handleEscKey);
+      };
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  }, [selectedInquiry]);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -208,7 +232,7 @@ const MyInquiriesPage = () => {
         )}
 
         {/* 문의사항 상세 모달 */}
-        {selectedInquiry && (
+        {selectedInquiry && createPortal(
           <div className="inquiry-modal-overlay" onClick={closeInquiryDetail}>
             <div className="inquiry-modal" onClick={(e) => e.stopPropagation()}>
               <div className="modal-header">
@@ -280,7 +304,8 @@ const MyInquiriesPage = () => {
                 )}
               </div>
             </div>
-          </div>
+          </div>,
+          document.body
         )}
       </div>
     </div>

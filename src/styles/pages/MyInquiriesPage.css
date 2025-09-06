@@ -284,14 +284,15 @@
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999; /* 1000 → 9999로 수정하여 Header보다 위에 표시 */
+  z-index: 99999; /* 헤더(2000)보다 훨씬 높게 설정 */
   padding: 1rem;
+  backdrop-filter: blur(2px); /* 배경 블러 효과 추가 */
 }
 
 .inquiry-modal {
@@ -303,6 +304,8 @@
   overflow-y: auto;
   box-shadow: 0 20px 50px var(--shadow-color);
   border: 1px solid var(--border-color);
+  z-index: 100000; /* overlay보다 위에 */
+  position: relative;
 }
 
 .modal-header {
