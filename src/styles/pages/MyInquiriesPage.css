@@ -311,9 +311,27 @@
   --success-color: #28a745;
   --warning-color: #ffc107;
 }
+/* 라이트 테마 (기본값) */
+.inquiry-modal-overlay.light-theme {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #f5f5f5;
+  --text-primary: #000000;
+  --text-secondary: #666666;
+  --text-tertiary: #999999;
+  --border-color: #e0e0e0;
+  --border-color-light: #f0f0f0;
+  --accent-color: #DFFF00;
+  --accent-hover: #e6ff33;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --shadow-color-light: rgba(0, 0, 0, 0.05);
+  --error-color: #dc3545;
+  --success-color: #28a745;
+  --warning-color: #ffc107;
+}
 
-/* 다크모드일 때 CSS 변수 재정의 */
-[data-theme="dark"] .inquiry-modal-overlay {
+/* 다크 테마 */
+.inquiry-modal-overlay.dark-theme {
   --bg-primary: #0a0f1a;        /* 메인 배경 - 깊이 있는 다크 블루 */
   --bg-secondary: #1a2332;       /* 보조 배경 - 브랜드와 조화되는 블루 그레이 */
   --bg-tertiary: #2a3441;        /* 3차 배경 - 중간 톤의 블루 그레이 */

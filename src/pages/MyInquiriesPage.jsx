@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 import useScrollToTop from '../hooks/useScrollToTop';
 import '../styles/pages/MyInquiriesPage.css';
 
 const MyInquiriesPage = () => {
   const { user, isAuthenticated } = useAuth();
+  const { theme } = useTheme();
   const [inquiries, setInquiries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -233,7 +235,7 @@ const MyInquiriesPage = () => {
 
         {/* 문의사항 상세 모달 */}
         {selectedInquiry && createPortal(
-          <div className="inquiry-modal-overlay" onClick={closeInquiryDetail}>
+          <div className={`inquiry-modal-overlay ${theme === 'dark' ? 'dark-theme' : 'light-theme'}`} onClick={closeInquiryDetail}>
             <div className="inquiry-modal" onClick={(e) => e.stopPropagation()}>
               <div className="modal-header">
                 <h2>{selectedInquiry.subject}</h2>
