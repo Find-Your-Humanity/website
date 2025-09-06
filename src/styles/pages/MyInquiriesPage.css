@@ -396,6 +396,10 @@
   color: #cbd5e1;
 }
 
+.inquiry-modal-overlay.dark-theme .inquiry-status {
+  color: #000000 !important;
+}
+
 .inquiry-modal {
   background: var(--bg-primary);
   border-radius: 12px;
