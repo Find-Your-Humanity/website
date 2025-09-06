@@ -383,6 +383,19 @@
   border-color: #475569;
 }
 
+.inquiry-modal-overlay.dark-theme .admin-response {
+  background: #1a2332;
+  border: 1px solid #475569;
+}
+
+.inquiry-modal-overlay.dark-theme .admin-response h3 {
+  color: #f8fafc;
+}
+
+.inquiry-modal-overlay.dark-theme .response-date {
+  color: #cbd5e1;
+}
+
 .inquiry-modal {
   background: var(--bg-primary);
   border-radius: 12px;
