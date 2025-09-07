@@ -6,7 +6,7 @@ import useScrollToTop from '../hooks/useScrollToTop';
 import '../styles/pages/MyInquiriesPage.css';
 
 const MyInquiriesPage = () => {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, apiRequest } = useAuth();
   const { theme } = useTheme();
   const [inquiries, setInquiries] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -16,37 +16,35 @@ const MyInquiriesPage = () => {
   // 페이지 이동 시 스크롤을 맨 위로 올림
   useScrollToTop();
 
-  // 모달이 열릴 때 body 스크롤 방지 및 ESC 키 이벤트
+  // 모달이 열릴 때 스크롤 잠금(overflow hidden) 및 ESC 키 이벤트
   useEffect(() => {
-    if (selectedInquiry) {
-      // 현재 스크롤 위치 저장
-      const scrollY = window.scrollY;
-      
-      // body 스크롤 완전히 방지
-      document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = '100%';
-      
-      // ESC 키로 모달 닫기
-      const handleEscKey = (event) => {
-        if (event.key === 'Escape') {
-          closeInquiryDetail();
-        }
-      };
-      
-      document.addEventListener('keydown', handleEscKey);
-      
-      return () => {
-        // 원래 스크롤 위치로 복원
-        document.body.style.overflow = '';
-        document.body.style.position = '';
-        document.body.style.top = '';
-        document.body.style.width = '';
-        window.scrollTo(0, scrollY);
-        document.removeEventListener('keydown', handleEscKey);
-      };
+    if (!selectedInquiry) return;
+
+    // 스크롤바 보정 폭 계산
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+
+    // html/body 스크롤 잠금 (fixed 사용하지 않음)
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
     }
+
+    // ESC 키로 모달 닫기
+    const handleEscKey = (event) => {
+      if (event.key === 'Escape') {
+        closeInquiryDetail();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscKey);
+
+    return () => {
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+      document.removeEventListener('keydown', handleEscKey);
+    };
   }, [selectedInquiry]);
 
   useEffect(() => {
@@ -63,9 +61,8 @@ const MyInquiriesPage = () => {
       setLoading(true);
       setError(null);
 
-      const response = await fetch('https://gateway.realcatcha.com/api/my-contact-requests', {
+      const response = await apiRequest('https://gateway.realcatcha.com/api/my-contact-requests', {
         method: 'GET',
-        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },

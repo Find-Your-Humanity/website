@@ -127,13 +127,19 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-/* 삼성 인터넷 브라우저 특별 처리 */
+/* 삼성 인터넷 브라우저 특별 처리 - 범위를 축소하여 fixed 기준 깨짐 방지 */
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
-  /* WebKit 기반 브라우저 (삼성 인터넷 포함) 최적화 */
-  * {
+  .gpu-boost {
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
+    will-change: transform;
   }
+}
+
+/* fixed 오버레이 안정성 보장: 전역으로 transform을 주지 않는다 */
+html, body {
+  -webkit-transform: none !important;
+  transform: none !important;
 }
 
 @media (prefers-color-scheme: light) {

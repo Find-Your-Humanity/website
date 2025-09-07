@@ -8,7 +8,7 @@ import '../styles/pages/ContactPage.css';
 const ContactPage = () => {
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, apiRequest } = useAuth();
   const [form, setForm] = useState({ subject: '', contact: '', email: '', message: '' });
   const [attachedFiles, setAttachedFiles] = useState([]);
   const [status, setStatus] = useState('idle'); // idle | submitting | success | error
@@ -121,11 +121,10 @@ const ContactPage = () => {
         formData.append(`file_${index}`, file);
       });
       
-      // 백엔드 API 호출
-      const response = await fetch('https://gateway.realcatcha.com/api/contact', {
+      // 백엔드 API 호출 (자동 토큰 갱신 래퍼 사용)
+      const response = await apiRequest('https://gateway.realcatcha.com/api/contact', {
         method: 'POST',
         body: formData,
-        credentials: 'include',
       });
       
       const result = await response.json();
