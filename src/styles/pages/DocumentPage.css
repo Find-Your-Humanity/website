@@ -884,7 +884,17 @@
 /* Content Sections */
 .content-section {
   margin-bottom: 3rem;
-  scroll-margin-top: 100px; /* 헤더 높이만큼 여백 추가 */
+  scroll-margin-top: 100px; /* 헤더 높이에 맞춰 조정 */
+}
+
+/* 제목 앵커에도 동일 offset 적용 */
+.document-page .docs-content-wrapper h1,
+.document-page .docs-content-wrapper h2,
+.document-page .docs-content-wrapper h3,
+.document-page .docs-content-wrapper h4,
+.document-page .docs-content-wrapper h5,
+.document-page .docs-content-wrapper h6 {
+  scroll-margin-top: 100px;
 }
 
 .section-title {
@@ -989,11 +999,11 @@
     grid-template-columns: 1fr;
   }
   
-  .sidebar {
+  .docs-sidebar {
     display: none;
   }
   
-  .document-page .main-content {
+  .document-page .docs-main-content {
     padding: 1.5rem;
   }
   
@@ -1005,7 +1015,7 @@
     gap: 1rem;
   }
   
-  .search-input {
+  .docs-search-input {
     width: 150px;
   }
   
@@ -1016,6 +1026,19 @@
   
   .main-title {
     font-size: 2rem;
+  }
+  
+  /* 모바일 헤더 높이에 맞춘 offset */
+  .content-section {
+    scroll-margin-top: 72px;
+  }
+  .document-page .docs-content-wrapper h1,
+  .document-page .docs-content-wrapper h2,
+  .document-page .docs-content-wrapper h3,
+  .document-page .docs-content-wrapper h4,
+  .document-page .docs-content-wrapper h5,
+  .document-page .docs-content-wrapper h6 {
+    scroll-margin-top: 72px;
   }
 }
 
