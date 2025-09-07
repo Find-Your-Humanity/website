@@ -147,6 +147,14 @@ const AnalyticsScreen: React.FC = () => {
     });
   }, [statsData]);
 
+  // 오류 유형(샘플 데이터)
+  const errorTypes = [
+    { type: '타임아웃', count: 156, percentage: 42.5 },
+    { type: '잘못된 입력', count: 98, percentage: 26.7 },
+    { type: '네트워크 오류', count: 67, percentage: 18.2 },
+    { type: '서버 오류', count: 46, percentage: 12.5 },
+  ];
+
   // API 키별 사용량 조회 핸들러
   const handleApiKeyUsage = async () => {
     if (!apiKeyInput.trim()) return;
@@ -299,6 +307,84 @@ const AnalyticsScreen: React.FC = () => {
 
       {/* 통계 차트 */}
       <AnalyticsChart data={chartData as any} loading={loading} timePeriod={timePeriod} />
+
+      {/* 오류 유형 분석 */}
+      <Card sx={{ mt: 3 }}>
+        <CardContent>
+          <Typography variant="h6" gutterBottom>
+            오류 유형 분석
+          </Typography>
+          <Grid container spacing={2} sx={{ mt: 1 }}>
+            {errorTypes.map((err, idx) => (
+              <Grid item xs={12} sm={6} md={3} key={idx}>
+                <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1, textAlign: 'center' }}>
+                  <Typography variant="h4" color="error.main">{formatNumber(err.count)}</Typography>
+                  <Typography variant="body2" color="text.secondary">{err.type}</Typography>
+                  <Typography variant="caption" color="text.secondary">({formatPercentage(err.percentage)})</Typography>
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
+        </CardContent>
+      </Card>
+
+      {/* 성능 / 사용자 메트릭 */}
+      <Grid container spacing={3} sx={{ mt: 1 }}>
+        <Grid item xs={12} md={6}>
+          <Card>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                성능 메트릭
+              </Typography>
+              <Box sx={{ mt: 2 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                  <Typography variant="body2">평균 응답 시간</Typography>
+                  <Typography variant="body2" fontWeight="bold">245ms</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                  <Typography variant="body2">95% 응답 시간</Typography>
+                  <Typography variant="body2" fontWeight="bold">890ms</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                  <Typography variant="body2">초당 처리 요청</Typography>
+                  <Typography variant="body2" fontWeight="bold">2.1/s</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <Typography variant="body2">업타임</Typography>
+                  <Typography variant="body2" fontWeight="bold" color="success.main">99.9%</Typography>
+                </Box>
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Card>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                사용자 통계
+              </Typography>
+              <Box sx={{ mt: 2 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                  <Typography variant="body2">활성 사용자</Typography>
+                  <Typography variant="body2" fontWeight="bold">1,247명</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                  <Typography variant="body2">신규 사용자(24h)</Typography>
+                  <Typography variant="body2" fontWeight="bold">132명</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                  <Typography variant="body2">재방문율</Typography>
+                  <Typography variant="body2" fontWeight="bold">68%</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <Typography variant="body2">이탈률</Typography>
+                  <Typography variant="body2" fontWeight="bold">12%</Typography>
+                </Box>
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
 
       {/* 오류 처리 */}
       {error && (
