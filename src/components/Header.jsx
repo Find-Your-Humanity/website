@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
-import { FaBars, FaTimes, FaChevronDown } from 'react-icons/fa';
+import { FaBars, FaTimes, FaChevronDown, FaSun, FaMoon } from 'react-icons/fa';
 import './Header.css';
 
 const Header = () => {
@@ -160,7 +160,7 @@ const Header = () => {
           title={theme === 'light' ? '다크모드로 변경' : '라이트모드로 변경'}
           aria-label={theme === 'light' ? '다크모드로 변경' : '라이트모드로 변경'}
         >
-          {theme === 'light' ? '🌙' : '☀️'}
+          {theme === 'light' ? <FaMoon /> : <FaSun />}
         </button>
 
         {/* 모바일 메뉴 버튼 */}
@@ -240,7 +240,7 @@ const Header = () => {
             title={theme === 'light' ? '다크모드로 변경' : '라이트모드로 변경'}
             aria-label={theme === 'light' ? '다크모드로 변경' : '라이트모드로 변경'}
           >
-            {theme === 'light' ? '🌙' : '☀️'}
+            {theme === 'light' ? <FaMoon /> : <FaSun />}
           </button>
           
           {isAuthenticated ? (
