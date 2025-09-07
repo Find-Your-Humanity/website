@@ -19,7 +19,14 @@ const MyInquiriesPage = () => {
   // 모달이 열릴 때 body 스크롤 방지 및 ESC 키 이벤트
   useEffect(() => {
     if (selectedInquiry) {
+      // 현재 스크롤 위치 저장
+      const scrollY = window.scrollY;
+      
+      // body 스크롤 완전히 방지
       document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
       
       // ESC 키로 모달 닫기
       const handleEscKey = (event) => {
@@ -31,11 +38,14 @@ const MyInquiriesPage = () => {
       document.addEventListener('keydown', handleEscKey);
       
       return () => {
-        document.body.style.overflow = 'unset';
+        // 원래 스크롤 위치로 복원
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        window.scrollTo(0, scrollY);
         document.removeEventListener('keydown', handleEscKey);
       };
-    } else {
-      document.body.style.overflow = 'unset';
     }
   }, [selectedInquiry]);
 
