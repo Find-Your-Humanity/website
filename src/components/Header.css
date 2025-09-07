@@ -65,8 +65,23 @@
 .mobile-theme-toggle-header svg {
   width: 20px !important;
   height: 20px !important;
+  min-width: 20px !important;
+  min-height: 20px !important;
+  max-width: 20px !important;
+  max-height: 20px !important;
   fill: currentColor !important;
+  stroke: currentColor !important;
   display: inline-block !important;
+  flex-shrink: 0 !important;
+}
+
+/* React Icons 컨테이너 크기 강제 설정 */
+.theme-toggle > *,
+.mobile-theme-toggle-header > * {
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+  min-height: 20px !important;
 }
 
 .theme-toggle:hover {
