@@ -60,6 +60,15 @@
   min-height: 44px;
 }
 
+/* SVG 아이콘 크기 및 색상 강제 설정 */
+.theme-toggle svg,
+.mobile-theme-toggle-header svg {
+  width: 20px !important;
+  height: 20px !important;
+  fill: currentColor !important;
+  display: inline-block !important;
+}
+
 .theme-toggle:hover {
   -webkit-transform: translateY(-2px);
   transform: translateY(-2px);
