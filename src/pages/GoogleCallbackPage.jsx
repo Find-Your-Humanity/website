@@ -52,10 +52,12 @@ const GoogleCallbackPage = () => {
             loginWithGoogle(data.user);
           }
           
-          // 2초 후 홈으로 리디렉트
+          // 2초 후 역할 기반 대시보드로 리디렉트
           setTimeout(() => {
-            navigate('/');
-          }, 2000);
+            const user = data.user;
+            const isAdmin = user && (user.is_admin === true || user.is_admin === 1 || user.role === 'admin');
+            navigate(isAdmin ? '/admin/dashboard' : '/app/dashboard');
+          }, 1200);
         } else {
           setStatus('error');
           setMessage(data.detail || 'Google 로그인에 실패했습니다.');

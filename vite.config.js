@@ -20,5 +20,8 @@ export default defineConfig({
         manualChunks: undefined
       }
     }
+  },
+  define: {
+    'process.env': process.env
   }
 })
