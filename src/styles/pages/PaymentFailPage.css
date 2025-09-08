@@ -120,7 +120,7 @@
   word-break: break-all;
 }
 
-.error-message {
+.payment-fail-page .error-message {
   display: flex;
   align-items: center;
   gap: 15px;
@@ -138,7 +138,7 @@
   flex-shrink: 0;
 }
 
-.error-message p {
+.payment-fail-page .error-message p {
   color: #dc2626;
   margin: 0;
   font-size: 1.1rem;

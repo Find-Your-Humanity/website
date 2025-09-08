@@ -26,7 +26,8 @@ body {
 }
 
 /* simple spinner */
-.spinner {
+/* limit global spinner to explicit containers only to avoid widget collision */
+.App .spinner {
   width: 42px;
   height: 42px;
   border: 4px solid var(--shadow-color);

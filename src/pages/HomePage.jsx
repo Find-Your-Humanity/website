@@ -70,6 +70,8 @@ const HomePage = () => {
   const loadCaptchaWidgetFallback = () => {
     const container = document.getElementById('captcha-container');
     if (container) {
+      // iframe 폴백 모드 표시 클래스 적용
+      try { container.classList.add('iframe-mode'); } catch {}
       // CDN에서 위젯 스크립트 로드
       const script = document.createElement('script');
       script.src = 'https://1df60f5faf3b4f2f992ced2edbae22ad.kakaoiedge.com/latest/realcaptcha-widget.min.js';
@@ -77,6 +79,8 @@ const HomePage = () => {
       script.onload = () => {
         // 스크립트 로드 완료 후 위젯 렌더링
         if (typeof window.renderRealCaptcha === 'function') {
+          // 정상 렌더 경로에서는 iframe 모드 해제
+          try { container.classList.remove('iframe-mode'); } catch {}
           window.renderRealCaptcha('captcha-container', {
             siteKey: CAPTCHA_SITE_KEY,
             theme: 'light',
@@ -118,6 +122,11 @@ const HomePage = () => {
           
           // 위젯 스크립트가 로드되었는지 확인
           if (typeof window.renderRealCaptcha === 'function') {
+            // 정상 렌더 시 iframe 모드 제거
+            try {
+              const container = document.getElementById('captcha-container');
+              if (container) container.classList.remove('iframe-mode');
+            } catch {}
             window.renderRealCaptcha('captcha-container', {
               siteKey: CAPTCHA_SITE_KEY, // siteKey를 첫 번째 파라미터로 명시
               theme: 'light',

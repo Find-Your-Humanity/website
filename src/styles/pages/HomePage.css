@@ -171,7 +171,7 @@
 
 /* Captcha Section Styles */
 .captcha-section {
-  height: 100% !important;
+  height: 500px !important;
   min-height: 500px !important;
   display: flex !important;
   flex-direction: column !important;
@@ -185,11 +185,11 @@
 
 #captcha-container {
   width: 100% !important;
-  height: 100% !important;
+  height: 500px !important;
   min-height: 500px !important;
-  flex: 1 !important;
   display: flex !important;
-  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
   background-color: var(--bg-primary) !important;
   border-radius: 8px !important;
   overflow: hidden !important;
@@ -208,8 +208,8 @@
 /* Captcha container inner div */
 #captcha-container > div {
   width: 100% !important;
-  height: 100% !important;
-  min-height: 500px !important;
+  height: auto !important;
+  min-height: 0 !important;
 }
 
 /* Consent Section */
