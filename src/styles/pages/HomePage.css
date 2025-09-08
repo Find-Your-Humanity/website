@@ -151,8 +151,9 @@
     0 0 0 1px rgba(223, 255, 0, 0.2) inset;
 }
 
-/* Captcha Section */
-.captcha-section {
+/* Captcha/Consent Section (공통 레이아웃) */
+.captcha-section,
+.consent-section {
   margin-top: 2rem;
   width: 100%;
   max-width: 600px;
@@ -163,7 +164,8 @@
 /* 컨테이너 제거: 섹션에 직접 렌더링 */
 
 /* Captcha Section Styles */
-.captcha-section {
+.captcha-section,
+.consent-section {
   height: auto !important; /* 위젯 콘텐츠 높이에 따름 */
   min-height: 0 !important;
   display: block !important;
@@ -171,7 +173,7 @@
   margin: 2rem auto !important;
   background-color: var(--bg-secondary) !important;
   border-radius: 12px !important;
-  padding: 2rem !important;
+  padding: 4rem 2rem !important; /* 위/아래 여백 확대 */
   box-sizing: border-box !important;
   box-shadow: 0 4px 20px var(--shadow-color);
 }
@@ -205,13 +207,7 @@
 }
 
 /* Consent Section */
-.consent-section {
-  margin-top: 1.5rem;
-  padding: 1rem;
-  background: var(--bg-secondary);
-  border-radius: 8px;
-  border: 1px solid var(--border-color);
-}
+/* 공통 규칙 사용: 별도 빈 규칙 제거 */
 
 .consent-checkbox {
   display: flex;
