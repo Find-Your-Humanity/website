@@ -1,0 +1,31 @@
+.rc-overlay{
+  position:fixed;
+  inset:0;
+  width:100vw;
+  height:100vh;
+  background:rgba(0,0,0,0.5);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:10000;
+  padding:20px;
+  opacity:1;
+  transition:opacity 180ms ease-out;
+}
+
+.rc-modal{
+  width:min(900px,95vw);
+  max-height:90vh;
+  overflow-y:auto;
+  background:#fff;
+  border-radius:12px;
+  box-shadow:0 12px 40px rgba(0,0,0,0.25);
+  transform:translateY(0);
+  transition:transform 200ms ease-out;
+}
+
+/* Optional: improve iOS scroll behavior inside modal */
+.rc-modal{ overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+
+/* Utility if we want to lock body scroll globally (we also do inline JS) */
+.body-lock{ overflow:hidden; }
