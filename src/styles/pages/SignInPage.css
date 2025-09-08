@@ -97,7 +97,7 @@
 .social-button svg path { width: 48px !important; height: 48px !important; }
 @media (max-width: 768px){ .signin-container{grid-template-columns:1fr;} .illustration-side{display:none;} .form-side{padding:2rem;} .signin-title{font-size:2rem;} }
 @media (max-width: 480px){ .signin-page{padding:1rem;} .form-side{padding:1.5rem;} .signin-title{font-size:1.8rem;} .social-login{gap:.5rem;} .social-button{width:45px; height:45px;} }
-.error-message { background-color:var(--error-color); color:var(--bg-primary); padding:10px; border-radius:4px; margin-bottom:15px; text-align:center; border:1px solid var(--error-color); }
+.signin-page .error-message { background-color:var(--error-color); color:var(--bg-primary); padding:10px; border-radius:4px; margin-bottom:15px; text-align:center; border:1px solid var(--error-color); }
 .signin-button:disabled { background-color:var(--text-tertiary); cursor:not-allowed; transform:none; box-shadow:none; }
 .signin-form-input:disabled { background-color:var(--bg-secondary); cursor:not-allowed; }
 .signin-password-toggle:disabled { cursor:not-allowed; opacity:.3; }

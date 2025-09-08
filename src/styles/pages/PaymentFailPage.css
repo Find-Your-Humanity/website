@@ -264,12 +264,12 @@
     text-align: left;
   }
   
-  .error-message {
+  .payment-fail-page .error-message {
     flex-direction: column;
     text-align: center;
   }
   
-  .error-message p {
+  .payment-fail-page .error-message p {
     text-align: center;
   }
 } 

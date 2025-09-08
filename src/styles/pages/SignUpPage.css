@@ -171,7 +171,7 @@
 
 .social-button svg { width: 32px !important; height: 32px !important; color: var(--text-primary); }
 
-.error-message { background-color:var(--error-color); color:var(--bg-primary); padding:10px; border-radius:4px; margin-bottom:15px; text-align:center; border:1px solid var(--error-color); }
+.signup-page .error-message { background-color:var(--error-color); color:var(--bg-primary); padding:10px; border-radius:4px; margin-bottom:15px; text-align:center; border:1px solid var(--error-color); }
 
 .field-error { color:var(--error-color); font-size:.8rem; margin-top:6px; }
 
