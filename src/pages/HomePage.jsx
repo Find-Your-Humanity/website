@@ -14,8 +14,10 @@ const HomePage = () => {
   const mainContentRef = useRef(null);
   const featuresRef = useRef(null);
   
-  // CDN API 키 가져오기 (프론트엔드에서는 사이트 키만 사용)
-  const CAPTCHA_SITE_KEY = process.env.REACT_APP_CAPTCHA_SITE_KEY || 'rc_live_f49a055d62283fd02e8203ccaba70fc2';
+  // 데모 전용 siteKey (홈페이지 체험용). 실제 사용자 집계/과금에는 사용하지 않도록 백엔드에서 필터링 권장
+  const DEMO_SITE_KEY = process.env.REACT_APP_DEMO_SITE_KEY || 'rc_live_f49a055d62283fd02e8203ccaba70fc2';
+  // 전역 기본키 제거: 일반 렌더는 반드시 사용자/입력으로 받은 siteKey를 사용하도록 강제
+  const CAPTCHA_SITE_KEY = undefined;
   
   // 페이지 이동 시 스크롤을 맨 위로 올림
   useScrollToTop();
@@ -81,8 +83,13 @@ const HomePage = () => {
         if (typeof window.renderRealCaptcha === 'function') {
           // 정상 렌더 경로에서는 iframe 모드 해제
           try { container.classList.remove('iframe-mode'); } catch {}
+<<<<<<< HEAD
           window.renderRealCaptcha('captcha-section', {
             siteKey: CAPTCHA_SITE_KEY,
+=======
+          window.renderRealCaptcha('captcha-container', {
+            siteKey: DEMO_SITE_KEY,
+>>>>>>> e84acd2 (feat(website): use DEMO_SITE_KEY for public demo; require user siteKey for real use)
             theme: 'light',
             size: 'normal',
             language: 'ko',
@@ -98,7 +105,7 @@ const HomePage = () => {
         container.innerHTML = `
           <div style="width: 100%; height: 100%;">
             <iframe 
-              src="https://test.realcatcha.com?siteKey=${CAPTCHA_SITE_KEY}&theme=light" 
+              src="https://test.realcatcha.com?siteKey=${DEMO_SITE_KEY}&theme=light" 
               width="100%" 
               height="100%" 
               frameborder="0"
@@ -118,7 +125,7 @@ const HomePage = () => {
       // 약간의 지연 후 captcha 렌더링 (DOM이 준비된 후)
       const timer = setTimeout(() => {
         try {
-          console.log('캡차 렌더링 시작, siteKey:', CAPTCHA_SITE_KEY); // 디버깅용 로그
+          console.log('캡차 렌더링 시작');
           
           // 위젯 스크립트가 로드되었는지 확인
           if (typeof window.renderRealCaptcha === 'function') {
@@ -127,8 +134,23 @@ const HomePage = () => {
               const container = document.getElementById('captcha-section');
               if (container) container.classList.remove('iframe-mode');
             } catch {}
+<<<<<<< HEAD
             window.renderRealCaptcha('captcha-section', {
               siteKey: CAPTCHA_SITE_KEY, // siteKey를 첫 번째 파라미터로 명시
+=======
+            // 사이트 키는 반드시 런타임에서 전달받아야 함
+            const INPUT_ID = 'user-sitekey-input';
+            let siteKey = document.getElementById(INPUT_ID)?.value?.trim();
+            if (!siteKey) {
+              siteKey = window.__USER_SELECTED_SITE_KEY__ || '';
+            }
+            if (!siteKey) {
+              alert('siteKey가 필요합니다. 발급받은 key_id를 입력/선택하세요.');
+              return;
+            }
+            window.renderRealCaptcha('captcha-container', {
+              siteKey,
+>>>>>>> e84acd2 (feat(website): use DEMO_SITE_KEY for public demo; require user siteKey for real use)
               theme: 'light',
               size: 'normal',
               onSuccess: function(result) {
