@@ -112,6 +112,7 @@ const BillingScreen: React.FC = () => {
 
       const plansResponse = await billingService.getAvailablePlans();
       if (plansResponse.success) {
+        console.log('📊 요금제 목록 응답:', plansResponse.data);
         setAvailablePlans(plansResponse.data);
       } else {
         setError(plansResponse.error || '요금제 목록을 불러오는데 실패했습니다.');
@@ -289,6 +290,11 @@ const BillingScreen: React.FC = () => {
                       primary={`구독자: ${plan.subscriber_count || 0}명`}
                     />
                   </ListItem>
+                  {/* 디버그 정보 */}
+                  {console.log(`🔍 ${plan.name} 구독자 정보:`, { 
+                    subscriber_count: plan.subscriber_count, 
+                    active_subscribers: plan.active_subscribers 
+                  })}
                 </List>
                 
                 <Box mt="auto" pt={2}>
