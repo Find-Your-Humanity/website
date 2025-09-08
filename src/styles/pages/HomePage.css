@@ -160,68 +160,46 @@
   margin-right: auto;
 }
 
-#captcha-container {
-  width: 100%;
-  min-height: 500px; /* 전 구간 500px 유지 */
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 20px var(--shadow-color);
-  background: var(--bg-primary);
-}
+/* 컨테이너 제거: 섹션에 직접 렌더링 */
 
 /* Captcha Section Styles */
 .captcha-section {
-  height: 500px !important; /* 전 구간 500px 유지 */
-  min-height: 500px !important;
+  height: calc(500px + 4rem) !important; /* 패딩 포함 500px 내용 영역 보장 */
+  min-height: calc(500px + 4rem) !important;
   display: flex !important;
   flex-direction: column !important;
+  align-items: center !important; /* 위젯 중앙 정렬 */
+  justify-content: center !important;
   width: 100% !important;
   margin: 2rem auto !important;
   background-color: var(--bg-secondary) !important;
   border-radius: 12px !important;
-  padding: 2rem !important;
+  padding: 2rem !important; /* 상하 4rem */
   box-sizing: border-box !important;
+  box-shadow: 0 4px 20px var(--shadow-color);
 }
 
-#captcha-container {
-  width: 100% !important;
-  height: 500px !important;
-  min-height: 500px !important;
-  display: flex !important; /* 중앙 정렬 유지 */
-  align-items: center !important;
-  justify-content: center !important;
-  background-color: var(--bg-primary) !important;
-  border-radius: 8px !important;
-  overflow: hidden !important;
-  box-sizing: border-box !important;
-}
+/* 컨테이너 규칙 삭제 */
 
 /* Captcha iframe styles */
-#captcha-container iframe {
+.captcha-section iframe {
   width: 100% !important;
-  height: 100% !important; /* 500px 컨테이너 채움 */
+  height: 100% !important; /* 섹션 내용 영역 채움 */
   border: none !important;
   border-radius: 8px !important;
-  min-height: 500px !important;
 }
 
 /* Captcha container inner div */
-#captcha-container > div {
+.captcha-section > div {
   width: 100% !important;
   height: auto !important;
   min-height: 0 !important;
 }
 
 /* iframe 폴백일 때만 큰 컨테이너 적용 */
-#captcha-container.iframe-mode {
-  height: 500px !important;
-  min-height: 500px !important;
-}
-
-#captcha-container.iframe-mode iframe {
+.captcha-section.iframe-mode iframe {
   width: 100% !important;
   height: 100% !important;
-  min-height: 500px !important;
 }
 
 /* Consent Section */

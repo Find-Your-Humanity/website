@@ -68,7 +68,7 @@ const HomePage = () => {
 
   // CDN 방식으로 위젯 로드
   const loadCaptchaWidgetFallback = () => {
-    const container = document.getElementById('captcha-container');
+    const container = document.getElementById('captcha-section');
     if (container) {
       // iframe 폴백 모드 표시 클래스 적용
       try { container.classList.add('iframe-mode'); } catch {}
@@ -81,7 +81,7 @@ const HomePage = () => {
         if (typeof window.renderRealCaptcha === 'function') {
           // 정상 렌더 경로에서는 iframe 모드 해제
           try { container.classList.remove('iframe-mode'); } catch {}
-          window.renderRealCaptcha('captcha-container', {
+          window.renderRealCaptcha('captcha-section', {
             siteKey: CAPTCHA_SITE_KEY,
             theme: 'light',
             size: 'normal',
@@ -124,10 +124,10 @@ const HomePage = () => {
           if (typeof window.renderRealCaptcha === 'function') {
             // 정상 렌더 시 iframe 모드 제거
             try {
-              const container = document.getElementById('captcha-container');
+              const container = document.getElementById('captcha-section');
               if (container) container.classList.remove('iframe-mode');
             } catch {}
-            window.renderRealCaptcha('captcha-container', {
+            window.renderRealCaptcha('captcha-section', {
               siteKey: CAPTCHA_SITE_KEY, // siteKey를 첫 번째 파라미터로 명시
               theme: 'light',
               size: 'normal',
@@ -243,9 +243,7 @@ const HomePage = () => {
           
           {/* Captcha Container */}
           {showCaptcha && consentGiven && (
-            <div className="captcha-section">
-              <div id="captcha-container"></div>
-            </div>
+            <div className="captcha-section" id="captcha-section"></div>
           )}
         </div>
       </section>
