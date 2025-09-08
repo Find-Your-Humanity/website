@@ -159,7 +159,7 @@ const RequestsScreen: React.FC = () => {
   };
 
   return (
-    <Box>
+    <Box className="rc-container">
       <Typography variant="h5" sx={{ mb: 2, fontWeight: 700 }}>요청사항 관리</Typography>
       
       {error && (
@@ -194,7 +194,7 @@ const RequestsScreen: React.FC = () => {
               </Typography>
             </Box>
           ) : (
-            <TableContainer component={Paper} variant="outlined">
+            <TableContainer component={Paper} variant="outlined" className="rc-scroll-x rc-sticky-header">
               <Table>
                 <TableHead>
                   <TableRow>

@@ -115,7 +115,7 @@ const ApiKeysScreen: React.FC = () => {
   };
 
   return (
-    <Box>
+    <Box className="rc-container">
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
         <Typography variant="h5" sx={{ fontWeight: 700 }}>API 키</Typography>
         <Button variant="contained" startIcon={<AddIcon />} onClick={() => setOpenDialog(true)}>
@@ -132,7 +132,7 @@ const ApiKeysScreen: React.FC = () => {
           ) : apiKeys.length === 0 ? (
             <Alert severity="info">등록된 API 키가 없습니다. 새 API 키를 생성하세요.</Alert>
           ) : (
-            <TableContainer component={Paper}>
+            <TableContainer component={Paper} className="rc-scroll-x rc-sticky-header">
               <Table>
                 <TableHead>
                   <TableRow>

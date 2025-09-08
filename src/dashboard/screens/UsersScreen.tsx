@@ -130,7 +130,7 @@ const UsersScreen: React.FC = () => {
   };
 
   return (
-    <Box>
+    <Box className="rc-container">
       <Typography variant="h5" sx={{ mb: 2, fontWeight: 700 }}>사용자 관리</Typography>
       <Card>
         <CardContent>
@@ -143,7 +143,7 @@ const UsersScreen: React.FC = () => {
           ) : users.length === 0 ? (
             <Alert severity="info">등록된 사용자가 없습니다.</Alert>
           ) : (
-            <TableContainer component={Paper}>
+            <TableContainer component={Paper} className="rc-scroll-x rc-sticky-header">
               <Table>
                 <TableHead>
                   <TableRow>

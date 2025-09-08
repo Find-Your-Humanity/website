@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
   Box,
   Drawer,
+  SwipeableDrawer,
   useTheme,
   useMediaQuery,
 } from '@mui/material';
@@ -17,6 +18,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [mobileOpen, setMobileOpen] = useState(false);
+  const SWIPE_AREA = 24; // px, keep in sync with --rc-drawer-swipe-area
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -24,19 +26,30 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <Box sx={{ display: 'flex' }}>
+      {/* 모바일에서 좌측 피크(힌트) 영역 - 스와이프/탭으로 열기 */}
+      {isMobile && (
+        <Box
+          className="rc-sidebar-peek"
+          onClick={handleDrawerToggle}
+          role="button"
+          aria-label="메뉴 열기"
+        />
+      )}
       {/* 사이드바 */}
       <Box
         component="nav"
         sx={{ width: { md: DRAWER_WIDTH }, flexShrink: { md: 0 } }}
       >
-        {/* 모바일용 드로어 */}
-        <Drawer
-          variant="temporary"
+        {/* 모바일용 드로어 - 스와이프 지원 */}
+        <SwipeableDrawer
+          disableBackdropTransition={false}
+          keepMounted
           open={mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true, // 모바일 성능 향상
-          }}
+          onOpen={() => setMobileOpen(true)}
+          onClose={() => setMobileOpen(false)}
+          anchor="left"
+          swipeAreaWidth={SWIPE_AREA}
+          ModalProps={{ keepMounted: true }}
           sx={{
             display: { xs: 'block', md: 'none' },
             '& .MuiDrawer-paper': {
@@ -49,7 +62,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           }}
         >
           <Sidebar onItemClick={() => setMobileOpen(false)} />
-        </Drawer>
+        </SwipeableDrawer>
         {/* 데스크톱용 드로어 */}
         <Drawer
           variant="permanent"

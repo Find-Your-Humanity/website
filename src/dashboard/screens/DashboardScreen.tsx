@@ -126,12 +126,12 @@ const DashboardScreen: React.FC = () => {
   );
 
   return (
-    <Box>
+    <Box className="rc-container">
       {/* 헤더 */}
       <Box sx={{ display: 'flex', flexDirection: 'column', mb: 3 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Typography variant="h4" component="h1" gutterBottom>
+            <Typography variant="h4" component="h1" gutterBottom sx={{ fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' } }}>
               Dashboard
             </Typography>
             <Chip
@@ -154,7 +154,7 @@ const DashboardScreen: React.FC = () => {
       </Box>
 
       {/* Credit 사용량, Pro Credit 및 캡챠 레벨별 사용량 */}
-      <Grid container spacing={3} sx={{ mb: 3 }} alignItems="stretch">
+      <Grid container spacing={{ xs: 2, md: 3 }} sx={{ mb: 3 }} alignItems="stretch">
         <Grid item xs={12} md={6}>
           <Grid container spacing={2} direction="column">
             <Grid item>
@@ -311,7 +311,7 @@ const DashboardScreen: React.FC = () => {
       </Grid>
 
       {/* 주요 메트릭 */}
-      <Grid container spacing={3} sx={{ mb: 3 }}>
+      <Grid container spacing={{ xs: 2, md: 3 }} sx={{ mb: 3 }}>
         <Grid item xs={12} sm={6} md={3}>
           <StatCard
             title="총 요청 수"
@@ -349,7 +349,7 @@ const DashboardScreen: React.FC = () => {
       </Grid>
 
       {/* 차트 */}
-      <Grid container spacing={3}>
+      <Grid container spacing={{ xs: 2, md: 3 }}>
         <Grid item xs={12}>
           <Card sx={{ 
             transition: 'all 0.3s ease-in-out',

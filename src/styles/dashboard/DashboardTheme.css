@@ -15,10 +15,17 @@
   --error-color: var(--error-color, #dc3545);
   --success-color: var(--success-color, #28a745);
   --warning-color: var(--warning-color, #ffc107);
-}
 
-[data-theme="dark"] {
-  /* keep same var names, they will be already set on <html>; fallbacks added */
+  /* responsive utilities for dashboard */
+  --rc-container-max: 1200px;
+  --rc-container-pad-md: 24px;
+  --rc-container-pad-sm: 16px;
+  --rc-container-pad-xs: 12px;
+
+  /* mobile drawer hint/peek */
+  --rc-drawer-peek-width: 12px;
+  --rc-drawer-peek-hover: 18px;
+  --rc-drawer-swipe-area: 24px; /* for SwipeableDrawer */
 }
 
 /* Dashboard structural defaults using vars */
@@ -52,4 +59,52 @@
   color: #000;
 }
 .dashboard-button.primary:hover { background: var(--accent-hover); }
+
+/* ---------- Responsive helpers (mobile only) ---------- */
+.rc-container { max-width: var(--rc-container-max); margin: 0 auto; padding: var(--rc-container-pad-md); }
+
+@media (max-width: 900px) {
+  .rc-container { padding: var(--rc-container-pad-sm); }
+}
+
+@media (max-width: 600px) {
+  .rc-container { padding: var(--rc-container-pad-xs); }
+}
+
+/* horizontal scroll helpers for tables on mobile */
+.rc-scroll-x { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.rc-sticky-header thead th { position: sticky; top: 0; background: var(--bg-primary); z-index: 1; }
+
+/* Table readability on small screens */
+@media (max-width: 600px) {
+  .rc-scroll-x table { min-width: 640px; }
+  .rc-scroll-x th, .rc-scroll-x td { padding: 8px; font-size: 0.875rem; white-space: nowrap; }
+}
+
+/* Typography clamps within dashboard containers */
+.rc-container h1 { font-size: clamp(1.4rem, 3.2vw, 2.25rem); }
+.rc-container h2 { font-size: clamp(1.25rem, 2.8vw, 2rem); }
+.rc-container h3 { font-size: clamp(1.1rem, 2.4vw, 1.75rem); }
+.rc-container h4 { font-size: clamp(1rem, 2.0vw, 1.5rem); }
+.rc-container h5 { font-size: clamp(0.95rem, 1.7vw, 1.25rem); }
+.rc-container h6 { font-size: clamp(0.9rem, 1.5vw, 1.1rem); }
+
+/* mobile drawer "peek" (hint bar) */
+.rc-sidebar-peek {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: var(--rc-drawer-peek-width);
+  background: linear-gradient(90deg, rgba(0,0,0,0.15), rgba(0,0,0,0.0));
+  border-right: 1px solid rgba(0,0,0,0.06);
+  cursor: ew-resize;
+  z-index: 1200; /* below app bar if any */
+  transition: width 150ms ease, background 150ms ease;
+}
+.rc-sidebar-peek:hover { width: var(--rc-drawer-peek-hover); background: linear-gradient(90deg, rgba(0,0,0,0.2), rgba(0,0,0,0.0)); }
+
+@media (min-width: 900px) {
+  .rc-sidebar-peek { display: none; }
+}
 

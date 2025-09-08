@@ -140,7 +140,7 @@ const PlansScreen: React.FC = () => {
   };
 
   return (
-    <Box>
+    <Box className="rc-container">
       <Typography variant="h5" sx={{ mb: 2, fontWeight: 700 }}>요금제 관리</Typography>
       <Card>
         <CardContent>
@@ -153,7 +153,7 @@ const PlansScreen: React.FC = () => {
           ) : plans.length === 0 ? (
             <Alert severity="info">등록된 요금제가 없습니다.</Alert>
           ) : (
-            <TableContainer component={Paper}>
+            <TableContainer component={Paper} className="rc-scroll-x rc-sticky-header">
               <Table>
                 <TableHead>
                   <TableRow>

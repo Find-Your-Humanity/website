@@ -241,11 +241,11 @@ const AnalyticsScreen: React.FC = () => {
   }
 
   return (
-    <Box>
+    <Box className="rc-container">
       {/* 헤더 */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Box>
-          <Typography variant="h4" component="h1" gutterBottom>
+          <Typography variant="h4" component="h1" gutterBottom sx={{ fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' } }}>
             분석
           </Typography>
           <Typography variant="body1" color="text.secondary">

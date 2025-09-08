@@ -34,7 +34,7 @@ const SettingsScreen: React.FC = () => {
   };
 
   return (
-    <Box>
+    <Box className="rc-container">
       <Typography variant="h5" sx={{ mb: 2, fontWeight: 700 }}>설정</Typography>
       <Card>
         <CardContent>

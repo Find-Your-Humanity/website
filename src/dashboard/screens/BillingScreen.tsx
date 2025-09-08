@@ -150,7 +150,7 @@ const BillingScreen: React.FC = () => {
   }
 
   return (
-    <Box>
+    <Box className="rc-container">
       <Typography variant="h5" sx={{ mb: 2, fontWeight: 700 }}>요금제 관리</Typography>
 
       {error && (
