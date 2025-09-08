@@ -38,32 +38,6 @@ export function buildThemeFromCssVars() {
 
   return createTheme({
     palette: palette as any,
-    components: {
-      MuiPaper: {
-        styleOverrides: {
-          root: {
-            backgroundImage: 'none',
-          },
-        },
-      },
-      MuiCard: {
-        styleOverrides: {
-          root: {
-            backgroundColor: 'var(--bg-primary)',
-            color: 'var(--text-primary)',
-            border: '1px solid var(--border-color)',
-            boxShadow: '0 2px 10px var(--shadow-color)',
-          },
-        },
-      },
-      MuiButton: {
-        styleOverrides: {
-          root: {
-            textTransform: 'none',
-          },
-        },
-      },
-    },
   });
 }
 
