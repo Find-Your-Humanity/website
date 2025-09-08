@@ -269,6 +269,17 @@
   margin-left: 2rem;
 }
 
+/* Mobile Docs Toggle Button */
+.mobile-docs-toggle {
+  display: none;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
 .search-results-info {
   position: absolute;
   top: 100%;
@@ -324,6 +335,68 @@
   color: var(--text-secondary);
   min-width: 40px;
   text-align: center;
+}
+
+/* Mobile Docs Overlay */
+.mobile-docs-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 10000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 72px; /* 모바일 헤더 보정 */
+}
+
+.mobile-docs-panel {
+  width: min(640px, 92vw);
+  max-height: calc(100vh - 96px);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px var(--shadow-color);
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-docs-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.mobile-docs-close {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.mobile-docs-nav {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 0.75rem 0.75rem 0.75rem;
+  overflow-y: auto;
+}
+
+.mobile-docs-link {
+  display: block;
+  padding: 0.75rem 0.75rem;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.mobile-docs-link.active,
+.mobile-docs-link:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
 }
 
 /* 검색어 하이라이팅 스타일 */
@@ -1017,6 +1090,10 @@
   
   .docs-search-input {
     width: 150px;
+  }
+  
+  .mobile-docs-toggle {
+    display: inline-block;
   }
   
   .language-selector,

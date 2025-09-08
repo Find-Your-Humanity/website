@@ -15,6 +15,7 @@ const DocumentPage = () => {
   const [selectedLanguage, setSelectedLanguage] = useState('ko');
   const [selectedSidebarItem, setSelectedSidebarItem] = useState('developer_guide');
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isDocNavOpen, setIsDocNavOpen] = useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [markdownContent, setMarkdownContent] = useState('');
@@ -495,6 +496,17 @@ const DocumentPage = () => {
             )}
           </div>
           <Link to="/faq" className="header-link">FAQ</Link>
+
+          {/* Mobile Docs Nav Toggle */}
+          <button
+            type="button"
+            className="mobile-docs-toggle"
+            onClick={() => setIsDocNavOpen(true)}
+            aria-label="문서 탐색 열기"
+            title="문서 탐색"
+          >
+            문서 탐색
+          </button>
           
           {/* 관리자 편집 모드 컨트롤 */}
           {isAdmin && (
@@ -774,6 +786,41 @@ const DocumentPage = () => {
           </div>
         </aside>
       </div>
+
+      {/* Mobile Docs Navigation Overlay */}
+      {isDocNavOpen && (
+        <div className="mobile-docs-overlay" onClick={() => setIsDocNavOpen(false)}>
+          <div className="mobile-docs-panel" onClick={(e) => e.stopPropagation()}>
+            <div className="mobile-docs-header">
+              <span>문서 탐색</span>
+              <button
+                type="button"
+                className="mobile-docs-close"
+                onClick={() => setIsDocNavOpen(false)}
+                aria-label="닫기"
+              >
+                ×
+              </button>
+            </div>
+            <nav className="mobile-docs-nav">
+              {sidebarItems[selectedLanguage].map((item, index) => (
+                <a
+                  key={index}
+                  href="#"
+                  className={`mobile-docs-link ${selectedSidebarItem === item ? 'active' : ''}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleSidebarItemClick(item);
+                    setIsDocNavOpen(false);
+                  }}
+                >
+                  {sidebarDisplayNames[selectedLanguage][item] || item}
+                </a>
+              ))}
+            </nav>
+          </div>
+        </div>
+      )}
 
       {/* 모바일 바텀시트 TOC */}
       <div 
