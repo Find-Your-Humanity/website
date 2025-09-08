@@ -164,17 +164,14 @@
 
 /* Captcha Section Styles */
 .captcha-section {
-  height: calc(500px + 4rem) !important; /* 패딩 포함 500px 내용 영역 보장 */
-  min-height: calc(500px + 4rem) !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important; /* 위젯 중앙 정렬 */
-  justify-content: center !important;
+  height: auto !important; /* 위젯 콘텐츠 높이에 따름 */
+  min-height: 0 !important;
+  display: block !important;
   width: 100% !important;
   margin: 2rem auto !important;
   background-color: var(--bg-secondary) !important;
   border-radius: 12px !important;
-  padding: 2rem !important; /* 상하 4rem */
+  padding: 2rem !important;
   box-sizing: border-box !important;
   box-shadow: 0 4px 20px var(--shadow-color);
 }
@@ -184,7 +181,8 @@
 /* Captcha iframe styles */
 .captcha-section iframe {
   width: 100% !important;
-  height: 100% !important; /* 섹션 내용 영역 채움 */
+  height: auto !important; /* 고정 높이 제거 */
+  min-height: 0 !important;
   border: none !important;
   border-radius: 8px !important;
 }
@@ -197,6 +195,10 @@
 }
 
 /* iframe 폴백일 때만 큰 컨테이너 적용 */
+.captcha-section.iframe-mode {
+  height: 600px !important; /* 폴백일 때만 높이 지정 */
+}
+
 .captcha-section.iframe-mode iframe {
   width: 100% !important;
   height: 100% !important;
