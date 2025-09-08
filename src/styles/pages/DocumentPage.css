@@ -1334,6 +1334,124 @@
   }
 }
 
+/* Mobile TOC Trigger Button */
+.toc-trigger-btn {
+  display: none;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .toc-trigger-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+}
+
+/* Bottom Sheet TOC */
+.toc-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease;
+  z-index: 1000;
+}
+
+.toc-overlay.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.toc-bottom-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transform: translateY(110%);
+  background: var(--bg-primary);
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  box-shadow: 0 -10px 40px var(--shadow-color);
+  transition: transform 220ms ease-out;
+  z-index: 1001;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.toc-bottom-sheet.is-open {
+  transform: translateY(0);
+}
+
+.toc-drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 0;
+}
+
+.toc-drag-handle .drag-bar {
+  width: 48px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--border-color);
+}
+
+.toc-sheet-header {
+  padding: 0.75rem 1rem 0.25rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.toc-sheet-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.toc-sheet-content {
+  padding: 0.5rem 0.5rem 1rem 0.5rem;
+  overflow-y: auto;
+}
+
+.toc-sheet-item {
+  width: 100%;
+  text-align: left;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-radius: 10px;
+  margin: 0.35rem 0;
+  font-size: 0.95rem;
+}
+
+.toc-sheet-item:hover {
+  background: var(--bg-tertiary);
+}
+
+.toc-level-1 { padding-left: 0.9rem; }
+.toc-level-2 { padding-left: 1.6rem; }
+.toc-level-3 { padding-left: 2.3rem; }
+.toc-level-4 { padding-left: 3.0rem; }
+.toc-level-5 { padding-left: 3.7rem; }
+.toc-level-6 { padding-left: 4.4rem; }
+
+/* Hide bottom sheet UI on desktop */
+@media (min-width: 769px) {
+  .toc-trigger-btn,
+  .toc-overlay,
+  .toc-bottom-sheet {
+    display: none !important;
+  }
+}
+
 
 
 

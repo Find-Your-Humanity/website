@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { FaSearch, FaHome, FaReact, FaVuejs, FaWordpress, FaAngular, FaNodeJs, FaEdit, FaCheckCircle, FaExclamationTriangle, FaTimes } from 'react-icons/fa';
 import useScrollToTop from '../hooks/useScrollToTop';
@@ -25,6 +25,7 @@ const DocumentPage = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [currentSearchIndex, setCurrentSearchIndex] = useState(0);
   const [isSearching, setIsSearching] = useState(false);
+  const [isTocOpen, setIsTocOpen] = useState(false);
   
   // 인증 컨텍스트에서 사용자 정보 가져오기
   const { user } = useAuth();
@@ -32,6 +33,50 @@ const DocumentPage = () => {
   
   // 페이지 이동 시 스크롤을 맨 위로 올림
   useScrollToTop();
+  // API 콘텐츠에서 헤딩 추출 (TOC용)
+  const tocHeadings = useMemo(() => {
+    if (!apiContent) return [];
+    const headings = [];
+    const lines = apiContent.split('\n');
+    lines.forEach((line, index) => {
+      const headingMatch = line.match(/^(#{1,6})\s+(.+)$/);
+      if (headingMatch) {
+        const level = headingMatch[1].length;
+        const text = headingMatch[2].trim();
+        const id = text.toLowerCase().replace(/[^a-z0-9가-힣]/g, '-').replace(/-+/g, '-');
+        headings.push({ level, text, id, lineIndex: index });
+      }
+    });
+    return headings;
+  }, [apiContent]);
+
+  const openToc = () => setIsTocOpen(true);
+  const closeToc = () => setIsTocOpen(false);
+
+  const handleTocItemClick = (id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // 주소 해시 업데이트 (선택)
+      if (history.pushState) {
+        history.pushState(null, '', `#${id}`);
+      } else {
+        window.location.hash = `#${id}`;
+      }
+    }
+    closeToc();
+  };
+
+  // ESC로 바텀시트 닫기
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setIsTocOpen(false);
+      }
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, []);
 
   // 검색 기능 구현
   const performSearch = (query, content) => {
@@ -415,6 +460,16 @@ const DocumentPage = () => {
         </div>
         
         <div className="header-controls">
+          {/* 모바일 전용 목차 트리거 */}
+          <button 
+            type="button"
+            className="toc-trigger-btn"
+            aria-controls="toc-bottom-sheet"
+            aria-expanded={isTocOpen}
+            onClick={openToc}
+          >
+            목차
+          </button>
           <div className={`language-selector ${isLanguageDropdownOpen ? 'dropdown-open' : ''}`} onClick={() => setIsLanguageDropdownOpen(!isLanguageDropdownOpen)}>
             <span className="language-flag">{currentLanguage.flag}</span>
             <span className="language-name">{currentLanguage.name}</span>
@@ -719,6 +774,42 @@ const DocumentPage = () => {
           </div>
         </aside>
       </div>
+
+      {/* 모바일 바텀시트 TOC */}
+      <div 
+        className={`toc-overlay ${isTocOpen ? 'is-visible' : ''}`}
+        onClick={closeToc}
+        aria-hidden={!isTocOpen}
+      />
+      <aside 
+        id="toc-bottom-sheet"
+        className={`toc-bottom-sheet ${isTocOpen ? 'is-open' : ''}`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="toc-title"
+      >
+        <div className="toc-drag-handle" onClick={closeToc}>
+          <span className="drag-bar" />
+        </div>
+        <div className="toc-sheet-header">
+          <h3 id="toc-title">이 문서의 목차</h3>
+        </div>
+        <nav className="toc-sheet-content">
+          {tocHeadings && tocHeadings.length > 0 ? (
+            tocHeadings.map((heading, index) => (
+              <button
+                key={`${heading.id}-${index}`}
+                className={`toc-sheet-item toc-level-${heading.level}`}
+                onClick={() => handleTocItemClick(heading.id)}
+              >
+                {heading.text}
+              </button>
+            ))
+          ) : (
+            <div className="toc-empty">목차가 없습니다</div>
+          )}
+        </nav>
+      </aside>
 
       {/* 저장 완료 모달 */}
       {showSaveModal && (
