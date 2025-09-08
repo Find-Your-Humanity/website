@@ -18,17 +18,18 @@
 }
 
 .logo {
-  font-weight: bold;
-  font-size: 1.5rem;
-  color: var(--text-primary);
-  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
   cursor: pointer;
-  transition: color 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.3s ease;
   text-decoration: none;
 }
 
-.logo:hover {
-  color: var(--accent-color);
+.logo-image {
+  height: 48px;
+  width: auto;
+  transition: transform 0.3s ease;
 }
 
 /* 테마 토글 버튼 */
@@ -42,15 +43,49 @@
   border: none;
   outline: none;
   cursor: pointer;
+  -webkit-transition: all 0.3s ease;
   transition: all 0.3s ease;
   color: var(--text-primary);
   margin-right: 1rem;
   box-shadow: none;
   font-size: 20px;
   border-radius: 50%;
+  /* 삼성 인터넷 터치 최적화 */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  /* 터치 영역 확대 */
+  min-width: 44px;
+  min-height: 44px;
+}
+
+/* SVG 아이콘 크기 및 색상 강제 설정 */
+.theme-toggle svg,
+.mobile-theme-toggle-header svg {
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+  min-height: 20px !important;
+  max-width: 20px !important;
+  max-height: 20px !important;
+  fill: currentColor !important;
+  stroke: currentColor !important;
+  display: inline-block !important;
+  flex-shrink: 0 !important;
+}
+
+/* React Icons 컨테이너 크기 강제 설정 */
+.theme-toggle > *,
+.mobile-theme-toggle-header > * {
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+  min-height: 20px !important;
 }
 
 .theme-toggle:hover {
+  -webkit-transform: translateY(-2px);
   transform: translateY(-2px);
   color: var(--accent-color);
   background-color: var(--bg-secondary);
@@ -64,7 +99,14 @@
 .theme-toggle:active {
   outline: none;
   box-shadow: none;
+  -webkit-transform: translateY(0);
   transform: translateY(0);
+}
+
+/* 터치 디바이스에서의 활성화 상태 */
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
 }
 
 
@@ -75,6 +117,69 @@
 }
 
 [data-theme="dark"] .theme-toggle:hover {
+  color: var(--accent-hover);
+  background-color: var(--bg-tertiary);
+}
+
+/* 모바일 테마 토글 버튼 (헤더에 위치) */
+.mobile-theme-toggle-header {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  -webkit-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  color: var(--text-primary);
+  margin-right: 0.5rem;
+  box-shadow: none;
+  font-size: 20px;
+  border-radius: 50%;
+  /* 삼성 인터넷 터치 최적화 */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  /* 터치 영역 확대 */
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.mobile-theme-toggle-header:hover {
+  -webkit-transform: translateY(-2px);
+  transform: translateY(-2px);
+  color: var(--accent-color);
+  background-color: var(--bg-secondary);
+}
+
+.mobile-theme-toggle-header:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.mobile-theme-toggle-header:active {
+  outline: none;
+  box-shadow: none;
+  -webkit-transform: translateY(0);
+  transform: translateY(0);
+}
+
+/* 터치 디바이스에서의 활성화 상태 */
+.mobile-theme-toggle-header:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+/* 다크 모드에서만 브랜드 컬러 적용 */
+[data-theme="dark"] .mobile-theme-toggle-header {
+  color: var(--accent-color);
+}
+
+[data-theme="dark"] .mobile-theme-toggle-header:hover {
   color: var(--accent-hover);
   background-color: var(--bg-tertiary);
 }
@@ -457,6 +562,28 @@
   color: var(--text-secondary);
 }
 
+/* 다크모드에서 모바일 메뉴 강화 */
+[data-theme="dark"] .mobile-menu {
+  background-color: var(--bg-primary);
+  border-bottom-color: var(--border-color);
+  box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+[data-theme="dark"] .mobile-nav {
+  background-color: var(--bg-primary);
+  border-bottom-color: var(--border-color-light);
+}
+
+[data-theme="dark"] .mobile-auth {
+  background-color: var(--bg-primary);
+  border-top-color: var(--border-color-light);
+}
+
+[data-theme="dark"] .mobile-user-info {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color-light);
+}
+
 /* 다크모드에서 모바일 사용자 정보 텍스트 색상 */
 [data-theme="dark"] .mobile-user-name {
   color: var(--text-primary);
@@ -473,6 +600,7 @@
   border-bottom: 1px solid var(--border-color);
   box-shadow: 0 2px 4px var(--shadow-color);
   padding: 1rem 2rem;
+  color: var(--text-primary);
 }
 
 .mobile-nav {
@@ -482,6 +610,7 @@
   margin-bottom: 1.5rem;
   border-bottom: 1px solid var(--border-color-light);
   padding-bottom: 1rem;
+  background-color: var(--bg-primary);
 }
 
 .mobile-nav-link {
@@ -585,6 +714,8 @@
   border-radius: 4px;
   transition: background-color 0.2s ease;
   margin-bottom: 0.25rem;
+  width: 100%;
+  text-align: left;
 }
 
 .mobile-dropdown-item:hover {
@@ -595,6 +726,7 @@
 .mobile-auth {
   border-top: 1px solid var(--border-color-light);
   padding-top: 1rem;
+  background-color: var(--bg-primary);
 }
 
 .mobile-signin {
@@ -625,6 +757,7 @@
   padding: 0.75rem;
   background-color: var(--bg-secondary);
   border-radius: 8px;
+  border: 1px solid var(--border-color-light);
 }
 
 .mobile-user-avatar {
@@ -706,15 +839,82 @@
   opacity: 0.9; 
 }
 
+/* 모바일 테마 토글 버튼 */
+.mobile-theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  -webkit-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  box-shadow: none;
+  font-size: 20px;
+  border-radius: 50%;
+  /* 삼성 인터넷 터치 최적화 */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  /* 터치 영역 확대 */
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.mobile-theme-toggle:hover {
+  -webkit-transform: translateY(-2px);
+  transform: translateY(-2px);
+  color: var(--accent-color);
+  background-color: var(--bg-secondary);
+}
+
+.mobile-theme-toggle:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.mobile-theme-toggle:active {
+  outline: none;
+  box-shadow: none;
+  -webkit-transform: translateY(0);
+  transform: translateY(0);
+}
+
+/* 터치 디바이스에서의 활성화 상태 */
+.mobile-theme-toggle:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+/* 다크 모드에서만 브랜드 컬러 적용 */
+[data-theme="dark"] .mobile-theme-toggle {
+  color: var(--accent-color);
+}
+
+[data-theme="dark"] .mobile-theme-toggle:hover {
+  color: var(--accent-hover);
+  background-color: var(--bg-tertiary);
+}
+
 /* 반응형 디자인 */
 @media (max-width: 768px) {
   .header-content {
-    grid-template-columns: 1fr auto;
-    gap: 1rem;
+    grid-template-columns: 1fr auto auto;
+    gap: 0.5rem;
   }
   
   .desktop-only {
     display: none;
+  }
+  
+  .mobile-theme-toggle-header {
+    display: flex;
   }
   
   .mobile-menu-toggle {
@@ -729,8 +929,16 @@
     font-size: 1.25rem;
   }
   
+  .logo-image {
+    height: 32px;
+  }
+  
   .theme-toggle {
-    margin-right: 0;
+    display: none;
+  }
+  
+  .auth-area {
+    display: none;
   }
 }
 

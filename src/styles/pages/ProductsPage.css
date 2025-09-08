@@ -1068,4 +1068,9 @@
   .comparison-title { font-size: 1.5rem; }
 }
 
+/* 다크모드에서 테이블 헤더(노란색 배경)의 텍스트만 검은색으로 고정 */
+[data-theme="dark"] .comparison-header {
+  color: #000000 !important;
+}
+
 

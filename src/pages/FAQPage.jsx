@@ -1,16 +1,208 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { FaSearch, FaTimes, FaHistory, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import useScrollToTop from '../hooks/useScrollToTop';
 import '../styles/pages/FAQPage.css';
 
 const FAQPage = () => {
   const [openFAQ, setOpenFAQ] = useState(null);
-
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showSearchHistory, setShowSearchHistory] = useState(false);
+  const [searchHistory, setSearchHistory] = useState([]);
   // 페이지 이동 시 스크롤을 맨 위로 올림
   useScrollToTop();
 
+  // 검색 히스토리 로드
+  useEffect(() => {
+    const savedHistory = localStorage.getItem('faq-search-history');
+    if (savedHistory) {
+      setSearchHistory(JSON.parse(savedHistory));
+    }
+  }, []);
+
+  // 검색 히스토리 저장
+  const saveSearchHistory = (query) => {
+    if (!query.trim()) return;
+    
+    const newHistory = [query, ...searchHistory.filter(item => item !== query)].slice(0, 10);
+    setSearchHistory(newHistory);
+    localStorage.setItem('faq-search-history', JSON.stringify(newHistory));
+  };
+
+  // 검색 기능 구현
+  const performSearch = (query) => {
+    if (!query.trim()) {
+      setSearchResults([]);
+      setIsSearching(false);
+      // 검색어가 없을 때는 모든 카테고리를 펼친 상태로 복원
+      setExpandedCategories(new Set(faqs.map((_, index) => index)));
+      return;
+    }
+
+    const results = [];
+    const queryLower = query.toLowerCase();
+
+    faqs.forEach((category, categoryIndex) => {
+      const categoryResults = [];
+      
+      category.questions.forEach((faq, faqIndex) => {
+        const questionMatch = faq.question.toLowerCase().includes(queryLower);
+        const answerMatch = faq.answer.toLowerCase().includes(queryLower);
+        
+        if (questionMatch || answerMatch) {
+          categoryResults.push({
+            categoryIndex,
+            faqIndex,
+            question: faq.question,
+            answer: faq.answer,
+            questionMatch,
+            answerMatch,
+            uniqueIndex: `${categoryIndex}-${faqIndex}`
+          });
+        }
+      });
+
+      if (categoryResults.length > 0) {
+        results.push({
+          category: category.category,
+          categoryIndex,
+          questions: categoryResults
+        });
+      }
+    });
+
+    setSearchResults(results);
+    setIsSearching(true);
+    
+    // 검색 결과가 있는 카테고리만 펼치기
+    const categoriesToExpand = new Set(results.map(result => result.categoryIndex));
+    setExpandedCategories(categoriesToExpand);
+  };
+
+  // 검색어 변경 시 검색 실행
+  useEffect(() => {
+    performSearch(searchQuery);
+  }, [searchQuery]);
+
+  // 검색어 하이라이팅 함수
+  const highlightSearchTerm = (text) => {
+    if (!searchQuery.trim()) return text;
+    
+    const regex = new RegExp(`(${searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    const parts = text.split(regex);
+    
+    return parts.map((part, index) => 
+      regex.test(part) ? (
+        <mark key={index} className="search-highlight-term">
+          {part}
+        </mark>
+      ) : part
+    );
+  };
+
+  // 검색 초기화
+  const clearSearch = () => {
+    setSearchQuery('');
+    setSearchResults([]);
+    setIsSearching(false);
+    setShowSearchHistory(false);
+    // 모든 카테고리를 다시 펼친 상태로 복원
+    setExpandedCategories(new Set(faqs.map((_, index) => index)));
+  };
+
+  // 검색 히스토리에서 검색어 선택
+  const selectFromHistory = (query) => {
+    setSearchQuery(query);
+    setShowSearchHistory(false);
+    saveSearchHistory(query);
+    // 검색어가 있으면 검색 결과에 맞는 카테고리만 펼치기
+    if (query.trim()) {
+      // 검색이 실행되면 performSearch에서 자동으로 카테고리 설정됨
+    } else {
+      // 검색어가 없으면 모든 카테고리 펼치기
+      setExpandedCategories(new Set(faqs.map((_, index) => index)));
+    }
+  };
+
+  // 검색 히스토리 삭제
+  const removeFromHistory = (query, e) => {
+    e.stopPropagation();
+    const newHistory = searchHistory.filter(item => item !== query);
+    setSearchHistory(newHistory);
+    localStorage.setItem('faq-search-history', JSON.stringify(newHistory));
+  };
+
+  // 검색 히스토리 전체 삭제
+  const clearSearchHistory = () => {
+    setSearchHistory([]);
+    localStorage.removeItem('faq-search-history');
+    setShowSearchHistory(false);
+  };
+
+  // 카테고리 토글
+  const toggleCategory = (categoryIndex) => {
+    const newExpanded = new Set(expandedCategories);
+    if (newExpanded.has(categoryIndex)) {
+      newExpanded.delete(categoryIndex);
+    } else {
+      newExpanded.add(categoryIndex);
+    }
+    setExpandedCategories(newExpanded);
+  };
+
+  // FAQ 토글
   const toggleFAQ = (index) => {
     setOpenFAQ(openFAQ === index ? null : index);
   };
+
+  // 검색 실행 (Enter 키 또는 검색 버튼 클릭)
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      saveSearchHistory(searchQuery);
+      setShowSearchHistory(false);
+    }
+  };
+
+  // 키보드 단축키 처리
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Ctrl+F 또는 Cmd+F로 검색창 포커스
+      if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+        e.preventDefault();
+        const searchInput = document.querySelector('.faq-search-input');
+        if (searchInput) {
+          searchInput.focus();
+          searchInput.select();
+        }
+      }
+      
+      // Escape로 검색 초기화
+      if (e.key === 'Escape' && searchQuery) {
+        e.preventDefault();
+        clearSearch();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [searchQuery]);
+
+  // 검색 히스토리 드롭다운 외부 클릭 시 닫기
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.search-container')) {
+        setShowSearchHistory(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const faqs = [
     {
@@ -137,6 +329,23 @@ const FAQPage = () => {
     }
   ];
 
+  // 모든 카테고리가 펼쳐진 상태로 초기화
+  const [expandedCategories, setExpandedCategories] = useState(
+    new Set(faqs.map((_, index) => index))
+  );
+
+  // 표시할 FAQ 데이터 결정
+  const displayData = isSearching && searchResults.length > 0 ? searchResults : faqs.map((category, index) => ({
+    category: category.category,
+    categoryIndex: index,
+    questions: category.questions.map((faq, faqIndex) => ({
+      ...faq,
+      uniqueIndex: `${index}-${faqIndex}`,
+      questionMatch: false,
+      answerMatch: false
+    }))
+  }));
+
   return (
     <div className="faq-page">
       <div className="faq-container">
@@ -148,45 +357,127 @@ const FAQPage = () => {
         </div>
 
         <div className="faq-search">
-          <input 
-            type="text" 
-            placeholder="궁금한 내용을 검색해보세요..." 
-            className="search-input"
-          />
+          <div className="search-container">
+            <FaSearch className="search-icon" />
+            <input 
+              type="text" 
+              placeholder="궁금한 내용을 검색해보세요..." 
+              className="faq-search-input"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={() => setShowSearchHistory(true)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+            />
+            {searchQuery && (
+              <button className="clear-search-btn" onClick={clearSearch} title="검색어 지우기">
+                <FaTimes />
+              </button>
+            )}
+            {showSearchHistory && searchHistory.length > 0 && (
+              <div className="search-history-dropdown">
+                <div className="history-header">
+                  <span>최근 검색어</span>
+                  <button className="clear-history-btn" onClick={clearSearchHistory}>
+                    전체 삭제
+                  </button>
+                </div>
+                <div className="history-list">
+                  {searchHistory.map((query, index) => (
+                    <div 
+                      key={index} 
+                      className="history-item"
+                      onClick={() => selectFromHistory(query)}
+                    >
+                      <FaHistory className="history-icon" />
+                      <span className="history-text">{query}</span>
+                      <button 
+                        className="remove-history-btn"
+                        onClick={(e) => removeFromHistory(query, e)}
+                      >
+                        <FaTimes />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+          
+          {isSearching && (
+            <div className="search-results-summary">
+              {searchResults.length > 0 ? (
+                <div className="results-info">
+                  <span className="results-count">검색 결과: "{searchQuery}" (총 {searchResults.reduce((total, category) => total + category.questions.length, 0)}개)</span>
+                  <div className="category-results">
+                    {searchResults.map((category, index) => (
+                      <span key={index} className="category-result">
+                        {category.category} ({category.questions.length}개)
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="no-results">
+                  <span>"<strong>{searchQuery}</strong>"에 대한 검색 결과가 없습니다.</span>
+                  <button className="clear-search-link" onClick={clearSearch}>
+                    전체 FAQ 보기
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="faq-content">
-          {faqs.map((category, categoryIndex) => (
-            <div key={categoryIndex} className="faq-category">
-              <h2 className="category-title">{category.category}</h2>
-              <div className="faq-list">
-                {category.questions.map((faq, faqIndex) => {
-                  const uniqueIndex = `${categoryIndex}-${faqIndex}`;
-                  return (
-                    <div 
-                      key={uniqueIndex} 
-                      className={`faq-item ${openFAQ === uniqueIndex ? 'active' : ''}`}
-                    >
-                      <div 
-                        className="faq-question" 
-                        onClick={() => toggleFAQ(uniqueIndex)}
-                      >
-                        <h3>{faq.question}</h3>
-                        <span className="faq-toggle">
-                          {openFAQ === uniqueIndex ? '−' : '+'}
-                        </span>
-                      </div>
-                      {openFAQ === uniqueIndex && (
-                        <div className="faq-answer">
-                          <p>{faq.answer}</p>
+          {displayData.map((category, categoryIndex) => {
+            const isExpanded = expandedCategories.has(category.categoryIndex);
+            const hasResults = category.questions.length > 0;
+            
+            return (
+              <div key={categoryIndex} className={`faq-category ${!hasResults ? 'no-results' : ''}`}>
+                <div className="category-header" onClick={() => toggleCategory(category.categoryIndex)}>
+                  <h2 className="category-title">
+                    {highlightSearchTerm(category.category)}
+                    {isSearching && (
+                      <span className="category-count">({category.questions.length}개)</span>
+                    )}
+                  </h2>
+                  <span className="category-toggle">
+                    {isExpanded ? <FaChevronUp /> : <FaChevronDown />}
+                  </span>
+                </div>
+                
+                {isExpanded && hasResults && (
+                  <div className="faq-list">
+                    {category.questions.map((faq, faqIndex) => {
+                      const uniqueIndex = faq.uniqueIndex;
+                      return (
+                        <div 
+                          key={uniqueIndex} 
+                          className={`faq-item ${openFAQ === uniqueIndex ? 'active' : ''}`}
+                        >
+                          <div 
+                            className="faq-question" 
+                            onClick={() => toggleFAQ(uniqueIndex)}
+                          >
+                            <h3>{highlightSearchTerm(faq.question)}</h3>
+                            <span className="faq-toggle">
+                              {openFAQ === uniqueIndex ? '−' : '+'}
+                            </span>
+                          </div>
+                          {openFAQ === uniqueIndex && (
+                            <div className="faq-answer">
+                              <p>{highlightSearchTerm(faq.answer)}</p>
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                  );
-                })}
+                      );
+                    })}
+                  </div>
+                )}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <div className="faq-contact">

@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 import useScrollToTop from '../hooks/useScrollToTop';
 import '../styles/pages/MyInquiriesPage.css';
 
 const MyInquiriesPage = () => {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, apiRequest } = useAuth();
+  const { theme } = useTheme();
   const [inquiries, setInquiries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -12,6 +15,37 @@ const MyInquiriesPage = () => {
 
   // 페이지 이동 시 스크롤을 맨 위로 올림
   useScrollToTop();
+
+  // 모달이 열릴 때 스크롤 잠금(overflow hidden) 및 ESC 키 이벤트
+  useEffect(() => {
+    if (!selectedInquiry) return;
+
+    // 스크롤바 보정 폭 계산
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+
+    // html/body 스크롤 잠금 (fixed 사용하지 않음)
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+
+    // ESC 키로 모달 닫기
+    const handleEscKey = (event) => {
+      if (event.key === 'Escape') {
+        closeInquiryDetail();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscKey);
+
+    return () => {
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+      document.removeEventListener('keydown', handleEscKey);
+    };
+  }, [selectedInquiry]);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -27,9 +61,8 @@ const MyInquiriesPage = () => {
       setLoading(true);
       setError(null);
 
-      const response = await fetch('https://gateway.realcatcha.com/api/my-contact-requests', {
+      const response = await apiRequest('https://gateway.realcatcha.com/api/my-contact-requests', {
         method: 'GET',
-        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -208,8 +241,8 @@ const MyInquiriesPage = () => {
         )}
 
         {/* 문의사항 상세 모달 */}
-        {selectedInquiry && (
-          <div className="inquiry-modal-overlay" onClick={closeInquiryDetail}>
+        {selectedInquiry && createPortal(
+          <div className={`inquiry-modal-overlay ${theme === 'dark' ? 'dark-theme' : 'light-theme'}`} onClick={closeInquiryDetail}>
             <div className="inquiry-modal" onClick={(e) => e.stopPropagation()}>
               <div className="modal-header">
                 <h2>{selectedInquiry.subject}</h2>
@@ -280,7 +313,8 @@ const MyInquiriesPage = () => {
                 )}
               </div>
             </div>
-          </div>
+          </div>,
+          document.body
         )}
       </div>
     </div>

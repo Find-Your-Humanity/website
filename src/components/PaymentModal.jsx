@@ -9,6 +9,7 @@ const PaymentModal = ({
 	selectedPlan,
 	paymentWidget,
 	onPaymentSuccess,
+	from,
 }) => {
 	const [searchParams] = useSearchParams();
 	const [paymentMethods, setPaymentMethods] = useState(null);
@@ -100,20 +101,12 @@ const PaymentModal = ({
 			console.log(
 				`🔍 모달 내 결제 요청 - 플랜: ${planName}, 금액: ${amount}원, 주문ID: ${orderId}`
 			);
+			const fromParam = from || searchParams.get("from") || "website";
 			console.log(`🔍 결제 요청 URL 설정:`, {
-				successUrl: `${
-					window.location.origin
-				}/payment/success?planType=${
-					selectedPlan.type
-				}&planId=${planId}&from=${
-					searchParams.get("from") || "website"
-				}`,
-				failUrl: `${window.location.origin}/payment/fail?planType=${
-					selectedPlan.type
-				}&planId=${planId}&from=${
-					searchParams.get("from") || "website"
-				}`,
+				successUrl: `${window.location.origin}/app/billing?pay=success&planType=${selectedPlan.type}&planId=${planId}&from=${fromParam}`,
+				failUrl: `${window.location.origin}/app/billing?pay=fail&planType=${selectedPlan.type}&planId=${planId}&from=${fromParam}`,
 				selectedPlan: selectedPlan,
+				fromParam,
 			});
 
 			// 결제 요청 (공식 문서 패턴)
@@ -121,18 +114,12 @@ const PaymentModal = ({
 				orderId: orderId,
 				orderName: `${planName} - CAPTCHA 서비스`,
 				amount: amount,
-				successUrl:
-					fromParam === "website"
-						? `${window.location.origin}/payment/success?planType=${selectedPlan.type}&planId=${planId}`
-						: `${window.location.origin}/app/billing?pay=success&planType=${selectedPlan.type}&planId=${planId}&from=${fromParam}`,
-				failUrl:
-					fromParam === "website"
-						? `${window.location.origin}/payment/fail?planType=${selectedPlan.type}&planId=${planId}`
-						: `${window.location.origin}/app/billing?pay=fail&planType=${selectedPlan.type}&planId=${planId}&from=${fromParam}`,
+				successUrl: `${window.location.origin}/app/billing?pay=success&planType=${selectedPlan.type}&planId=${planId}&from=${fromParam}`,
+				failUrl: `${window.location.origin}/app/billing?pay=fail&planType=${selectedPlan.type}&planId=${planId}&from=${fromParam}`,
 				customerEmail: "test@example.com", // 실제로는 사용자 이메일 사용
 				customerName: "테스트 사용자", // 실제로는 사용자 이름 사용
 				// 추가 파라미터 (선택사항)
-				windowTarget: "self", // 새 창으로 결제창 열기 (iframe 대신)
+				windowTarget: "iframe", // 새 창으로 결제창 열기 (iframe 대신)
 				useInternationalCardOnly: false, // 국제카드 전용 여부
 				flowMode: "BILLING", // 결제 흐름 모드
 			});

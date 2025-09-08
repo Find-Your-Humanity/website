@@ -201,7 +201,8 @@ const HomePage = () => {
           data-section="hero"
         >
           <h1 className="hero-title">
-            <span className="real-text">REAL</span> or <span className="not-text">Not</span>?
+            <span className="real-text">REAL</span> <span className="or-text">or</span><br className="desktop-break" />
+            <span className="not-text">Not?</span>
           </h1>
           <p className="home-hero-subtitle">Bots won't know.</p>
           <div className="hero-buttons">

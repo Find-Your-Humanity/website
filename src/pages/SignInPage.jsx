@@ -51,7 +51,7 @@ const SignInPage = () => {
     try {
       const result = await login(email, password);
       if (result.success) {
-        navigate('/'); // 로그인 성공 시 홈으로 이동
+        navigate('/dashboard'); // 로그인 성공 시 대시보드로 이동
       } else {
         setError(result.error || '아이디와 비밀번호가 다릅니다.');
       }

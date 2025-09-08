@@ -56,7 +56,7 @@
 }
 
 .real-logo {
-  width: 75px;
+  width: 80px;
   height: auto;
 }
 
@@ -75,15 +75,22 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .footer-nav a:nth-child(1) {
-    right: calc(50% + 1.5rem); /* 모바일에서 간격 줄임 */
+  .footer-nav {
+    position: static;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
   }
-  
+
+  .footer-nav a,
+  .footer-nav a:nth-child(1),
+  .footer-nav a:nth-child(2),
   .footer-nav a:nth-child(3) {
-    left: calc(50% + 1.5rem); /* 모바일에서 간격 줄임 */
-  }
-  
-  .footer-nav a {
-    font-size: 0.8rem;
+    position: static;
+    left: auto;
+    right: auto;
+    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem; /* 터치 영역 확대 */
   }
 } 

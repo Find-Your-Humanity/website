@@ -281,17 +281,128 @@
 
 /* Inquiry Modal */
 .inquiry-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999; /* 1000 → 9999로 수정하여 Header보다 위에 표시 */
-  padding: 1rem;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  margin: 0 !important;
+  padding: 1rem !important;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 999999 !important; /* 더 높은 z-index로 설정 */
+  backdrop-filter: blur(2px); /* 배경 블러 효과 추가 */
+  /* 스크롤 위치와 관계없이 뷰포트에 고정 */
+  transform: none !important;
+  
+  /* CSS 변수 강제 정의 - 라이트모드 기본값 */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #f5f5f5;
+  --text-primary: #000000;
+  --text-secondary: #666666;
+  --text-tertiary: #999999;
+  --border-color: #e0e0e0;
+  --border-color-light: #f0f0f0;
+  --accent-color: #DFFF00;
+  --accent-hover: #e6ff33;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --shadow-color-light: rgba(0, 0, 0, 0.05);
+  --error-color: #dc3545;
+  --success-color: #28a745;
+  --warning-color: #ffc107;
+}
+/* 라이트 테마 (기본값) */
+.inquiry-modal-overlay.light-theme {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #f5f5f5;
+  --text-primary: #000000;
+  --text-secondary: #666666;
+  --text-tertiary: #999999;
+  --border-color: #e0e0e0;
+  --border-color-light: #f0f0f0;
+  --accent-color: #DFFF00;
+  --accent-hover: #e6ff33;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --shadow-color-light: rgba(0, 0, 0, 0.05);
+  --error-color: #dc3545;
+  --success-color: #28a745;
+  --warning-color: #ffc107;
+}
+
+/* 다크 테마 */
+.inquiry-modal-overlay.dark-theme {
+  --bg-primary: #0a0f1a;        /* 메인 배경 - 깊이 있는 다크 블루 */
+  --bg-secondary: #1a2332;       /* 보조 배경 - 브랜드와 조화되는 블루 그레이 */
+  --bg-tertiary: #2a3441;        /* 3차 배경 - 중간 톤의 블루 그레이 */
+  --text-primary: #f8fafc;       /* 주요 텍스트 - 부드러운 화이트 */
+  --text-secondary: #cbd5e1;     /* 보조 텍스트 - 은은한 라이트 그레이 */
+  --text-tertiary: #94a3b8;      /* 3차 텍스트 - 미디엄 그레이 */
+  --border-color: #334155;       /* 테두리 - 다크 블루 그레이 */
+  --border-color-light: #475569; /* 밝은 테두리 */
+  --accent-color: #DFFF00;       /* 브랜드 컬러 유지 */
+  --accent-hover: #e6ff33;       /* 호버 효과 */
+  --shadow-color: rgba(0, 0, 0, 0.4);      /* 그림자 */
+  --shadow-color-light: rgba(0, 0, 0, 0.2); /* 밝은 그림자 */
+  --error-color: #ef4444;        /* 에러 - 빨간색 */
+  --success-color: #10b981;      /* 성공 - 초록색 */
+  --warning-color: #f59e0b;      /* 경고 - 주황색 */
+}
+
+/* 다크 테마 특정 요소 스타일 */
+.inquiry-modal-overlay.dark-theme .modal-header {
+  background: #0a0f1a;
+  color: #f8fafc;
+  border-bottom-color: #334155;
+}
+
+.inquiry-modal-overlay.dark-theme .modal-header h2 {
+  color: #f8fafc;
+}
+
+.inquiry-modal-overlay.dark-theme .inquiry-modal {
+  background: #0a0f1a;
+  border-color: #334155;
+}
+
+.inquiry-modal-overlay.dark-theme .inquiry-info {
+  background-color: #1a2332;
+  border-color: #475569;
+}
+
+.inquiry-modal-overlay.dark-theme .content-box,
+.inquiry-modal-overlay.dark-theme .response-box {
+  background-color: #1a2332;
+  color: #f8fafc;
+  border-color: #475569;
+}
+
+.inquiry-modal-overlay.dark-theme .attachment-info {
+  background-color: #1a2332;
+  color: #f8fafc;
+  border-color: #475569;
+}
+
+.inquiry-modal-overlay.dark-theme .admin-response {
+  background: #1a2332;
+  border: 1px solid #475569;
+}
+
+.inquiry-modal-overlay.dark-theme .admin-response h3 {
+  color: #f8fafc;
+}
+
+.inquiry-modal-overlay.dark-theme .response-date {
+  color: #cbd5e1;
+}
+
+.inquiry-modal-overlay.dark-theme .inquiry-status {
+  color: #000000 !important;
 }
 
 .inquiry-modal {
@@ -303,6 +414,12 @@
   overflow-y: auto;
   box-shadow: 0 20px 50px var(--shadow-color);
   border: 1px solid var(--border-color);
+  z-index: 1000000 !important; /* overlay보다 위에 */
+  position: relative !important;
+  margin: auto !important;
+  /* 추가적인 중앙 정렬 보장 */
+  flex-shrink: 0;
+  transform: none !important;
 }
 
 .modal-header {

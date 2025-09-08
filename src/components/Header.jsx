@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
-import { FaBars, FaTimes, FaChevronDown } from 'react-icons/fa';
+import { FaBars, FaTimes, FaChevronDown, FaSun, FaMoon } from 'react-icons/fa';
 import './Header.css';
 
 const Header = () => {
@@ -40,8 +40,16 @@ const Header = () => {
     setMobileMenuOpen(false);
   };
 
-  const handleNavClick = () => {
-    setMobileMenuOpen(false);
+  const handleNavClick = (e) => {
+    // 1. 먼저 드롭다운 상태 초기화
+    setProductsDropdownOpen(false);
+    setCompanyDropdownOpen(false);
+    setClickedDropdown(null);
+    
+    // 2. 모바일 메뉴 닫기 (약간의 지연)
+    setTimeout(() => {
+      setMobileMenuOpen(false);
+    }, 50);
   };
 
   // Products 드롭다운 토글
@@ -105,6 +113,11 @@ const Header = () => {
   // 외부 클릭시 드롭다운 닫기
   useEffect(() => {
     const handleClickOutside = (event) => {
+      // Link 클릭인 경우는 외부 클릭으로 처리하지 않음
+      if (event.target.classList.contains('mobile-dropdown-item')) {
+        return;
+      }
+      
       // 사용자 드롭다운 외부 클릭
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setDropdownOpen(false);
@@ -132,7 +145,23 @@ const Header = () => {
   return (
     <header className="header">
       <div className="header-content">
-        <Link to="/" className="logo">REALCATCHA</Link>
+        <Link to="/" className="logo" onClick={handleNavClick}>
+          <img 
+            src="/realcatcha_logo.png" 
+            alt="REALCATCHA" 
+            className="logo-image"
+          />
+        </Link>
+
+        {/* 모바일 테마 토글 버튼 */}
+        <button 
+          className="mobile-theme-toggle-header" 
+          onClick={toggleTheme} 
+          title={theme === 'light' ? '다크모드로 변경' : '라이트모드로 변경'}
+          aria-label={theme === 'light' ? '다크모드로 변경' : '라이트모드로 변경'}
+        >
+          {theme === 'light' ? <FaMoon /> : <FaSun />}
+        </button>
 
         {/* 모바일 메뉴 버튼 */}
         <button className="mobile-menu-toggle" onClick={toggleMobileMenu}>
@@ -211,7 +240,7 @@ const Header = () => {
             title={theme === 'light' ? '다크모드로 변경' : '라이트모드로 변경'}
             aria-label={theme === 'light' ? '다크모드로 변경' : '라이트모드로 변경'}
           >
-            {theme === 'light' ? '🌙' : '☀️'}
+            {theme === 'light' ? <FaMoon /> : <FaSun />}
           </button>
           
           {isAuthenticated ? (
@@ -284,17 +313,32 @@ const Header = () => {
             <div className="mobile-dropdown">
               <button 
                 className={`mobile-dropdown-button ${location.pathname === '/products' || location.pathname === '/pay' ? 'active' : ''}`}
-                onClick={() => setProductsDropdownOpen(!productsDropdownOpen)}
+                onClick={(e) => {
+                  // Link 클릭이 아닌 경우에만 드롭다운 토글
+                  if (!e.target.closest('.mobile-dropdown-item')) {
+                    setProductsDropdownOpen(!productsDropdownOpen);
+                    setCompanyDropdownOpen(false);
+                    setClickedDropdown(productsDropdownOpen ? null : 'products');
+                  }
+                }}
               >
                 Products
                 <FaChevronDown className={`mobile-dropdown-arrow ${productsDropdownOpen ? 'open' : ''}`} />
               </button>
               {productsDropdownOpen && (
                 <div className="mobile-dropdown-menu">
-                  <Link to="/products" className="mobile-dropdown-item" onClick={handleNavClick}>
+                  <Link 
+                    to="/products" 
+                    className="mobile-dropdown-item" 
+                    onClick={handleNavClick}
+                  >
                     Products
                   </Link>
-                  <Link to="/pay" className="mobile-dropdown-item" onClick={handleNavClick}>
+                  <Link 
+                    to="/pay" 
+                    className="mobile-dropdown-item" 
+                    onClick={handleNavClick}
+                  >
                     Prices
                   </Link>
                 </div>
@@ -305,17 +349,32 @@ const Header = () => {
             <div className="mobile-dropdown">
               <button 
                 className={`mobile-dropdown-button ${location.pathname === '/company' || location.pathname === '/contact' ? 'active' : ''}`}
-                onClick={() => setCompanyDropdownOpen(!companyDropdownOpen)}
+                onClick={(e) => {
+                  // Link 클릭이 아닌 경우에만 드롭다운 토글
+                  if (!e.target.closest('.mobile-dropdown-item')) {
+                    setCompanyDropdownOpen(!companyDropdownOpen);
+                    setProductsDropdownOpen(false);
+                    setClickedDropdown(companyDropdownOpen ? null : 'company');
+                  }
+                }}
               >
                 Company
                 <FaChevronDown className={`mobile-dropdown-arrow ${companyDropdownOpen ? 'open' : ''}`} />
               </button>
               {companyDropdownOpen && (
                 <div className="mobile-dropdown-menu">
-                  <Link to="/company" className="mobile-dropdown-item" onClick={handleNavClick}>
+                  <Link 
+                    to="/company" 
+                    className="mobile-dropdown-item" 
+                    onClick={handleNavClick}
+                  >
                     About Us
                   </Link>
-                  <Link to="/contact" className="mobile-dropdown-item" onClick={handleNavClick}>
+                  <Link 
+                    to="/contact" 
+                    className="mobile-dropdown-item" 
+                    onClick={handleNavClick}
+                  >
                     Contact Us
                   </Link>
                 </div>
