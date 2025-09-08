@@ -97,7 +97,6 @@ const AnalyticsChart: React.FC<AnalyticsChartProps> = React.memo(({ data, loadin
           {getChartTitle()}
         </Typography>
         <Box sx={{ height: { xs: 260, sm: 320, md: 400 }, mt: 2 }}>
-        <Box sx={{ height: { xs: 260, sm: 320, md: 400 }, mt: 2 }}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data}>
               <CartesianGrid stroke={gridColor} strokeDasharray="3 3" />
