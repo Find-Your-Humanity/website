@@ -12,6 +12,8 @@ export interface Plan {
   rate_limit_per_minute: number;
   is_popular: boolean;
   sort_order: number;
+  subscriber_count?: number;
+  active_subscribers?: number;
 }
 
 export interface CurrentPlan {
