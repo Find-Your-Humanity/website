@@ -162,7 +162,7 @@
 
 #captcha-container {
   width: 100%;
-  min-height: 500px;
+  min-height: 0; /* auto height 모드 */
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 20px var(--shadow-color);
@@ -171,8 +171,8 @@
 
 /* Captcha Section Styles */
 .captcha-section {
-  height: 100% !important;
-  min-height: 500px !important;
+  height: auto !important; /* 섹션은 콘텐츠에 맞춰 */
+  min-height: 0 !important;
   display: flex !important;
   flex-direction: column !important;
   width: 100% !important;
@@ -185,11 +185,11 @@
 
 #captcha-container {
   width: 100% !important;
-  height: 100% !important;
-  min-height: 500px !important;
-  flex: 1 !important;
-  display: flex !important;
-  flex-direction: column !important;
+  height: auto !important;
+  min-height: 0 !important;
+  display: flex !important; /* 중앙 정렬 유지 */
+  align-items: center !important;
+  justify-content: center !important;
   background-color: var(--bg-primary) !important;
   border-radius: 8px !important;
   overflow: hidden !important;
@@ -199,14 +199,25 @@
 /* Captcha iframe styles */
 #captcha-container iframe {
   width: 100% !important;
-  height: 100% !important;
+  height: auto !important; /* 기본은 콘텐츠 높이 */
   border: none !important;
   border-radius: 8px !important;
-  min-height: 500px !important;
 }
 
 /* Captcha container inner div */
 #captcha-container > div {
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+/* iframe 폴백일 때만 큰 컨테이너 적용 */
+#captcha-container.iframe-mode {
+  height: 500px !important;
+  min-height: 500px !important;
+}
+
+#captcha-container.iframe-mode iframe {
   width: 100% !important;
   height: 100% !important;
   min-height: 500px !important;
