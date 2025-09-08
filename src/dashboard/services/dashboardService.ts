@@ -48,6 +48,23 @@ class DashboardService {
     }
   }
 
+  // 사용자/키별 통계 조회
+  async getKeyStats(
+    period: PeriodType = 'daily',
+    apiType: ApiType = 'all',
+    apiKey?: string
+  ): Promise<ApiResponse<CaptchaStats[]>> {
+    try {
+      const keyParam = apiKey ? `&api_key=${encodeURIComponent(apiKey)}` : '';
+      const response = await apiClient.get<ApiResponse<CaptchaStats[]>>(
+        `${API_ENDPOINTS.DASHBOARD.KEY_STATS}?period=${period}&api_type=${apiType}${keyParam}`
+      );
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getCaptchaLogs(params?: {
     page?: number;
     pageSize?: number;
@@ -94,6 +111,18 @@ class DashboardService {
     try {
       const response = await apiClient.post<ApiResponse<any>>(
         API_ENDPOINTS.DASHBOARD.CLEANUP_DUPLICATES
+      );
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // 내 API 키 목록 조회
+  async getMyApiKeys(): Promise<ApiResponse<{ api_keys: { key_id: string; name: string }[] }>> {
+    try {
+      const response = await apiClient.get<ApiResponse<any>>(
+        API_ENDPOINTS.API_KEYS.LIST
       );
       return response.data;
     } catch (error) {

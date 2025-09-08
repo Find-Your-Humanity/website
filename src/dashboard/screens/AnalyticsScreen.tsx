@@ -39,6 +39,8 @@ const AnalyticsScreen: React.FC = () => {
   const [apiType, setApiType] = useState<ApiType>('all');
   const [tabValue, setTabValue] = useState(0); // 탭 네비게이션 상태
   const [statsData, setStatsData] = useState<CaptchaStats[]>([]);
+  const [apiKeys, setApiKeys] = useState<{ key_id: string; name?: string }[]>([]);
+  const [selectedApiKey, setSelectedApiKey] = useState<string>('');
   const [usageLimits, setUsageLimits] = useState<ApiUsageLimit | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
@@ -82,7 +84,19 @@ const AnalyticsScreen: React.FC = () => {
   };
 
 
-  // API 연동: 기간 변경 시 통계 조회
+  // 내 API 키 목록 로드
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await dashboardService.getMyApiKeys();
+        if ((res as any)?.success && (res as any)?.api_keys) {
+          setApiKeys((res as any).api_keys || []);
+        }
+      } catch (e) {}
+    })();
+  }, []);
+
+  // API 연동: 기간/타입/키 변경 시 통계 조회
   useEffect(() => {
     const fetchStats = async () => {
       setLoading(true);
@@ -90,7 +104,10 @@ const AnalyticsScreen: React.FC = () => {
       try {
         const period: PeriodType =
           timePeriod === '7days' ? 'daily' : timePeriod === '30days' ? 'weekly' : 'monthly';
-        const res = await dashboardService.getStats(period, apiType);
+        // 키가 선택되어 있으면 개인/키 기반 통계 사용
+        const res = selectedApiKey
+          ? await dashboardService.getKeyStats(period, apiType, selectedApiKey)
+          : await dashboardService.getKeyStats(period, apiType);
         if (res.success) {
           setStatsData(res.data);
         } else {
@@ -105,7 +122,7 @@ const AnalyticsScreen: React.FC = () => {
       }
     };
     fetchStats();
-  }, [timePeriod]);
+  }, [timePeriod, apiType, selectedApiKey]);
 
   // API 사용량 제한 조회
   useEffect(() => {
@@ -179,30 +196,28 @@ const AnalyticsScreen: React.FC = () => {
   ];
 
   // API 키별 사용량 조회 핸들러
-  const handleApiKeyUsage = async () => {
-    if (!apiKeyInput.trim()) return;
-    setApiKeyLoading(true);
-    try {
-      const res = await dashboardService.getApiKeyUsage(apiKeyInput.trim());
-      if (res.success) {
-        setApiKeyUsage(res.data);
-      } else {
-        setApiKeyUsage(null);
-      }
-    } catch (e) {
-      console.error('API 키 사용량 조회 실패:', e);
-      setApiKeyUsage(null);
-    } finally {
-      setApiKeyLoading(false);
+  const handleApiKeyUsageCheck = () => {
+    if (apiKeyInput.trim()) {
+      fetchApiKeyUsage(apiKeyInput.trim());
     }
   };
 
   // 중복 데이터 정리 핸들러 (하단의 고도화 버전만 유지)
 
-  // 사용량 제한 퍼센트 계산 유틸리티
-  const calcPercentage = (current: number, limit: number) => {
-    if (!limit || limit <= 0) return 0;
-    return Math.min(100, Math.round((current / limit) * 100));
+  // 사용량 제한 상태에 따른 색상 반환
+  const getUsageStatusColor = (status: string) => {
+    switch (status) {
+      case 'normal': return 'success';
+      case 'warning': return 'warning';
+      case 'critical': return 'error';
+      case 'exceeded': return 'error';
+      default: return 'default';
+    }
+  };
+
+  // 사용량 퍼센트 계산
+  const getUsagePercentage = (current: number, limit: number) => {
+    return Math.min((current / limit) * 100, 100);
   };
 
   // 중복 데이터 정리 핸들러
@@ -210,17 +225,10 @@ const AnalyticsScreen: React.FC = () => {
     try {
       const res = await dashboardService.cleanupDuplicates();
       if (res.success) {
-        const deletedCount = (res as any)?.data?.deletedCount ?? 0;
+        const deletedCount = (res.data as any)?.deletedCount || 0;
         alert(`중복 데이터 정리 완료: ${deletedCount}건 삭제`);
-        // 필요 시 재조회
-        try {
-          const period: 'daily' | 'weekly' | 'monthly' =
-            timePeriod === '7days' ? 'daily' : timePeriod === '30days' ? 'weekly' : 'monthly';
-          const refreshed = await dashboardService.getStats(period);
-          if (refreshed.success) setStatsData(refreshed.data);
-        } catch {}
-      } else {
-        alert((res as any)?.message || '중복 데이터 정리에 실패했습니다.');
+        // 데이터 새로고침
+        window.location.reload();
       }
     } catch (error) {
       console.error('중복 데이터 정리 실패:', error);
@@ -234,19 +242,28 @@ const AnalyticsScreen: React.FC = () => {
 
   return (
     <Box>
+      {/* 헤더 */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Box>
-          <Typography variant="h5" sx={{ fontWeight: 700 }}>분석</Typography>
-          <Typography variant="body2" color="text.secondary">
-            기간별 통계와 사용량 현황을 확인하세요.
+          <Typography variant="h4" component="h1" gutterBottom>
+            분석
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            캡차 서비스 사용 패턴 및 성능 분석
           </Typography>
         </Box>
-        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-          <FormControl size="small" sx={{ minWidth: 160 }}>
-            <InputLabel id="period-label">기간</InputLabel>
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+          <Button
+            variant="outlined"
+            color="warning"
+            onClick={handleCleanupDuplicates}
+            sx={{ minWidth: 120 }}
+          >
+            중복 데이터 정리
+          </Button>
+          <FormControl sx={{ minWidth: 150 }}>
+            <InputLabel>기간</InputLabel>
             <Select
-              labelId="period-label"
-              id="period"
               value={timePeriod}
               label="기간"
               onChange={handleTimePeriodChange}
@@ -256,124 +273,277 @@ const AnalyticsScreen: React.FC = () => {
               <MenuItem value="90days">최근 90일</MenuItem>
             </Select>
           </FormControl>
-          <Button variant="outlined" size="small" onClick={handleCleanupDuplicates}>중복 정리</Button>
+          <FormControl sx={{ minWidth: 220 }}>
+            <InputLabel>API 키</InputLabel>
+            <Select
+              value={selectedApiKey}
+              label="API 키"
+              onChange={(e) => setSelectedApiKey(e.target.value)}
+            >
+              <MenuItem value="">내 모든 키 (합계)</MenuItem>
+              {apiKeys.map((k) => (
+                <MenuItem key={k.key_id} value={k.key_id}>{k.name || k.key_id}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Box>
       </Box>
 
-      {/* API 사용량 제한 요약 */}
-      <Card sx={{ mb: 3 }}>
-        <CardContent>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-            <Typography variant="h6">API 사용량 제한</Typography>
-            {usageLimits && (
-              <Chip
-                label={usageLimits.planDisplayName || usageLimits.plan.toUpperCase()}
-                color="primary"
-                variant="outlined"
-                size="small"
-              />
-            )}
-          </Box>
+      {/* 에러 상태 표시 */}
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
+      
+      {/* 초기 로딩 시 스켈레톤 표시 */}
+      {loading && (
+        <AnalyticsSkeleton />
+      )}
 
-          {usageLimits ? (
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={4}>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>분당</Typography>
-                <LinearProgress variant="determinate" value={calcPercentage(usageLimits.currentUsage.perMinute, usageLimits.limits.perMinute)} />
-                <Typography variant="caption" color="text.secondary">
-                  {formatNumber(usageLimits.currentUsage.perMinute)} / {formatNumber(usageLimits.limits.perMinute)}
-                </Typography>
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>일일</Typography>
-                <LinearProgress variant="determinate" value={calcPercentage(usageLimits.currentUsage.perDay, usageLimits.limits.perDay)} />
-                <Typography variant="caption" color="text.secondary">
-                  {formatNumber(usageLimits.currentUsage.perDay)} / {formatNumber(usageLimits.limits.perDay)}
-                </Typography>
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>월간</Typography>
-                <LinearProgress variant="determinate" value={calcPercentage(usageLimits.currentUsage.perMonth, usageLimits.limits.perMonth)} />
-                <Typography variant="caption" color="text.secondary">
-                  {formatNumber(usageLimits.currentUsage.perMonth)} / {formatNumber(usageLimits.limits.perMonth)}
-                </Typography>
-              </Grid>
-            </Grid>
-          ) : (
-            <Skeleton variant="rectangular" height={80} />
-          )}
-        </CardContent>
-      </Card>
-
-      {/* API 키별 사용량 조회 */}
-      <Card sx={{ mb: 3 }}>
-        <CardContent>
-          <Typography variant="h6" sx={{ mb: 2 }}>API 키별 사용량 조회</Typography>
-          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-            <TextField
-              size="small"
-              placeholder="API 키 입력"
-              value={apiKeyInput}
-              onChange={(e) => setApiKeyInput(e.target.value)}
-              sx={{ flex: 1 }}
-            />
-            <Button variant="contained" onClick={handleApiKeyUsage} disabled={apiKeyLoading}>조회</Button>
-          </Box>
-          {apiKeyLoading && <LinearProgress sx={{ mt: 2 }} />}
-          {apiKeyUsage && (
-            <Box sx={{ mt: 2 }}>
-              <Typography variant="body2" color="text.secondary">
-                최근 사용량 요약(예시): {JSON.stringify(apiKeyUsage)}
-              </Typography>
-            </Box>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* 통계 차트 */}
-      <Card>
-        <CardContent>
-          {/* 탭 네비게이션 */}
-          <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-            <Tabs value={tabValue} onChange={handleTabChange}>
-              <Tab label="전체 일별 요청 현황" />
-              <Tab label="필기 캡차" />
-              <Tab label="추상 캡차" />
-              <Tab label="이미지 캡차" />
-            </Tabs>
-          </Box>
-          
-          <AnalyticsChart 
-            data={chartData} 
-            loading={loading} 
-            timePeriod={timePeriod}
-            apiType={apiType}
-          />
-        </CardContent>
-      </Card>
-
-      {/* 오류 유형 분석 */}
-      <Card sx={{ mt: 3 }}>
-        <CardContent>
-          <Typography variant="h6" gutterBottom>
-            오류 유형 분석
-          </Typography>
-          <Grid container spacing={2} sx={{ mt: 1 }}>
-            {errorTypes.map((err, idx) => (
-              <Grid item xs={12} sm={6} md={3} key={idx}>
-                <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1, textAlign: 'center' }}>
-                  <Typography variant="h4" color="error.main">{formatNumber(err.count)}</Typography>
-                  <Typography variant="body2" color="text.secondary">{err.type}</Typography>
-                  <Typography variant="caption" color="text.secondary">({formatPercentage(err.percentage)})</Typography>
+      <Grid container spacing={3}>
+        {/* API 사용량 제한 확인 */}
+        {usageLimits && (
+          <Grid item xs={12}>
+            <Card>
+              <CardContent>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                  <Typography variant="h6" gutterBottom>
+                    API 사용량 제한 확인
+                  </Typography>
+                  <Chip 
+                    label={`${usageLimits.planDisplayName || usageLimits.plan.toUpperCase()} 플랜`}
+                    color="primary"
+                    variant="outlined"
+                  />
                 </Box>
-              </Grid>
-            ))}
-          </Grid>
-        </CardContent>
-      </Card>
+                <Grid container spacing={3}>
+                  {/* 분당 요청 제한 */}
+                  <Grid item xs={12} md={4}>
+                    <Box>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                        <Typography variant="body2">분당 요청 제한</Typography>
+                        <Typography variant="body2" fontWeight="bold">
+                          {formatNumber(usageLimits.currentUsage.perMinute)} / {formatNumber(usageLimits.limits.perMinute)}
+                        </Typography>
+                      </Box>
+                      <LinearProgress
+                        variant="determinate"
+                        value={getUsagePercentage(usageLimits.currentUsage.perMinute, usageLimits.limits.perMinute)}
+                        color={getUsageStatusColor(usageLimits.status) as any}
+                        sx={{ height: 8, borderRadius: 4 }}
+                      />
+                      <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
+                        리셋: {new Date(usageLimits.resetTimes.perMinute).toLocaleTimeString()}
+                      </Typography>
+                    </Box>
+                  </Grid>
 
-      {/* 성능 / 사용자 메트릭 */}
-      <Grid container spacing={3} sx={{ mt: 1 }}>
+                  {/* 일일 요청 제한 */}
+                  <Grid item xs={12} md={4}>
+                    <Box>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                        <Typography variant="body2">일일 요청 제한</Typography>
+                        <Typography variant="body2" fontWeight="bold">
+                          {formatNumber(usageLimits.currentUsage.perDay)} / {formatNumber(usageLimits.limits.perDay)}
+                        </Typography>
+                      </Box>
+                      <LinearProgress
+                        variant="determinate"
+                        value={getUsagePercentage(usageLimits.currentUsage.perDay, usageLimits.limits.perDay)}
+                        color={getUsageStatusColor(usageLimits.status) as any}
+                        sx={{ height: 8, borderRadius: 4 }}
+                      />
+                      <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
+                        리셋: {new Date(usageLimits.resetTimes.perDay).toLocaleDateString()}
+                      </Typography>
+                    </Box>
+                  </Grid>
+
+                  {/* 월간 요청 제한 */}
+                  <Grid item xs={12} md={4}>
+                    <Box>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                        <Typography variant="body2">월간 요청 제한</Typography>
+                        <Typography variant="body2" fontWeight="bold">
+                          {formatNumber(usageLimits.currentUsage.perMonth)} / {formatNumber(usageLimits.limits.perMonth)}
+                        </Typography>
+                      </Box>
+                      <LinearProgress
+                        variant="determinate"
+                        value={getUsagePercentage(usageLimits.currentUsage.perMonth, usageLimits.limits.perMonth)}
+                        color={getUsageStatusColor(usageLimits.status) as any}
+                        sx={{ height: 8, borderRadius: 4 }}
+                      />
+                      <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
+                        리셋: {new Date(usageLimits.resetTimes.perMonth).toLocaleDateString()}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                </Grid>
+
+                {/* 사용량 제한 경고 */}
+                {usageLimits.status !== 'normal' && (
+                  <Alert 
+                    severity={usageLimits.status === 'exceeded' ? 'error' : 'warning'} 
+                    sx={{ mt: 2 }}
+                  >
+                    {usageLimits.status === 'exceeded' 
+                      ? 'API 사용량 제한을 초과했습니다. 플랜을 업그레이드하거나 다음 리셋 시간까지 기다려주세요.'
+                      : 'API 사용량이 제한에 근접하고 있습니다. 사용량을 모니터링하세요.'
+                    }
+                  </Alert>
+                )}
+              </CardContent>
+            </Card>
+          </Grid>
+        )}
+
+        {/* API 키 사용량 조회 */}
+        <Grid item xs={12}>
+          <Card>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                API 키 사용량 조회
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
+                <TextField
+                  fullWidth
+                  label="API 키 입력"
+                  value={apiKeyInput}
+                  onChange={(e) => setApiKeyInput(e.target.value)}
+                  placeholder="예: rc_live_f49a055d62283fd02e8203ccaba70fc2"
+                  variant="outlined"
+                  size="small"
+                />
+                <Button
+                  variant="contained"
+                  onClick={handleApiKeyUsageCheck}
+                  disabled={!apiKeyInput.trim() || apiKeyLoading}
+                  sx={{ minWidth: 120 }}
+                >
+                  {apiKeyLoading ? '조회 중...' : '조회'}
+                </Button>
+              </Box>
+              
+              {apiKeyUsage && (
+                <Box>
+                  <Typography variant="subtitle1" gutterBottom>
+                    API 키: {apiKeyUsage.name || apiKeyUsage.apiKey}
+                  </Typography>
+                  <Grid container spacing={3}>
+                    <Grid item xs={12} md={3}>
+                      <Box textAlign="center">
+                        <Typography variant="h4" color="primary">
+                          {formatNumber(apiKeyUsage.totalRequests)}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          총 요청 수
+                        </Typography>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={12} md={3}>
+                      <Box textAlign="center">
+                        <Typography variant="h4" color="success.main">
+                          {formatNumber(apiKeyUsage.successRequests)}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          성공 요청
+                        </Typography>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={12} md={3}>
+                      <Box textAlign="center">
+                        <Typography variant="h4" color="error.main">
+                          {formatNumber(apiKeyUsage.failedRequests)}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          실패 요청
+                        </Typography>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={12} md={3}>
+                      <Box textAlign="center">
+                        <Typography variant="h4" color="info.main">
+                          {apiKeyUsage.avgResponseTime}ms
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          평균 응답 시간
+                        </Typography>
+                      </Box>
+                    </Grid>
+                  </Grid>
+                  {apiKeyUsage.lastUsed && (
+                    <Typography variant="caption" color="text.secondary" sx={{ mt: 2, display: 'block' }}>
+                      마지막 사용: {new Date(apiKeyUsage.lastUsed).toLocaleString()}
+                    </Typography>
+                  )}
+                </Box>
+              )}
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* 기간별 요청 현황 (API 연동) */}
+        <Grid item xs={12}>
+          <Card>
+            <CardContent>
+              {/* 탭 네비게이션 */}
+              <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+                <Tabs value={tabValue} onChange={handleTabChange}>
+                  <Tab label="전체 일별 요청 현황" />
+                  <Tab label="필기 캡차" />
+                  <Tab label="추상 캡차" />
+                  <Tab label="이미지 캡차" />
+                </Tabs>
+              </Box>
+              
+              <AnalyticsChart 
+                data={chartData} 
+                loading={loading} 
+                timePeriod={timePeriod}
+                apiType={apiType}
+              />
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* 오류 유형 분석 */}
+        <Grid item xs={12}>
+          <Card>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                오류 유형 분석
+              </Typography>
+              <Grid container spacing={2} sx={{ mt: 1 }}>
+                {errorTypes.map((error, index) => (
+                  <Grid item xs={12} sm={6} md={3} key={index}>
+                    <Box
+                      sx={{
+                        p: 2,
+                        bgcolor: 'grey.50',
+                        borderRadius: 1,
+                        textAlign: 'center',
+                      }}
+                    >
+                      <Typography variant="h4" color="error.main">
+                        {formatNumber(error.count)}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {error.type}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        ({formatPercentage(error.percentage)})
+                      </Typography>
+                    </Box>
+                  </Grid>
+                ))}
+              </Grid>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* 성능 메트릭 */}
         <Grid item xs={12} md={6}>
           <Card>
             <CardContent>
@@ -401,6 +571,8 @@ const AnalyticsScreen: React.FC = () => {
             </CardContent>
           </Card>
         </Grid>
+
+        {/* 사용자 통계 */}
         <Grid item xs={12} md={6}>
           <Card>
             <CardContent>
@@ -409,31 +581,26 @@ const AnalyticsScreen: React.FC = () => {
               </Typography>
               <Box sx={{ mt: 2 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                  <Typography variant="body2">활성 사용자</Typography>
-                  <Typography variant="body2" fontWeight="bold">1,247명</Typography>
+                  <Typography variant="body2">일일 활성 사용자</Typography>
+                  <Typography variant="body2" fontWeight="bold">{formatNumber(15420)}</Typography>
                 </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                  <Typography variant="body2">신규 사용자(24h)</Typography>
-                  <Typography variant="body2" fontWeight="bold">132명</Typography>
+                  <Typography variant="body2">신규 사용자</Typography>
+                  <Typography variant="body2" fontWeight="bold">{formatNumber(1240)}</Typography>
                 </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                  <Typography variant="body2">재방문율</Typography>
-                  <Typography variant="body2" fontWeight="bold">68%</Typography>
+                  <Typography variant="body2">재방문 사용자</Typography>
+                  <Typography variant="body2" fontWeight="bold">{formatNumber(14180)}</Typography>
                 </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Typography variant="body2">이탈률</Typography>
-                  <Typography variant="body2" fontWeight="bold">12%</Typography>
+                  <Typography variant="body2">평균 세션 시간</Typography>
+                  <Typography variant="body2" fontWeight="bold">4m 32s</Typography>
                 </Box>
               </Box>
             </CardContent>
           </Card>
         </Grid>
       </Grid>
-
-      {/* 오류 처리 */}
-      {error && (
-        <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>
-      )}
     </Box>
   );
 };

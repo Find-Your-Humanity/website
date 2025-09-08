@@ -18,6 +18,7 @@ export const API_ENDPOINTS = {
   DASHBOARD: {
     ANALYTICS: '/api/dashboard/analytics',
     STATS: '/api/dashboard/stats',
+    KEY_STATS: '/api/dashboard/key-stats',
     REALTIME: '/api/dashboard/realtime',
     USAGE_LIMITS: '/api/dashboard/usage-limits', // API 사용량 제한 조회
     API_KEY_USAGE: '/api/dashboard/api-key-usage', // API 키별 사용량 통계
