@@ -83,13 +83,8 @@ const HomePage = () => {
         if (typeof window.renderRealCaptcha === 'function') {
           // 정상 렌더 경로에서는 iframe 모드 해제
           try { container.classList.remove('iframe-mode'); } catch {}
-<<<<<<< HEAD
           window.renderRealCaptcha('captcha-section', {
-            siteKey: CAPTCHA_SITE_KEY,
-=======
-          window.renderRealCaptcha('captcha-container', {
             siteKey: DEMO_SITE_KEY,
->>>>>>> e84acd2 (feat(website): use DEMO_SITE_KEY for public demo; require user siteKey for real use)
             theme: 'light',
             size: 'normal',
             language: 'ko',
@@ -134,11 +129,7 @@ const HomePage = () => {
               const container = document.getElementById('captcha-section');
               if (container) container.classList.remove('iframe-mode');
             } catch {}
-<<<<<<< HEAD
-            window.renderRealCaptcha('captcha-section', {
-              siteKey: CAPTCHA_SITE_KEY, // siteKey를 첫 번째 파라미터로 명시
-=======
-            // 사이트 키는 반드시 런타임에서 전달받아야 함
+            // 사용자 입력/선택 siteKey 사용
             const INPUT_ID = 'user-sitekey-input';
             let siteKey = document.getElementById(INPUT_ID)?.value?.trim();
             if (!siteKey) {
@@ -148,9 +139,8 @@ const HomePage = () => {
               alert('siteKey가 필요합니다. 발급받은 key_id를 입력/선택하세요.');
               return;
             }
-            window.renderRealCaptcha('captcha-container', {
+            window.renderRealCaptcha('captcha-section', {
               siteKey,
->>>>>>> e84acd2 (feat(website): use DEMO_SITE_KEY for public demo; require user siteKey for real use)
               theme: 'light',
               size: 'normal',
               onSuccess: function(result) {
