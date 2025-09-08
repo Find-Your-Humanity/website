@@ -398,6 +398,32 @@ class AdminService {
       throw error;
     }
   }
+
+  // 문의사항 답변
+  async replyToContactRequest(requestId: number, reply: string): Promise<ApiResponse> {
+    try {
+      const response = await apiClient.post<ApiResponse>(
+        `${API_ENDPOINTS.ADMIN.CONTACT_REQUESTS}/${requestId}/reply`,
+        { reply }
+      );
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // 문의사항 상태 업데이트
+  async updateContactRequestStatus(requestId: number, status: string): Promise<ApiResponse> {
+    try {
+      const response = await apiClient.patch<ApiResponse>(
+        `${API_ENDPOINTS.ADMIN.CONTACT_REQUESTS}/${requestId}/status`,
+        { status }
+      );
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 // 통계 관련 타입들

@@ -13,6 +13,8 @@ import {
   Alert,
   LinearProgress,
   Chip,
+  Tabs,
+  Tab,
   TextField,
   Button,
   Skeleton,
@@ -28,12 +30,14 @@ import {
 } from 'recharts';
 import { formatNumber, formatPercentage } from '../utils';
 import { dashboardService } from '../services/dashboardService';
-import { CaptchaStats, ApiUsageLimit } from '../types';
+import { CaptchaStats, ApiUsageLimit, ApiType, PeriodType } from '../types';
 import AnalyticsSkeleton from '../components/AnalyticsSkeleton';
 import AnalyticsChart from '../components/AnalyticsChart';
 
 const AnalyticsScreen: React.FC = () => {
   const [timePeriod, setTimePeriod] = useState('7days');
+  const [apiType, setApiType] = useState<ApiType>('all');
+  const [tabValue, setTabValue] = useState(0); // 탭 네비게이션 상태
   const [statsData, setStatsData] = useState<CaptchaStats[]>([]);
   const [usageLimits, setUsageLimits] = useState<ApiUsageLimit | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -43,6 +47,21 @@ const AnalyticsScreen: React.FC = () => {
   const [apiKeyUsage, setApiKeyUsage] = useState<any>(null);
   const [apiKeyInput, setApiKeyInput] = useState('');
   const [apiKeyLoading, setApiKeyLoading] = useState(false);
+
+  const handleTimePeriodChange = (event: SelectChangeEvent) => {
+    setTimePeriod(event.target.value);
+  };
+
+  const handleApiTypeChange = (event: SelectChangeEvent) => {
+    setApiType(event.target.value as ApiType);
+  };
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setTabValue(newValue);
+    // 탭 인덱스를 API 타입으로 변환
+    const apiTypes: ApiType[] = ['all', 'handwriting', 'abstract', 'imagecaptcha'];
+    setApiType(apiTypes[newValue]);
+  };
 
   // API 키별 사용량 조회 함수
   const fetchApiKeyUsage = async (apiKey: string) => {
@@ -128,21 +147,29 @@ const AnalyticsScreen: React.FC = () => {
       // 실제 날짜를 사용하여 라벨 생성
       let label = '';
       if (s.date) {
-        try {
-          const d = new Date(s.date);
-          label = `${d.getMonth() + 1}/${d.getDate()}`;
-        } catch (e) {
-          label = `Day ${idx + 1}`;
+        // 백엔드에서 이미 포맷된 라벨을 받은 경우 그대로 사용
+        if (s.date.includes('/') || s.date.includes('-') || s.date.startsWith('W')) {
+          label = s.date;
+        } else {
+          // 날짜 문자열인 경우 파싱
+          const date = new Date(s.date);
+          if (!isNaN(date.getTime())) {
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            label = `${month}/${day}`;
+          } else {
+            label = s.date;
+          }
         }
       } else {
+        // 날짜가 없는 경우 인덱스 기반으로 생성
         label = `Day ${idx + 1}`;
       }
       
       return {
-        label,
-        success: s.successfulSolves || 0,
-        failed: s.failedAttempts || 0,
-        requests: s.totalRequests || 0,
+        label: label,
+        success: s.successfulSolves,
+        failed: s.failedAttempts,
       };
     });
   }, [statsData]);
@@ -171,6 +198,22 @@ const AnalyticsScreen: React.FC = () => {
       setApiKeyUsage(null);
     } finally {
       setApiKeyLoading(false);
+    }
+  };
+
+  // 중복 데이터 정리 핸들러
+  const handleCleanupDuplicates = async () => {
+    try {
+      const res = await dashboardService.cleanupDuplicates();
+      if (res.success) {
+        const deletedCount = (res.data as any)?.deletedCount || 0;
+        alert(`중복 데이터 정리 완료: ${deletedCount}건 삭제`);
+        // 데이터 새로고침
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error('중복 데이터 정리 실패:', error);
+      alert('중복 데이터 정리에 실패했습니다.');
     }
   };
 
@@ -306,7 +349,26 @@ const AnalyticsScreen: React.FC = () => {
       </Card>
 
       {/* 통계 차트 */}
-      <AnalyticsChart data={chartData as any} loading={loading} timePeriod={timePeriod} />
+      <Card>
+        <CardContent>
+          {/* 탭 네비게이션 */}
+          <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+            <Tabs value={tabValue} onChange={handleTabChange}>
+              <Tab label="전체 일별 요청 현황" />
+              <Tab label="필기 캡차" />
+              <Tab label="추상 캡차" />
+              <Tab label="이미지 캡차" />
+            </Tabs>
+          </Box>
+          
+          <AnalyticsChart 
+            data={chartData} 
+            loading={loading} 
+            timePeriod={timePeriod}
+            apiType={apiType}
+          />
+        </CardContent>
+      </Card>
 
       {/* 오류 유형 분석 */}
       <Card sx={{ mt: 3 }}>

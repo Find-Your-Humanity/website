@@ -26,9 +26,10 @@ interface AnalyticsChartProps {
   data: ChartData[];
   loading: boolean;
   timePeriod: string;
+  apiType?: string;
 }
 
-const AnalyticsChart: React.FC<AnalyticsChartProps> = React.memo(({ data, loading, timePeriod }) => {
+const AnalyticsChart: React.FC<AnalyticsChartProps> = React.memo(({ data, loading, timePeriod, apiType }) => {
   const getChartTitle = () => {
     switch (timePeriod) {
       case '7days': return '일별 요청 현황';
