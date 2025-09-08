@@ -26,8 +26,18 @@ import {
   Select,
   MenuItem,
   Divider,
+  Tabs,
+  Tab,
+  Snackbar,
 } from '@mui/material';
-import { Visibility, Reply } from '@mui/icons-material';
+import { 
+  Visibility, 
+  Edit, 
+  Email, 
+  Phone,
+  AttachFile,
+  Download
+} from '@mui/icons-material';
 import { adminService, type ContactRequest } from '../services/adminService';
 
 const RequestsScreen: React.FC = () => {
@@ -35,32 +45,71 @@ const RequestsScreen: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   
+  // 탭 상태 관리
+  const [currentTab, setCurrentTab] = useState<string>('all');
+  const [totalCounts, setTotalCounts] = useState({
+    all: 0,
+    unread: 0,
+    in_progress: 0,
+    resolved: 0
+  });
+  
   // 문의사항 상세보기/답변 관련 상태
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [replyDialogOpen, setReplyDialogOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<ContactRequest | null>(null);
   const [replyText, setReplyText] = useState('');
   const [statusUpdate, setStatusUpdate] = useState('');
+  
+  // 알림 상태
+  const [snackbar, setSnackbar] = useState({ 
+    open: false, 
+    message: '', 
+    severity: 'success' as 'success' | 'error' 
+  });
+
+  // 데이터 로딩 함수
+  const loadContacts = async (statusFilter?: string) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const resp = await adminService.getContactRequests();
+      if (resp.success) {
+        const allContacts = resp.data.data;
+        
+        // 상태별 필터링
+        let filteredContacts = allContacts;
+        if (statusFilter && statusFilter !== 'all') {
+          filteredContacts = allContacts.filter(contact => contact.status === statusFilter);
+        }
+        
+        setRows(filteredContacts);
+        
+        // 상태별 카운트 계산
+        setTotalCounts({
+          all: allContacts.length,
+          unread: allContacts.filter(c => c.status === 'unread').length,
+          in_progress: allContacts.filter(c => c.status === 'in_progress').length,
+          resolved: allContacts.filter(c => c.status === 'resolved').length
+        });
+      } else {
+        setError((resp as any).message || '요청 목록을 불러오지 못했습니다.');
+      }
+    } catch (e: any) {
+      setError(e?.message || '요청 목록을 불러오지 못했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const load = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const resp = await adminService.getContactRequests();
-        if (resp.success) {
-          setRows(resp.data.data);
-        } else {
-          setError((resp as any).message || '요청 목록을 불러오지 못했습니다.');
-        }
-      } catch (e: any) {
-        setError(e?.message || '요청 목록을 불러오지 못했습니다.');
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
-  }, []);
+    loadContacts(currentTab);
+  }, [currentTab]);
+
+  // 탭 변경 핸들러
+  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
+    setCurrentTab(newValue);
+  };
 
   // 문의사항 상세보기 핸들러
   const handleViewDetail = (request: ContactRequest) => {
@@ -68,113 +117,184 @@ const RequestsScreen: React.FC = () => {
     setDetailDialogOpen(true);
   };
 
-  // 답변 다이얼로그 열기
+  // 답변/상태변경 다이얼로그 열기
   const handleReply = (request: ContactRequest) => {
     setSelectedRequest(request);
-    setReplyText('');
+    setReplyText(request.admin_response || '');
+    setStatusUpdate(request.status);
     setReplyDialogOpen(true);
   };
 
-  // 답변 전송
-  const handleSendReply = async () => {
-    if (!selectedRequest || !replyText.trim()) return;
+  // 답변/상태 업데이트
+  const handleUpdateContact = async () => {
+    if (!selectedRequest) return;
     
     try {
-      const resp = await adminService.replyToContactRequest(selectedRequest.id, replyText);
+      // 답변과 상태를 함께 업데이트
+      const resp = await adminService.updateContactRequest(
+        selectedRequest.id,
+        statusUpdate,
+        replyText
+      );
+      
       if (resp.success) {
-        // 목록 새로고침
-        const requestsResp = await adminService.getContactRequests();
-        if (requestsResp.success) {
-          setRows(requestsResp.data.data);
-        }
+        showSnackbar('문의사항이 업데이트되었습니다.', 'success');
         setReplyDialogOpen(false);
         setSelectedRequest(null);
         setReplyText('');
+        setStatusUpdate('');
+        // 목록 새로고침
+        loadContacts(currentTab);
       } else {
-        setError(resp.error || '답변 전송에 실패했습니다.');
+        showSnackbar('업데이트에 실패했습니다.', 'error');
       }
     } catch (e: any) {
-      setError(e?.message || '답변 전송에 실패했습니다.');
+      showSnackbar('업데이트 중 오류가 발생했습니다.', 'error');
     }
   };
 
-  // 상태 업데이트
-  const handleStatusUpdate = async (requestId: number, newStatus: string) => {
-    try {
-      const resp = await adminService.updateContactRequestStatus(requestId, newStatus);
-      if (resp.success) {
-        // 목록 새로고침
-        const requestsResp = await adminService.getContactRequests();
-        if (requestsResp.success) {
-          setRows(requestsResp.data.data);
-        }
-      } else {
-        setError(resp.error || '상태 업데이트에 실패했습니다.');
-      }
-    } catch (e: any) {
-      setError(e?.message || '상태 업데이트에 실패했습니다.');
-    }
+  // 스낵바 표시
+  const showSnackbar = (message: string, severity: 'success' | 'error') => {
+    setSnackbar({ open: true, message, severity });
   };
 
   return (
-    <Box>
-      <Typography variant="h5" sx={{ mb: 2, fontWeight: 700 }}>요청사항</Typography>
+    <Box p={3}>
+      <Typography variant="h4" component="h1" gutterBottom fontWeight="bold">
+        📧 요청사항 관리
+      </Typography>
+
+      {error && (
+        <Alert severity="error" sx={{ mb: 3 }}>
+          {error}
+        </Alert>
+      )}
+
+      {/* 탭 메뉴 */}
+      <Card sx={{ mb: 3 }}>
+        <CardContent>
+          <Tabs 
+            value={currentTab} 
+            onChange={handleTabChange}
+            indicatorColor="primary"
+            textColor="primary"
+          >
+            <Tab label={`전체 (${totalCounts.all})`} value="all" />
+            <Tab label="읽지 않음" value="unread" />
+            <Tab label="처리 중" value="in_progress" />
+            <Tab label="해결됨" value="resolved" />
+          </Tabs>
+        </CardContent>
+      </Card>
+
+      {/* 문의사항 테이블 */}
       <Card>
         <CardContent>
           {loading ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
               <CircularProgress />
             </Box>
-          ) : error ? (
-            <Alert severity="error">{error}</Alert>
           ) : rows.length === 0 ? (
-            <Alert severity="info">표시할 요청이 없습니다.</Alert>
+            <Box textAlign="center" py={4}>
+              <Typography color="text.secondary">
+                문의사항이 없습니다.
+              </Typography>
+            </Box>
           ) : (
-            <TableContainer component={Paper}>
+            <TableContainer component={Paper} variant="outlined">
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell>ID</TableCell>
-                    <TableCell>사용자</TableCell>
                     <TableCell>제목</TableCell>
+                    <TableCell>연락처</TableCell>
+                    <TableCell>이메일</TableCell>
                     <TableCell>상태</TableCell>
-                    <TableCell>생성 시각</TableCell>
-                    <TableCell>액션</TableCell>
+                    <TableCell>처리자</TableCell>
+                    <TableCell>접수일</TableCell>
+                    <TableCell align="center">작업</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {rows.map((r: ContactRequest, idx: number) => (
-                    <TableRow key={r.id || idx} hover>
-                      <TableCell>{r.id || '-'}</TableCell>
-                      <TableCell>{r.user_email || '-'}</TableCell>
-                      <TableCell>{r.subject || '-'}</TableCell>
+                  {rows.map((contact) => (
+                    <TableRow key={contact.id} hover>
+                      <TableCell>
+                        <Box>
+                          <Typography variant="subtitle2" fontWeight="bold">
+                            {contact.subject}
+                          </Typography>
+                          {contact.attachment_filename && (
+                            <Box display="flex" alignItems="center" gap={0.5} mt={0.5}>
+                              <AttachFile fontSize="small" color="action" />
+                              <Typography variant="caption" color="text.secondary">
+                                {contact.attachment_filename}
+                              </Typography>
+                            </Box>
+                          )}
+                        </Box>
+                      </TableCell>
+                      <TableCell>
+                        <Box display="flex" alignItems="center" gap={0.5}>
+                          <Phone fontSize="small" color="action" />
+                          <Typography variant="body2">{contact.contact || '-'}</Typography>
+                        </Box>
+                      </TableCell>
+                      <TableCell>
+                        <Box display="flex" alignItems="center" gap={0.5}>
+                          <Email fontSize="small" color="action" />
+                          <Typography variant="body2">{contact.user_email || '-'}</Typography>
+                        </Box>
+                      </TableCell>
                       <TableCell>
                         <Chip 
                           size="small" 
                           color={
-                            r.status === 'resolved' ? 'success' : 
-                            r.status === 'in_progress' ? 'warning' : 
-                            'default'
+                            contact.status === 'resolved' ? 'success' : 
+                            contact.status === 'in_progress' ? 'warning' : 
+                            'error'
                           } 
-                          label={r.status === 'unread' ? '미읽음' : r.status === 'in_progress' ? '진행중' : '해결됨'} 
+                          label={
+                            contact.status === 'unread' ? '읽지 않음' : 
+                            contact.status === 'in_progress' ? '처리 중' : 
+                            '해결됨'
+                          } 
                         />
                       </TableCell>
-                      <TableCell>{r.created_at ? new Date(r.created_at).toLocaleString() : '-'}</TableCell>
                       <TableCell>
-                        <IconButton 
-                          size="small" 
-                          onClick={() => handleViewDetail(r)}
-                          color="primary"
+                        <Typography variant="body2" color="text.secondary">
+                          {contact.admin_username || '-'}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2" color="text.secondary">
+                          {contact.created_at ? new Date(contact.created_at).toLocaleString('ko-KR') : '-'}
+                        </Typography>
+                      </TableCell>
+                      <TableCell align="center">
+                        <IconButton
+                          size="small"
+                          onClick={() => handleViewDetail(contact)}
+                          color="info"
+                          title="상세보기"
                         >
                           <Visibility />
                         </IconButton>
-                        <IconButton 
-                          size="small" 
-                          onClick={() => handleReply(r)}
-                          color="secondary"
+                        <IconButton
+                          size="small"
+                          onClick={() => handleReply(contact)}
+                          color="primary"
+                          title="답변/상태 변경"
                         >
-                          <Reply />
+                          <Edit />
                         </IconButton>
+                        {contact.attachment_filename && (
+                          <IconButton
+                            size="small"
+                            color="secondary"
+                            title="첨부파일 다운로드"
+                          >
+                            <Download />
+                          </IconButton>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -187,75 +307,68 @@ const RequestsScreen: React.FC = () => {
 
       {/* 문의사항 상세보기 다이얼로그 */}
       <Dialog open={detailDialogOpen} onClose={() => setDetailDialogOpen(false)} maxWidth="md" fullWidth>
-        <DialogTitle>문의사항 상세보기</DialogTitle>
+        <DialogTitle>
+          📧 문의사항 상세보기
+        </DialogTitle>
         <DialogContent>
           {selectedRequest && (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <Box>
-                <Typography variant="subtitle2" color="text.secondary">ID</Typography>
-                <Typography variant="body1">{selectedRequest.id}</Typography>
-              </Box>
-              <Box>
-                <Typography variant="subtitle2" color="text.secondary">사용자</Typography>
-                <Typography variant="body1">{selectedRequest.user_email}</Typography>
-              </Box>
-              <Box>
-                <Typography variant="subtitle2" color="text.secondary">제목</Typography>
-                <Typography variant="body1">{selectedRequest.subject}</Typography>
-              </Box>
-              <Box>
-                <Typography variant="subtitle2" color="text.secondary">내용</Typography>
-                <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
-                  {selectedRequest.message}
-                </Typography>
-              </Box>
-              <Box>
-                <Typography variant="subtitle2" color="text.secondary">상태</Typography>
+            <Box>
+              <Typography variant="h6" gutterBottom>
+                {selectedRequest.subject}
+              </Typography>
+              
+              <Box display="flex" gap={2} mb={2}>
+                <Chip icon={<Email />} label={selectedRequest.user_email} variant="outlined" />
+                <Chip icon={<Phone />} label={selectedRequest.contact || '-'} variant="outlined" />
                 <Chip 
                   size="small" 
                   color={
                     selectedRequest.status === 'resolved' ? 'success' : 
                     selectedRequest.status === 'in_progress' ? 'warning' : 
-                    'default'
+                    'error'
                   } 
-                  label={selectedRequest.status === 'unread' ? '미읽음' : selectedRequest.status === 'in_progress' ? '진행중' : '해결됨'} 
+                  label={
+                    selectedRequest.status === 'unread' ? '읽지 않음' : 
+                    selectedRequest.status === 'in_progress' ? '처리 중' : 
+                    '해결됨'
+                  } 
                 />
               </Box>
-              <Box>
-                <Typography variant="subtitle2" color="text.secondary">생성 시각</Typography>
-                <Typography variant="body1">
-                  {selectedRequest.created_at ? new Date(selectedRequest.created_at).toLocaleString() : '-'}
+
+              <Typography variant="body2" color="text.secondary" gutterBottom>
+                접수일: {selectedRequest.created_at ? new Date(selectedRequest.created_at).toLocaleString('ko-KR') : '-'}
+              </Typography>
+
+              {selectedRequest.attachment_filename && (
+                <Typography variant="body2" color="text.secondary" gutterBottom>
+                  첨부파일: {selectedRequest.attachment_filename}
                 </Typography>
-              </Box>
-              <Divider />
-              <Box>
-                <Typography variant="subtitle2" color="text.secondary">상태 변경</Typography>
-                <FormControl size="small" sx={{ minWidth: 150, mt: 1 }}>
-                  <InputLabel>상태</InputLabel>
-                  <Select
-                    value={statusUpdate}
-                    label="상태"
-                    onChange={(e) => setStatusUpdate(e.target.value)}
-                  >
-                    <MenuItem value="unread">미읽음</MenuItem>
-                    <MenuItem value="in_progress">진행중</MenuItem>
-                    <MenuItem value="resolved">해결됨</MenuItem>
-                  </Select>
-                </FormControl>
-                <Button 
-                  variant="outlined" 
-                  size="small" 
-                  sx={{ ml: 2 }}
-                  onClick={() => {
-                    if (statusUpdate && selectedRequest) {
-                      handleStatusUpdate(selectedRequest.id, statusUpdate);
-                      setStatusUpdate('');
-                    }
-                  }}
-                >
-                  상태 변경
-                </Button>
-              </Box>
+              )}
+
+              <Typography variant="subtitle2" gutterBottom sx={{ mt: 2 }}>
+                문의 내용:
+              </Typography>
+              <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
+                <Typography variant="body2" style={{ whiteSpace: 'pre-wrap' }}>
+                  {selectedRequest.message}
+                </Typography>
+              </Paper>
+
+              {selectedRequest.admin_response && (
+                <>
+                  <Typography variant="subtitle2" gutterBottom>
+                    관리자 답변:
+                  </Typography>
+                  <Paper variant="outlined" sx={{ p: 2, bgcolor: 'grey.50' }}>
+                    <Typography variant="body2" style={{ whiteSpace: 'pre-wrap' }}>
+                      {selectedRequest.admin_response}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+                      답변자: {selectedRequest.admin_username || '관리자'} | {selectedRequest.updated_at ? new Date(selectedRequest.updated_at).toLocaleString('ko-KR') : '-'}
+                    </Typography>
+                  </Paper>
+                </>
+              )}
             </Box>
           )}
         </DialogContent>
@@ -264,41 +377,60 @@ const RequestsScreen: React.FC = () => {
         </DialogActions>
       </Dialog>
 
-      {/* 답변 다이얼로그 */}
+      {/* 답변/상태 변경 다이얼로그 */}
       <Dialog open={replyDialogOpen} onClose={() => setReplyDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>문의사항 답변</DialogTitle>
+        <DialogTitle>
+          ✏️ 문의사항 답변 및 상태 변경
+        </DialogTitle>
         <DialogContent>
-          {selectedRequest && (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
-              <Box>
-                <Typography variant="subtitle2" color="text.secondary">문의사항</Typography>
-                <Typography variant="body2" sx={{ bgcolor: 'grey.50', p: 1, borderRadius: 1 }}>
-                  {selectedRequest.subject}
-                </Typography>
-              </Box>
-              <TextField
-                label="답변 내용"
-                multiline
-                rows={6}
-                value={replyText}
-                onChange={(e) => setReplyText(e.target.value)}
-                fullWidth
-                placeholder="답변 내용을 입력하세요..."
-              />
-            </Box>
-          )}
+          <Box sx={{ pt: 1 }}>
+            <FormControl fullWidth margin="normal">
+              <InputLabel>상태</InputLabel>
+              <Select
+                value={statusUpdate}
+                onChange={(e) => setStatusUpdate(e.target.value)}
+                label="상태"
+              >
+                <MenuItem value="unread">읽지 않음</MenuItem>
+                <MenuItem value="in_progress">처리 중</MenuItem>
+                <MenuItem value="resolved">해결됨</MenuItem>
+              </Select>
+            </FormControl>
+
+            <TextField
+              fullWidth
+              label="관리자 답변"
+              multiline
+              rows={6}
+              value={replyText}
+              onChange={(e) => setReplyText(e.target.value)}
+              margin="normal"
+              helperText="고객에게 전달할 답변을 작성하세요."
+            />
+          </Box>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setReplyDialogOpen(false)}>취소</Button>
-          <Button 
-            onClick={handleSendReply} 
-            variant="contained"
-            disabled={!replyText.trim()}
-          >
-            답변 전송
+          <Button onClick={handleUpdateContact} variant="contained">
+            저장
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* 스낵바 */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      >
+        <Alert 
+          onClose={() => setSnackbar({ ...snackbar, open: false })} 
+          severity={snackbar.severity}
+          sx={{ width: '100%' }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

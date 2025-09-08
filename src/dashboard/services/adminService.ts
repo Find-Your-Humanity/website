@@ -124,6 +124,7 @@ export interface ContactRequest {
   user_id: number;
   user_email: string;
   user_name?: string;
+  contact?: string;
   subject: string;
   message: string;
   attachment_filename?: string;
