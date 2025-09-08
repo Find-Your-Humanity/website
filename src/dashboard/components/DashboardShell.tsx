@@ -1,7 +1,7 @@
 import React from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import theme, { buildThemeFromCssVars } from '../styles/theme';
+import { buildThemeFromCssVars } from '../styles/theme';
 import Layout from './layout/Layout';
 
 interface Props {
@@ -10,8 +10,17 @@ interface Props {
 
 // Dashboard shell that applies local theme and wraps the original Layout (1:1 UI)
 const DashboardShell: React.FC<Props> = ({ children }) => {
-  // 테마 변수 변경 시 강제 재생성(간단한 키)
-  const [key, setKey] = React.useState(0);
+  // 현재 data-theme 기반으로 초기 테마 생성
+  const [muiTheme, setMuiTheme] = React.useState(buildThemeFromCssVars());
+  // 테마 변수 변경 시 재생성
+  React.useEffect(() => {
+    const apply = () => setMuiTheme(buildThemeFromCssVars());
+    // 진입 시 1회 보정(라우팅으로 들어온 경우 다크 그대로 적용)
+    apply();
+    const observer = new MutationObserver(apply);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    return () => observer.disconnect();
+  }, []);
   React.useEffect(() => {
     const observer = new MutationObserver(() => setKey((k) => k + 1));
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
@@ -19,7 +28,7 @@ const DashboardShell: React.FC<Props> = ({ children }) => {
   }, []);
 
   return (
-    <ThemeProvider theme={key ? buildThemeFromCssVars() : theme}>
+    <ThemeProvider theme={muiTheme}>
       <CssBaseline />
       <Layout>
         {children}

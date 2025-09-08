@@ -42,6 +42,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             '& .MuiDrawer-paper': {
               boxSizing: 'border-box',
               width: DRAWER_WIDTH,
+              backgroundColor: 'var(--bg-secondary)',
+              color: 'var(--text-primary)',
+              borderRight: '1px solid var(--border-color)',
             },
           }}
         >
@@ -55,6 +58,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             '& .MuiDrawer-paper': {
               boxSizing: 'border-box',
               width: DRAWER_WIDTH,
+              backgroundColor: 'var(--bg-secondary)',
+              color: 'var(--text-primary)',
+              borderRight: '1px solid var(--border-color)',
             },
           }}
           open
