@@ -159,37 +159,30 @@ const RequestsScreen: React.FC = () => {
   };
 
   return (
-    <Box p={3}>
-      <Typography variant="h4" component="h1" gutterBottom fontWeight="bold">
-        📧 요청사항 관리
-      </Typography>
-
+    <Box>
+      <Typography variant="h5" sx={{ mb: 2, fontWeight: 700 }}>요청사항 관리</Typography>
+      
       {error && (
         <Alert severity="error" sx={{ mb: 3 }}>
           {error}
         </Alert>
       )}
 
-      {/* 탭 메뉴 */}
-      <Card sx={{ mb: 3 }}>
+      <Card>
         <CardContent>
+          {/* 탭 메뉴 */}
           <Tabs 
             value={currentTab} 
             onChange={handleTabChange}
             indicatorColor="primary"
             textColor="primary"
+            sx={{ mb: 3 }}
           >
             <Tab label={`전체 (${totalCounts.all})`} value="all" />
             <Tab label="읽지 않음" value="unread" />
             <Tab label="처리 중" value="in_progress" />
             <Tab label="해결됨" value="resolved" />
           </Tabs>
-        </CardContent>
-      </Card>
-
-      {/* 문의사항 테이블 */}
-      <Card>
-        <CardContent>
           {loading ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
               <CircularProgress />
