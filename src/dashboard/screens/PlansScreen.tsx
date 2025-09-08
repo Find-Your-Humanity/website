@@ -15,7 +15,7 @@ import {
   Alert,
   Chip,
 } from '@mui/material';
-import { billingService, type Plan } from '../services/billingService';
+import { adminService, type Plan } from '../services/adminService';
 
 const PlansScreen: React.FC = () => {
   const [plans, setPlans] = useState<Plan[]>([]);
@@ -27,7 +27,7 @@ const PlansScreen: React.FC = () => {
       try {
         setLoading(true);
         setError(null);
-        const resp = await billingService.getAvailablePlans();
+        const resp = await adminService.getPlans();
         if (resp.success) {
           setPlans(resp.data);
         } else {

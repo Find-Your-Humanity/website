@@ -1,4 +1,4 @@
-import { ApiResponse, DashboardAnalytics, CaptchaStats, ApiUsageLimit } from '../types';
+import { ApiResponse, DashboardAnalytics, CaptchaStats, ApiUsageLimit, ApiType, PeriodType } from '../types';
 import { apiClient } from './apiClient';
 import { API_ENDPOINTS } from '../config/api';
 
@@ -14,10 +14,10 @@ class DashboardService {
     }
   }
 
-  async getStats(period: 'daily' | 'weekly' | 'monthly' = 'daily'): Promise<ApiResponse<CaptchaStats[]>> {
+  async getStats(period: PeriodType = 'daily', apiType: ApiType = 'all'): Promise<ApiResponse<CaptchaStats[]>> {
     try {
       const response = await apiClient.get<ApiResponse<CaptchaStats[]>>(
-        `${API_ENDPOINTS.DASHBOARD.STATS}?period=${period}`
+        `${API_ENDPOINTS.DASHBOARD.STATS}?period=${period}&api_type=${apiType}`
       );
       return response.data;
     } catch (error) {

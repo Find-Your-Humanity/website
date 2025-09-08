@@ -43,6 +43,15 @@ export const API_ENDPOINTS = {
   PAYMENTS: {
     CONFIRM: '/api/payments/confirm',
   },
+  ADMIN: {
+    USERS: '/api/admin/users',
+    PLANS: '/api/admin/plans',
+    CONTACT_REQUESTS: '/api/admin/contact-requests',
+    REQUEST_STATS: '/api/admin/request-stats',
+    REQUEST_LOGS: '/api/admin/request-logs',
+    ERROR_STATS: '/api/admin/error-stats',
+    ENDPOINT_USAGE: '/api/admin/endpoint-usage',
+  },
 } as const;
 
 // HTTP Status Codes

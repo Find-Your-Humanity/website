@@ -15,10 +15,10 @@ import {
   Alert,
   Chip,
 } from '@mui/material';
-import { dashboardService } from '../services/dashboardService';
+import { adminService, type ContactRequest } from '../services/adminService';
 
 const RequestsScreen: React.FC = () => {
-  const [rows, setRows] = useState<any[]>([]);
+  const [rows, setRows] = useState<ContactRequest[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,11 +27,9 @@ const RequestsScreen: React.FC = () => {
       try {
         setLoading(true);
         setError(null);
-        const resp = await dashboardService.getCaptchaLogs({ page: 1, pageSize: 20 });
+        const resp = await adminService.getContactRequests();
         if (resp.success) {
-          // 백엔드 응답 구조 유연 대응
-          const data: any[] = (resp as any).data?.items || (resp as any).data?.logs || (resp as any).data || [];
-          setRows(Array.isArray(data) ? data : []);
+          setRows(resp.data.data);
         } else {
           setError((resp as any).message || '요청 목록을 불러오지 못했습니다.');
         }
@@ -63,24 +61,30 @@ const RequestsScreen: React.FC = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell>ID</TableCell>
+                    <TableCell>사용자</TableCell>
+                    <TableCell>제목</TableCell>
                     <TableCell>상태</TableCell>
                     <TableCell>생성 시각</TableCell>
-                    <TableCell>요약</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {rows.map((r: any, idx: number) => (
-                    <TableRow key={r.id || r._id || idx} hover>
-                      <TableCell>{r.id || r._id || '-'}</TableCell>
+                  {rows.map((r: ContactRequest, idx: number) => (
+                    <TableRow key={r.id || idx} hover>
+                      <TableCell>{r.id || '-'}</TableCell>
+                      <TableCell>{r.user_email || '-'}</TableCell>
+                      <TableCell>{r.subject || '-'}</TableCell>
                       <TableCell>
-                        {r.status ? <Chip size="small" color={r.status === 'success' ? 'success' : r.status === 'failed' ? 'error' : 'default'} label={String(r.status)} /> : '-'}
+                        <Chip 
+                          size="small" 
+                          color={
+                            r.status === 'resolved' ? 'success' : 
+                            r.status === 'in_progress' ? 'warning' : 
+                            'default'
+                          } 
+                          label={r.status === 'unread' ? '미읽음' : r.status === 'in_progress' ? '진행중' : '해결됨'} 
+                        />
                       </TableCell>
-                      <TableCell>{r.created_at ? new Date(r.created_at).toLocaleString() : r.date ? new Date(r.date).toLocaleString() : '-'}</TableCell>
-                      <TableCell>
-                        <code style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block', maxWidth: 360 }}>
-                          {r.summary || r.message || JSON.stringify(r).slice(0, 200)}
-                        </code>
-                      </TableCell>
+                      <TableCell>{r.created_at ? new Date(r.created_at).toLocaleString() : '-'}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

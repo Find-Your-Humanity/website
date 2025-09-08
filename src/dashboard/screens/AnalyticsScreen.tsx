@@ -73,9 +73,9 @@ const AnalyticsScreen: React.FC = () => {
       setLoading(true);
       setError('');
       try {
-        const period: 'daily' | 'weekly' | 'monthly' =
+        const period: PeriodType =
           timePeriod === '7days' ? 'daily' : timePeriod === '30days' ? 'weekly' : 'monthly';
-        const res = await dashboardService.getStats(period);
+        const res = await dashboardService.getStats(period, apiType);
         if (res.success) {
           setStatsData(res.data);
         } else {

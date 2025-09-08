@@ -82,3 +82,7 @@ export interface ApiUsageLimit {
   };
   status: 'normal' | 'warning' | 'critical' | 'exceeded';
 }
+
+// API Type and Period Types
+export type ApiType = 'all' | 'handwriting' | 'abstract' | 'imagecaptcha';
+export type PeriodType = 'daily' | 'weekly' | 'monthly';

@@ -14,7 +14,7 @@ import {
   ListItemText,
   Divider,
 } from '@mui/material';
-import { dashboardService } from '../services/dashboardService';
+import { adminService } from '../services/adminService';
 
 // 백엔드 응답 형태가 고정되어 있지 않을 수 있으므로 유연하게 처리합니다.
 const RequestStatusScreen: React.FC = () => {
@@ -27,7 +27,7 @@ const RequestStatusScreen: React.FC = () => {
       try {
         setLoading(true);
         setError(null);
-        const resp = await dashboardService.getCaptchaPerformance();
+        const resp = await adminService.getRequestStats();
         if (resp.success) {
           setData(resp.data);
         } else {
@@ -43,21 +43,25 @@ const RequestStatusScreen: React.FC = () => {
   }, []);
 
   const renderSummary = () => {
-    const summary = (data && (data.summary || data.metrics || data)) || {};
-    const entries = Object.entries(summary).slice(0, 12);
-
-    if (entries.length === 0) {
-      return <Alert severity="info">표시할 요약 정보가 없습니다.</Alert>;
-    }
+    if (!data) return <Alert severity="info">표시할 요약 정보가 없습니다.</Alert>;
+    
+    const stats = [
+      { label: '총 요청 수', value: data.total_requests || 0 },
+      { label: '성공 요청', value: data.success_count || 0 },
+      { label: '실패 요청', value: data.failure_count || 0 },
+      { label: '평균 응답 시간', value: `${data.avg_response_time || 0}ms` },
+      { label: '고유 사용자', value: data.unique_users || 0 },
+      { label: '고유 API 키', value: data.unique_api_keys || 0 },
+    ];
 
     return (
       <Grid container spacing={2}>
-        {entries.map(([key, value], idx) => (
+        {stats.map((stat, idx) => (
           <Grid item xs={12} sm={6} md={4} key={idx}>
             <Paper elevation={0} sx={{ p: 2, border: '1px solid #eee', borderRadius: 1 }}>
-              <Typography variant="caption" color="text.secondary">{key}</Typography>
+              <Typography variant="caption" color="text.secondary">{stat.label}</Typography>
               <Typography variant="h6" sx={{ mt: 0.5 }}>
-                {typeof value === 'number' ? value.toLocaleString() : String(value)}
+                {typeof stat.value === 'number' ? stat.value.toLocaleString() : stat.value}
               </Typography>
             </Paper>
           </Grid>

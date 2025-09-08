@@ -14,8 +14,7 @@ import {
   CircularProgress,
   Alert,
 } from '@mui/material';
-import { usersService } from '../services/usersService';
-import type { User } from '../types';
+import { adminService, type User } from '../services/adminService';
 
 const UsersScreen: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -27,9 +26,9 @@ const UsersScreen: React.FC = () => {
       try {
         setLoading(true);
         setError(null);
-        const resp = await usersService.list();
+        const resp = await adminService.getUsers();
         if (resp.success) {
-          setUsers(resp.data);
+          setUsers(resp.data.data);
         } else {
           setError(resp.error || '사용자 목록을 불러오지 못했습니다.');
         }
