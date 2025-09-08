@@ -135,9 +135,9 @@ const HomePage = () => {
             if (!siteKey) {
               siteKey = window.__USER_SELECTED_SITE_KEY__ || '';
             }
+            // 사용자 입력/선택이 없으면 데모 키로 체험 모드 실행
             if (!siteKey) {
-              alert('siteKey가 필요합니다. 발급받은 key_id를 입력/선택하세요.');
-              return;
+              siteKey = DEMO_SITE_KEY;
             }
             window.renderRealCaptcha('captcha-section', {
               siteKey,
