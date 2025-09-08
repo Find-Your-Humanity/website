@@ -62,6 +62,8 @@ export interface Plan {
   is_active: boolean;
   created_at: string;
   updated_at: string;
+  subscriber_count?: number;
+  active_subscribers?: number;
 }
 
 export interface PlanCreate {
@@ -107,7 +109,12 @@ export interface UserSubscription {
 
 // 요금제별 구독자 통계
 export interface PlanSubscribersResponse {
-  plan: {
+  plan_stats: PlanSubscriberStats;
+  subscribers: PlanSubscriber[];
+}
+
+export interface PlanSubscriberStats {
+  plan_info: {
     id: number;
     name: string;
     display_name: string;
@@ -116,6 +123,21 @@ export interface PlanSubscribersResponse {
   active_subscribers: number;
   total_monthly_requests: number;
   total_daily_requests: number;
+}
+
+export interface PlanSubscriber {
+  subscription_id: number;
+  user_id: number;
+  username: string;
+  name?: string;
+  email: string;
+  subscription_status: string;
+  start_date: string;
+  end_date?: string;
+  monthly_requests_used: number;
+  monthly_request_limit?: number;
+  daily_requests_used: number;
+  last_request_time?: string;
 }
 
 // 문의사항 관리 타입들
