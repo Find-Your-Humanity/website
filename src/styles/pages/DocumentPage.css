@@ -1117,6 +1117,27 @@
   .document-page .docs-content-wrapper h6 {
     scroll-margin-top: 72px;
   }
+
+  /* 모바일 문서 탐색 오버레이/패널 최대 높이 및 헤더 보정 */
+  .mobile-docs-overlay {
+    padding-top: calc(var(--header-height, 72px) + env(safe-area-inset-top));
+    overscroll-behavior: contain;
+  }
+
+  .mobile-docs-panel {
+    max-height: min(
+      80vh,
+      calc(100dvh - var(--header-height, 72px) - env(safe-area-inset-top) - 16px)
+    );
+    margin: 0 8px;
+    overflow: hidden;
+  }
+
+  .mobile-docs-nav {
+    max-height: inherit;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 @media (max-width: 480px) {
