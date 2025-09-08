@@ -29,15 +29,11 @@ import {
   IconButton,
 } from '@mui/material';
 import {
-  Check as CheckIcon,
   TrendingUp as TrendingUpIcon,
   Speed as SpeedIcon,
-  People as PeopleIcon,
-  Visibility as VisibilityIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../../contexts/AuthContext';
 import { billingService, Plan, CurrentPlan } from '../services/billingService';
-import { adminService, PlanSubscriber, PlanSubscriberStats } from '../services/adminService';
 import PaymentModal from '../../components/PaymentModal';
 import { loadPaymentWidget } from '@tosspayments/payment-widget-sdk';
 import { useLocation } from 'react-router-dom';
@@ -49,11 +45,6 @@ const BillingScreen: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
-  // 구독자 관련 상태
-  const [subscribersDialogOpen, setSubscribersDialogOpen] = useState(false);
-  const [selectedPlanSubscribers, setSelectedPlanSubscribers] = useState<PlanSubscriber[]>([]);
-  const [selectedPlanStats, setSelectedPlanStats] = useState<PlanSubscriberStats | null>(null);
-  const [subscribersLoading, setSubscribersLoading] = useState(false);
 
   // 결제 모달 상태 및 Toss Payments 위젯
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -136,32 +127,6 @@ const BillingScreen: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  // 구독자 상세보기
-  const openSubscribersDialog = async (plan: Plan) => {
-    try {
-      setSubscribersLoading(true);
-      setSubscribersDialogOpen(true);
-      
-      const response = await adminService.getPlanSubscribers(plan.id);
-      if (response.success) {
-        setSelectedPlanSubscribers(response.data.subscribers);
-        setSelectedPlanStats(response.data.plan_stats);
-      } else {
-        setError('구독자 정보를 불러올 수 없습니다.');
-      }
-    } catch (e: any) {
-      setError('구독자 정보 조회 중 오류가 발생했습니다.');
-    } finally {
-      setSubscribersLoading(false);
-    }
-  };
-
-  // 구독자 모달 닫기
-  const closeSubscribersDialog = () => {
-    setSubscribersDialogOpen(false);
-    setSelectedPlanSubscribers([]);
-    setSelectedPlanStats(null);
-  };
 
   const getUsagePercentage = () => {
     if (!currentPlanData) return 0;
@@ -282,35 +247,9 @@ const BillingScreen: React.FC = () => {
                       primary={`${plan.rate_limit_per_minute} 요청/분`}
                     />
                   </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
-                      <PeopleIcon color="primary" fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText 
-                      primary={`구독자: ${plan.subscriber_count || 0}명`}
-                    />
-                  </ListItem>
-                  {/* 디버그 정보 */}
-                  {console.log(`🔍 ${plan.name} 구독자 정보:`, { 
-                    subscriber_count: plan.subscriber_count, 
-                    active_subscribers: plan.active_subscribers 
-                  })}
                 </List>
                 
                 <Box mt="auto" pt={2}>
-                  <Box display="flex" gap={1} mb={1}>
-                    {plan.subscriber_count && plan.subscriber_count > 0 && (
-                      <Button
-                        variant="outlined"
-                        size="small"
-                        startIcon={<VisibilityIcon />}
-                        onClick={() => openSubscribersDialog(plan)}
-                        sx={{ flex: 1 }}
-                      >
-                        구독자 보기
-                      </Button>
-                    )}
-                  </Box>
                   {currentPlanData?.plan.id === plan.id ? (
                     <Button
                       variant="outlined"
@@ -347,134 +286,6 @@ const BillingScreen: React.FC = () => {
         }}
       />
 
-      {/* 구독자 상세보기 모달 */}
-      <Dialog 
-        open={subscribersDialogOpen} 
-        onClose={closeSubscribersDialog} 
-        maxWidth="lg" 
-        fullWidth
-      >
-        <DialogTitle>
-          <Box display="flex" alignItems="center" gap={1}>
-            <PeopleIcon color="primary" />
-            {selectedPlanStats?.plan_info.display_name} 구독자 목록
-          </Box>
-        </DialogTitle>
-        <DialogContent>
-          {subscribersLoading ? (
-            <Box display="flex" justifyContent="center" p={4}>
-              <CircularProgress />
-            </Box>
-          ) : (
-            <Box>
-              {/* 구독자 통계 */}
-              <Box display="flex" gap={2} mb={3}>
-                <Chip 
-                  icon={<PeopleIcon />}
-                  label={`총 구독자: ${selectedPlanStats?.total_subscribers || 0}명`} 
-                  color="primary" 
-                  variant="outlined"
-                />
-                <Chip 
-                  icon={<CheckIcon />}
-                  label={`활성 구독자: ${selectedPlanStats?.active_subscribers || 0}명`} 
-                  color="success" 
-                  variant="outlined"
-                />
-              </Box>
-
-              {/* 구독자 목록 테이블 */}
-              <TableContainer component={Paper} variant="outlined">
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>사용자</TableCell>
-                      <TableCell>이메일</TableCell>
-                      <TableCell>구독 기간</TableCell>
-                      <TableCell>상태</TableCell>
-                      <TableCell>사용량</TableCell>
-                      <TableCell>마지막 요청</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {selectedPlanSubscribers.map((subscriber) => (
-                      <TableRow key={subscriber.subscription_id} hover>
-                        <TableCell>
-                          <Typography variant="subtitle2">
-                            {subscriber.name || subscriber.username}
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography variant="body2">
-                            {subscriber.email}
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography variant="body2">
-                            시작: {new Date(subscriber.start_date).toLocaleDateString('ko-KR')}
-                          </Typography>
-                          {subscriber.end_date && (
-                            <Typography variant="body2" color="text.secondary">
-                              종료: {new Date(subscriber.end_date).toLocaleDateString('ko-KR')}
-                            </Typography>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          <Chip 
-                            size="small"
-                            color={
-                              subscriber.subscription_status === 'active' ? 'success' :
-                              subscriber.subscription_status === 'expired' ? 'error' :
-                              'default'
-                            }
-                            label={
-                              subscriber.subscription_status === 'active' ? '활성' :
-                              subscriber.subscription_status === 'expired' ? '만료' :
-                              subscriber.subscription_status === 'cancelled' ? '취소' : 
-                              subscriber.subscription_status
-                            }
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Typography variant="body2">
-                            월간: {subscriber.monthly_requests_used.toLocaleString()} / {
-                              subscriber.monthly_request_limit ? 
-                              subscriber.monthly_request_limit.toLocaleString() : 
-                              '무제한'
-                            }
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            오늘: {subscriber.daily_requests_used.toLocaleString()}회
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography variant="body2" color="text.secondary">
-                            {subscriber.last_request_time ? 
-                              new Date(subscriber.last_request_time).toLocaleString('ko-KR') : 
-                              '없음'
-                            }
-                          </Typography>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-
-              {selectedPlanSubscribers.length === 0 && !subscribersLoading && (
-                <Box textAlign="center" py={4}>
-                  <Typography color="text.secondary">
-                    이 요금제의 구독자가 없습니다.
-                  </Typography>
-                </Box>
-              )}
-            </Box>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={closeSubscribersDialog}>닫기</Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   );
 };
