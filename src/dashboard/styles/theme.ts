@@ -19,10 +19,13 @@ function getMode(): 'light' | 'dark' {
 
 export function buildThemeFromCssVars() {
   const mode = getMode();
+  // 대시보드 기본 팔레트(고정값). 필요 시 --dashboard-primary/secondary로만 오버라이드
+  const primaryMain = readCssVar('--dashboard-primary', '#1976d2');
+  const secondaryMain = readCssVar('--dashboard-secondary', '#dc004e');
   const palette = {
     mode,
-    primary: { main: readCssVar('--accent-color', '#DFFF00') },
-    secondary: { main: readCssVar('--text-secondary', '#666666') },
+    primary: { main: primaryMain },
+    secondary: { main: secondaryMain },
     background: {
       default: readCssVar('--bg-secondary', mode === 'dark' ? '#1a2332' : '#f8f9fa'),
       paper: readCssVar('--bg-primary', mode === 'dark' ? '#0a0f1a' : '#ffffff'),
@@ -38,32 +41,6 @@ export function buildThemeFromCssVars() {
 
   return createTheme({
     palette: palette as any,
-    components: {
-      MuiPaper: {
-        styleOverrides: {
-          root: {
-            backgroundImage: 'none',
-          },
-        },
-      },
-      MuiCard: {
-        styleOverrides: {
-          root: {
-            backgroundColor: 'var(--bg-primary)',
-            color: 'var(--text-primary)',
-            border: '1px solid var(--border-color)',
-            boxShadow: '0 2px 10px var(--shadow-color)',
-          },
-        },
-      },
-      MuiButton: {
-        styleOverrides: {
-          root: {
-            textTransform: 'none',
-          },
-        },
-      },
-    },
   });
 }
 

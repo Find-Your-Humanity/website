@@ -82,10 +82,6 @@ const AnalyticsScreen: React.FC = () => {
   };
 
 
-  const handleTimePeriodChange = (event: SelectChangeEvent) => {
-    setTimePeriod(event.target.value);
-  };
-
   // API 연동: 기간 변경 시 통계 조회
   useEffect(() => {
     const fetchStats = async () => {
@@ -201,21 +197,7 @@ const AnalyticsScreen: React.FC = () => {
     }
   };
 
-  // 중복 데이터 정리 핸들러
-  const handleCleanupDuplicates = async () => {
-    try {
-      const res = await dashboardService.cleanupDuplicates();
-      if (res.success) {
-        const deletedCount = (res.data as any)?.deletedCount || 0;
-        alert(`중복 데이터 정리 완료: ${deletedCount}건 삭제`);
-        // 데이터 새로고침
-        window.location.reload();
-      }
-    } catch (error) {
-      console.error('중복 데이터 정리 실패:', error);
-      alert('중복 데이터 정리에 실패했습니다.');
-    }
-  };
+  // 중복 데이터 정리 핸들러 (하단의 고도화 버전만 유지)
 
   // 사용량 제한 퍼센트 계산 유틸리티
   const calcPercentage = (current: number, limit: number) => {

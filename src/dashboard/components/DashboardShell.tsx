@@ -2,7 +2,6 @@ import React from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import theme, { buildThemeFromCssVars } from '../styles/theme';
-import '../../../styles/dashboard/DashboardTheme.css';
 import Layout from './layout/Layout';
 
 interface Props {
