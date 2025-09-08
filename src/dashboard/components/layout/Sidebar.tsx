@@ -63,7 +63,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onItemClick }) => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <div style={{ backgroundColor: 'white', height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ backgroundColor: 'var(--bg-secondary)', height: '100%', display: 'flex', flexDirection: 'column' }}>
       <div style={{ padding: '16px 16px 8px 16px' }}>
         <Typography variant="h6" sx={{ fontWeight: 700 }}>Real Captcha</Typography>
         <Typography variant="caption" color="text.secondary">Dashboard</Typography>
