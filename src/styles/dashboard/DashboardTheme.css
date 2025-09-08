@@ -1,0 +1,55 @@
+:root {
+  /* inherit from site index.css but provide fallbacks */
+  --bg-primary: var(--bg-primary, #ffffff);
+  --bg-secondary: var(--bg-secondary, #f8f9fa);
+  --bg-tertiary: var(--bg-tertiary, #f5f5f5);
+  --text-primary: var(--text-primary, #000000);
+  --text-secondary: var(--text-secondary, #666666);
+  --text-tertiary: var(--text-tertiary, #999999);
+  --border-color: var(--border-color, #e0e0e0);
+  --border-color-light: var(--border-color-light, #f0f0f0);
+  --accent-color: var(--accent-color, #DFFF00);
+  --accent-hover: var(--accent-hover, #e6ff33);
+  --shadow-color: var(--shadow-color, rgba(0,0,0,0.1));
+  --shadow-color-light: var(--shadow-color-light, rgba(0,0,0,0.05));
+  --error-color: var(--error-color, #dc3545);
+  --success-color: var(--success-color, #28a745);
+  --warning-color: var(--warning-color, #ffc107);
+}
+
+[data-theme="dark"] {
+  /* keep same var names, they will be already set on <html>; fallbacks added */
+}
+
+/* Dashboard structural defaults using vars */
+.rc-card, .dashboard-card {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 2px 10px var(--shadow-color);
+}
+
+.rc-table, .dashboard-table {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.rc-table thead th {
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-color-light);
+}
+
+.rc-table tbody tr:hover { background: var(--bg-secondary); }
+
+.dashboard-badge.success { background: var(--success-color); color: #000; }
+.dashboard-badge.error   { background: var(--error-color); color: #fff; }
+.dashboard-badge.warn    { background: var(--warning-color); color: #000; }
+
+.dashboard-button.primary {
+  background: var(--accent-color);
+  color: #000;
+}
+.dashboard-button.primary:hover { background: var(--accent-hover); }
+

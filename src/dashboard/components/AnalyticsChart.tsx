@@ -82,6 +82,13 @@ const AnalyticsChart: React.FC<AnalyticsChartProps> = React.memo(({ data, loadin
     );
   }
 
+  // CSS 변수로 차트 색/텍스트 읽기
+  const getVar = (name: string, fallback: string) => getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
+  const gridColor = getVar('--border-color', '#e0e0e0');
+  const axisColor = getVar('--text-secondary', '#666');
+  const successColor = getVar('--success-color', '#28a745');
+  const errorColor = getVar('--error-color', '#dc3545');
+
   return (
     <Card>
       <CardContent>
@@ -91,12 +98,12 @@ const AnalyticsChart: React.FC<AnalyticsChartProps> = React.memo(({ data, loadin
         <Box sx={{ height: 400, mt: 2 }}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="label" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="success" fill="#2e7d32" name="성공" />
-              <Bar dataKey="failed" fill="#d32f2f" name="실패" />
+              <CartesianGrid stroke={gridColor} strokeDasharray="3 3" />
+              <XAxis dataKey="label" stroke={axisColor} tick={{ fill: axisColor }} />
+              <YAxis stroke={axisColor} tick={{ fill: axisColor }} />
+              <Tooltip contentStyle={{ background: getVar('--bg-primary', '#fff'), color: getVar('--text-primary', '#000'), border: `1px solid ${gridColor}` }} />
+              <Bar dataKey="success" fill={successColor} name="성공" />
+              <Bar dataKey="failed" fill={errorColor} name="실패" />
             </BarChart>
           </ResponsiveContainer>
         </Box>
