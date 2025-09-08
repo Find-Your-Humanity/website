@@ -61,21 +61,27 @@ const PlansScreen: React.FC = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell>이름</TableCell>
+                    <TableCell>표시명</TableCell>
                     <TableCell>월 요금(₩)</TableCell>
                     <TableCell>월 요청 한도</TableCell>
                     <TableCell>분당 제한</TableCell>
-                    <TableCell>인기</TableCell>
+                    <TableCell>상태</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {plans.map((p) => (
                     <TableRow key={p.id} hover>
-                      <TableCell>{p.name}</TableCell>
-                      <TableCell>{p.price.toLocaleString()}</TableCell>
-                      <TableCell>{p.request_limit.toLocaleString()}</TableCell>
-                      <TableCell>{p.rate_limit_per_minute}</TableCell>
+                      <TableCell>{p.name || '-'}</TableCell>
+                      <TableCell>{p.display_name || '-'}</TableCell>
+                      <TableCell>{p.price ? p.price.toLocaleString() : '-'}</TableCell>
+                      <TableCell>{p.monthly_request_limit ? p.monthly_request_limit.toLocaleString() : '-'}</TableCell>
+                      <TableCell>{p.rate_limit_per_minute || '-'}</TableCell>
                       <TableCell>
-                        {p.is_popular ? <Chip size="small" color="primary" label="인기" /> : '-'}
+                        <Chip 
+                          size="small" 
+                          color={p.is_active ? "success" : "default"} 
+                          label={p.is_active ? "활성" : "비활성"} 
+                        />
                       </TableCell>
                     </TableRow>
                   ))}

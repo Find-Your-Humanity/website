@@ -71,7 +71,7 @@ const UsersScreen: React.FC = () => {
                       <TableCell>{u.email}</TableCell>
                       <TableCell>{u.name || u.username || '-'}</TableCell>
                       <TableCell>{u.is_admin === true || (u as any).is_admin === 1 || u.role === 'admin' ? '관리자' : '사용자'}</TableCell>
-                      <TableCell>{u.createdAt ? new Date(u.createdAt).toLocaleString() : '-'}</TableCell>
+                      <TableCell>{u.created_at ? new Date(u.created_at).toLocaleString() : '-'}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
