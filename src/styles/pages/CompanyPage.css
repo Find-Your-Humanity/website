@@ -55,12 +55,12 @@
   padding: 0 2rem;
 }
 
-.company-page .company-hero-title {
-  font-size: 4rem !important;
-  font-weight: bold !important;
-  margin-bottom: 1rem !important;
-  line-height: 1.4 !important;
-  color: #ffffff !important;
+.company-hero-content .company-hero-title {
+  font-size: 4rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+  color: #ffffff;
   opacity: 0;
   transform: translateY(50px);
   transition: all 1.2s ease;
@@ -292,7 +292,7 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .company-page .company-hero-title {
+  .company-hero-content .company-hero-title {
     font-size: 2rem;
   }
   
@@ -331,7 +331,7 @@
     min-height: 300px;
   }
   
-  .company-page .company-hero-title {
+  .company-hero-content .company-hero-title {
     font-size: 1.8rem;
   }
   

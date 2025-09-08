@@ -384,7 +384,7 @@
 .faq-question-container {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   cursor: pointer;
   padding: 0.5rem 0;
   transition: all 0.3s ease;
@@ -399,9 +399,9 @@
   line-height: 1.4;
   border-bottom: none;
   flex: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
   margin-right: 1rem;
 }
 
@@ -453,6 +453,7 @@
     padding: 2rem;
   }
   
+  /* 모바일: FAQ 1열 */
   .faq-grid {
     grid-template-columns: 1fr;
   }
@@ -463,6 +464,13 @@
   
   .metric-number {
     font-size: 2.5rem;
+  }
+}
+
+/* 태블릿: FAQ 2열 */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .faq-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
