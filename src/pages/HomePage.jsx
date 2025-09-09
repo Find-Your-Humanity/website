@@ -11,7 +11,6 @@ const HomePage = () => {
   const [showCaptcha, setShowCaptcha] = useState(false);
   const [consentGiven, setConsentGiven] = useState(false); // 동의 상태 추가
   const [userSiteKey, setUserSiteKey] = useState(''); // 사용자 입력 공개 키
-  const [showApiKeyInput, setShowApiKeyInput] = useState(false); // API 키 입력 UI 표시 여부
   const heroRef = useRef(null);
   const mainContentRef = useRef(null);
   const featuresRef = useRef(null);
@@ -36,31 +35,18 @@ const HomePage = () => {
 
   const handleTryCaptcha = () => {
     if (!showCaptcha) {
-      // 캡차를 처음 시작할 때 API 키 입력 UI 표시
-      setShowApiKeyInput(true);
+      // 데모 모드로 바로 시작 (API 키 입력 없이)
+      setUserSiteKey(''); // 빈 상태로 설정하여 데모 키 사용
+      setShowCaptcha(true);
+      setConsentGiven(false);
     } else {
       // 캡차를 닫을 때 모든 상태 초기화
       setShowCaptcha(false);
       setConsentGiven(false);
-      setShowApiKeyInput(false);
       setUserSiteKey('');
     }
   };
 
-  const handleStartCaptcha = () => {
-    if (!userSiteKey.trim()) {
-      alert('API 키를 입력해주세요.');
-      return;
-    }
-    setShowApiKeyInput(false);
-    setShowCaptcha(true);
-    setConsentGiven(false);
-  };
-
-  const handleCancelCaptcha = () => {
-    setShowApiKeyInput(false);
-    setUserSiteKey('');
-  };
 
   const handleConsentChange = (e) => {
     setConsentGiven(e.target.checked);
@@ -259,37 +245,16 @@ const HomePage = () => {
             <button className="btn btn-primary" onClick={handleStartFreePlan}>Start Free Plan</button>
           </div>
           
-          {/* API 키 입력 UI */}
-          {showApiKeyInput && (
-            <div className="api-key-input-section">
-              <div className="api-key-input-box">
-                <h3>API 키 입력</h3>
-                <p>발급받은 공개 키(API Key)를 입력하세요</p>
-                <div className="input-group">
-                  <input
-                    type="text"
-                    placeholder="rc_live_..."
-                    value={userSiteKey}
-                    onChange={(e) => setUserSiteKey(e.target.value)}
-                    className="api-key-input"
-                  />
-                  <div className="input-buttons">
-                    <button 
-                      className="btn btn-secondary" 
-                      onClick={handleCancelCaptcha}
-                    >
-                      취소
-                    </button>
-                    <button 
-                      className="btn btn-primary" 
-                      onClick={handleStartCaptcha}
-                    >
-                      시작
-                    </button>
-                  </div>
-                </div>
-                <div className="demo-info">
-                  <p>💡 API 키가 없으시면 빈 상태로 시작하면 데모 모드로 체험할 수 있습니다.</p>
+          {/* 데모 모드 안내 */}
+          {showCaptcha && !consentGiven && (
+            <div className="demo-info-section">
+              <div className="demo-info-box">
+                <h3>🎯 데모 모드</h3>
+                <p>RealCaptcha의 데모 버전을 체험해보세요!</p>
+                <div className="demo-features">
+                  <p>✅ 실제 캡차 문제 해결</p>
+                  <p>✅ AI 모델 학습 데이터 수집</p>
+                  <p>✅ 무료 체험 가능</p>
                 </div>
               </div>
             </div>
