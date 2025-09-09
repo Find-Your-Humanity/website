@@ -129,16 +129,8 @@ const HomePage = () => {
               const container = document.getElementById('captcha-section');
               if (container) container.classList.remove('iframe-mode');
             } catch {}
-            // 사용자 입력/선택 siteKey 사용
-            const INPUT_ID = 'user-sitekey-input';
-            let siteKey = document.getElementById(INPUT_ID)?.value?.trim();
-            if (!siteKey) {
-              siteKey = window.__USER_SELECTED_SITE_KEY__ || '';
-            }
-            // 사용자 입력/선택이 없으면 데모 키로 체험 모드 실행
-            if (!siteKey) {
-              siteKey = DEMO_SITE_KEY;
-            }
+            // 홈페이지는 항상 데모 키로 체험 모드
+            const siteKey = DEMO_SITE_KEY;
             window.renderRealCaptcha('captcha-section', {
               siteKey,
               theme: 'light',
@@ -226,26 +218,6 @@ const HomePage = () => {
             <span className="not-text">Not?</span>
           </h1>
           <p className="home-hero-subtitle">Bots won't know.</p>
-          
-          {/* SiteKey 입력 필드 */}
-          <div style={{ marginBottom: '20px', textAlign: 'center' }}>
-            <input
-              id="user-sitekey-input"
-              type="text"
-              placeholder="발급받은 siteKey를 입력하세요 (선택사항)"
-              style={{
-                padding: '10px 15px',
-                border: '1px solid #ddd',
-                borderRadius: '5px',
-                width: '300px',
-                fontSize: '14px'
-              }}
-            />
-            <div style={{ fontSize: '12px', color: '#666', marginTop: '5px' }}>
-              입력하지 않으면 데모 키로 체험됩니다
-            </div>
-          </div>
-          
           <div className="hero-buttons">
             <button 
               className="btn btn-primary" 
