@@ -6,7 +6,11 @@ import './MainLayout.css';
 
 const MainLayout = ({ children }) => {
   const location = useLocation();
-  const isDashboard = location.pathname === '/dashboard';
+  
+  // 대시보드 경로 감지 개선 - 새로운 경로들 포함
+  const isDashboard = location.pathname.startsWith('/app/') || 
+                     location.pathname.startsWith('/admin/') ||
+                     location.pathname === '/dashboard';
 
   return (
     <div className="main-layout">

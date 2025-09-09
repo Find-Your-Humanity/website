@@ -73,11 +73,10 @@ const Sidebar: React.FC<SidebarProps> = ({ onItemClick }) => {
       opacity: 1,
       zIndex: 1301
     }}>
-      <div style={{ padding: '16px 16px 8px 16px' }}>
-        <Typography variant="h6" sx={{ fontWeight: 700 }}>Real Captcha</Typography>
-        <Typography variant="caption" color="text.secondary">Dashboard</Typography>
+      {/* 헤더 텍스트 제거 - 메인 헤더와 중복 방지 */}
+      <div style={{ padding: '8px 0' }}>
+        <Divider />
       </div>
-      <Divider />
       <List>
         {menuItems.map(item => (
           <ListItem key={item.id} disablePadding>
