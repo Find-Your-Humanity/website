@@ -65,20 +65,17 @@ const ApiKeysScreen: React.FC = () => {
   };
 
   const handleCreateApiKey = async () => {
-    if (!newKeyName.trim()) {
-      showSnackbar('API 키 이름을 입력해주세요.', 'error');
-      return;
-    }
-
     try {
-      const data: CreateApiKeyRequest = { name: newKeyName.trim(), description: newKeyDescription.trim() || undefined };
+      // 자동으로 이름과 설명 생성
+      const timestamp = new Date().toLocaleString('ko-KR');
+      const data: CreateApiKeyRequest = { 
+        name: `API Key ${timestamp}`, 
+        description: `자동 생성된 API 키 - ${timestamp}` 
+      };
       const result = await apiKeyService.createApiKey(data);
       setNewlyCreatedKey({ api_key: result.api_key, secret_key: result.secret_key });
-      // 다이얼로그를 바로 닫지 않고 생성된 키를 표시
-      setNewKeyName('');
-      setNewKeyDescription('');
       await loadApiKeys();
-      showSnackbar('API 키가 성공적으로 생성되었습니다. 아래에서 확인하세요.', 'success');
+      showSnackbar('API 키가 성공적으로 생성되었습니다!', 'success');
     } catch (error: any) {
       showSnackbar(error?.message || 'API 키 생성에 실패했습니다.', 'error');
     }
@@ -198,76 +195,257 @@ const ApiKeysScreen: React.FC = () => {
           setShowSecretKey(null);
         }} 
         fullWidth 
-        maxWidth="sm"
+        maxWidth="md"
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            color: 'white'
+          }
+        }}
       >
-        <DialogTitle>새 API 키 만들기</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="이름"
-            type="text"
-            fullWidth
-            variant="outlined"
-            value={newKeyName}
-            onChange={(e) => setNewKeyName(e.target.value)}
-          />
-          <TextField
-            margin="dense"
-            label="설명 (선택)"
-            type="text"
-            fullWidth
-            variant="outlined"
-            value={newKeyDescription}
-            onChange={(e) => setNewKeyDescription(e.target.value)}
-          />
+        <DialogTitle sx={{ 
+          textAlign: 'center', 
+          fontSize: '1.5rem', 
+          fontWeight: 'bold',
+          pb: 1,
+          color: 'white'
+        }}>
+          {newlyCreatedKey ? '🎉 API 키 생성 완료!' : '🔑 새 API 키 만들기'}
+        </DialogTitle>
+        <DialogContent sx={{ 
+          background: 'white', 
+          color: 'text.primary',
+          mx: 2,
+          mb: 2,
+          borderRadius: 2,
+          p: 3
+        }}>
+          {!newlyCreatedKey ? (
+            <Box sx={{ textAlign: 'center', py: 4 }}>
+              <Typography variant="h6" gutterBottom color="text.secondary">
+                API 키를 생성하시겠습니까?
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                자동으로 이름과 설명이 생성됩니다.
+              </Typography>
+              <Box sx={{ 
+                display: 'flex', 
+                justifyContent: 'center', 
+                alignItems: 'center',
+                gap: 2,
+                p: 3,
+                bgcolor: 'grey.50',
+                borderRadius: 2,
+                border: '2px dashed',
+                borderColor: 'grey.300'
+              }}>
+                <SecurityIcon sx={{ fontSize: 40, color: 'primary.main' }} />
+                <Typography variant="body1" color="text.secondary">
+                  보안이 강화된 API 키가 생성됩니다
+                </Typography>
+              </Box>
+            </Box>
+          ) : (
+            <Box>
+              <Box sx={{ 
+                textAlign: 'center', 
+                mb: 3,
+                p: 2,
+                bgcolor: 'success.50',
+                borderRadius: 2,
+                border: '1px solid',
+                borderColor: 'success.200'
+              }}>
+                <Typography variant="h6" color="success.main" gutterBottom>
+                  ✅ API 키가 성공적으로 생성되었습니다!
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  아래 키들을 안전한 곳에 보관하세요
+                </Typography>
+              </Box>
 
-          {newlyCreatedKey && (
-            <Box sx={{ mt: 2, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
-              <Typography variant="subtitle2" gutterBottom>발급된 키</Typography>
-              <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Typography variant="body2" sx={{ minWidth: 80 }}>API Key:</Typography>
-                <code>{newlyCreatedKey.api_key}</code>
-                <Tooltip title="API Key 복사">
-                  <IconButton size="small" onClick={() => copyToClipboard(newlyCreatedKey.api_key)}>
-                    <CopyIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', mb: 2 }}>
+                  🔑 Public Key (공개 키)
+                </Typography>
+                <Box sx={{ 
+                  p: 2, 
+                  bgcolor: 'grey.50', 
+                  borderRadius: 2,
+                  border: '1px solid',
+                  borderColor: 'grey.200',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1
+                }}>
+                  <Typography 
+                    variant="body2" 
+                    sx={{ 
+                      fontFamily: 'monospace',
+                      fontSize: '0.9rem',
+                      flex: 1,
+                      wordBreak: 'break-all'
+                    }}
+                  >
+                    {newlyCreatedKey.api_key}
+                  </Typography>
+                  <Tooltip title="공개 키 복사">
+                    <IconButton 
+                      size="small" 
+                      onClick={() => copyToClipboard(newlyCreatedKey.api_key)}
+                      sx={{ 
+                        bgcolor: 'primary.main',
+                        color: 'white',
+                        '&:hover': { bgcolor: 'primary.dark' }
+                      }}
+                    >
+                      <CopyIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
               </Box>
-              <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Typography variant="body2" sx={{ minWidth: 80 }}>Secret:</Typography>
-                <code>{showSecretKey === newlyCreatedKey.secret_key ? newlyCreatedKey.secret_key : '•'.repeat(12)}</code>
-                <Tooltip title={showSecretKey === newlyCreatedKey.secret_key ? '숨기기' : '표시'}>
-                  <IconButton size="small" onClick={() => setShowSecretKey((prev) => (prev ? null : newlyCreatedKey.secret_key))}>
-                    {showSecretKey === newlyCreatedKey.secret_key ? <VisibilityOffIcon fontSize="small" /> : <VisibilityIcon fontSize="small" />}
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Secret 복사">
-                  <IconButton size="small" onClick={() => copyToClipboard(newlyCreatedKey.secret_key)}>
-                    <CopyIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
+
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', mb: 2 }}>
+                  🔐 Secret Key (비밀 키)
+                </Typography>
+                <Box sx={{ 
+                  p: 2, 
+                  bgcolor: 'error.50', 
+                  borderRadius: 2,
+                  border: '1px solid',
+                  borderColor: 'error.200',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1
+                }}>
+                  <Typography 
+                    variant="body2" 
+                    sx={{ 
+                      fontFamily: 'monospace',
+                      fontSize: '0.9rem',
+                      flex: 1,
+                      wordBreak: 'break-all'
+                    }}
+                  >
+                    {showSecretKey === newlyCreatedKey.secret_key ? newlyCreatedKey.secret_key : '•'.repeat(32)}
+                  </Typography>
+                  <Tooltip title={showSecretKey === newlyCreatedKey.secret_key ? '비밀 키 숨기기' : '비밀 키 표시'}>
+                    <IconButton 
+                      size="small" 
+                      onClick={() => setShowSecretKey((prev) => (prev ? null : newlyCreatedKey.secret_key))}
+                      sx={{ 
+                        bgcolor: 'error.main',
+                        color: 'white',
+                        '&:hover': { bgcolor: 'error.dark' }
+                      }}
+                    >
+                      {showSecretKey === newlyCreatedKey.secret_key ? <VisibilityOffIcon fontSize="small" /> : <VisibilityIcon fontSize="small" />}
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="비밀 키 복사">
+                    <IconButton 
+                      size="small" 
+                      onClick={() => copyToClipboard(newlyCreatedKey.secret_key)}
+                      sx={{ 
+                        bgcolor: 'error.main',
+                        color: 'white',
+                        '&:hover': { bgcolor: 'error.dark' }
+                      }}
+                    >
+                      <CopyIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
               </Box>
-              <Alert severity="warning" sx={{ mt: 1 }}>
-                보안을 위해 Secret 키는 지금만 확인 가능합니다. 반드시 안전한 곳에 보관하세요.
+
+              <Alert 
+                severity="warning" 
+                sx={{ 
+                  borderRadius: 2,
+                  '& .MuiAlert-icon': {
+                    fontSize: '1.2rem'
+                  }
+                }}
+              >
+                <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                  ⚠️ 중요: 비밀 키는 지금만 확인 가능합니다!
+                </Typography>
+                <Typography variant="body2" sx={{ mt: 0.5 }}>
+                  반드시 안전한 곳에 보관하고, 절대 공개하지 마세요.
+                </Typography>
               </Alert>
             </Box>
           )}
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => {
-            setOpenDialog(false);
-            setNewlyCreatedKey(null);
-            setShowSecretKey(null);
-          }}>취소</Button>
-          {newlyCreatedKey ? (
-            <Button onClick={() => {
+        <DialogActions sx={{ 
+          p: 3, 
+          background: 'white',
+          mx: 2,
+          mb: 2,
+          borderRadius: 2,
+          justifyContent: 'center',
+          gap: 2
+        }}>
+          <Button 
+            onClick={() => {
               setOpenDialog(false);
               setNewlyCreatedKey(null);
               setShowSecretKey(null);
-            }} variant="contained">완료</Button>
+            }}
+            variant="outlined"
+            sx={{
+              minWidth: 120,
+              borderRadius: 2,
+              textTransform: 'none',
+              fontSize: '1rem',
+              fontWeight: 'bold'
+            }}
+          >
+            취소
+          </Button>
+          {newlyCreatedKey ? (
+            <Button 
+              onClick={() => {
+                setOpenDialog(false);
+                setNewlyCreatedKey(null);
+                setShowSecretKey(null);
+              }} 
+              variant="contained"
+              sx={{
+                minWidth: 120,
+                borderRadius: 2,
+                textTransform: 'none',
+                fontSize: '1rem',
+                fontWeight: 'bold',
+                background: 'linear-gradient(45deg, #4caf50 30%, #45a049 90%)',
+                '&:hover': {
+                  background: 'linear-gradient(45deg, #45a049 30%, #3d8b40 90%)',
+                }
+              }}
+            >
+              완료
+            </Button>
           ) : (
-            <Button onClick={handleCreateApiKey} variant="contained">생성</Button>
+            <Button 
+              onClick={handleCreateApiKey} 
+              variant="contained"
+              sx={{
+                minWidth: 120,
+                borderRadius: 2,
+                textTransform: 'none',
+                fontSize: '1rem',
+                fontWeight: 'bold',
+                background: 'linear-gradient(45deg, #2196f3 30%, #1976d2 90%)',
+                '&:hover': {
+                  background: 'linear-gradient(45deg, #1976d2 30%, #1565c0 90%)',
+                }
+              }}
+            >
+              생성하기
+            </Button>
           )}
         </DialogActions>
       </Dialog>
