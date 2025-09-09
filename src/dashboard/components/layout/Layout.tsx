@@ -108,16 +108,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           p: 3,
           width: { md: `calc(100% - ${DRAWER_WIDTH}px)` },
           bgcolor: 'background.default',
-          minHeight: { 
-            xs: 'calc(100vh - 60px)', 
-            sm: 'calc(100vh - 70px)', 
-            md: 'calc(100vh - 80px)' 
-          },
-          marginTop: { 
-            xs: '60px', 
-            sm: '70px', 
-            md: '80px' 
-          },
+          minHeight: '100vh', // 원래대로 복원
+          // marginTop 제거 - 콘텐츠는 원래 위치에
         }}
       >
         {children}
