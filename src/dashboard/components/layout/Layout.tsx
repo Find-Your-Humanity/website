@@ -61,9 +61,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               opacity: '1 !important', // 완전 불투명 강제 적용
               backdropFilter: 'none', // 블러 효과 제거
               zIndex: 1300, // 높은 z-index 보장
+              // 헤더 아래에서 시작하도록 top 설정
+              top: { xs: '60px', sm: '70px', md: '80px' },
+              height: { xs: 'calc(100vh - 60px)', sm: 'calc(100vh - 70px)', md: 'calc(100vh - 80px)' },
             },
             '& .MuiBackdrop-root': {
               backgroundColor: 'rgba(0, 0, 0, 0.5)', // 배경 어둡게
+              // 백드롭도 헤더 아래에서 시작
+              top: { xs: '60px', sm: '70px', md: '80px' },
+              height: { xs: 'calc(100vh - 60px)', sm: 'calc(100vh - 70px)', md: 'calc(100vh - 80px)' },
             },
           }}
         >
@@ -83,6 +89,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               opacity: '1 !important', // 완전 불투명 강제 적용
               backdropFilter: 'none', // 블러 효과 제거
               zIndex: 1300, // 높은 z-index 보장
+              // 헤더 아래에서 시작하도록 top 설정
+              top: '80px', // 데스크톱에서는 헤더가 80px
+              height: 'calc(100vh - 80px)',
             },
           }}
           open
@@ -99,7 +108,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           p: 3,
           width: { md: `calc(100% - ${DRAWER_WIDTH}px)` },
           bgcolor: 'background.default',
-          minHeight: '100vh',
+          minHeight: { 
+            xs: 'calc(100vh - 60px)', 
+            sm: 'calc(100vh - 70px)', 
+            md: 'calc(100vh - 80px)' 
+          },
+          marginTop: { 
+            xs: '60px', 
+            sm: '70px', 
+            md: '80px' 
+          },
         }}
       >
         {children}

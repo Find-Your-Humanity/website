@@ -82,8 +82,8 @@
 .rc-sidebar-peek {
   position: fixed;
   left: 0;
-  top: 0;
-  height: 100vh;
+  top: 80px; /* 헤더 아래에서 시작 */
+  height: calc(100vh - 80px); /* 헤더 높이만큼 빼기 */
   width: var(--rc-drawer-peek-width);
   background: linear-gradient(90deg, rgba(0,0,0,0.15), rgba(0,0,0,0.0));
   border-right: 1px solid rgba(0,0,0,0.06);
@@ -108,5 +108,20 @@
 
 @media (min-width: 900px) {
   .rc-sidebar-peek { display: none; }
+}
+
+/* 반응형 헤더 높이에 맞춰 조정 */
+@media (max-width: 768px) {
+  .rc-sidebar-peek {
+    top: 70px;
+    height: calc(100vh - 70px);
+  }
+}
+
+@media (max-width: 480px) {
+  .rc-sidebar-peek {
+    top: 60px;
+    height: calc(100vh - 60px);
+  }
 }
 
