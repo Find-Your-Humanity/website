@@ -15,7 +15,7 @@ const HomePage = () => {
   const featuresRef = useRef(null);
   
   // 데모 전용 siteKey (홈페이지 체험용). 실제 사용자 집계/과금에는 사용하지 않도록 백엔드에서 필터링 권장
-  const DEMO_SITE_KEY = process.env.REACT_APP_DEMO_SITE_KEY || 'rc_live_f49a055d62283fd02e8203ccaba70fc2';
+  const DEMO_SITE_KEY = process.env.REACT_APP_DEMO_SITE_KEY || 'rc_demo_homepage_test_key';
   // 전역 기본키 제거: 일반 렌더는 반드시 사용자/입력으로 받은 siteKey를 사용하도록 강제
   const CAPTCHA_SITE_KEY = undefined;
   
