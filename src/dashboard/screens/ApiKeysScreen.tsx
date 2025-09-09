@@ -74,11 +74,11 @@ const ApiKeysScreen: React.FC = () => {
       const data: CreateApiKeyRequest = { name: newKeyName.trim(), description: newKeyDescription.trim() || undefined };
       const result = await apiKeyService.createApiKey(data);
       setNewlyCreatedKey({ api_key: result.api_key, secret_key: result.secret_key });
-      setOpenDialog(false);
+      // 다이얼로그를 바로 닫지 않고 생성된 키를 표시
       setNewKeyName('');
       setNewKeyDescription('');
       await loadApiKeys();
-      showSnackbar('API 키가 성공적으로 생성되었습니다.', 'success');
+      showSnackbar('API 키가 성공적으로 생성되었습니다. 아래에서 확인하세요.', 'success');
     } catch (error: any) {
       showSnackbar(error?.message || 'API 키 생성에 실패했습니다.', 'error');
     }
@@ -260,7 +260,15 @@ const ApiKeysScreen: React.FC = () => {
             setNewlyCreatedKey(null);
             setShowSecretKey(null);
           }}>취소</Button>
-          <Button onClick={handleCreateApiKey} variant="contained">생성</Button>
+          {newlyCreatedKey ? (
+            <Button onClick={() => {
+              setOpenDialog(false);
+              setNewlyCreatedKey(null);
+              setShowSecretKey(null);
+            }} variant="contained">완료</Button>
+          ) : (
+            <Button onClick={handleCreateApiKey} variant="contained">생성</Button>
+          )}
         </DialogActions>
       </Dialog>
 
