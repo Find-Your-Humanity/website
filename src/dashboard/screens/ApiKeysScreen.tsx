@@ -29,6 +29,7 @@ import {
   Add as AddIcon,
   Delete as DeleteIcon,
   ContentCopy as CopyIcon,
+  Security as SecurityIcon,
   Visibility as VisibilityIcon,
   VisibilityOff as VisibilityOffIcon,
 } from '@mui/icons-material';
