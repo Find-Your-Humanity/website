@@ -10,12 +10,14 @@ const HomePage = () => {
   const [visibleSections, setVisibleSections] = useState(new Set());
   const [showCaptcha, setShowCaptcha] = useState(false);
   const [consentGiven, setConsentGiven] = useState(false); // 동의 상태 추가
+  const [userSiteKey, setUserSiteKey] = useState(''); // 사용자 입력 공개 키
+  const [showApiKeyInput, setShowApiKeyInput] = useState(false); // API 키 입력 UI 표시 여부
   const heroRef = useRef(null);
   const mainContentRef = useRef(null);
   const featuresRef = useRef(null);
   
   // 데모 전용 siteKey (홈페이지 체험용). 실제 사용자 집계/과금에는 사용하지 않도록 백엔드에서 필터링 권장
-  const DEMO_SITE_KEY = process.env.REACT_APP_DEMO_SITE_KEY || 'rc_demo_homepage_test_key';
+  const DEMO_SITE_KEY = process.env.REACT_APP_DEMO_SITE_KEY || 'rc_live_f49a055d62283fd02e8203ccaba70fc2';
   // 전역 기본키 제거: 일반 렌더는 반드시 사용자/입력으로 받은 siteKey를 사용하도록 강제
   const CAPTCHA_SITE_KEY = undefined;
   
@@ -33,8 +35,31 @@ const HomePage = () => {
   };
 
   const handleTryCaptcha = () => {
-    setShowCaptcha(prev => !prev); // true면 false로, false면 true로 토글
-    setConsentGiven(false); // CAPTCHA 토글 시 동의 상태 초기화
+    if (!showCaptcha) {
+      // 캡차를 처음 시작할 때 API 키 입력 UI 표시
+      setShowApiKeyInput(true);
+    } else {
+      // 캡차를 닫을 때 모든 상태 초기화
+      setShowCaptcha(false);
+      setConsentGiven(false);
+      setShowApiKeyInput(false);
+      setUserSiteKey('');
+    }
+  };
+
+  const handleStartCaptcha = () => {
+    if (!userSiteKey.trim()) {
+      alert('API 키를 입력해주세요.');
+      return;
+    }
+    setShowApiKeyInput(false);
+    setShowCaptcha(true);
+    setConsentGiven(false);
+  };
+
+  const handleCancelCaptcha = () => {
+    setShowApiKeyInput(false);
+    setUserSiteKey('');
   };
 
   const handleConsentChange = (e) => {
@@ -44,14 +69,19 @@ const HomePage = () => {
   // 서버로 토큰 전송 함수
   const sendTokenToServer = async (token) => {
     try {
+      // 현재 사용 중인 API 키
+      const currentSiteKey = userSiteKey.trim() || DEMO_SITE_KEY;
+      
       const response = await fetch('/api/captcha/verify', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-API-Key': currentSiteKey
+          // ✅ 비밀 키는 서버에서만 처리 (프론트엔드에서 제거)
         },
         body: JSON.stringify({
-          token: token,
-          // 시크릿 키는 백엔드에서만 사용
+          captcha_token: token,
+          captcha_response: 'demo_response' // 데모용 응답
         })
       });
       
@@ -129,8 +159,8 @@ const HomePage = () => {
               const container = document.getElementById('captcha-section');
               if (container) container.classList.remove('iframe-mode');
             } catch {}
-            // 홈페이지는 항상 데모 키로 체험 모드
-            const siteKey = DEMO_SITE_KEY;
+            // 사용자가 입력한 API 키 사용 (없으면 데모 키)
+            const siteKey = userSiteKey.trim() || DEMO_SITE_KEY;
             window.renderRealCaptcha('captcha-section', {
               siteKey,
               theme: 'light',
@@ -164,7 +194,7 @@ const HomePage = () => {
 
       return () => clearTimeout(timer);
     }
-  }, [showCaptcha, consentGiven, CAPTCHA_SITE_KEY]);
+  }, [showCaptcha, consentGiven, userSiteKey]);
 
   // Hero section은 페이지 로드 시 약간의 지연 후 애니메이션
   useEffect(() => {
@@ -229,6 +259,42 @@ const HomePage = () => {
             <button className="btn btn-primary" onClick={handleStartFreePlan}>Start Free Plan</button>
           </div>
           
+          {/* API 키 입력 UI */}
+          {showApiKeyInput && (
+            <div className="api-key-input-section">
+              <div className="api-key-input-box">
+                <h3>API 키 입력</h3>
+                <p>발급받은 공개 키(API Key)를 입력하세요</p>
+                <div className="input-group">
+                  <input
+                    type="text"
+                    placeholder="rc_live_..."
+                    value={userSiteKey}
+                    onChange={(e) => setUserSiteKey(e.target.value)}
+                    className="api-key-input"
+                  />
+                  <div className="input-buttons">
+                    <button 
+                      className="btn btn-secondary" 
+                      onClick={handleCancelCaptcha}
+                    >
+                      취소
+                    </button>
+                    <button 
+                      className="btn btn-primary" 
+                      onClick={handleStartCaptcha}
+                    >
+                      시작
+                    </button>
+                  </div>
+                </div>
+                <div className="demo-info">
+                  <p>💡 API 키가 없으시면 빈 상태로 시작하면 데모 모드로 체험할 수 있습니다.</p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* 동의 UI */}
           {showCaptcha && !consentGiven && (
             <div className="consent-section">
