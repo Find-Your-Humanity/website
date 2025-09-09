@@ -7,6 +7,7 @@ import {
   ListItemText,
   Typography,
   Divider,
+  useTheme,
 } from '@mui/material';
 import {
   Dashboard as DashboardIcon,
@@ -29,6 +30,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onItemClick }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
+  const theme = useTheme();
 
   const isUserAdmin = !!user && (user.is_admin === true || (user as any).is_admin === 1 || user.role === 'admin');
   const base = isUserAdmin ? '/admin' : '/app';
@@ -63,7 +65,14 @@ const Sidebar: React.FC<SidebarProps> = ({ onItemClick }) => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <div style={{ backgroundColor: 'var(--bg-secondary)', height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ 
+      backgroundColor: theme.palette.mode === 'dark' ? '#1a2332' : '#f8f9fa', 
+      height: '100%', 
+      display: 'flex', 
+      flexDirection: 'column',
+      opacity: 1,
+      zIndex: 1301
+    }}>
       <div style={{ padding: '16px 16px 8px 16px' }}>
         <Typography variant="h6" sx={{ fontWeight: 700 }}>Real Captcha</Typography>
         <Typography variant="caption" color="text.secondary">Dashboard</Typography>

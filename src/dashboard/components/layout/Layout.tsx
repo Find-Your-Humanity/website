@@ -55,11 +55,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             '& .MuiDrawer-paper': {
               boxSizing: 'border-box',
               width: DRAWER_WIDTH,
-              backgroundColor: 'var(--bg-secondary)',
+              backgroundColor: theme.palette.mode === 'dark' ? '#1a2332 !important' : '#f8f9fa !important', // 테마에 따른 solid 배경색
               color: 'var(--text-primary)',
               borderRight: '1px solid var(--border-color)',
-              opacity: 1, // 완전 불투명
+              opacity: '1 !important', // 완전 불투명 강제 적용
               backdropFilter: 'none', // 블러 효과 제거
+              zIndex: 1300, // 높은 z-index 보장
             },
             '& .MuiBackdrop-root': {
               backgroundColor: 'rgba(0, 0, 0, 0.5)', // 배경 어둡게
@@ -76,11 +77,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             '& .MuiDrawer-paper': {
               boxSizing: 'border-box',
               width: DRAWER_WIDTH,
-              backgroundColor: 'var(--bg-secondary)',
+              backgroundColor: theme.palette.mode === 'dark' ? '#1a2332 !important' : '#f8f9fa !important', // 테마에 따른 solid 배경색
               color: 'var(--text-primary)',
               borderRight: '1px solid var(--border-color)',
-              opacity: 1, // 완전 불투명
+              opacity: '1 !important', // 완전 불투명 강제 적용
               backdropFilter: 'none', // 블러 효과 제거
+              zIndex: 1300, // 높은 z-index 보장
             },
           }}
           open
