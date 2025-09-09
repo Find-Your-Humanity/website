@@ -58,6 +58,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               backgroundColor: 'var(--bg-secondary)',
               color: 'var(--text-primary)',
               borderRight: '1px solid var(--border-color)',
+              opacity: 1, // 완전 불투명
+              backdropFilter: 'none', // 블러 효과 제거
+            },
+            '& .MuiBackdrop-root': {
+              backgroundColor: 'rgba(0, 0, 0, 0.5)', // 배경 어둡게
             },
           }}
         >
@@ -74,6 +79,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               backgroundColor: 'var(--bg-secondary)',
               color: 'var(--text-primary)',
               borderRight: '1px solid var(--border-color)',
+              opacity: 1, // 완전 불투명
+              backdropFilter: 'none', // 블러 효과 제거
             },
           }}
           open
