@@ -29,7 +29,6 @@ import {
   Add as AddIcon,
   Delete as DeleteIcon,
   ContentCopy as CopyIcon,
-  Security as SecurityIcon,
   Visibility as VisibilityIcon,
   VisibilityOff as VisibilityOffIcon,
 } from '@mui/icons-material';
@@ -196,80 +195,15 @@ const ApiKeysScreen: React.FC = () => {
           setShowSecretKey(null);
         }} 
         fullWidth 
-        maxWidth="md"
-        PaperProps={{
-          sx: {
-            borderRadius: 3,
-            boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            color: 'white'
-          }
-        }}
+        maxWidth="sm"
       >
-        <DialogTitle sx={{ 
-          textAlign: 'center', 
-          fontSize: '1.5rem', 
-          fontWeight: 'bold',
-          pb: 1,
-          color: 'white'
-        }}>
-          {newlyCreatedKey ? '🎉 API 키 생성 완료!' : '🔑 새 API 키 만들기'}
-        </DialogTitle>
-        <DialogContent sx={{ 
-          background: 'white', 
-          color: 'text.primary',
-          mx: 2,
-          mb: 2,
-          borderRadius: 2,
-          p: 3
-        }}>
-          {!newlyCreatedKey ? (
-            <Box sx={{ textAlign: 'center', py: 4 }}>
-              <Typography variant="h6" gutterBottom color="text.secondary">
-                API 키를 생성하시겠습니까?
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                자동으로 이름과 설명이 생성됩니다.
-              </Typography>
-              <Box sx={{ 
-                display: 'flex', 
-                justifyContent: 'center', 
-                alignItems: 'center',
-                gap: 2,
-                p: 3,
-                bgcolor: 'grey.50',
-                borderRadius: 2,
-                border: '2px dashed',
-                borderColor: 'grey.300'
-              }}>
-                <SecurityIcon sx={{ fontSize: 40, color: 'primary.main' }} />
-                <Typography variant="body1" color="text.secondary">
-                  보안이 강화된 API 키가 생성됩니다
-                </Typography>
-              </Box>
-            </Box>
-          ) : (
+        <DialogTitle>새 API 키 만들기</DialogTitle>
+        <DialogContent>
+          {newlyCreatedKey && (
             <Box>
-              <Box sx={{ 
-                textAlign: 'center', 
-                mb: 3,
-                p: 2,
-                bgcolor: 'success.50',
-                borderRadius: 2,
-                border: '1px solid',
-                borderColor: 'success.200'
-              }}>
-                <Typography variant="h6" color="success.main" gutterBottom>
-                  ✅ API 키가 성공적으로 생성되었습니다!
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  아래 키들을 안전한 곳에 보관하세요
-                </Typography>
-              </Box>
-
               <Box sx={{ mb: 3 }}>
                 <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', mb: 2 }}>
-                  🔑 Public Key (공개 키)
+                  Public Key (공개 키)
                 </Typography>
                 <Box sx={{ 
                   p: 2, 
@@ -310,7 +244,7 @@ const ApiKeysScreen: React.FC = () => {
 
               <Box sx={{ mb: 3 }}>
                 <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', mb: 2 }}>
-                  🔐 Secret Key (비밀 키)
+                  Secret Key (비밀 키)
                 </Typography>
                 <Box sx={{ 
                   p: 2, 
