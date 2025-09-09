@@ -84,6 +84,12 @@ const ApiKeysScreen: React.FC = () => {
     }
   };
 
+  const handleOpenDialog = () => {
+    setNewlyCreatedKey(null); // 이전 키 정보 초기화
+    setShowSecretKey(null); // 비밀 키 표시 상태도 초기화
+    setOpenDialog(true);
+  };
+
   const handleToggleApiKey = async (keyId: string, isActive: boolean) => {
     try {
       await apiKeyService.toggleApiKey(keyId, isActive);
@@ -118,7 +124,7 @@ const ApiKeysScreen: React.FC = () => {
     <Box className="rc-container">
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
         <Typography variant="h5" sx={{ fontWeight: 700 }}>API 키</Typography>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={() => setOpenDialog(true)}>
+        <Button variant="contained" startIcon={<AddIcon />} onClick={handleOpenDialog}>
           새 API 키 만들기
         </Button>
       </Box>
@@ -184,7 +190,16 @@ const ApiKeysScreen: React.FC = () => {
       </Card>
 
       {/* 새 API 키 생성 다이얼로그 */}
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)} fullWidth maxWidth="sm">
+      <Dialog 
+        open={openDialog} 
+        onClose={() => {
+          setOpenDialog(false);
+          setNewlyCreatedKey(null);
+          setShowSecretKey(null);
+        }} 
+        fullWidth 
+        maxWidth="sm"
+      >
         <DialogTitle>새 API 키 만들기</DialogTitle>
         <DialogContent>
           <TextField
@@ -240,7 +255,11 @@ const ApiKeysScreen: React.FC = () => {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenDialog(false)}>취소</Button>
+          <Button onClick={() => {
+            setOpenDialog(false);
+            setNewlyCreatedKey(null);
+            setShowSecretKey(null);
+          }}>취소</Button>
           <Button onClick={handleCreateApiKey} variant="contained">생성</Button>
         </DialogActions>
       </Dialog>
