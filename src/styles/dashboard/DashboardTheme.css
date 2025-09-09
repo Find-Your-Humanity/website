@@ -1,21 +1,6 @@
 :root {
-  /* inherit from site index.css but provide fallbacks */
-  --bg-primary: var(--bg-primary, #ffffff);
-  --bg-secondary: var(--bg-secondary, #f8f9fa);
-  --bg-tertiary: var(--bg-tertiary, #f5f5f5);
-  --text-primary: var(--text-primary, #000000);
-  --text-secondary: var(--text-secondary, #666666);
-  --text-tertiary: var(--text-tertiary, #999999);
-  --border-color: var(--border-color, #e0e0e0);
-  --border-color-light: var(--border-color-light, #f0f0f0);
-  --accent-color: var(--accent-color, #DFFF00);
-  --accent-hover: var(--accent-hover, #e6ff33);
-  --shadow-color: var(--shadow-color, rgba(0,0,0,0.1));
-  --shadow-color-light: var(--shadow-color-light, rgba(0,0,0,0.05));
-  --error-color: var(--error-color, #dc3545);
-  --success-color: var(--success-color, #28a745);
-  --warning-color: var(--warning-color, #ffc107);
-
+  /* 대시보드 전용 CSS 변수 - 전역 변수는 index.css에서 관리 */
+  
   /* responsive utilities for dashboard */
   --rc-container-max: 1200px;
   --rc-container-pad-md: 24px;
@@ -26,6 +11,10 @@
   --rc-drawer-peek-width: 12px;
   --rc-drawer-peek-hover: 18px;
   --rc-drawer-swipe-area: 24px; /* for SwipeableDrawer */
+  
+  /* 대시보드 전용 Material-UI 테마 오버라이드 */
+  --dashboard-primary: #1976d2;
+  --dashboard-secondary: #dc004e;
 }
 
 /* Dashboard structural defaults using vars */
@@ -93,8 +82,8 @@
 .rc-sidebar-peek {
   position: fixed;
   left: 0;
-  top: 0;
-  height: 100vh;
+  top: 80px; /* 헤더 아래에서 시작 */
+  height: calc(100vh - 80px); /* 헤더 높이만큼 빼기 */
   width: var(--rc-drawer-peek-width);
   background: linear-gradient(90deg, rgba(0,0,0,0.15), rgba(0,0,0,0.0));
   border-right: 1px solid rgba(0,0,0,0.06);
@@ -119,5 +108,20 @@
 
 @media (min-width: 900px) {
   .rc-sidebar-peek { display: none; }
+}
+
+/* 반응형 헤더 높이에 맞춰 조정 */
+@media (max-width: 768px) {
+  .rc-sidebar-peek {
+    top: 70px;
+    height: calc(100vh - 70px);
+  }
+}
+
+@media (max-width: 480px) {
+  .rc-sidebar-peek {
+    top: 60px;
+    height: calc(100vh - 60px);
+  }
 }
 
