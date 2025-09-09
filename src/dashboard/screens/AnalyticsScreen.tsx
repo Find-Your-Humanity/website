@@ -243,8 +243,8 @@ const AnalyticsScreen: React.FC = () => {
   return (
     <Box className="rc-container">
       {/* 헤더 */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Box>
+      <Box sx={{ mb: 3 }}>
+        <Box sx={{ mb: { xs: 3, md: 2 } }}>
           <Typography variant="h4" component="h1" gutterBottom sx={{ fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' } }}>
             분석
           </Typography>
@@ -252,16 +252,30 @@ const AnalyticsScreen: React.FC = () => {
             캡차 서비스 사용 패턴 및 성능 분석
           </Typography>
         </Box>
-        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+        
+        {/* 모바일: 세로 배치, 데스크톱: 가로 배치 */}
+        <Box sx={{ 
+          display: 'flex', 
+          flexDirection: { xs: 'column', md: 'row' },
+          gap: { xs: 2, md: 2 },
+          alignItems: { xs: 'stretch', md: 'center' },
+          justifyContent: { md: 'flex-end' }
+        }}>
           <Button
             variant="outlined"
             color="warning"
             onClick={handleCleanupDuplicates}
-            sx={{ minWidth: 120 }}
+            sx={{ 
+              minWidth: { xs: 'auto', md: 120 },
+              order: { xs: 3, md: 1 }
+            }}
           >
             중복 데이터 정리
           </Button>
-          <FormControl sx={{ minWidth: 150 }}>
+          <FormControl sx={{ 
+            minWidth: { xs: 'auto', md: 150 },
+            order: { xs: 1, md: 2 }
+          }}>
             <InputLabel>기간</InputLabel>
             <Select
               value={timePeriod}
@@ -273,7 +287,10 @@ const AnalyticsScreen: React.FC = () => {
               <MenuItem value="90days">최근 90일</MenuItem>
             </Select>
           </FormControl>
-          <FormControl sx={{ minWidth: 220 }}>
+          <FormControl sx={{ 
+            minWidth: { xs: 'auto', md: 220 },
+            order: { xs: 2, md: 3 }
+          }}>
             <InputLabel>API 키</InputLabel>
             <Select
               value={selectedApiKey}
@@ -406,7 +423,12 @@ const AnalyticsScreen: React.FC = () => {
               <Typography variant="h6" gutterBottom>
                 API 키 사용량 조회
               </Typography>
-              <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
+              <Box sx={{ 
+                display: 'flex', 
+                flexDirection: { xs: 'column', sm: 'row' },
+                gap: 2, 
+                mb: 3 
+              }}>
                 <TextField
                   fullWidth
                   label="API 키 입력"
@@ -420,7 +442,10 @@ const AnalyticsScreen: React.FC = () => {
                   variant="contained"
                   onClick={handleApiKeyUsageCheck}
                   disabled={!apiKeyInput.trim() || apiKeyLoading}
-                  sx={{ minWidth: 120 }}
+                  sx={{ 
+                    minWidth: { xs: 'auto', sm: 120 },
+                    flexShrink: 0
+                  }}
                 >
                   {apiKeyLoading ? '조회 중...' : '조회'}
                 </Button>
@@ -432,42 +457,42 @@ const AnalyticsScreen: React.FC = () => {
                     API 키: {apiKeyUsage.name || apiKeyUsage.apiKey}
                   </Typography>
                   <Grid container spacing={3}>
-                    <Grid item xs={12} md={3}>
+                    <Grid item xs={6} sm={6} md={3}>
                       <Box textAlign="center">
-                        <Typography variant="h4" color="primary">
+                        <Typography variant="h4" color="primary" sx={{ fontSize: { xs: '1.5rem', sm: '2rem' } }}>
                           {formatNumber(apiKeyUsage.totalRequests)}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                           총 요청 수
                         </Typography>
                       </Box>
                     </Grid>
-                    <Grid item xs={12} md={3}>
+                    <Grid item xs={6} sm={6} md={3}>
                       <Box textAlign="center">
-                        <Typography variant="h4" color="success.main">
+                        <Typography variant="h4" color="success.main" sx={{ fontSize: { xs: '1.5rem', sm: '2rem' } }}>
                           {formatNumber(apiKeyUsage.successRequests)}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                           성공 요청
                         </Typography>
                       </Box>
                     </Grid>
-                    <Grid item xs={12} md={3}>
+                    <Grid item xs={6} sm={6} md={3}>
                       <Box textAlign="center">
-                        <Typography variant="h4" color="error.main">
+                        <Typography variant="h4" color="error.main" sx={{ fontSize: { xs: '1.5rem', sm: '2rem' } }}>
                           {formatNumber(apiKeyUsage.failedRequests)}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                           실패 요청
                         </Typography>
                       </Box>
                     </Grid>
-                    <Grid item xs={12} md={3}>
+                    <Grid item xs={6} sm={6} md={3}>
                       <Box textAlign="center">
-                        <Typography variant="h4" color="info.main">
+                        <Typography variant="h4" color="info.main" sx={{ fontSize: { xs: '1.5rem', sm: '2rem' } }}>
                           {apiKeyUsage.avgResponseTime}ms
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                           평균 응답 시간
                         </Typography>
                       </Box>
@@ -490,11 +515,23 @@ const AnalyticsScreen: React.FC = () => {
             <CardContent>
               {/* 탭 네비게이션 */}
               <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-                <Tabs value={tabValue} onChange={handleTabChange}>
-                  <Tab label="전체 일별 요청 현황" />
-                  <Tab label="필기 캡차" />
-                  <Tab label="추상 캡차" />
-                  <Tab label="이미지 캡차" />
+                <Tabs 
+                  value={tabValue} 
+                  onChange={handleTabChange}
+                  variant="scrollable"
+                  scrollButtons="auto"
+                  sx={{
+                    '& .MuiTab-root': {
+                      fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                      minWidth: { xs: 'auto', sm: 160 },
+                      padding: { xs: '6px 8px', sm: '12px 16px' }
+                    }
+                  }}
+                >
+                  <Tab label="전체" />
+                  <Tab label="필기" />
+                  <Tab label="추상" />
+                  <Tab label="이미지" />
                 </Tabs>
               </Box>
               
