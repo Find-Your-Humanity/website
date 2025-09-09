@@ -29,7 +29,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {/* 모바일에서 좌측 피크(힌트) 영역 - 스와이프/탭으로 열기 */}
       {isMobile && (
         <Box
-          className="rc-sidebar-peek"
+          className={`rc-sidebar-peek ${mobileOpen ? 'active' : ''}`}
           onClick={handleDrawerToggle}
           role="button"
           aria-label="메뉴 열기"

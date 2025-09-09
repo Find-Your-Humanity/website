@@ -102,7 +102,20 @@
   z-index: 1200; /* below app bar if any */
   transition: width 150ms ease, background 150ms ease;
 }
-.rc-sidebar-peek:hover { width: var(--rc-drawer-peek-hover); background: linear-gradient(90deg, rgba(0,0,0,0.2), rgba(0,0,0,0.0)); }
+.rc-sidebar-peek:hover { 
+  width: var(--rc-drawer-peek-hover); 
+  background: linear-gradient(90deg, rgba(0,0,0,0.2), rgba(0,0,0,0.0)); 
+}
+
+/* 사이드바가 활성화된 상태에서 peek 영역을 완전 불투명하게 */
+.rc-sidebar-peek.active {
+  background: linear-gradient(90deg, rgba(0,0,0,1.0), rgba(0,0,0,0.8)) !important;
+  border-right: 1px solid rgba(0,0,0,0.3);
+  width: var(--rc-drawer-peek-hover);
+}
+.rc-sidebar-peek.active:hover {
+  background: linear-gradient(90deg, rgba(0,0,0,1.0), rgba(0,0,0,0.9)) !important;
+}
 
 @media (min-width: 900px) {
   .rc-sidebar-peek { display: none; }
