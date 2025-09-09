@@ -245,20 +245,6 @@ const HomePage = () => {
             <button className="btn btn-primary" onClick={handleStartFreePlan}>Start Free Plan</button>
           </div>
           
-          {/* 데모 모드 안내 */}
-          {showCaptcha && !consentGiven && (
-            <div className="demo-info-section">
-              <div className="demo-info-box">
-                <h3>🎯 데모 모드</h3>
-                <p>RealCaptcha의 데모 버전을 체험해보세요!</p>
-                <div className="demo-features">
-                  <p>✅ 실제 캡차 문제 해결</p>
-                  <p>✅ AI 모델 학습 데이터 수집</p>
-                  <p>✅ 무료 체험 가능</p>
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* 동의 UI */}
           {showCaptcha && !consentGiven && (
