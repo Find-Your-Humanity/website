@@ -201,7 +201,9 @@ const DashboardScreen: React.FC = () => {
                         }} 
                       />
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
-                        <Typography variant="caption" color="text.secondary">0</Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          {analytics?.plan_info?.current_usage ? formatNumber(analytics.plan_info.current_usage) : '0'}
+                        </Typography>
                         <Typography variant="caption" color="text.secondary">
                           {analytics?.plan_info?.monthly_limit ? formatNumber(analytics.plan_info.monthly_limit) : '100'}
                         </Typography>
@@ -211,9 +213,11 @@ const DashboardScreen: React.FC = () => {
                         color="text.secondary"
                         sx={{
                           position: 'absolute',
-                          bottom: -10,
-                          left: `${Math.min(creditUsagePercentage, 100)}%`,
-                          transform: 'translateX(-50%)'
+                          top: -30,
+                          left: `${Math.max(5, Math.min(creditUsagePercentage, 95))}%`,
+                          transform: 'translateX(-50%)',
+                          fontWeight: 'bold',
+                          color: creditUsagePercentage > 80 ? '#f44336' : creditUsagePercentage > 60 ? '#ff9800' : '#1976d2'
                         }}
                       >
                         {creditUsagePercentage.toFixed(1)}%
