@@ -15,7 +15,6 @@ import {
   Chip,
   Tabs,
   Tab,
-  TextField,
   Button,
   Skeleton,
 } from '@mui/material';
@@ -45,10 +44,6 @@ const AnalyticsScreen: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   
-  // API 키 사용량 관련 상태
-  const [apiKeyUsage, setApiKeyUsage] = useState<any>(null);
-  const [apiKeyInput, setApiKeyInput] = useState('');
-  const [apiKeyLoading, setApiKeyLoading] = useState(false);
 
   const handleTimePeriodChange = (event: SelectChangeEvent) => {
     setTimePeriod(event.target.value);
@@ -66,22 +61,6 @@ const AnalyticsScreen: React.FC = () => {
   };
 
   // API 키별 사용량 조회 함수
-  const fetchApiKeyUsage = async (apiKey: string) => {
-    try {
-      setApiKeyLoading(true);
-      const res = await dashboardService.getApiKeyUsage(apiKey);
-      if (res.success) {
-        setApiKeyUsage(res.data);
-      } else {
-        setApiKeyUsage(null);
-      }
-    } catch (e) {
-      console.error('API 키 사용량 조회 실패:', e);
-      setApiKeyUsage(null);
-    } finally {
-      setApiKeyLoading(false);
-    }
-  };
 
 
   // 내 API 키 목록 로드
@@ -197,12 +176,6 @@ const AnalyticsScreen: React.FC = () => {
     { type: '서버 오류', count: 46, percentage: 12.5 },
   ];
 
-  // API 키별 사용량 조회 핸들러
-  const handleApiKeyUsageCheck = () => {
-    if (apiKeyInput.trim()) {
-      fetchApiKeyUsage(apiKeyInput.trim());
-    }
-  };
 
   // 중복 데이터 정리 핸들러 (하단의 고도화 버전만 유지)
 
@@ -403,98 +376,6 @@ const AnalyticsScreen: React.FC = () => {
           </Grid>
         )}
 
-        {/* API 키 사용량 조회 */}
-        <Grid item xs={12}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                API 키 사용량 조회
-              </Typography>
-              <Box sx={{ 
-                display: 'flex', 
-                flexDirection: { xs: 'column', sm: 'row' },
-                gap: 2, 
-                mb: 3 
-              }}>
-                <TextField
-                  fullWidth
-                  label="API 키 입력"
-                  value={apiKeyInput}
-                  onChange={(e) => setApiKeyInput(e.target.value)}
-                  placeholder="예: rc_live_f49a055d62283fd02e8203ccaba70fc2"
-                  variant="outlined"
-                  size="small"
-                />
-                <Button
-                  variant="contained"
-                  onClick={handleApiKeyUsageCheck}
-                  disabled={!apiKeyInput.trim() || apiKeyLoading}
-                  sx={{ 
-                    minWidth: { xs: 'auto', sm: 120 },
-                    flexShrink: 0
-                  }}
-                >
-                  {apiKeyLoading ? '조회 중...' : '조회'}
-                </Button>
-              </Box>
-              
-              {apiKeyUsage && (
-                <Box>
-                  <Typography variant="subtitle1" gutterBottom>
-                    API 키: {apiKeyUsage.name || apiKeyUsage.apiKey}
-                  </Typography>
-                  <Grid container spacing={3}>
-                    <Grid item xs={6} sm={6} md={3}>
-                      <Box textAlign="center">
-                        <Typography variant="h4" color="primary" sx={{ fontSize: { xs: '1.5rem', sm: '2rem' } }}>
-                          {formatNumber(apiKeyUsage.totalRequests)}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
-                          총 요청 수
-                        </Typography>
-                      </Box>
-                    </Grid>
-                    <Grid item xs={6} sm={6} md={3}>
-                      <Box textAlign="center">
-                        <Typography variant="h4" color="success.main" sx={{ fontSize: { xs: '1.5rem', sm: '2rem' } }}>
-                          {formatNumber(apiKeyUsage.successRequests)}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
-                          성공 요청
-                        </Typography>
-                      </Box>
-                    </Grid>
-                    <Grid item xs={6} sm={6} md={3}>
-                      <Box textAlign="center">
-                        <Typography variant="h4" color="error.main" sx={{ fontSize: { xs: '1.5rem', sm: '2rem' } }}>
-                          {formatNumber(apiKeyUsage.failedRequests)}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
-                          실패 요청
-                        </Typography>
-                      </Box>
-                    </Grid>
-                    <Grid item xs={6} sm={6} md={3}>
-                      <Box textAlign="center">
-                        <Typography variant="h4" color="info.main" sx={{ fontSize: { xs: '1.5rem', sm: '2rem' } }}>
-                          {apiKeyUsage.avgResponseTime}ms
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
-                          평균 응답 시간
-                        </Typography>
-                      </Box>
-                    </Grid>
-                  </Grid>
-                  {apiKeyUsage.lastUsed && (
-                    <Typography variant="caption" color="text.secondary" sx={{ mt: 2, display: 'block' }}>
-                      마지막 사용: {new Date(apiKeyUsage.lastUsed).toLocaleString()}
-                    </Typography>
-                  )}
-                </Box>
-              )}
-            </CardContent>
-          </Card>
-        </Grid>
 
         {/* 기간별 요청 현황 (API 연동) */}
         <Grid item xs={12}>
