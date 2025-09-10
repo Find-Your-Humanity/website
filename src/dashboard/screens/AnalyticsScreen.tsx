@@ -15,7 +15,6 @@ import {
   Chip,
   Tabs,
   Tab,
-  Button,
   Skeleton,
 } from '@mui/material';
 import {
@@ -195,21 +194,6 @@ const AnalyticsScreen: React.FC = () => {
     return Math.min((current / limit) * 100, 100);
   };
 
-  // 중복 데이터 정리 핸들러
-  const handleCleanupDuplicates = async () => {
-    try {
-      const res = await dashboardService.cleanupDuplicates();
-      if (res.success) {
-        const deletedCount = (res.data as any)?.deletedCount || 0;
-        alert(`중복 데이터 정리 완료: ${deletedCount}건 삭제`);
-        // 데이터 새로고침
-        window.location.reload();
-      }
-    } catch (error) {
-      console.error('중복 데이터 정리 실패:', error);
-      alert('중복 데이터 정리에 실패했습니다.');
-    }
-  };
 
   if (loading && statsData.length === 0) {
     return <AnalyticsSkeleton />;
@@ -254,14 +238,6 @@ const AnalyticsScreen: React.FC = () => {
                 ))}
               </Select>
             </FormControl>
-            <Button
-              variant="outlined"
-              color="warning"
-              onClick={handleCleanupDuplicates}
-              sx={{ minWidth: 120 }}
-            >
-              중복 데이터 정리
-            </Button>
           </Box>
         </Box>
       </Box>
