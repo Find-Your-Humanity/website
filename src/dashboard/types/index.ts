@@ -36,7 +36,7 @@ export interface DashboardAnalytics {
     current_usage: number;
     usage_percentage: number;
   };
-  today_stats: {
+  monthly_stats: {
     total_requests: number;
     successful_requests: number;
     failed_requests: number;
