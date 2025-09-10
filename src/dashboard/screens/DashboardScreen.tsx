@@ -82,12 +82,13 @@ const DashboardScreen: React.FC = () => {
     { time: '20:00', requests: 89, success: 84 },
   ];
 
-  // 실제 데이터 또는 Mock 데이터 사용
-  const creditUsagePercentage = analytics?.plan_info?.usage_percentage || 75;
+  // 실제 데이터만 사용 (Mock 데이터 제거)
+  const creditUsagePercentage = analytics?.plan_info?.usage_percentage || 0;
   
   // 디버깅용 로그
   console.log('Dashboard Analytics:', analytics);
   console.log('Credit Usage Percentage:', creditUsagePercentage);
+  console.log('Analytics Success:', analytics ? 'Yes' : 'No');
   const levelData = analytics?.level_stats ? [
     { name: 'Level 0 (Pass)', value: Math.round(analytics.level_stats.level_0), color: '#8884d8' },
     { name: 'Level 1 (Image)', value: Math.round(analytics.level_stats.level_1), color: '#82ca9d' },
