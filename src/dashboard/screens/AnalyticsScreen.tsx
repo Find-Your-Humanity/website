@@ -102,13 +102,14 @@ const AnalyticsScreen: React.FC = () => {
       setLoading(true);
       setError('');
       try {
-        // 항상 일별 집계로 요청하고, days를 1/7/30으로 전달
-        const period: PeriodType = 'daily';
-        const days = timePeriod === '1day' ? 1 : timePeriod === '7days' ? 7 : 30;
+        // 하루/7일은 일별 집계(days 사용), 한달은 주간 집계(최근 4주)
+        const isMonth = timePeriod === '30days';
+        const period: PeriodType = isMonth ? 'weekly' : 'daily';
+        const days = !isMonth ? (timePeriod === '1day' ? 1 : 7) : undefined;
         // 키가 선택되어 있으면 개인/키 기반 통계 사용
         const res = selectedApiKey
-          ? await dashboardService.getKeyStats(period, apiType, selectedApiKey, days)
-          : await dashboardService.getKeyStats(period, apiType, undefined, days);
+          ? await dashboardService.getKeyStats(period, apiType, selectedApiKey, days as any)
+          : await dashboardService.getKeyStats(period, apiType, undefined, days as any);
         if (res.success) {
           setStatsData(res.data);
         } else {
@@ -262,8 +263,8 @@ const AnalyticsScreen: React.FC = () => {
                 label="기간"
                 onChange={handleTimePeriodChange}
               >
-                <MenuItem value="1day">하루</MenuItem>
-                <MenuItem value="7days">7일</MenuItem>
+                <MenuItem value="1day">오늘</MenuItem>
+                <MenuItem value="7days">1주일</MenuItem>
                 <MenuItem value="30days">한달</MenuItem>
               </Select>
             </FormControl>
