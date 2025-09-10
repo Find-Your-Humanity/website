@@ -30,13 +30,30 @@ export interface CaptchaStats {
 
 // Dashboard Analytics Types
 export interface DashboardAnalytics {
-  dailyStats: CaptchaStats[];
-  weeklyStats: CaptchaStats[];
-  monthlyStats: CaptchaStats[];
-  realtimeMetrics: {
-    currentActiveUsers: number;
-    requestsPerMinute: number;
-    systemHealth: 'healthy' | 'warning' | 'critical';
+  plan_info: {
+    plan_name: string;
+    monthly_limit: number;
+    current_usage: number;
+    usage_percentage: number;
+  };
+  today_stats: {
+    total_requests: number;
+    successful_requests: number;
+    failed_requests: number;
+    success_rate: number;
+    avg_response_time: number;
+  };
+  captcha_stats: {
+    image: number;
+    handwriting: number;
+    abstract: number;
+    pass: number;
+  };
+  level_stats: {
+    level_0: number;
+    level_1: number;
+    level_2: number;
+    level_3: number;
   };
 }
 

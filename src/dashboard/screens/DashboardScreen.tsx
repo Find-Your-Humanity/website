@@ -49,6 +49,8 @@ const DashboardScreen: React.FC = () => {
       setLastUpdated(new Date());
     } catch (error) {
       console.error('대시보드 데이터 로드 실패:', error);
+      // 에러 발생 시 Mock 데이터 사용
+      console.log('Mock 데이터로 대체합니다.');
     } finally {
       setLoading(false);
     }
@@ -79,11 +81,18 @@ const DashboardScreen: React.FC = () => {
     { time: '20:00', requests: 89, success: 84 },
   ];
 
-  const mockLevelData = [
-    { name: 'Level 0', value: 40, color: '#8884d8' },
-    { name: 'Level 1', value: 30, color: '#82ca9d' },
-    { name: 'Level 2', value: 20, color: '#ffc658' },
-    { name: 'Level 3', value: 10, color: '#ff7300' },
+  // 실제 데이터 또는 Mock 데이터 사용
+  const creditUsagePercentage = analytics?.plan_info?.usage_percentage || 75;
+  const levelData = analytics?.level_stats ? [
+    { name: 'Level 0 (Pass)', value: Math.round(analytics.level_stats.level_0), color: '#8884d8' },
+    { name: 'Level 1 (Image)', value: Math.round(analytics.level_stats.level_1), color: '#82ca9d' },
+    { name: 'Level 2 (Handwriting)', value: Math.round(analytics.level_stats.level_2), color: '#ffc658' },
+    { name: 'Level 3 (Abstract)', value: Math.round(analytics.level_stats.level_3), color: '#ff7300' },
+  ] : [
+    { name: 'Level 0 (Pass)', value: 40, color: '#8884d8' },
+    { name: 'Level 1 (Image)', value: 30, color: '#82ca9d' },
+    { name: 'Level 2 (Handwriting)', value: 20, color: '#ffc658' },
+    { name: 'Level 3 (Abstract)', value: 10, color: '#ff7300' },
   ];
 
   const StatCard = ({ title, value, icon, color, subtitle }: {
@@ -174,20 +183,22 @@ const DashboardScreen: React.FC = () => {
                     <Box sx={{ width: '80%', mb: 2, position: 'relative' }}>
                       <LinearProgress 
                         variant="determinate" 
-                        value={75} 
+                        value={creditUsagePercentage} 
                         sx={{ 
                           height: 20, 
                           borderRadius: 8,
                           backgroundColor: '#e0e0e0',
                           '& .MuiLinearProgress-bar': {
                             borderRadius: 8,
-                            backgroundColor: '#1976d2'
+                            backgroundColor: creditUsagePercentage > 80 ? '#f44336' : creditUsagePercentage > 60 ? '#ff9800' : '#1976d2'
                           }
                         }} 
                       />
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
                         <Typography variant="caption" color="text.secondary">0</Typography>
-                        <Typography variant="caption" color="text.secondary">100</Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          {analytics?.plan_info?.monthly_limit ? formatNumber(analytics.plan_info.monthly_limit) : '100'}
+                        </Typography>
                       </Box>
                       <Typography 
                         variant="body2" 
@@ -195,11 +206,11 @@ const DashboardScreen: React.FC = () => {
                         sx={{
                           position: 'absolute',
                           bottom: -10,
-                          left: '75%',
+                          left: `${Math.min(creditUsagePercentage, 100)}%`,
                           transform: 'translateX(-50%)'
                         }}
                       >
-                        75%
+                        {creditUsagePercentage.toFixed(1)}%
                       </Typography>
                     </Box>
                   </Box>
@@ -278,7 +289,7 @@ const DashboardScreen: React.FC = () => {
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
-                        data={mockLevelData}
+                        data={levelData}
                         cx="50%"
                         cy="50%"
                         innerRadius={40}
@@ -286,7 +297,7 @@ const DashboardScreen: React.FC = () => {
                         paddingAngle={2}
                         dataKey="value"
                       >
-                        {mockLevelData.map((entry, index) => (
+                        {levelData.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={entry.color} />
                         ))}
                       </Pie>
@@ -295,7 +306,7 @@ const DashboardScreen: React.FC = () => {
                   </ResponsiveContainer>
                 </Box>
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 1, mt: 1 }}>
-                  {mockLevelData.map((entry, index) => (
+                  {levelData.map((entry, index) => (
                     <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                       <Box sx={{ width: 12, height: 12, backgroundColor: entry.color, borderRadius: '50%' }} />
                       <Typography variant="caption" color="text.secondary">
