@@ -6,7 +6,7 @@ import { API_ENDPOINTS } from '../config/api';
 class DashboardService {
   async getAnalytics(): Promise<ApiResponse<DashboardAnalytics>> {
     try {
-      const response = await captchaApiClient.get<ApiResponse<DashboardAnalytics>>(
+      const response = await apiClient.get<ApiResponse<DashboardAnalytics>>(
         '/api/dashboard/analytics'
       );
       return response.data;
@@ -17,7 +17,7 @@ class DashboardService {
 
   async getStats(period: PeriodType = 'daily', apiType: ApiType = 'all'): Promise<ApiResponse<CaptchaStats[]>> {
     try {
-      const response = await captchaApiClient.get<ApiResponse<CaptchaStats[]>>(
+      const response = await apiClient.get<ApiResponse<CaptchaStats[]>>(
         `/api/dashboard/stats?period=${period}&api_type=${apiType}`
       );
       return response.data;
