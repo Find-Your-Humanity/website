@@ -52,12 +52,14 @@ class DashboardService {
   async getKeyStats(
     period: PeriodType = 'daily',
     apiType: ApiType = 'all',
-    apiKey?: string
+    apiKey?: string,
+    days?: number
   ): Promise<ApiResponse<CaptchaStats[]>> {
     try {
       const keyParam = apiKey ? `&api_key=${encodeURIComponent(apiKey)}` : '';
+      const daysParam = days ? `&days=${days}` : '';
       const response = await apiClient.get<ApiResponse<CaptchaStats[]>>(
-        `${API_ENDPOINTS.DASHBOARD.KEY_STATS}?period=${period}&api_type=${apiType}${keyParam}`
+        `${API_ENDPOINTS.DASHBOARD.KEY_STATS}?period=${period}&api_type=${apiType}${keyParam}${daysParam}`
       );
       return response.data;
     } catch (error) {
