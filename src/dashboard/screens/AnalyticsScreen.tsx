@@ -246,7 +246,7 @@ const AnalyticsScreen: React.FC = () => {
       <Box sx={{ mb: 3 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, gap: 2 }}>
           <Box>
-            <Typography variant="h5" component="h1" gutterBottom sx={{ fontWeight: 700, mb: 0 }}>
+            <Typography variant="h5" component="h5" gutterBottom sx={{ fontWeight: 700, mb: 0 }}>
               내 분석
             </Typography>
             <Typography variant="body2" color="text.secondary">
