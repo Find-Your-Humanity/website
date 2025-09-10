@@ -103,12 +103,11 @@ const AnalyticsScreen: React.FC = () => {
       setError('');
       try {
         const period: PeriodType =
-          timePeriod === '7days' ? 'daily' : timePeriod === '30days' ? 'daily' : 'monthly';
+          timePeriod === '7days' ? 'daily' : timePeriod === '30days' ? 'weekly' : 'monthly';
         // 키가 선택되어 있으면 개인/키 기반 통계 사용
-        const days = timePeriod === '30days' ? 30 : timePeriod === '7days' ? 7 : undefined;
         const res = selectedApiKey
-          ? await dashboardService.getKeyStats(period, apiType, selectedApiKey, days)
-          : await dashboardService.getKeyStats(period, apiType, undefined, days);
+          ? await dashboardService.getKeyStats(period, apiType, selectedApiKey)
+          : await dashboardService.getKeyStats(period, apiType);
         if (res.success) {
           setStatsData(res.data);
         } else {
