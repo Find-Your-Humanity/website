@@ -35,7 +35,7 @@ import AnalyticsSkeleton from '../components/AnalyticsSkeleton';
 import AnalyticsChart from '../components/AnalyticsChart';
 
 const AnalyticsScreen: React.FC = () => {
-  const [timePeriod, setTimePeriod] = useState('7days');
+  const [timePeriod, setTimePeriod] = useState('1day');
   const [apiType, setApiType] = useState<ApiType>('all');
   const [tabValue, setTabValue] = useState(0); // 탭 네비게이션 상태
   const [statsData, setStatsData] = useState<CaptchaStats[]>([]);
@@ -102,12 +102,13 @@ const AnalyticsScreen: React.FC = () => {
       setLoading(true);
       setError('');
       try {
-        const period: PeriodType =
-          timePeriod === '7days' ? 'daily' : timePeriod === '30days' ? 'weekly' : 'monthly';
+        // 항상 일별 집계로 요청하고, days를 1/7/30으로 전달
+        const period: PeriodType = 'daily';
+        const days = timePeriod === '1day' ? 1 : timePeriod === '7days' ? 7 : 30;
         // 키가 선택되어 있으면 개인/키 기반 통계 사용
         const res = selectedApiKey
-          ? await dashboardService.getKeyStats(period, apiType, selectedApiKey)
-          : await dashboardService.getKeyStats(period, apiType);
+          ? await dashboardService.getKeyStats(period, apiType, selectedApiKey, days)
+          : await dashboardService.getKeyStats(period, apiType, undefined, days);
         if (res.success) {
           setStatsData(res.data);
         } else {
@@ -261,9 +262,9 @@ const AnalyticsScreen: React.FC = () => {
                 label="기간"
                 onChange={handleTimePeriodChange}
               >
-                <MenuItem value="7days">최근 7일</MenuItem>
-                <MenuItem value="30days">최근 30일</MenuItem>
-                <MenuItem value="90days">최근 90일</MenuItem>
+                <MenuItem value="1day">하루</MenuItem>
+                <MenuItem value="7days">7일</MenuItem>
+                <MenuItem value="30days">한달</MenuItem>
               </Select>
             </FormControl>
             <FormControl sx={{ minWidth: { xs: 160, md: 220 } }}>

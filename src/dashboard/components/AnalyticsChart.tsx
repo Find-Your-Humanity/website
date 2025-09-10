@@ -32,9 +32,9 @@ interface AnalyticsChartProps {
 const AnalyticsChart: React.FC<AnalyticsChartProps> = React.memo(({ data, loading, timePeriod, apiType }) => {
   const getChartTitle = () => {
     switch (timePeriod) {
-      case '7days': return '일별 요청 현황';
-      case '30days': return '주간 요청 현황';
-      case '90days': return '월간 요청 현황';
+      case '1day': return '하루 요청 현황';
+      case '7days': return '7일 요청 현황';
+      case '30days': return '한달 요청 현황';
       default: return '요청 현황';
     }
   };
