@@ -147,7 +147,7 @@ const DashboardScreen: React.FC = () => {
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Typography variant="h4" component="h1" gutterBottom sx={{ fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' } }}>
-              Dashboard
+              내 대시보드
             </Typography>
             <Chip
               label="정상"
@@ -166,6 +166,9 @@ const DashboardScreen: React.FC = () => {
             </IconButton>
           </Box>
         </Box>
+        <Typography variant="body1" color="text.secondary">
+          개인 API 사용량 및 캡차 성능 분석
+        </Typography>
       </Box>
 
       {/* Credit 사용량, Pro Credit 및 캡챠 레벨별 사용량 */}
@@ -292,7 +295,7 @@ const DashboardScreen: React.FC = () => {
           }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                캡챠 레벨별 사용량
+                캡차 레벨별 사용량
               </Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 2 }}>
                 <Box sx={{ width: '100%', height: 200, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

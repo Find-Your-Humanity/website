@@ -246,10 +246,10 @@ const AnalyticsScreen: React.FC = () => {
       <Box sx={{ mb: 3 }}>
         <Box sx={{ mb: { xs: 3, md: 2 } }}>
           <Typography variant="h4" component="h1" gutterBottom sx={{ fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' } }}>
-            분석
+            내 분석
           </Typography>
           <Typography variant="body1" color="text.secondary">
-            캡차 서비스 사용 패턴 및 성능 분석
+            개인 API 사용 패턴 및 성능 분석
           </Typography>
         </Box>
         

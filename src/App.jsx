@@ -28,7 +28,9 @@ import PaymentResultOverlay from './components/PaymentResultOverlay';
 import DashboardShell from './dashboard/components/DashboardShell';
 import { RequireAuth, RequireAdmin } from './dashboard/navigation/guards';
 import DashboardScreen from './dashboard/screens/DashboardScreen';
+import AdminDashboardScreen from './dashboard/screens/AdminDashboardScreen';
 import AnalyticsScreen from './dashboard/screens/AnalyticsScreen';
+import AdminAnalyticsScreen from './dashboard/screens/AdminAnalyticsScreen';
 import BillingScreen from './dashboard/screens/BillingScreen';
 import ApiKeysScreen from './dashboard/screens/ApiKeysScreen';
 import UsersScreen from './dashboard/screens/UsersScreen';
@@ -116,14 +118,14 @@ function App() {
               <Route path="/admin/dashboard" element={
                 <RequireAdmin>
                   <DashboardShell>
-                    <DashboardScreen />
+                    <AdminDashboardScreen />
                   </DashboardShell>
                 </RequireAdmin>
               } />
               <Route path="/admin/analytics" element={
                 <RequireAdmin>
                   <DashboardShell>
-                    <AnalyticsScreen />
+                    <AdminAnalyticsScreen />
                   </DashboardShell>
                 </RequireAdmin>
               } />
