@@ -1,6 +1,5 @@
 import { ApiResponse, DashboardAnalytics, CaptchaStats, ApiUsageLimit, ApiType, PeriodType } from '../types';
 import { apiClient } from './apiClient';
-import { captchaApiClient } from './captchaApiClient';
 import { API_ENDPOINTS } from '../config/api';
 
 class DashboardService {
