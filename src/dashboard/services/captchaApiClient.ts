@@ -16,6 +16,7 @@ const captchaApiClient: AxiosInstance = axios.create({
 // JWT 토큰을 Authorization 헤더에 추가
 captchaApiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const token = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+  console.log('JWT Token:', token ? 'Present' : 'Missing');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
