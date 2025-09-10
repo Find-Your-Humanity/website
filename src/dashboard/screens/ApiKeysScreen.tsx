@@ -66,11 +66,11 @@ const ApiKeysScreen: React.FC = () => {
 
   const handleCreateApiKey = async () => {
     try {
-      // 자동으로 이름과 설명 생성
+      // 사용자 입력값 또는 자동 생성된 이름/설명 사용
       const timestamp = new Date().toLocaleString('ko-KR');
       const data: CreateApiKeyRequest = { 
-        name: `API Key ${timestamp}`, 
-        description: `자동 생성된 API 키 - ${timestamp}` 
+        name: newKeyName.trim() || `API Key ${timestamp}`, 
+        description: newKeyDescription.trim() || `자동 생성된 API 키 - ${timestamp}` 
       };
       const result = await apiKeyService.createApiKey(data);
       setNewlyCreatedKey({ api_key: result.api_key, secret_key: result.secret_key });
@@ -84,6 +84,8 @@ const ApiKeysScreen: React.FC = () => {
   const handleOpenDialog = () => {
     setNewlyCreatedKey(null); // 이전 키 정보 초기화
     setShowSecretKey(null); // 비밀 키 표시 상태도 초기화
+    setNewKeyName(''); // 이름 입력 필드 초기화
+    setNewKeyDescription(''); // 설명 입력 필드 초기화
     setOpenDialog(true);
   };
 
@@ -193,12 +195,37 @@ const ApiKeysScreen: React.FC = () => {
           setOpenDialog(false);
           setNewlyCreatedKey(null);
           setShowSecretKey(null);
+          setNewKeyName('');
+          setNewKeyDescription('');
         }} 
         fullWidth 
         maxWidth="sm"
       >
         <DialogTitle>새 API 키 만들기</DialogTitle>
         <DialogContent>
+          {!newlyCreatedKey && (
+            <Box sx={{ pt: 2 }}>
+              <TextField
+                fullWidth
+                label="API 키 이름"
+                value={newKeyName}
+                onChange={(e) => setNewKeyName(e.target.value)}
+                placeholder="예: 프로덕션 API 키, 테스트용 키"
+                sx={{ mb: 3 }}
+                helperText="API 키를 구분하기 위한 이름을 입력하세요"
+              />
+              <TextField
+                fullWidth
+                label="설명 (선택사항)"
+                value={newKeyDescription}
+                onChange={(e) => setNewKeyDescription(e.target.value)}
+                placeholder="예: 웹사이트 메인 페이지용, 모바일 앱용"
+                multiline
+                rows={3}
+                helperText="API 키의 용도나 목적을 설명하세요"
+              />
+            </Box>
+          )}
           {newlyCreatedKey && (
             <Box>
               <Box sx={{ mb: 3 }}>
@@ -329,6 +356,8 @@ const ApiKeysScreen: React.FC = () => {
               setOpenDialog(false);
               setNewlyCreatedKey(null);
               setShowSecretKey(null);
+              setNewKeyName('');
+              setNewKeyDescription('');
             }}
             variant="outlined"
             sx={{
@@ -347,6 +376,8 @@ const ApiKeysScreen: React.FC = () => {
                 setOpenDialog(false);
                 setNewlyCreatedKey(null);
                 setShowSecretKey(null);
+                setNewKeyName('');
+                setNewKeyDescription('');
               }} 
               variant="contained"
               sx={{
