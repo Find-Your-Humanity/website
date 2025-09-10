@@ -242,67 +242,52 @@ const AnalyticsScreen: React.FC = () => {
 
   return (
     <Box className="rc-container">
-      {/* 헤더 */}
+      {/* 헤더 (요금제/API 키 페이지와 동일한 레이아웃) */}
       <Box sx={{ mb: 3 }}>
-        <Box sx={{ mb: { xs: 3, md: 2 } }}>
-          <Typography variant="h5" component="h1" gutterBottom sx={{ fontWeight: 700 }}>
-            내 분석
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            개인 API 사용 패턴 및 성능 분석
-          </Typography>
-        </Box>
-        
-        {/* 모바일: 세로 배치, 데스크톱: 가로 배치 */}
-        <Box sx={{ 
-          display: 'flex', 
-          flexDirection: { xs: 'column', md: 'row' },
-          gap: { xs: 2, md: 2 },
-          alignItems: { xs: 'stretch', md: 'center' },
-          justifyContent: { md: 'flex-end' }
-        }}>
-          <Button
-            variant="outlined"
-            color="warning"
-            onClick={handleCleanupDuplicates}
-            sx={{ 
-              minWidth: { xs: 'auto', md: 120 },
-              order: { xs: 3, md: 1 }
-            }}
-          >
-            중복 데이터 정리
-          </Button>
-          <FormControl sx={{ 
-            minWidth: { xs: 'auto', md: 150 },
-            order: { xs: 1, md: 2 }
-          }}>
-            <InputLabel>기간</InputLabel>
-            <Select
-              value={timePeriod}
-              label="기간"
-              onChange={handleTimePeriodChange}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, gap: 2 }}>
+          <Box>
+            <Typography variant="h5" component="h1" gutterBottom sx={{ fontWeight: 700, mb: 0 }}>
+              내 분석
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              개인 API 사용 패턴 및 성능 분석
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+            <FormControl sx={{ minWidth: { xs: 120, md: 150 } }}>
+              <InputLabel>기간</InputLabel>
+              <Select
+                value={timePeriod}
+                label="기간"
+                onChange={handleTimePeriodChange}
+              >
+                <MenuItem value="7days">최근 7일</MenuItem>
+                <MenuItem value="30days">최근 30일</MenuItem>
+                <MenuItem value="90days">최근 90일</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl sx={{ minWidth: { xs: 160, md: 220 } }}>
+              <InputLabel>API 키</InputLabel>
+              <Select
+                value={selectedApiKey}
+                label="API 키"
+                onChange={(e) => setSelectedApiKey(e.target.value)}
+              >
+                <MenuItem value="">내 모든 키 (합계)</MenuItem>
+                {apiKeys.map((k) => (
+                  <MenuItem key={k.key_id} value={k.key_id}>{k.name || k.key_id}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <Button
+              variant="outlined"
+              color="warning"
+              onClick={handleCleanupDuplicates}
+              sx={{ minWidth: 120 }}
             >
-              <MenuItem value="7days">최근 7일</MenuItem>
-              <MenuItem value="30days">최근 30일</MenuItem>
-              <MenuItem value="90days">최근 90일</MenuItem>
-            </Select>
-          </FormControl>
-          <FormControl sx={{ 
-            minWidth: { xs: 'auto', md: 220 },
-            order: { xs: 2, md: 3 }
-          }}>
-            <InputLabel>API 키</InputLabel>
-            <Select
-              value={selectedApiKey}
-              label="API 키"
-              onChange={(e) => setSelectedApiKey(e.target.value)}
-            >
-              <MenuItem value="">내 모든 키 (합계)</MenuItem>
-              {apiKeys.map((k) => (
-                <MenuItem key={k.key_id} value={k.key_id}>{k.name || k.key_id}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+              중복 데이터 정리
+            </Button>
+          </Box>
         </Box>
       </Box>
 
