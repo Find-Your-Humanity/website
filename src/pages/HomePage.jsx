@@ -104,7 +104,7 @@ const HomePage = () => {
             theme: 'light',
             size: 'normal',
             language: 'ko',
-            apiEndpoint: 'https://api.realcatcha.com'
+            apiEndpoint: '/api'
           });
         } else {
           console.error('renderRealCaptcha 함수를 찾을 수 없습니다');
@@ -151,7 +151,7 @@ const HomePage = () => {
               siteKey,
               theme: 'light',
               size: 'normal',
-              apiEndpoint: '/api/public', // Gateway 프록시(/api/public/next-captcha) 사용
+              apiEndpoint: '/api',
               onSuccess: function(result) {
                 console.log('캡차 성공!', result.token);
                 // 성공 시 서버로 토큰 전송 (시크릿 키로 검증)
