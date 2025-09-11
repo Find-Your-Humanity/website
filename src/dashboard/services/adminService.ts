@@ -179,6 +179,54 @@ export interface RealtimeMonitoringResponse {
   data: RealtimeMonitoringData;
 }
 
+// 새로운 분석 페이지용 타입들
+export interface SystemStatsData {
+  date: string;
+  totalRequests: number;
+  successfulRequests: number;
+  failedRequests: number;
+  activeUsers: number;
+}
+
+export interface SystemStatsResponse {
+  success: boolean;
+  data: SystemStatsData[];
+}
+
+export interface UserGrowthData {
+  month: string;
+  newUsers: number;
+  totalUsers: number;
+}
+
+export interface UserGrowthResponse {
+  success: boolean;
+  data: UserGrowthData[];
+}
+
+export interface PlanDistributionData {
+  name: string;
+  value: number;
+  users: number;
+  revenue: number;
+}
+
+export interface PlanDistributionResponse {
+  success: boolean;
+  data: PlanDistributionData[];
+}
+
+export interface ErrorStatsData {
+  type: string;
+  count: number;
+  percentage: number;
+}
+
+export interface ErrorStatsResponse {
+  success: boolean;
+  data: ErrorStatsData[];
+}
+
 class AdminService {
   async getDashboardMetrics(): Promise<AdminMetricsResponse> {
     try {
@@ -259,6 +307,43 @@ class AdminService {
   async getRealtimeMonitoring(): Promise<RealtimeMonitoringResponse> {
     try {
       const response = await apiClient.get<RealtimeMonitoringResponse>('/api/admin/realtime-monitoring');
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // 새로운 분석 페이지용 API 함수들
+  async getSystemStats(days: number = 7): Promise<SystemStatsResponse> {
+    try {
+      const response = await apiClient.get<SystemStatsResponse>(`/api/admin/system-stats?days=${days}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getUserGrowth(months: number = 6): Promise<UserGrowthResponse> {
+    try {
+      const response = await apiClient.get<UserGrowthResponse>(`/api/admin/user-growth?months=${months}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getPlanDistribution(): Promise<PlanDistributionResponse> {
+    try {
+      const response = await apiClient.get<PlanDistributionResponse>('/api/admin/plan-distribution');
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getErrorStats(days: number = 7): Promise<ErrorStatsResponse> {
+    try {
+      const response = await apiClient.get<ErrorStatsResponse>(`/api/admin/error-stats?days=${days}`);
       return response.data;
     } catch (error) {
       throw error;

@@ -121,12 +121,15 @@ const AdminDashboardScreen: React.FC = () => {
 
   return (
     <Box className="rc-container">
-      {/* 헤더 */}
-      <Box sx={{ display: 'flex', flexDirection: 'column', mb: 3 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Typography variant="h4" component="h1" gutterBottom sx={{ fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' } }}>
+      {/* 헤더 (일관된 스타일 적용) */}
+      <Box sx={{ mb: 3 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, gap: 2 }}>
+          <Box>
+            <Typography variant="h5" component="h5" gutterBottom sx={{ fontWeight: 700, mb: 0 }}>
               관리자 대시보드
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              전체 시스템 현황 및 관리자 전용 통계
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
@@ -138,9 +141,6 @@ const AdminDashboardScreen: React.FC = () => {
             </IconButton>
           </Box>
         </Box>
-        <Typography variant="body1" color="text.secondary">
-          전체 시스템 현황 및 관리자 전용 통계
-        </Typography>
       </Box>
 
       {/* 시스템 개요 메트릭 */}
