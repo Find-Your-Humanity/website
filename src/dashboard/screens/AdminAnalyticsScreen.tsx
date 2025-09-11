@@ -114,6 +114,35 @@ const AdminAnalyticsScreen: React.FC = () => {
     });
   }, [systemStats]);
 
+  // 시스템 개요 통계 계산
+  const systemOverview = useMemo(() => {
+    if (systemStats.length === 0) {
+      return {
+        totalUsers: 0,
+        totalRequests: 0,
+        successRate: 0,
+        totalRevenue: 0
+      };
+    }
+
+    const totalRequests = systemStats.reduce((sum, stat) => sum + stat.totalRequests, 0);
+    const totalSuccessful = systemStats.reduce((sum, stat) => sum + stat.successfulRequests, 0);
+    const successRate = totalRequests > 0 ? (totalSuccessful / totalRequests) * 100 : 0;
+    const totalRevenue = planDistribution.reduce((sum, plan) => sum + plan.revenue, 0);
+    
+    // 총 사용자 수는 userGrowthData의 마지막 항목에서 가져오거나 별도 계산
+    const totalUsers = userGrowthData.length > 0 
+      ? userGrowthData[userGrowthData.length - 1].totalUsers 
+      : 0;
+
+    return {
+      totalUsers,
+      totalRequests,
+      successRate,
+      totalRevenue
+    };
+  }, [systemStats, planDistribution, userGrowthData]);
+
   if (loading) {
     return (
       <Box className="rc-container">
@@ -186,7 +215,7 @@ const AdminAnalyticsScreen: React.FC = () => {
                 <Grid item xs={6} sm={3}>
                   <Box textAlign="center">
                     <Typography variant="h4" color="primary">
-                      {formatNumber(15420)}
+                      {formatNumber(systemOverview.totalUsers)}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                       총 사용자 수
@@ -196,7 +225,7 @@ const AdminAnalyticsScreen: React.FC = () => {
                 <Grid item xs={6} sm={3}>
                   <Box textAlign="center">
                     <Typography variant="h4" color="success.main">
-                      {formatNumber(125430)}
+                      {formatNumber(systemOverview.totalRequests)}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                       총 API 요청
@@ -206,7 +235,7 @@ const AdminAnalyticsScreen: React.FC = () => {
                 <Grid item xs={6} sm={3}>
                   <Box textAlign="center">
                     <Typography variant="h4" color="info.main">
-                      {formatPercentage(94.8)}
+                      {formatPercentage(systemOverview.successRate)}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                       평균 성공률
@@ -216,7 +245,7 @@ const AdminAnalyticsScreen: React.FC = () => {
                 <Grid item xs={6} sm={3}>
                   <Box textAlign="center">
                     <Typography variant="h4" color="warning.main">
-                      $125,000
+                      ${formatNumber(systemOverview.totalRevenue)}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                       월간 수익
@@ -393,7 +422,7 @@ const AdminAnalyticsScreen: React.FC = () => {
                     </Box>
                     <LinearProgress
                       variant="determinate"
-                      value={(plan.revenue / 30840) * 100}
+                      value={systemOverview.totalRevenue > 0 ? (plan.revenue / systemOverview.totalRevenue) * 100 : 0}
                       sx={{ height: 8, borderRadius: 4 }}
                     />
                   </Box>
@@ -402,7 +431,7 @@ const AdminAnalyticsScreen: React.FC = () => {
                   <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Typography variant="h6">총 월간 수익</Typography>
                     <Typography variant="h6" color="primary">
-                      ${formatNumber(69390)}
+                      ${formatNumber(systemOverview.totalRevenue)}
                     </Typography>
                   </Box>
                 </Box>
