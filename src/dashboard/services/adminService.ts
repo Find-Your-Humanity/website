@@ -123,6 +123,62 @@ export interface ContactRequestsResponse {
   };
 }
 
+// 실시간 모니터링 관련 타입
+export interface ApiStatus {
+  endpoint: string;
+  total_requests: number;
+  success_count: number;
+  error_count: number;
+  success_rate: number;
+  avg_response_time: number;
+  last_request_time: string | null;
+  status: 'healthy' | 'warning' | 'critical';
+}
+
+export interface ResponseTimeData {
+  time: string;
+  avg_response_time: number;
+  max_response_time: number;
+  min_response_time: number;
+  request_count: number;
+}
+
+export interface ErrorRateData {
+  time: string;
+  total_requests: number;
+  error_count: number;
+  error_rate: number;
+}
+
+export interface TpsData {
+  time: string;
+  tps: number;
+}
+
+export interface SystemSummary {
+  total_requests_1h: number;
+  success_requests_1h: number;
+  error_requests_1h: number;
+  avg_response_time_1h: number;
+  unique_users_1h: number;
+  success_rate_1h: number;
+  error_rate_1h: number;
+}
+
+export interface RealtimeMonitoringData {
+  api_status: ApiStatus[];
+  response_time_data: ResponseTimeData[];
+  error_rate_data: ErrorRateData[];
+  tps_data: TpsData[];
+  system_summary: SystemSummary;
+  timestamp: string;
+}
+
+export interface RealtimeMonitoringResponse {
+  success: boolean;
+  data: RealtimeMonitoringData;
+}
+
 class AdminService {
   async getDashboardMetrics(): Promise<AdminMetricsResponse> {
     try {
@@ -194,6 +250,15 @@ class AdminService {
         status,
         admin_response: adminResponse
       });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getRealtimeMonitoring(): Promise<RealtimeMonitoringResponse> {
+    try {
+      const response = await apiClient.get<RealtimeMonitoringResponse>('/api/admin/realtime-monitoring');
       return response.data;
     } catch (error) {
       throw error;
