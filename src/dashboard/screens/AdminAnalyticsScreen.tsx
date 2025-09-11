@@ -245,7 +245,7 @@ const AdminAnalyticsScreen: React.FC = () => {
                 <Grid item xs={6} sm={3}>
                   <Box textAlign="center">
                     <Typography variant="h4" color="warning.main">
-                      ${formatNumber(systemOverview.totalRevenue)}
+                      ₩{formatNumber(systemOverview.totalRevenue)}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                       월간 수익
@@ -417,7 +417,7 @@ const AdminAnalyticsScreen: React.FC = () => {
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                       <Typography variant="body2">{plan.name} 플랜</Typography>
                       <Typography variant="body2" fontWeight="bold">
-                        ${formatNumber(plan.revenue)}
+                        ₩{formatNumber(plan.revenue)}
                       </Typography>
                     </Box>
                     <LinearProgress
@@ -431,7 +431,7 @@ const AdminAnalyticsScreen: React.FC = () => {
                   <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Typography variant="h6">총 월간 수익</Typography>
                     <Typography variant="h6" color="primary">
-                      ${formatNumber(systemOverview.totalRevenue)}
+                      ₩{formatNumber(systemOverview.totalRevenue)}
                     </Typography>
                   </Box>
                 </Box>

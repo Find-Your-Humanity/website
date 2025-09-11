@@ -175,7 +175,7 @@ const AdminDashboardScreen: React.FC = () => {
         <Grid item xs={12} sm={6} md={3}>
           <StatCard
             title="월간 수익"
-            value={`$${formatNumber(adminMetrics.revenue)}`}
+            value={`₩${formatNumber(adminMetrics.revenue)}`}
             icon={<TrendingUpIcon sx={{ fontSize: 40 }} />}
             color="#9c27b0"
             subtitle="이번 달"
