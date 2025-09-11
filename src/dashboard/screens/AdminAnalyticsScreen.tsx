@@ -120,39 +120,31 @@ const AdminAnalyticsScreen: React.FC = () => {
 
   return (
     <Box className="rc-container">
-      {/* 헤더 */}
+      {/* 헤더 (사용자 대시보드와 동일한 레이아웃) */}
       <Box sx={{ mb: 3 }}>
-        <Box sx={{ mb: { xs: 3, md: 2 } }}>
-          <Typography variant="h4" component="h1" gutterBottom sx={{ fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' } }}>
-            시스템 분석
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            전체 시스템 사용 패턴 및 성능 분석 (관리자 전용)
-          </Typography>
-        </Box>
-        
-        <Box sx={{ 
-          display: 'flex', 
-          flexDirection: { xs: 'column', md: 'row' },
-          gap: { xs: 2, md: 2 },
-          alignItems: { xs: 'stretch', md: 'center' },
-          justifyContent: { md: 'flex-end' }
-        }}>
-          <FormControl sx={{ 
-            minWidth: { xs: 'auto', md: 150 },
-            order: { xs: 1, md: 1 }
-          }}>
-            <InputLabel>기간</InputLabel>
-            <Select
-              value={timePeriod}
-              label="기간"
-              onChange={handleTimePeriodChange}
-            >
-              <MenuItem value="7days">최근 7일</MenuItem>
-              <MenuItem value="30days">최근 30일</MenuItem>
-              <MenuItem value="90days">최근 90일</MenuItem>
-            </Select>
-          </FormControl>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, gap: 2 }}>
+          <Box>
+            <Typography variant="h5" component="h5" gutterBottom sx={{ fontWeight: 700, mb: 0 }}>
+              시스템 분석
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              전체 시스템 사용 패턴 및 성능 분석 (관리자 전용)
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+            <FormControl sx={{ minWidth: { xs: 120, md: 150 } }}>
+              <InputLabel>기간</InputLabel>
+              <Select
+                value={timePeriod}
+                label="기간"
+                onChange={handleTimePeriodChange}
+              >
+                <MenuItem value="7days">최근 7일</MenuItem>
+                <MenuItem value="30days">최근 30일</MenuItem>
+                <MenuItem value="90days">최근 90일</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
         </Box>
       </Box>
 
