@@ -231,6 +231,13 @@ const AnalyticsScreen: React.FC = () => {
                 value={selectedApiKey}
                 label="API 키"
                 onChange={(e) => setSelectedApiKey(e.target.value)}
+                renderValue={(value) => {
+                  if (value === '') {
+                    return '내 모든 키 (합계)';
+                  }
+                  const selectedKey = apiKeys.find(k => k.key_id === value);
+                  return selectedKey ? (selectedKey.name || selectedKey.key_id) : value;
+                }}
               >
                 <MenuItem value="">내 모든 키 (합계)</MenuItem>
                 {apiKeys.map((k) => (
