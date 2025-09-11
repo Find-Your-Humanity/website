@@ -226,7 +226,7 @@ const AnalyticsScreen: React.FC = () => {
               </Select>
             </FormControl>
             <FormControl sx={{ minWidth: { xs: 160, md: 220 } }}>
-              <InputLabel>API 키</InputLabel>
+              <InputLabel>전체 API 키</InputLabel>
               <Select
                 value={selectedApiKey}
                 label="전체 API 키"
