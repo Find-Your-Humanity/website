@@ -18,18 +18,29 @@ import {
   AdminPanelSettings as AdminIcon,
 } from '@mui/icons-material';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { adminService } from '../services/adminService';
+import { adminService, AdminMetrics } from '../services/adminService';
 import { formatNumber, formatPercentage, formatResponseTime } from '../utils';
 
 const AdminDashboardScreen: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  const [adminMetrics, setAdminMetrics] = useState<AdminMetrics>({
+    totalUsers: 0,
+    newUsersToday: 0,
+    activeUsers: 0,
+    totalRequests: 0,
+    successRate: 0,
+    revenue: 0
+  });
 
   const loadAdminDashboardData = async () => {
     try {
       setLoading(true);
       // 관리자용 전체 시스템 통계 조회
-      // TODO: adminService에서 전체 시스템 통계 API 호출
+      const response = await adminService.getDashboardMetrics();
+      if (response.success) {
+        setAdminMetrics(response.data);
+      }
       setLastUpdated(new Date());
     } catch (error) {
       console.error('관리자 대시보드 데이터 로드 실패:', error);
@@ -42,18 +53,18 @@ const AdminDashboardScreen: React.FC = () => {
     loadAdminDashboardData();
   }, []);
 
-  // 관리자용 Mock 데이터 (전체 시스템 통계)
-  const adminMetrics = {
-    totalUsers: 15420,
-    activeUsers: 1247,
-    totalRequests: 125430,
-    successfulSolves: 118920,
-    failedAttempts: 6510,
-    successRate: 94.8,
-    averageResponseTime: 245,
+  // 관리자용 실제 데이터 (전체 시스템 통계) - 차트용
+  const chartData = {
+    totalUsers: adminMetrics.totalUsers,
+    activeUsers: adminMetrics.activeUsers,
+    totalRequests: adminMetrics.totalRequests,
+    successfulSolves: Math.round(adminMetrics.totalRequests * adminMetrics.successRate / 100),
+    failedAttempts: Math.round(adminMetrics.totalRequests * (100 - adminMetrics.successRate) / 100),
+    successRate: adminMetrics.successRate,
+    averageResponseTime: 245, // TODO: 실제 응답 시간 데이터 추가
     systemHealth: 'healthy' as const,
-    revenue: 125000,
-    newUsersToday: 89,
+    revenue: adminMetrics.revenue,
+    newUsersToday: adminMetrics.newUsersToday,
   };
 
   const systemChartData = [
@@ -117,17 +128,9 @@ const AdminDashboardScreen: React.FC = () => {
       <Box sx={{ display: 'flex', flexDirection: 'column', mb: 3 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <AdminIcon sx={{ fontSize: 32, color: 'primary.main' }} />
             <Typography variant="h4" component="h1" gutterBottom sx={{ fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' } }}>
               관리자 대시보드
             </Typography>
-            <Chip
-              label="시스템 정상"
-              color="success"
-              variant="outlined"
-              icon={<SuccessIcon />}
-              size="small"
-            />
           </Box>
           <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
             <Typography variant="caption" color="text.secondary">
