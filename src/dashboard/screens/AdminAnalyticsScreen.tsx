@@ -394,7 +394,7 @@ const AdminAnalyticsScreen: React.FC = () => {
                     <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                       <Box sx={{ width: 12, height: 12, backgroundColor: colors[index % colors.length], borderRadius: '50%' }} />
                       <Typography variant="caption" color="text.secondary">
-                        {entry.name}: {entry.value}% ({formatNumber(entry.users)}명)
+                        {entry.name}: {entry.value}% ({formatNumber(entry.users)}명{typeof entry.inactiveUsers === 'number' ? `, 비활성 ${formatNumber(entry.inactiveUsers)}명` : ''})
                       </Typography>
                     </Box>
                   );

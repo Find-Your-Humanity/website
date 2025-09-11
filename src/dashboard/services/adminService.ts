@@ -209,6 +209,7 @@ export interface PlanDistributionData {
   value: number;
   users: number;
   revenue: number;
+  inactiveUsers?: number;
 }
 
 export interface PlanDistributionResponse {
