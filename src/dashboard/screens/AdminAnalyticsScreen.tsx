@@ -33,56 +33,68 @@ import {
   Cell,
 } from 'recharts';
 import { formatNumber, formatPercentage } from '../utils';
-import { adminService } from '../services/adminService';
+import { 
+  adminService, 
+  SystemStatsData, 
+  UserGrowthData, 
+  PlanDistributionData, 
+  ErrorStatsData 
+} from '../services/adminService';
 
 const AdminAnalyticsScreen: React.FC = () => {
   const [timePeriod, setTimePeriod] = useState('7days');
   const [tabValue, setTabValue] = useState(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+  
+  // 실제 API 데이터 state
+  const [systemStats, setSystemStats] = useState<SystemStatsData[]>([]);
+  const [userGrowthData, setUserGrowthData] = useState<UserGrowthData[]>([]);
+  const [planDistribution, setPlanDistribution] = useState<PlanDistributionData[]>([]);
+  const [errorTypes, setErrorTypes] = useState<ErrorStatsData[]>([]);
 
   const handleTimePeriodChange = (event: SelectChangeEvent) => {
     setTimePeriod(event.target.value);
   };
 
+  // 컴포넌트 마운트 시 및 timePeriod 변경 시 데이터 로드
+  useEffect(() => {
+    loadAnalyticsData();
+  }, [timePeriod]);
+
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
 
-  // 관리자용 Mock 데이터 (전체 시스템 통계)
-  const systemStats = [
-    { date: '2024-01-01', totalRequests: 1250, successfulRequests: 1180, failedRequests: 70, activeUsers: 89 },
-    { date: '2024-01-02', totalRequests: 1380, successfulRequests: 1305, failedRequests: 75, activeUsers: 95 },
-    { date: '2024-01-03', totalRequests: 1520, successfulRequests: 1440, failedRequests: 80, activeUsers: 112 },
-    { date: '2024-01-04', totalRequests: 1680, successfulRequests: 1590, failedRequests: 90, activeUsers: 125 },
-    { date: '2024-01-05', totalRequests: 1450, successfulRequests: 1375, failedRequests: 75, activeUsers: 98 },
-    { date: '2024-01-06', totalRequests: 1320, successfulRequests: 1250, failedRequests: 70, activeUsers: 87 },
-    { date: '2024-01-07', totalRequests: 1480, successfulRequests: 1405, failedRequests: 75, activeUsers: 105 },
-  ];
-
-  const userGrowthData = [
-    { month: '1월', newUsers: 1200, totalUsers: 1200 },
-    { month: '2월', newUsers: 1500, totalUsers: 2700 },
-    { month: '3월', newUsers: 1800, totalUsers: 4500 },
-    { month: '4월', newUsers: 2200, totalUsers: 6700 },
-    { month: '5월', newUsers: 2500, totalUsers: 9200 },
-    { month: '6월', newUsers: 2800, totalUsers: 12000 },
-    { month: '7월', newUsers: 3200, totalUsers: 15200 },
-  ];
-
-  const planDistribution = [
-    { name: 'Free', value: 45, users: 6939, revenue: 0 },
-    { name: 'Basic', value: 30, users: 4626, revenue: 23130 },
-    { name: 'Pro', value: 20, users: 3084, revenue: 30840 },
-    { name: 'Enterprise', value: 5, users: 771, revenue: 15420 },
-  ];
-
-  const errorTypes = [
-    { type: '타임아웃', count: 156, percentage: 42.5 },
-    { type: '잘못된 입력', count: 98, percentage: 26.7 },
-    { type: '네트워크 오류', count: 67, percentage: 18.2 },
-    { type: '서버 오류', count: 46, percentage: 12.5 },
-  ];
+  // API 데이터 로드 함수
+  const loadAnalyticsData = async () => {
+    setLoading(true);
+    setError('');
+    
+    try {
+      const days = timePeriod === '7days' ? 7 : timePeriod === '30days' ? 30 : 90;
+      const months = timePeriod === '7days' ? 1 : timePeriod === '30days' ? 3 : 6;
+      
+      // 병렬로 모든 API 호출
+      const [systemStatsRes, userGrowthRes, planDistRes, errorStatsRes] = await Promise.all([
+        adminService.getSystemStats(days),
+        adminService.getUserGrowth(months),
+        adminService.getPlanDistribution(),
+        adminService.getErrorStats(days)
+      ]);
+      
+      setSystemStats(systemStatsRes.data);
+      setUserGrowthData(userGrowthRes.data);
+      setPlanDistribution(planDistRes.data);
+      setErrorTypes(errorStatsRes.data);
+      
+    } catch (err: any) {
+      console.error('분석 데이터 로드 실패:', err);
+      setError(err.response?.data?.detail || '분석 데이터를 불러오는데 실패했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // 차트용 가공 데이터 생성
   const chartData = useMemo(() => {
@@ -120,6 +132,13 @@ const AdminAnalyticsScreen: React.FC = () => {
 
   return (
     <Box className="rc-container">
+      {/* 에러 표시 */}
+      {error && (
+        <Alert severity="error" sx={{ mb: 3 }}>
+          {error}
+        </Alert>
+      )}
+      
       {/* 헤더 (사용자 대시보드와 동일한 레이아웃) */}
       <Box sx={{ mb: 3 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, gap: 2 }}>
@@ -330,23 +349,27 @@ const AdminAnalyticsScreen: React.FC = () => {
                       paddingAngle={2}
                       dataKey="value"
                     >
-                      {planDistribution.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
+                      {planDistribution.map((entry, index) => {
+                        const colors = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#00ff00'];
+                        return <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />;
+                      })}
                     </Pie>
                     <Tooltip />
                   </PieChart>
                 </ResponsiveContainer>
               </Box>
               <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 1, mt: 2 }}>
-                {planDistribution.map((entry, index) => (
-                  <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                    <Box sx={{ width: 12, height: 12, backgroundColor: entry.color, borderRadius: '50%' }} />
-                    <Typography variant="caption" color="text.secondary">
-                      {entry.name}: {entry.value}% ({formatNumber(entry.users)}명)
-                    </Typography>
-                  </Box>
-                ))}
+                {planDistribution.map((entry, index) => {
+                  const colors = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#00ff00'];
+                  return (
+                    <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                      <Box sx={{ width: 12, height: 12, backgroundColor: colors[index % colors.length], borderRadius: '50%' }} />
+                      <Typography variant="caption" color="text.secondary">
+                        {entry.name}: {entry.value}% ({formatNumber(entry.users)}명)
+                      </Typography>
+                    </Box>
+                  );
+                })}
               </Box>
             </CardContent>
           </Card>
