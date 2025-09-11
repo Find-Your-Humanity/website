@@ -151,7 +151,7 @@ const HomePage = () => {
               siteKey,
               theme: 'light',
               size: 'normal',
-              apiEndpoint: 'https://api.realcatcha.com', // Gateway API 사용
+              apiEndpoint: '/api/public', // Gateway 프록시(/api/public/next-captcha) 사용
               onSuccess: function(result) {
                 console.log('캡차 성공!', result.token);
                 // 성공 시 서버로 토큰 전송 (시크릿 키로 검증)
