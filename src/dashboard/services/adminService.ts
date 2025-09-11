@@ -1,5 +1,12 @@
 import { apiClient } from './apiClient';
 
+export interface PlanDistribution {
+  name: string;
+  value: number;
+  count: number;
+  color: string;
+}
+
 export interface AdminMetrics {
   totalUsers: number;
   newUsersToday: number;
@@ -7,6 +14,7 @@ export interface AdminMetrics {
   totalRequests: number;
   successRate: number;
   revenue: number;
+  planDistribution: PlanDistribution[];
 }
 
 export interface AdminMetricsResponse {

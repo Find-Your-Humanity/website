@@ -30,7 +30,8 @@ const AdminDashboardScreen: React.FC = () => {
     activeUsers: 0,
     totalRequests: 0,
     successRate: 0,
-    revenue: 0
+    revenue: 0,
+    planDistribution: []
   });
 
   const loadAdminDashboardData = async () => {
@@ -76,12 +77,8 @@ const AdminDashboardScreen: React.FC = () => {
     { time: '20:00', requests: 89, users: 200 },
   ];
 
-  const planDistribution = [
-    { name: 'Free', value: 45, color: '#8884d8' },
-    { name: 'Basic', value: 30, color: '#82ca9d' },
-    { name: 'Pro', value: 20, color: '#ffc658' },
-    { name: 'Enterprise', value: 5, color: '#ff7300' },
-  ];
+  // 실제 플랜 분포 데이터 사용
+  const planDistribution = adminMetrics.planDistribution;
 
   const StatCard = ({ title, value, icon, color, subtitle }: {
     title: string;
