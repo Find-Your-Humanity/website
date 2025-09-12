@@ -112,9 +112,13 @@ const AnalyticsScreen: React.FC = () => {
         const res = await dashboardService.getErrorAnalysis(timePeriod, selectedApiKey || undefined);
         if (res.success) {
           setErrorAnalysis(res.data.error_types || []);
+        } else {
+          console.error('오류 분석 API 응답 실패:', res);
+          setErrorAnalysis([]);
         }
       } catch (e) {
         console.error('오류 분석 데이터 조회 실패:', e);
+        // 401 오류 등 인증 실패 시 빈 배열로 설정 (UI는 정상 표시)
         setErrorAnalysis([]);
       }
     };
