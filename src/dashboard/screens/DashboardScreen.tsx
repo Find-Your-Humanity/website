@@ -9,6 +9,15 @@ import {
   Button,
   Chip,
   LinearProgress,
+  FormControl,
+  Select,
+  MenuItem,
+  SelectChangeEvent,
+  Tabs,
+  Tab,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from '@mui/material';
 import {
   Refresh as RefreshIcon,
@@ -18,9 +27,11 @@ import {
   People as PeopleIcon,
   CheckCircle as SuccessIcon,
   Error as ErrorIcon,
+  ExpandMore as ExpandMoreIcon,
 } from '@mui/icons-material';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { dashboardService } from '../services/dashboardService';
+import { userStatsService, UserStatsOverview, ApiKeyStats, CaptchaTypeStats } from '../services/userStatsService';
 import { DashboardAnalytics, CaptchaStats } from '../types';
 import { formatNumber, formatPercentage, formatResponseTime } from '../utils';
 
@@ -29,13 +40,21 @@ const DashboardScreen: React.FC = () => {
   const [stats, setStats] = useState<CaptchaStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  
+  // 새로운 상태 추가
+  const [userStats, setUserStats] = useState<UserStatsOverview | null>(null);
+  const [apiKeyStats, setApiKeyStats] = useState<ApiKeyStats[]>([]);
+  const [period, setPeriod] = useState<'today' | 'week' | 'month'>('month');
+  const [tabValue, setTabValue] = useState(0);
 
   const loadDashboardData = async () => {
     try {
       setLoading(true);
-      const [analyticsResponse, statsResponse] = await Promise.all([
+      const [analyticsResponse, statsResponse, userStatsResponse, apiKeyStatsResponse] = await Promise.all([
         dashboardService.getAnalytics(),
         dashboardService.getStats('daily'),
+        userStatsService.getOverview(period),
+        userStatsService.getByApiKey(period),
       ]);
 
       if (analyticsResponse.success) {
@@ -44,6 +63,14 @@ const DashboardScreen: React.FC = () => {
       
       if (statsResponse.success) {
         setStats(statsResponse.data);
+      }
+
+      if (userStatsResponse.success) {
+        setUserStats(userStatsResponse.data);
+      }
+
+      if (apiKeyStatsResponse.success) {
+        setApiKeyStats(apiKeyStatsResponse.data.api_keys);
       }
       
       setLastUpdated(new Date());
@@ -59,7 +86,15 @@ const DashboardScreen: React.FC = () => {
 
   useEffect(() => {
     loadDashboardData();
-  }, []);
+  }, [period]);
+
+  const handlePeriodChange = (event: SelectChangeEvent<string>) => {
+    setPeriod(event.target.value as 'today' | 'week' | 'month');
+  };
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setTabValue(newValue);
+  };
 
   // Mock 데이터 (API 연동 전 더미 데이터)
   const mockMetrics = {
@@ -334,12 +369,26 @@ const DashboardScreen: React.FC = () => {
         </Grid>
       </Grid>
 
+      {/* 기간 선택 */}
+      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Typography variant="h5" sx={{ fontWeight: 600 }}>
+          내 통계
+        </Typography>
+        <FormControl size="small" sx={{ minWidth: 120 }}>
+          <Select value={period} onChange={handlePeriodChange}>
+            <MenuItem value="today">오늘</MenuItem>
+            <MenuItem value="week">최근 일주일</MenuItem>
+            <MenuItem value="month">최근 한달</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
+
       {/* 주요 메트릭 */}
       <Grid container spacing={{ xs: 2, md: 3 }} sx={{ mb: 3 }}>
         <Grid item xs={12} sm={6} md={3}>
           <StatCard
             title="총 요청 수"
-            value={formatNumber(mockMetrics.totalRequests)}
+            value={formatNumber(userStats?.total_requests || 0)}
             icon={<SecurityIcon sx={{ fontSize: 40 }} />}
             color="#1976d2"
           />
@@ -347,16 +396,16 @@ const DashboardScreen: React.FC = () => {
         <Grid item xs={12} sm={6} md={3}>
           <StatCard
             title="성공률"
-            value={formatPercentage(mockMetrics.successRate)}
+            value={formatPercentage(userStats?.success_rate || 0)}
             icon={<TrendingUpIcon sx={{ fontSize: 40 }} />}
             color="#2e7d32"
-            subtitle={`${formatNumber(mockMetrics.successfulSolves)} / ${formatNumber(mockMetrics.totalRequests)}`}
+            subtitle={`${formatNumber(userStats?.success_requests || 0)} / ${formatNumber(userStats?.total_requests || 0)}`}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <StatCard
             title="평균 응답 시간"
-            value={formatResponseTime(mockMetrics.averageResponseTime)}
+            value={formatResponseTime(userStats?.avg_response_time || 0)}
             icon={<SpeedIcon sx={{ fontSize: 40 }} />}
             color="#ed6c02"
           />
@@ -371,6 +420,169 @@ const DashboardScreen: React.FC = () => {
           />
         </Grid>
       </Grid>
+
+      {/* 캡차 타입별 통계 */}
+      {userStats && userStats.captcha_types.length > 0 && (
+        <Card sx={{ mb: 3 }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              캡차 타입별 통계
+            </Typography>
+            <Grid container spacing={2}>
+              {userStats.captcha_types.map((type, index) => (
+                <Grid item xs={12} sm={6} md={4} key={index}>
+                  <Card variant="outlined">
+                    <CardContent>
+                      <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
+                        {type.captcha_type === 'imagecaptcha' ? '이미지 캡차' :
+                         type.captcha_type === 'handwriting' ? '필기 캡차' :
+                         type.captcha_type === 'abstract' ? '추상 캡차' : type.captcha_type}
+                      </Typography>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                        <Typography variant="body2" color="text.secondary">총 요청</Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                          {formatNumber(type.total_requests)}
+                        </Typography>
+                      </Box>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                        <Typography variant="body2" color="text.secondary">성공률</Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 600, color: type.success_rate >= 90 ? '#2e7d32' : type.success_rate >= 70 ? '#ed6c02' : '#d32f2f' }}>
+                          {formatPercentage(type.success_rate)}
+                        </Typography>
+                      </Box>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Typography variant="body2" color="text.secondary">평균 응답시간</Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                          {formatResponseTime(type.avg_response_time)}
+                        </Typography>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* API 키별 상세 통계 */}
+      <Card sx={{ mb: 3 }}>
+        <CardContent>
+          <Typography variant="h6" gutterBottom>
+            API 키별 상세 통계
+          </Typography>
+          <Tabs value={tabValue} onChange={handleTabChange}>
+            <Tab label="전체 보기" />
+            <Tab label="상세 분석" />
+          </Tabs>
+          
+          {tabValue === 0 && (
+            <Box sx={{ mt: 2 }}>
+              {apiKeyStats.length === 0 ? (
+                <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
+                  API 키가 없습니다. API 키를 생성해주세요.
+                </Typography>
+              ) : (
+                <Grid container spacing={2}>
+                  {apiKeyStats.map((apiKey, index) => (
+                    <Grid item xs={12} md={6} key={index}>
+                      <Card variant="outlined">
+                        <CardContent>
+                          <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
+                            {apiKey.api_key_name}
+                          </Typography>
+                          <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1, mb: 2 }}>
+                            <Box>
+                              <Typography variant="body2" color="text.secondary">총 요청</Typography>
+                              <Typography variant="h6">{formatNumber(apiKey.total_requests)}</Typography>
+                            </Box>
+                            <Box>
+                              <Typography variant="body2" color="text.secondary">성공률</Typography>
+                              <Typography variant="h6" sx={{ color: apiKey.success_rate >= 90 ? '#2e7d32' : apiKey.success_rate >= 70 ? '#ed6c02' : '#d32f2f' }}>
+                                {formatPercentage(apiKey.success_rate)}
+                              </Typography>
+                            </Box>
+                          </Box>
+                          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                            <Typography variant="body2" color="text.secondary">평균 응답시간</Typography>
+                            <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                              {formatResponseTime(apiKey.avg_response_time)}
+                            </Typography>
+                          </Box>
+                          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                            캡차 타입별:
+                          </Typography>
+                          {apiKey.captcha_types.map((type, typeIndex) => (
+                            <Box key={typeIndex} sx={{ display: 'flex', justifyContent: 'space-between', ml: 1, mb: 0.5 }}>
+                              <Typography variant="caption">
+                                {type.captcha_type === 'imagecaptcha' ? '이미지' :
+                                 type.captcha_type === 'handwriting' ? '필기' :
+                                 type.captcha_type === 'abstract' ? '추상' : type.captcha_type}
+                              </Typography>
+                              <Typography variant="caption" sx={{ fontWeight: 600 }}>
+                                {formatNumber(type.total_requests)}건
+                              </Typography>
+                            </Box>
+                          ))}
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  ))}
+                </Grid>
+              )}
+            </Box>
+          )}
+
+          {tabValue === 1 && (
+            <Box sx={{ mt: 2 }}>
+              {apiKeyStats.map((apiKey, index) => (
+                <Accordion key={index}>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography sx={{ fontWeight: 600 }}>
+                      {apiKey.api_key_name} - {formatNumber(apiKey.total_requests)}건
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Grid container spacing={2}>
+                      {apiKey.captcha_types.map((type, typeIndex) => (
+                        <Grid item xs={12} sm={6} md={4} key={typeIndex}>
+                          <Card variant="outlined">
+                            <CardContent>
+                              <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+                                {type.captcha_type === 'imagecaptcha' ? '이미지 캡차' :
+                                 type.captcha_type === 'handwriting' ? '필기 캡차' :
+                                 type.captcha_type === 'abstract' ? '추상 캡차' : type.captcha_type}
+                              </Typography>
+                              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                                <Typography variant="body2" color="text.secondary">요청 수</Typography>
+                                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                                  {formatNumber(type.total_requests)}
+                                </Typography>
+                              </Box>
+                              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                                <Typography variant="body2" color="text.secondary">성공률</Typography>
+                                <Typography variant="body2" sx={{ fontWeight: 600, color: type.success_rate >= 90 ? '#2e7d32' : type.success_rate >= 70 ? '#ed6c02' : '#d32f2f' }}>
+                                  {formatPercentage(type.success_rate)}
+                                </Typography>
+                              </Box>
+                              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <Typography variant="body2" color="text.secondary">응답시간</Typography>
+                                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                                  {formatResponseTime(type.avg_response_time)}
+                                </Typography>
+                              </Box>
+                            </CardContent>
+                          </Card>
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </AccordionDetails>
+                </Accordion>
+              ))}
+            </Box>
+          )}
+        </CardContent>
+      </Card>
 
       {/* 차트 */}
       <Grid container spacing={{ xs: 2, md: 3 }}>
