@@ -480,7 +480,7 @@ const DashboardScreen: React.FC = () => {
             <Box sx={{ mt: 2 }}>
               {apiKeyStats.length === 0 ? (
                 <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
-                  API 키가 없습니다. API 키를 생성해주세요.
+                  선택한 기간 동안 사용된 API 키가 없습니다. API 키를 사용하여 요청을 보내보세요.
                 </Typography>
               ) : (
                 <Grid container spacing={2}>
