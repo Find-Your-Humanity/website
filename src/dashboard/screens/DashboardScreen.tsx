@@ -32,7 +32,7 @@ import {
 } from '@mui/icons-material';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { dashboardService } from '../services/dashboardService';
-import { userStatsService, UserStatsOverview, ApiKeyStats, CaptchaTypeStats } from '../services/userStatsService';
+import { userStatsService, UserStatsOverview, ApiKeyStats, CaptchaTypeStats, ChartData } from '../services/userStatsService';
 import { DashboardAnalytics, CaptchaStats } from '../types';
 import { formatNumber, formatPercentage, formatResponseTime } from '../utils';
 
@@ -47,15 +47,20 @@ const DashboardScreen: React.FC = () => {
   const [apiKeyStats, setApiKeyStats] = useState<ApiKeyStats[]>([]);
   const [period, setPeriod] = useState<'today' | 'week' | 'month'>('month');
   const [tabValue, setTabValue] = useState(0);
+  
+  // 차트 데이터 상태
+  const [chartData, setChartData] = useState<ChartData[]>([]);
+  const [chartTabValue, setChartTabValue] = useState(0); // 0: 오전, 1: 오후
 
   const loadDashboardData = async () => {
     try {
       setLoading(true);
-      const [analyticsResponse, statsResponse, userStatsResponse, apiKeyStatsResponse] = await Promise.all([
+      const [analyticsResponse, statsResponse, userStatsResponse, apiKeyStatsResponse, chartResponse] = await Promise.all([
         dashboardService.getAnalytics(),
         dashboardService.getStats('daily'),
         userStatsService.getOverview(period),
         userStatsService.getByApiKey(period),
+        userStatsService.getHourlyChartData(period),
       ]);
 
       if (analyticsResponse.success) {
@@ -72,6 +77,10 @@ const DashboardScreen: React.FC = () => {
 
       if (apiKeyStatsResponse.success && apiKeyStatsResponse.data && apiKeyStatsResponse.data.api_keys) {
         setApiKeyStats(apiKeyStatsResponse.data.api_keys || []);
+      }
+
+      if (chartResponse.success && chartResponse.data) {
+        setChartData(chartResponse.data.chart_data || []);
       }
       
       setLastUpdated(new Date());
@@ -95,6 +104,32 @@ const DashboardScreen: React.FC = () => {
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
+  };
+
+  const handleChartTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setChartTabValue(newValue);
+  };
+
+  // 차트 데이터를 오전/오후로 분할 (today인 경우에만)
+  const getFilteredChartData = () => {
+    if (period !== 'today') {
+      return chartData; // week/month는 전체 데이터 표시
+    }
+
+    // today인 경우 오전/오후로 분할
+    if (chartTabValue === 0) {
+      // 오전: 00시~10시 (00, 02, 04, 06, 08, 10)
+      return chartData.filter(item => {
+        const hour = parseInt(item.time.replace('시', ''));
+        return hour >= 0 && hour <= 10;
+      });
+    } else {
+      // 오후: 12시~22시 (12, 14, 16, 18, 20, 22)
+      return chartData.filter(item => {
+        const hour = parseInt(item.time.replace('시', ''));
+        return hour >= 12 && hour <= 22;
+      });
+    }
   };
 
   // Mock 데이터 (API 연동 전 더미 데이터)
@@ -602,11 +637,28 @@ const DashboardScreen: React.FC = () => {
           }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                시간별 요청 현황
+                {period === 'today' ? '시간별 요청 현황' : 
+                 period === 'week' ? '일별 요청 현황 (최근 7일)' : 
+                 '일별 요청 현황 (최근 30일)'}
               </Typography>
+              
+              {/* today인 경우에만 오전/오후 탭 표시 */}
+              {period === 'today' && (
+                <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
+                  <Tabs 
+                    value={chartTabValue} 
+                    onChange={handleChartTabChange}
+                    variant="fullWidth"
+                  >
+                    <Tab label="오전 (00~10시)" />
+                    <Tab label="오후 (12~22시)" />
+                  </Tabs>
+                </Box>
+              )}
+              
               <Box sx={{ height: 250, mt: 2 }}>
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={mockChartData}>
+                  <LineChart data={getFilteredChartData()}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="time" />
                     <YAxis />
@@ -624,6 +676,13 @@ const DashboardScreen: React.FC = () => {
                       stroke="#2e7d32"
                       strokeWidth={2}
                       name="성공 요청"
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="failed"
+                      stroke="#d32f2f"
+                      strokeWidth={2}
+                      name="실패 요청"
                     />
                   </LineChart>
                 </ResponsiveContainer>

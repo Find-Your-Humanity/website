@@ -41,6 +41,13 @@ export interface TimeSeriesData {
   avg_response_time: number;
 }
 
+export interface ChartData {
+  time: string;
+  requests: number;
+  success: number;
+  failed: number;
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   data: T;
@@ -90,6 +97,19 @@ class UserStatsService {
       return response.data;
     } catch (error) {
       console.error('시계열 통계 조회 실패:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * 시간별/일별 차트 데이터 조회
+   */
+  async getHourlyChartData(period: 'today' | 'week' | 'month' = 'today'): Promise<ApiResponse<{chart_data: ChartData[], period: string}>> {
+    try {
+      const response = await apiClient.get(`/api/user/stats/hourly-chart?period=${period}`);
+      return response.data;
+    } catch (error) {
+      console.error('시간별 차트 데이터 조회 실패:', error);
       throw error;
     }
   }
