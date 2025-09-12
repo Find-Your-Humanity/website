@@ -415,8 +415,8 @@ const DashboardScreen: React.FC = () => {
           <StatCard
             title={
               period === 'today' ? '오늘 요청수' :
-              period === 'week' ? '이번 주 최고 일일 요청수' :
-              '이번 달 최고 일일 요청수'
+              period === 'week' ? '최근 일주일 최고 일일 요청수' :
+              '최근 한달 최고 일일 요청수'
             }
             value={formatNumber(userStats?.peak_daily_requests || 0)}
             icon={<StarIcon sx={{ fontSize: 40 }} />}
