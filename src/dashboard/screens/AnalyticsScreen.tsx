@@ -42,6 +42,7 @@ const AnalyticsScreen: React.FC = () => {
   const [usageLimits, setUsageLimits] = useState<ApiUsageLimit | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+  const [errorAnalysis, setErrorAnalysis] = useState<Array<{ type: string; count: number; percentage: number }>>([]);
   
 
   const handleTimePeriodChange = (event: SelectChangeEvent) => {
@@ -103,6 +104,23 @@ const AnalyticsScreen: React.FC = () => {
     };
     fetchStats();
   }, [timePeriod, apiType, selectedApiKey]);
+
+  // 오류 분석 데이터 조회
+  useEffect(() => {
+    const fetchErrorAnalysis = async () => {
+      try {
+        const res = await dashboardService.getErrorAnalysis(timePeriod, selectedApiKey || undefined);
+        if (res.success) {
+          setErrorAnalysis(res.data.error_types || []);
+        }
+      } catch (e) {
+        console.error('오류 분석 데이터 조회 실패:', e);
+        setErrorAnalysis([]);
+      }
+    };
+    
+    fetchErrorAnalysis();
+  }, [timePeriod, selectedApiKey]);
 
   // API 사용량 제한 조회
   useEffect(() => {
@@ -167,13 +185,7 @@ const AnalyticsScreen: React.FC = () => {
     });
   }, [statsData]);
 
-  // 오류 유형(샘플 데이터)
-  const errorTypes = [
-    { type: '타임아웃', count: 156, percentage: 42.5 },
-    { type: '잘못된 입력', count: 98, percentage: 26.7 },
-    { type: '네트워크 오류', count: 67, percentage: 18.2 },
-    { type: '서버 오류', count: 46, percentage: 12.5 },
-  ];
+  // 오류 유형 데이터는 이제 실제 API에서 가져옴 (errorAnalysis state 사용)
 
 
   // 중복 데이터 정리 핸들러 (하단의 고도화 버전만 유지)
@@ -208,7 +220,7 @@ const AnalyticsScreen: React.FC = () => {
             <Typography variant="h5" component="h5" gutterBottom sx={{ fontWeight: 700, mb: 0 }}>
               내 분석
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" color="text.secondary">ㅁㅁ
               개인 API 사용 패턴 및 성능 분석
             </Typography>
           </Box>
@@ -403,30 +415,38 @@ const AnalyticsScreen: React.FC = () => {
               <Typography variant="h6" gutterBottom>
                 오류 유형 분석
               </Typography>
-              <Grid container spacing={2} sx={{ mt: 1 }}>
-                {errorTypes.map((error, index) => (
-                  <Grid item xs={12} sm={6} md={3} key={index}>
-                    <Box
-                      sx={{
-                        p: 2,
-                        bgcolor: 'grey.50',
-                        borderRadius: 1,
-                        textAlign: 'center',
-                      }}
-                    >
-                      <Typography variant="h4" color="error.main">
-                        {formatNumber(error.count)}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {error.type}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        ({formatPercentage(error.percentage)})
-                      </Typography>
-                    </Box>
-                  </Grid>
-                ))}
-              </Grid>
+              {errorAnalysis.length > 0 ? (
+                <Grid container spacing={2} sx={{ mt: 1 }}>
+                  {errorAnalysis.map((error, index) => (
+                    <Grid item xs={12} sm={6} md={3} key={index}>
+                      <Box
+                        sx={{
+                          p: 2,
+                          bgcolor: 'grey.50',
+                          borderRadius: 1,
+                          textAlign: 'center',
+                        }}
+                      >
+                        <Typography variant="h4" color="error.main">
+                          {formatNumber(error.count)}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {error.type}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          ({formatPercentage(error.percentage)})
+                        </Typography>
+                      </Box>
+                    </Grid>
+                  ))}
+                </Grid>
+              ) : (
+                <Box sx={{ textAlign: 'center', py: 4 }}>
+                  <Typography variant="body2" color="text.secondary">
+                    선택한 기간 동안 오류가 발생하지 않았습니다. 🎉
+                  </Typography>
+                </Box>
+              )}
             </CardContent>
           </Card>
         </Grid>

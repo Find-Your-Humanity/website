@@ -131,6 +131,28 @@ class DashboardService {
       throw error;
     }
   }
+
+  // 오류 유형 분석 조회
+  async getErrorAnalysis(period: string = '7days', apiKey?: string): Promise<ApiResponse<{
+    error_types: Array<{ type: string; count: number; percentage: number }>;
+    total_requests: number;
+    period: string;
+    api_key?: string;
+  }>> {
+    try {
+      const params = new URLSearchParams({ period });
+      if (apiKey) {
+        params.append('api_key', apiKey);
+      }
+      
+      const response = await apiClient.get<ApiResponse<any>>(
+        `/api/dashboard/error-analysis?${params}`
+      );
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export const dashboardService = new DashboardService();
