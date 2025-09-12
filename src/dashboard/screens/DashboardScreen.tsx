@@ -25,6 +25,7 @@ import {
   Security as SecurityIcon,
   Speed as SpeedIcon,
   People as PeopleIcon,
+  Star as StarIcon,
   CheckCircle as SuccessIcon,
   Error as ErrorIcon,
   ExpandMore as ExpandMoreIcon,
@@ -412,11 +413,15 @@ const DashboardScreen: React.FC = () => {
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <StatCard
-            title="현재 활성 사용자"
-            value={formatNumber(mockMetrics.currentActiveUsers)}
-            icon={<PeopleIcon sx={{ fontSize: 40 }} />}
+            title={
+              period === 'today' ? '오늘 요청수' :
+              period === 'week' ? '이번 주 최고 일일 요청수' :
+              '이번 달 최고 일일 요청수'
+            }
+            value={formatNumber(userStats?.peak_daily_requests || 0)}
+            icon={<StarIcon sx={{ fontSize: 40 }} />}
             color="#9c27b0"
-            subtitle={`${mockMetrics.requestsPerMinute}/분`}
+            subtitle={userStats?.peak_date ? new Date(userStats.peak_date).toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' }) : '기록 없음'}
           />
         </Grid>
       </Grid>

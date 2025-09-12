@@ -26,6 +26,8 @@ export interface UserStatsOverview {
   failed_requests: number;
   success_rate: number;
   avg_response_time: number;
+  peak_daily_requests: number;
+  peak_date: string | null;
   captcha_types: CaptchaTypeStats[];
   period: string;
 }
