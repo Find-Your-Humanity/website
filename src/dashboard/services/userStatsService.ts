@@ -50,7 +50,7 @@ class UserStatsService {
    */
   async getOverview(period: 'today' | 'week' | 'month' = 'month'): Promise<ApiResponse<UserStatsOverview>> {
     try {
-      const response = await apiClient.get(`/user/stats/overview?period=${period}`);
+      const response = await apiClient.get(`/api/user/stats/overview?period=${period}`);
       return response.data;
     } catch (error) {
       console.error('사용자 통계 개요 조회 실패:', error);
@@ -63,7 +63,7 @@ class UserStatsService {
    */
   async getByApiKey(period: 'today' | 'week' | 'month' = 'month'): Promise<ApiResponse<{api_keys: ApiKeyStats[], period: string}>> {
     try {
-      const response = await apiClient.get(`/user/stats/by-api-key?period=${period}`);
+      const response = await apiClient.get(`/api/user/stats/by-api-key?period=${period}`);
       return response.data;
     } catch (error) {
       console.error('API 키별 통계 조회 실패:', error);
@@ -84,7 +84,7 @@ class UserStatsService {
         params.append('api_key_id', apiKeyId);
       }
       
-      const response = await apiClient.get(`/user/stats/time-series?${params}`);
+      const response = await apiClient.get(`/api/user/stats/time-series?${params}`);
       return response.data;
     } catch (error) {
       console.error('시계열 통계 조회 실패:', error);
