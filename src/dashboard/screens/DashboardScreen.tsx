@@ -65,12 +65,12 @@ const DashboardScreen: React.FC = () => {
         setStats(statsResponse.data);
       }
 
-      if (userStatsResponse.success) {
+      if (userStatsResponse.success && userStatsResponse.data) {
         setUserStats(userStatsResponse.data);
       }
 
-      if (apiKeyStatsResponse.success) {
-        setApiKeyStats(apiKeyStatsResponse.data.api_keys);
+      if (apiKeyStatsResponse.success && apiKeyStatsResponse.data && apiKeyStatsResponse.data.api_keys) {
+        setApiKeyStats(apiKeyStatsResponse.data.api_keys || []);
       }
       
       setLastUpdated(new Date());
@@ -422,14 +422,14 @@ const DashboardScreen: React.FC = () => {
       </Grid>
 
       {/* 캡차 타입별 통계 */}
-      {userStats && userStats.captcha_types.length > 0 && (
+      {userStats && userStats.captcha_types && userStats.captcha_types.length > 0 && (
         <Card sx={{ mb: 3 }}>
           <CardContent>
             <Typography variant="h6" gutterBottom>
               캡차 타입별 통계
             </Typography>
             <Grid container spacing={2}>
-              {userStats.captcha_types.map((type, index) => (
+              {(userStats.captcha_types || []).map((type, index) => (
                 <Grid item xs={12} sm={6} md={4} key={index}>
                   <Card variant="outlined">
                     <CardContent>
@@ -478,13 +478,13 @@ const DashboardScreen: React.FC = () => {
           
           {tabValue === 0 && (
             <Box sx={{ mt: 2 }}>
-              {apiKeyStats.length === 0 ? (
+              {!apiKeyStats || apiKeyStats.length === 0 ? (
                 <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
                   선택한 기간 동안 사용된 API 키가 없습니다. API 키를 사용하여 요청을 보내보세요.
                 </Typography>
               ) : (
                 <Grid container spacing={2}>
-                  {apiKeyStats.map((apiKey, index) => (
+                  {(apiKeyStats || []).map((apiKey, index) => (
                     <Grid item xs={12} md={6} key={index}>
                       <Card variant="outlined">
                         <CardContent>
@@ -512,7 +512,7 @@ const DashboardScreen: React.FC = () => {
                           <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
                             캡차 타입별:
                           </Typography>
-                          {apiKey.captcha_types.map((type, typeIndex) => (
+                          {(apiKey.captcha_types || []).map((type, typeIndex) => (
                             <Box key={typeIndex} sx={{ display: 'flex', justifyContent: 'space-between', ml: 1, mb: 0.5 }}>
                               <Typography variant="caption">
                                 {type.captcha_type === 'imagecaptcha' ? '이미지' :
@@ -535,7 +535,7 @@ const DashboardScreen: React.FC = () => {
 
           {tabValue === 1 && (
             <Box sx={{ mt: 2 }}>
-              {apiKeyStats.map((apiKey, index) => (
+              {(apiKeyStats || []).map((apiKey, index) => (
                 <Accordion key={index}>
                   <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                     <Typography sx={{ fontWeight: 600 }}>
@@ -544,7 +544,7 @@ const DashboardScreen: React.FC = () => {
                   </AccordionSummary>
                   <AccordionDetails>
                     <Grid container spacing={2}>
-                      {apiKey.captcha_types.map((type, typeIndex) => (
+                      {(apiKey.captcha_types || []).map((type, typeIndex) => (
                         <Grid item xs={12} sm={6} md={4} key={typeIndex}>
                           <Card variant="outlined">
                             <CardContent>
