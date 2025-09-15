@@ -163,8 +163,9 @@ const DashboardScreen: React.FC = () => {
   const levelData = analytics?.level_stats ? [
     { name: 'Level 0 (Pass)', value: Math.round(analytics.level_stats.level_0), color: '#8884d8' },
     { name: 'Level 1 (Image)', value: Math.round(analytics.level_stats.level_1), color: '#82ca9d' },
-    { name: 'Level 2 (Abstract)', value: Math.round(analytics.level_stats.level_2), color: '#ffc658' },
-    { name: 'Level 3 (Handwriting)', value: Math.round(analytics.level_stats.level_3), color: '#ff7300' },
+    // 레벨 의미 변경: 2=Abstract, 3=Handwriting 이므로 값도 교체
+    { name: 'Level 2 (Abstract)', value: Math.round(analytics.level_stats.level_3), color: '#ffc658' },
+    { name: 'Level 3 (Handwriting)', value: Math.round(analytics.level_stats.level_2), color: '#ff7300' },
   ] : [
     { name: 'Level 0 (Pass)', value: 40, color: '#8884d8' },
     { name: 'Level 1 (Image)', value: 30, color: '#82ca9d' },
