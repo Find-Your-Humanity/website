@@ -224,7 +224,7 @@ const AnalyticsScreen: React.FC = () => {
             <Typography variant="h5" component="h5" gutterBottom sx={{ fontWeight: 700, mb: 0 }}>
               내 분석
             </Typography>
-            <Typography variant="body2" color="text.secondary">ㅁㅁ
+            <Typography variant="body2" color="text.secondary">
               개인 API 사용 패턴 및 성능 분석
             </Typography>
           </Box>
