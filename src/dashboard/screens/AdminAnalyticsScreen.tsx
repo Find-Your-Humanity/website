@@ -38,7 +38,8 @@ import {
   SystemStatsData, 
   UserGrowthData, 
   PlanDistributionData, 
-  ErrorStatsData 
+  ErrorStatsData,
+  PerformanceStatsData 
 } from '../services/adminService';
 
 const AdminAnalyticsScreen: React.FC = () => {
@@ -52,6 +53,7 @@ const AdminAnalyticsScreen: React.FC = () => {
   const [userGrowthData, setUserGrowthData] = useState<UserGrowthData[]>([]);
   const [planDistribution, setPlanDistribution] = useState<PlanDistributionData[]>([]);
   const [errorTypes, setErrorTypes] = useState<ErrorStatsData[]>([]);
+  const [performanceStats, setPerformanceStats] = useState<PerformanceStatsData[]>([]);
 
   const handleTimePeriodChange = (event: SelectChangeEvent) => {
     setTimePeriod(event.target.value);
@@ -76,17 +78,19 @@ const AdminAnalyticsScreen: React.FC = () => {
       const months = timePeriod === '7days' ? 1 : timePeriod === '30days' ? 3 : 6;
       
       // 병렬로 모든 API 호출
-      const [systemStatsRes, userGrowthRes, planDistRes, errorStatsRes] = await Promise.all([
+      const [systemStatsRes, userGrowthRes, planDistRes, errorStatsRes, performanceStatsRes] = await Promise.all([
         adminService.getSystemStats(days),
         adminService.getUserGrowth(months),
         adminService.getPlanDistribution(),
-        adminService.getErrorStats(days)
+        adminService.getErrorStats(days),
+        adminService.getPerformanceStats(days)
       ]);
       
       setSystemStats(systemStatsRes.data);
       setUserGrowthData(userGrowthRes.data);
       setPlanDistribution(planDistRes.data);
       setErrorTypes(errorStatsRes.data);
+      setPerformanceStats(performanceStatsRes.data);
       
     } catch (err: any) {
       console.error('분석 데이터 로드 실패:', err);
@@ -120,6 +124,25 @@ const AdminAnalyticsScreen: React.FC = () => {
       };
     });
   }, [systemStats]);
+
+  // 성능 분석 차트 데이터 생성
+  const performanceChartData = useMemo(() => {
+    return performanceStats.map((stat) => {
+      const date = new Date(stat.date);
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      const label = `${month}/${day}`;
+      
+      return {
+        label: label,
+        avgResponseTime: stat.avgResponseTime,
+        successRate: stat.successRate,
+        errorRate: stat.errorRate,
+        throughput: stat.throughput,
+        activeUsers: stat.activeUsers
+      };
+    });
+  }, [performanceStats]);
 
   // 시스템 개요 통계 계산
   const systemOverview = useMemo(() => {
@@ -376,13 +399,45 @@ const AdminAnalyticsScreen: React.FC = () => {
               {tabValue === 2 && (
                 <Box sx={{ height: 300 }}>
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={chartData}>
+                    <LineChart data={performanceChartData}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="label" />
-                      <YAxis />
+                      <YAxis yAxisId="left" />
+                      <YAxis yAxisId="right" orientation="right" />
                       <Tooltip />
-                      <Bar dataKey="users" fill="#1976d2" name="활성 사용자" />
-                    </BarChart>
+                      <Line
+                        yAxisId="left"
+                        type="monotone"
+                        dataKey="avgResponseTime"
+                        stroke="#ff9800"
+                        strokeWidth={2}
+                        name="평균 응답시간 (ms)"
+                      />
+                      <Line
+                        yAxisId="right"
+                        type="monotone"
+                        dataKey="successRate"
+                        stroke="#2e7d32"
+                        strokeWidth={2}
+                        name="성공률 (%)"
+                      />
+                      <Line
+                        yAxisId="right"
+                        type="monotone"
+                        dataKey="errorRate"
+                        stroke="#f44336"
+                        strokeWidth={2}
+                        name="에러율 (%)"
+                      />
+                      <Line
+                        yAxisId="left"
+                        type="monotone"
+                        dataKey="throughput"
+                        stroke="#1976d2"
+                        strokeWidth={2}
+                        name="처리량 (요청)"
+                      />
+                    </LineChart>
                   </ResponsiveContainer>
                 </Box>
               )}

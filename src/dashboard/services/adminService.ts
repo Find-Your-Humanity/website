@@ -224,6 +224,21 @@ export interface HourlyStatsResponse {
   };
 }
 
+// 성능 통계 데이터 타입
+export interface PerformanceStatsData {
+  date: string;
+  avgResponseTime: number;
+  successRate: number;
+  errorRate: number;
+  throughput: number;
+  activeUsers: number;
+}
+
+export interface PerformanceStatsResponse {
+  success: boolean;
+  data: PerformanceStatsData[];
+}
+
 export interface UserGrowthData {
   month: string;
   newUsers: number;
@@ -358,6 +373,15 @@ class AdminService {
   async getHourlyStats(date: string): Promise<HourlyStatsResponse> {
     try {
       const response = await apiClient.get<HourlyStatsResponse>(`/api/admin/hourly-stats?date=${date}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getPerformanceStats(days: number = 7): Promise<PerformanceStatsResponse> {
+    try {
+      const response = await apiClient.get<PerformanceStatsResponse>(`/api/admin/performance-stats?days=${days}`);
       return response.data;
     } catch (error) {
       throw error;
