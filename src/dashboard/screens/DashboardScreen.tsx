@@ -172,6 +172,71 @@ const DashboardScreen: React.FC = () => {
     { name: 'Level 3 (Abstract)', value: 10, color: '#ff7300' },
   ];
 
+  // 캡차 타입 정규화 함수
+  const normalizeCaptchaTypes = (captchaTypes: CaptchaTypeStats[]): CaptchaTypeStats[] => {
+    if (!captchaTypes || captchaTypes.length === 0) return [];
+
+    // 타입별로 그룹화
+    const typeGroups: { [key: string]: CaptchaTypeStats[] } = {};
+    
+    captchaTypes.forEach(type => {
+      let normalizedType: string;
+      
+      // 타입 정규화
+      if (type.captcha_type === 'imagecaptcha' || type.captcha_type === 'image') {
+        normalizedType = 'image';
+      } else if (type.captcha_type === 'handwriting') {
+        normalizedType = 'handwriting';
+      } else if (type.captcha_type === 'abstract') {
+        normalizedType = 'abstract';
+      } else if (!type.captcha_type || type.captcha_type === '' || type.captcha_type === null) {
+        normalizedType = 'pass';
+      } else {
+        normalizedType = type.captcha_type;
+      }
+
+      if (!typeGroups[normalizedType]) {
+        typeGroups[normalizedType] = [];
+      }
+      typeGroups[normalizedType].push(type);
+    });
+
+    // 각 그룹별로 데이터 합계 계산
+    const normalizedTypes: CaptchaTypeStats[] = Object.entries(typeGroups).map(([normalizedType, types]) => {
+      const totalRequests = types.reduce((sum, type) => sum + type.total_requests, 0);
+      const successRequests = types.reduce((sum, type) => sum + type.success_requests, 0);
+      const failedRequests = types.reduce((sum, type) => sum + type.failed_requests, 0);
+      const totalResponseTime = types.reduce((sum, type) => sum + (type.avg_response_time * type.total_requests), 0);
+      
+      return {
+        captcha_type: normalizedType,
+        total_requests: totalRequests,
+        success_requests: successRequests,
+        failed_requests: failedRequests,
+        success_rate: totalRequests > 0 ? (successRequests / totalRequests) * 100 : 0,
+        avg_response_time: totalRequests > 0 ? totalResponseTime / totalRequests : 0
+      };
+    });
+
+    return normalizedTypes;
+  };
+
+  // 캡차 타입 이름 변환 함수
+  const getCaptchaTypeName = (type: string): string => {
+    switch (type) {
+      case 'image':
+        return '이미지 캡차';
+      case 'handwriting':
+        return '필기 캡차';
+      case 'abstract':
+        return '추상 캡차';
+      case 'pass':
+        return '행동분석 통과';
+      default:
+        return type || '미분류';
+    }
+  };
+
   const StatCard = ({ title, value, icon, color, subtitle }: {
     title: string;
     value: string | number;
@@ -469,14 +534,12 @@ const DashboardScreen: React.FC = () => {
               캡차 타입별 통계
             </Typography>
             <Grid container spacing={2}>
-              {(userStats.captcha_types || []).map((type, index) => (
+              {normalizeCaptchaTypes(userStats.captcha_types || []).map((type, index) => (
                 <Grid item xs={12} sm={6} md={4} key={index}>
                   <Card variant="outlined">
                     <CardContent>
                       <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
-                        {type.captcha_type === 'imagecaptcha' ? '이미지 캡차' :
-                         type.captcha_type === 'handwriting' ? '필기 캡차' :
-                         type.captcha_type === 'abstract' ? '추상 캡차' : type.captcha_type}
+                        {getCaptchaTypeName(type.captcha_type)}
                       </Typography>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                         <Typography variant="body2" color="text.secondary">총 요청</Typography>
@@ -552,12 +615,10 @@ const DashboardScreen: React.FC = () => {
                           <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
                             캡차 타입별:
                           </Typography>
-                          {(apiKey.captcha_types || []).map((type, typeIndex) => (
+                          {normalizeCaptchaTypes(apiKey.captcha_types || []).map((type, typeIndex) => (
                             <Box key={typeIndex} sx={{ display: 'flex', justifyContent: 'space-between', ml: 1, mb: 0.5 }}>
                               <Typography variant="caption">
-                                {type.captcha_type === 'imagecaptcha' ? '이미지' :
-                                 type.captcha_type === 'handwriting' ? '필기' :
-                                 type.captcha_type === 'abstract' ? '추상' : type.captcha_type}
+                                {getCaptchaTypeName(type.captcha_type).replace(' 캡차', '')}
                               </Typography>
                               <Typography variant="caption" sx={{ fontWeight: 600 }}>
                                 {formatNumber(type.total_requests)}건
@@ -584,14 +645,12 @@ const DashboardScreen: React.FC = () => {
                   </AccordionSummary>
                   <AccordionDetails>
                     <Grid container spacing={2}>
-                      {(apiKey.captcha_types || []).map((type, typeIndex) => (
+                      {normalizeCaptchaTypes(apiKey.captcha_types || []).map((type, typeIndex) => (
                         <Grid item xs={12} sm={6} md={4} key={typeIndex}>
                           <Card variant="outlined">
                             <CardContent>
                               <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
-                                {type.captcha_type === 'imagecaptcha' ? '이미지 캡차' :
-                                 type.captcha_type === 'handwriting' ? '필기 캡차' :
-                                 type.captcha_type === 'abstract' ? '추상 캡차' : type.captcha_type}
+                                {getCaptchaTypeName(type.captcha_type)}
                               </Typography>
                               <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                                 <Typography variant="body2" color="text.secondary">요청 수</Typography>
