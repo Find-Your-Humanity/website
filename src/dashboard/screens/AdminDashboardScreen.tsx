@@ -80,13 +80,12 @@ const AdminDashboardScreen: React.FC = () => {
   // 실제 플랜 분포 데이터 사용
   const planDistribution = adminMetrics.planDistribution;
 
-  const StatCard = ({ title, value, icon, color, subtitle, dataSource }: {
+  const StatCard = ({ title, value, icon, color, subtitle }: {
     title: string;
     value: string | number;
     icon: React.ReactNode;
     color: string;
     subtitle?: string;
-    dataSource?: string;
   }) => (
     <Card sx={{ 
       height: 140,
@@ -111,15 +110,6 @@ const AdminDashboardScreen: React.FC = () => {
                 {subtitle}
               </Typography>
             )}
-            {dataSource && (
-              <Typography variant="caption" color="text.secondary" sx={{ 
-                fontSize: '0.65rem',
-                opacity: 0.7,
-                fontStyle: 'italic'
-              }}>
-                📊 {dataSource}
-              </Typography>
-            )}
           </Box>
           <Box sx={{ color, opacity: 0.7 }}>
             {icon}
@@ -138,20 +128,8 @@ const AdminDashboardScreen: React.FC = () => {
             <Typography variant="h5" component="h5" gutterBottom sx={{ fontWeight: 700, mb: 0 }}>
               관리자 대시보드
             </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-              전체 시스템 현황 및 관리자 전용 통계 (실시간 종합 데이터)
-            </Typography>
-            <Typography variant="caption" color="text.secondary" sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: 0.5,
-              px: 1, 
-              py: 0.5, 
-              backgroundColor: 'rgba(25, 118, 210, 0.08)', 
-              borderRadius: 1,
-              border: '1px solid rgba(25, 118, 210, 0.2)'
-            }}>
-              💾 데이터 소스: 캡차 생성 + 검증 API 통합 (request_logs + api_request_logs)
+            <Typography variant="body2" color="text.secondary">
+              전체 시스템 현황 및 관리자 전용 통계
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
@@ -174,7 +152,6 @@ const AdminDashboardScreen: React.FC = () => {
             icon={<PeopleIcon sx={{ fontSize: 40 }} />}
             color="#1976d2"
             subtitle={`오늘 신규: ${adminMetrics.newUsersToday}명`}
-            dataSource="users 테이블"
           />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
@@ -183,18 +160,16 @@ const AdminDashboardScreen: React.FC = () => {
             value={formatNumber(adminMetrics.activeUsers)}
             icon={<TrendingUpIcon sx={{ fontSize: 40 }} />}
             color="#2e7d32"
-            subtitle="실시간 접속자 (최근 1시간)"
-            dataSource="통합 로그"
+            subtitle="실시간 접속자"
           />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <StatCard
-            title="총 요청 수"
-            value={formatNumber(adminMetrics.totalRequests)}
+            title="캡차 생성 수"
+            value={formatNumber(adminMetrics.totalGenerated)}
             icon={<SecurityIcon sx={{ fontSize: 40 }} />}
             color="#ed6c02"
-            subtitle={`성공률: ${formatPercentage(adminMetrics.successRate)}`}
-            dataSource="전체 API 통합"
+            subtitle={`성공률: ${formatPercentage(adminMetrics.generatedSuccessRate)}`}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
@@ -204,7 +179,37 @@ const AdminDashboardScreen: React.FC = () => {
             icon={<TrendingUpIcon sx={{ fontSize: 40 }} />}
             color="#9c27b0"
             subtitle="이번 달"
-            dataSource="payment_logs"
+          />
+        </Grid>
+      </Grid>
+
+      {/* 캡차 해결 및 전환율 통계 */}
+      <Grid container spacing={{ xs: 2, md: 3 }} sx={{ mb: 3 }}>
+        <Grid item xs={12} sm={6} md={4}>
+          <StatCard
+            title="캡차 해결 수"
+            value={formatNumber(adminMetrics.totalSolved)}
+            icon={<SuccessIcon sx={{ fontSize: 40 }} />}
+            color="#2e7d32"
+            subtitle={`성공률: ${formatPercentage(adminMetrics.solvedSuccessRate)}`}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <StatCard
+            title="전환율"
+            value={formatPercentage(adminMetrics.conversionRate)}
+            icon={<TrendingUpIcon sx={{ fontSize: 40 }} />}
+            color="#1976d2"
+            subtitle="생성 대비 해결 비율"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <StatCard
+            title="시스템 상태"
+            value="정상"
+            icon={<AdminIcon sx={{ fontSize: 40 }} />}
+            color="#2e7d32"
+            subtitle="모든 서비스 운영 중"
           />
         </Grid>
       </Grid>
@@ -324,7 +329,7 @@ const AdminDashboardScreen: React.FC = () => {
               <Box sx={{ mt: 2 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                   <Typography variant="body2">평균 응답 시간</Typography>
-                  <Typography variant="body2" fontWeight="bold">{formatResponseTime(245)}</Typography>
+                  <Typography variant="body2" fontWeight="bold">{formatResponseTime(adminMetrics.averageResponseTime)}</Typography>
                 </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                   <Typography variant="body2">시스템 업타임</Typography>
@@ -359,7 +364,7 @@ const AdminDashboardScreen: React.FC = () => {
               <Box sx={{ mt: 2 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                   <Typography variant="body2">차단된 봇 요청</Typography>
-                  <Typography variant="body2" fontWeight="bold" color="error.main">{formatNumber(Math.round(adminMetrics.totalRequests * (100 - adminMetrics.successRate) / 100))}</Typography>
+                  <Typography variant="body2" fontWeight="bold" color="error.main">{formatNumber(adminMetrics.failedAttempts)}</Typography>
                 </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                   <Typography variant="body2">의심스러운 활동</Typography>

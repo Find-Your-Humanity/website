@@ -106,10 +106,17 @@ const AdminAnalyticsScreen: React.FC = () => {
       
       return {
         label: label,
-        total: s.totalRequests,
-        success: s.successfulRequests,
-        failed: s.failedRequests,
+        // 생성 데이터
+        generated: s.totalGenerated,
+        successGenerated: s.successfulGenerated,
+        failedGenerated: s.failedGenerated,
+        // 해결 데이터
+        solved: s.totalSolved,
+        successSolved: s.successfulSolved,
+        failedSolved: s.failedSolved,
+        // 공통
         users: s.activeUsers,
+        conversionRate: s.conversionRate,
       };
     });
   }, [systemStats]);
@@ -119,26 +126,41 @@ const AdminAnalyticsScreen: React.FC = () => {
     if (systemStats.length === 0) {
       return {
         totalUsers: 0,
-        totalRequests: 0,
-        successRate: 0,
+        totalGenerated: 0,
+        totalSolved: 0,
+        generatedSuccessRate: 0,
+        solvedSuccessRate: 0,
+        conversionRate: 0,
         totalRevenue: 0
       };
     }
 
-    const totalRequests = systemStats.reduce((sum, stat) => sum + stat.totalRequests, 0);
-    const totalSuccessful = systemStats.reduce((sum, stat) => sum + stat.successfulRequests, 0);
-    const successRate = totalRequests > 0 ? (totalSuccessful / totalRequests) * 100 : 0;
-    const totalRevenue = planDistribution.reduce((sum, plan) => sum + plan.revenue, 0);
+    // 생성 통계
+    const totalGenerated = systemStats.reduce((sum, stat) => sum + stat.totalGenerated, 0);
+    const totalSuccessfulGenerated = systemStats.reduce((sum, stat) => sum + stat.successfulGenerated, 0);
+    const generatedSuccessRate = totalGenerated > 0 ? (totalSuccessfulGenerated / totalGenerated) * 100 : 0;
     
-    // 총 사용자 수는 userGrowthData의 마지막 항목에서 가져오거나 별도 계산
+    // 해결 통계
+    const totalSolved = systemStats.reduce((sum, stat) => sum + stat.totalSolved, 0);
+    const totalSuccessfulSolved = systemStats.reduce((sum, stat) => sum + stat.successfulSolved, 0);
+    const solvedSuccessRate = totalSolved > 0 ? (totalSuccessfulSolved / totalSolved) * 100 : 0;
+    
+    // 전환율
+    const conversionRate = totalGenerated > 0 ? (totalSolved / totalGenerated) * 100 : 0;
+    
+    // 수익 및 사용자
+    const totalRevenue = planDistribution.reduce((sum, plan) => sum + plan.revenue, 0);
     const totalUsers = userGrowthData.length > 0 
       ? userGrowthData[userGrowthData.length - 1].totalUsers 
       : 0;
 
     return {
       totalUsers,
-      totalRequests,
-      successRate,
+      totalGenerated,
+      totalSolved,
+      generatedSuccessRate,
+      solvedSuccessRate,
+      conversionRate,
       totalRevenue
     };
   }, [systemStats, planDistribution, userGrowthData]);
@@ -175,20 +197,8 @@ const AdminAnalyticsScreen: React.FC = () => {
             <Typography variant="h5" component="h5" gutterBottom sx={{ fontWeight: 700, mb: 0 }}>
               시스템 분석
             </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-              캡차 검증 API 기간별 성능 분석 및 트렌드 (관리자 전용)
-            </Typography>
-            <Typography variant="caption" color="text.secondary" sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: 0.5,
-              px: 1, 
-              py: 0.5, 
-              backgroundColor: 'rgba(156, 39, 176, 0.08)', 
-              borderRadius: 1,
-              border: '1px solid rgba(156, 39, 176, 0.2)'
-            }}>
-              📈 데이터 소스: 검증 API 전용 (request_logs) - 기간별 필터링
+            <Typography variant="body2" color="text.secondary">
+              전체 시스템 사용 패턴 및 성능 분석 (관리자 전용)
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
@@ -223,17 +233,6 @@ const AdminAnalyticsScreen: React.FC = () => {
               <Typography variant="h6" gutterBottom>
                 시스템 개요 통계
               </Typography>
-              <Typography variant="caption" color="text.secondary" sx={{ 
-                display: 'block',
-                mb: 2,
-                px: 1, 
-                py: 0.5, 
-                backgroundColor: 'rgba(156, 39, 176, 0.05)', 
-                borderRadius: 0.5,
-                fontStyle: 'italic'
-              }}>
-                ⚠️ 주의: 이 통계는 검증 API만 집계하므로 대시보드와 수치가 다를 수 있습니다
-              </Typography>
               <Grid container spacing={3}>
                 <Grid item xs={6} sm={3}>
                   <Box textAlign="center">
@@ -243,47 +242,44 @@ const AdminAnalyticsScreen: React.FC = () => {
                     <Typography variant="body2" color="text.secondary">
                       총 사용자 수
                     </Typography>
-                    <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.6rem', opacity: 0.7 }}>
-                      📊 user_growth
-                    </Typography>
                   </Box>
                 </Grid>
                 <Grid item xs={6} sm={3}>
                   <Box textAlign="center">
                     <Typography variant="h4" color="success.main">
-                      {formatNumber(systemOverview.totalRequests)}
+                      {formatNumber(systemOverview.totalGenerated)}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      총 API 요청
+                      캡차 생성 수
                     </Typography>
-                    <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.6rem', opacity: 0.7 }}>
-                      📊 request_logs
+                    <Typography variant="caption" color="text.secondary">
+                      성공률: {formatPercentage(systemOverview.generatedSuccessRate)}
                     </Typography>
                   </Box>
                 </Grid>
                 <Grid item xs={6} sm={3}>
                   <Box textAlign="center">
                     <Typography variant="h4" color="info.main">
-                      {formatPercentage(systemOverview.successRate)}
+                      {formatNumber(systemOverview.totalSolved)}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      평균 성공률
+                      캡차 해결 수
                     </Typography>
-                    <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.6rem', opacity: 0.7 }}>
-                      📊 request_logs
+                    <Typography variant="caption" color="text.secondary">
+                      성공률: {formatPercentage(systemOverview.solvedSuccessRate)}
                     </Typography>
                   </Box>
                 </Grid>
                 <Grid item xs={6} sm={3}>
                   <Box textAlign="center">
                     <Typography variant="h4" color="warning.main">
-                      ₩{formatNumber(systemOverview.totalRevenue)}
+                      {formatPercentage(systemOverview.conversionRate)}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      월간 수익
+                      전환율
                     </Typography>
-                    <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.6rem', opacity: 0.7 }}>
-                      📊 plan_distribution
+                    <Typography variant="caption" color="text.secondary">
+                      수익: ₩{formatNumber(systemOverview.totalRevenue)}
                     </Typography>
                   </Box>
                 </Grid>
@@ -321,24 +317,24 @@ const AdminAnalyticsScreen: React.FC = () => {
                       <Tooltip />
                       <Line
                         type="monotone"
-                        dataKey="total"
+                        dataKey="generated"
                         stroke="#1976d2"
                         strokeWidth={2}
-                        name="총 요청"
+                        name="캡차 생성"
                       />
                       <Line
                         type="monotone"
-                        dataKey="success"
+                        dataKey="solved"
                         stroke="#2e7d32"
                         strokeWidth={2}
-                        name="성공 요청"
+                        name="캡차 해결"
                       />
                       <Line
                         type="monotone"
-                        dataKey="failed"
-                        stroke="#f44336"
+                        dataKey="conversionRate"
+                        stroke="#ff9800"
                         strokeWidth={2}
-                        name="실패 요청"
+                        name="전환율 (%)"
                       />
                     </LineChart>
                   </ResponsiveContainer>

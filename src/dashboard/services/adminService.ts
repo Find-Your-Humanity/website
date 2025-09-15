@@ -11,8 +11,15 @@ export interface AdminMetrics {
   totalUsers: number;
   newUsersToday: number;
   activeUsers: number;
-  totalRequests: number;
-  successRate: number;
+  // 캡차 생성 통계
+  totalGenerated: number;
+  generatedSuccessRate: number;
+  // 캡차 해결 통계
+  totalSolved: number;
+  solvedSuccessRate: number;
+  // 전환율
+  conversionRate: number;
+  // 기타
   revenue: number;
   planDistribution: PlanDistribution[];
 }
@@ -182,10 +189,17 @@ export interface RealtimeMonitoringResponse {
 // 새로운 분석 페이지용 타입들
 export interface SystemStatsData {
   date: string;
-  totalRequests: number;
-  successfulRequests: number;
-  failedRequests: number;
+  // 생성 통계
+  totalGenerated: number;
+  successfulGenerated: number;
+  failedGenerated: number;
+  // 해결 통계
+  totalSolved: number;
+  successfulSolved: number;
+  failedSolved: number;
+  // 공통
   activeUsers: number;
+  conversionRate: number;
 }
 
 export interface SystemStatsResponse {
