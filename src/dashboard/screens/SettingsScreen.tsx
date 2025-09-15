@@ -21,6 +21,7 @@ const SettingsScreen: React.FC = () => {
   const { user } = useAuth();
   const [name, setName] = useState<string>(user?.name || '');
   const [email] = useState<string>(user?.email || '');
+  const isGoogleOAuth = (user as any)?.oauth_provider === 'google';
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   // 구 대시보드 설정 UI 통합 상태
@@ -150,17 +151,25 @@ const SettingsScreen: React.FC = () => {
                 <Grid item xs={12} md={6}>
                   <TextField label="이메일" fullWidth value={email} disabled />
                 </Grid>
-                <Grid item xs={12} md={6}>
-                  <TextField label="이름" fullWidth value={name} onChange={(e) => setName(e.target.value)} />
-                </Grid>
-                <Grid item xs={12}>
-                  <Button variant="outlined" onClick={handleSave} disabled={saving}>
-                    {saving ? '저장 중...' : '프로필 저장'}
-                  </Button>
-                  <Typography variant="caption" color="text.secondary" sx={{ ml: 1 }}>
-                    * Google 로그인 사용자는 이름(name), 일반 로그인 사용자는 사용자명(username)으로 저장됩니다.
-                  </Typography>
-                </Grid>
+                {!isGoogleOAuth && (
+                  <>
+                    <Grid item xs={12} md={6}>
+                      <TextField label="이름" fullWidth value={name} onChange={(e) => setName(e.target.value)} />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Button variant="outlined" onClick={handleSave} disabled={saving}>
+                        {saving ? '저장 중...' : '프로필 저장'}
+                      </Button>
+                    </Grid>
+                  </>
+                )}
+                {isGoogleOAuth && (
+                  <Grid item xs={12}>
+                    <Typography variant="body2" color="text.secondary">
+                      Google OAuth 로그인 사용자는 Google 계정의 이름이 자동으로 동기화되며 이 화면에서 변경할 수 없습니다.
+                    </Typography>
+                  </Grid>
+                )}
               </Grid>
             </CardContent>
           </Card>
