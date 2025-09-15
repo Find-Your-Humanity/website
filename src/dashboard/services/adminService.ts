@@ -209,6 +209,21 @@ export interface SystemStatsResponse {
   data: SystemStatsData[];
 }
 
+// 시간별 통계 데이터 타입
+export interface HourlyStatsData {
+  time: string;
+  requests: number;
+  users: number;
+}
+
+export interface HourlyStatsResponse {
+  success: boolean;
+  data: {
+    date: string;
+    hourlyStats: HourlyStatsData[];
+  };
+}
+
 export interface UserGrowthData {
   month: string;
   newUsers: number;
@@ -334,6 +349,15 @@ class AdminService {
   async getSystemStats(days: number = 7): Promise<SystemStatsResponse> {
     try {
       const response = await apiClient.get<SystemStatsResponse>(`/api/admin/system-stats?days=${days}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getHourlyStats(date: string): Promise<HourlyStatsResponse> {
+    try {
+      const response = await apiClient.get<HourlyStatsResponse>(`/api/admin/hourly-stats?date=${date}`);
       return response.data;
     } catch (error) {
       throw error;

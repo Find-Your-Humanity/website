@@ -7,6 +7,11 @@ import {
   Typography,
   IconButton,
   Chip,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
 } from '@mui/material';
 import {
   Refresh as RefreshIcon,
@@ -18,7 +23,7 @@ import {
   AdminPanelSettings as AdminIcon,
 } from '@mui/icons-material';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { adminService, AdminMetrics } from '../services/adminService';
+import { adminService, AdminMetrics, HourlyStatsData } from '../services/adminService';
 import { formatNumber, formatPercentage, formatResponseTime } from '../utils';
 
 const AdminDashboardScreen: React.FC = () => {
@@ -33,6 +38,11 @@ const AdminDashboardScreen: React.FC = () => {
     revenue: 0,
     planDistribution: []
   });
+  
+  // 시간별 통계 관련 상태
+  const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
+  const [hourlyStats, setHourlyStats] = useState<HourlyStatsData[]>([]);
+  const [hourlyLoading, setHourlyLoading] = useState(false);
 
   const loadAdminDashboardData = async () => {
     try {
@@ -50,9 +60,31 @@ const AdminDashboardScreen: React.FC = () => {
     }
   };
 
+  const loadHourlyStats = async (date: string) => {
+    try {
+      setHourlyLoading(true);
+      const response = await adminService.getHourlyStats(date);
+      if (response.success) {
+        setHourlyStats(response.data.hourlyStats);
+      }
+    } catch (error) {
+      console.error('시간별 통계 로드 실패:', error);
+    } finally {
+      setHourlyLoading(false);
+    }
+  };
+
   useEffect(() => {
     loadAdminDashboardData();
+    loadHourlyStats(selectedDate);
   }, []);
+
+  // 날짜 변경 시 시간별 통계 다시 로드
+  useEffect(() => {
+    if (selectedDate) {
+      loadHourlyStats(selectedDate);
+    }
+  }, [selectedDate]);
 
   // 관리자용 실제 데이터 (전체 시스템 통계) - 차트용
   const chartData = {
@@ -68,14 +100,7 @@ const AdminDashboardScreen: React.FC = () => {
     newUsersToday: adminMetrics.newUsersToday,
   };
 
-  const systemChartData = [
-    { time: '00:00', requests: 45, users: 120 },
-    { time: '04:00', requests: 38, users: 95 },
-    { time: '08:00', requests: 78, users: 180 },
-    { time: '12:00', requests: 125, users: 250 },
-    { time: '16:00', requests: 156, users: 320 },
-    { time: '20:00', requests: 89, users: 200 },
-  ];
+  // 실제 시간별 통계 데이터 사용 (Mock 데이터 제거)
 
   // 실제 플랜 분포 데이터 사용
   const planDistribution = adminMetrics.planDistribution;
@@ -226,35 +251,53 @@ const AdminDashboardScreen: React.FC = () => {
             }
           }}>
             <CardContent>
-              <Typography variant="h6" gutterBottom>
-                시간별 시스템 사용량
-              </Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                <Typography variant="h6">
+                  시간별 시스템 사용량
+                </Typography>
+                <TextField
+                  type="date"
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                  size="small"
+                  sx={{ width: 150 }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
+              </Box>
               <Box sx={{ height: 300, mt: 2 }}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={systemChartData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="time" />
-                    <YAxis yAxisId="left" />
-                    <YAxis yAxisId="right" orientation="right" />
-                    <Tooltip />
-                    <Line
-                      yAxisId="left"
-                      type="monotone"
-                      dataKey="requests"
-                      stroke="#1976d2"
-                      strokeWidth={2}
-                      name="API 요청"
-                    />
-                    <Line
-                      yAxisId="right"
-                      type="monotone"
-                      dataKey="users"
-                      stroke="#2e7d32"
-                      strokeWidth={2}
-                      name="활성 사용자"
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
+                {hourlyLoading ? (
+                  <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                    <Typography>로딩 중...</Typography>
+                  </Box>
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={hourlyStats}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="time" />
+                      <YAxis yAxisId="left" />
+                      <YAxis yAxisId="right" orientation="right" />
+                      <Tooltip />
+                      <Line
+                        yAxisId="left"
+                        type="monotone"
+                        dataKey="requests"
+                        stroke="#1976d2"
+                        strokeWidth={2}
+                        name="API 요청"
+                      />
+                      <Line
+                        yAxisId="right"
+                        type="monotone"
+                        dataKey="users"
+                        stroke="#2e7d32"
+                        strokeWidth={2}
+                        name="활성 사용자"
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                )}
               </Box>
             </CardContent>
           </Card>
