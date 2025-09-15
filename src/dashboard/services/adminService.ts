@@ -17,8 +17,10 @@ export interface AdminMetrics {
   // 캡차 해결 통계
   totalSolved: number;
   solvedSuccessRate: number;
-  // 전환율
-  conversionRate: number;
+  // 해결 완료율
+  completionRate: number;
+  // 평균 응답시간
+  avgResponseTime: number;
   // 기타
   revenue: number;
   planDistribution: PlanDistribution[];
@@ -199,7 +201,7 @@ export interface SystemStatsData {
   failedSolved: number;
   // 공통
   activeUsers: number;
-  conversionRate: number;
+  completionRate: number;
 }
 
 export interface SystemStatsResponse {

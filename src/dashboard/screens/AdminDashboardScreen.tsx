@@ -196,8 +196,8 @@ const AdminDashboardScreen: React.FC = () => {
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
           <StatCard
-            title="전환율"
-            value={formatPercentage(adminMetrics.conversionRate)}
+            title="해결 완료율"
+            value={formatPercentage(adminMetrics.completionRate)}
             icon={<TrendingUpIcon sx={{ fontSize: 40 }} />}
             color="#1976d2"
             subtitle="생성 대비 해결 비율"
@@ -205,11 +205,11 @@ const AdminDashboardScreen: React.FC = () => {
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
           <StatCard
-            title="시스템 상태"
-            value="정상"
-            icon={<AdminIcon sx={{ fontSize: 40 }} />}
-            color="#2e7d32"
-            subtitle="모든 서비스 운영 중"
+            title="평균 응답시간"
+            value={formatResponseTime(adminMetrics.avgResponseTime)}
+            icon={<SpeedIcon sx={{ fontSize: 40 }} />}
+            color="#ff9800"
+            subtitle="전체 시스템 평균"
           />
         </Grid>
       </Grid>

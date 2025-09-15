@@ -116,7 +116,7 @@ const AdminAnalyticsScreen: React.FC = () => {
         failedSolved: s.failedSolved,
         // 공통
         users: s.activeUsers,
-        conversionRate: s.conversionRate,
+        completionRate: s.completionRate,
       };
     });
   }, [systemStats]);
@@ -130,7 +130,7 @@ const AdminAnalyticsScreen: React.FC = () => {
         totalSolved: 0,
         generatedSuccessRate: 0,
         solvedSuccessRate: 0,
-        conversionRate: 0,
+        completionRate: 0,
         totalRevenue: 0
       };
     }
@@ -145,8 +145,8 @@ const AdminAnalyticsScreen: React.FC = () => {
     const totalSuccessfulSolved = systemStats.reduce((sum, stat) => sum + stat.successfulSolved, 0);
     const solvedSuccessRate = totalSolved > 0 ? (totalSuccessfulSolved / totalSolved) * 100 : 0;
     
-    // 전환율
-    const conversionRate = totalGenerated > 0 ? (totalSolved / totalGenerated) * 100 : 0;
+    // 해결 완료율
+    const completionRate = totalGenerated > 0 ? (totalSolved / totalGenerated) * 100 : 0;
     
     // 수익 및 사용자
     const totalRevenue = planDistribution.reduce((sum, plan) => sum + plan.revenue, 0);
@@ -160,7 +160,7 @@ const AdminAnalyticsScreen: React.FC = () => {
       totalSolved,
       generatedSuccessRate,
       solvedSuccessRate,
-      conversionRate,
+      completionRate,
       totalRevenue
     };
   }, [systemStats, planDistribution, userGrowthData]);
@@ -273,10 +273,10 @@ const AdminAnalyticsScreen: React.FC = () => {
                 <Grid item xs={6} sm={3}>
                   <Box textAlign="center">
                     <Typography variant="h4" color="warning.main">
-                      {formatPercentage(systemOverview.conversionRate)}
+                      {formatPercentage(systemOverview.completionRate)}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      전환율
+                      해결 완료율
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
                       수익: ₩{formatNumber(systemOverview.totalRevenue)}
@@ -331,10 +331,10 @@ const AdminAnalyticsScreen: React.FC = () => {
                       />
                       <Line
                         type="monotone"
-                        dataKey="conversionRate"
+                        dataKey="completionRate"
                         stroke="#ff9800"
                         strokeWidth={2}
-                        name="전환율 (%)"
+                        name="해결 완료율 (%)"
                       />
                     </LineChart>
                   </ResponsiveContainer>
