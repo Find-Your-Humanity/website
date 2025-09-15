@@ -429,38 +429,49 @@ const DashboardScreen: React.FC = () => {
               <Typography variant="h6" gutterBottom>
                 캡차 레벨별 사용량
               </Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 2 }}>
-                <Box sx={{ width: '100%', height: 200, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={levelData}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={40}
-                        outerRadius={80}
-                        paddingAngle={2}
-                        dataKey="value"
-                      >
-                        {levelData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
+              {levelData.length === 0 ? (
+                <Box sx={{ py: 4, textAlign: 'center' }}>
+                  <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
+                    아직 사용 내역이 없습니다. 캡차 위젯을 연동하면 유형별 통계가 표시됩니다.
+                  </Typography>
+                  <Button variant="contained" size="small" href="/app/api-keys">
+                    API 키 발급하기
+                  </Button>
                 </Box>
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 1, mt: 1 }}>
-                  {levelData.map((entry, index) => (
-                    <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                      <Box sx={{ width: 12, height: 12, backgroundColor: entry.color, borderRadius: '50%' }} />
-                      <Typography variant="caption" color="text.secondary">
-                        {entry.name}: {entry.value}%
-                      </Typography>
-                    </Box>
-                  ))}
+              ) : (
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 2 }}>
+                  <Box sx={{ width: '100%', height: 200, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={levelData}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={40}
+                          outerRadius={80}
+                          paddingAngle={2}
+                          dataKey="value"
+                        >
+                          {levelData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </Box>
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 1, mt: 1 }}>
+                    {levelData.map((entry, index) => (
+                      <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                        <Box sx={{ width: 12, height: 12, backgroundColor: entry.color, borderRadius: '50%' }} />
+                        <Typography variant="caption" color="text.secondary">
+                          {entry.name}: {entry.value}%
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Box>
                 </Box>
-              </Box>
+              )}
             </CardContent>
           </Card>
         </Grid>
