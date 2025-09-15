@@ -13,8 +13,9 @@ import {
   Divider,
   Slider,
 } from '@mui/material';
-import { Save as SaveIcon, Refresh as RefreshIcon } from '@mui/icons-material';
+import { Save as SaveIcon, Refresh as RefreshIcon, DeleteForever as DeleteForeverIcon } from '@mui/icons-material';
 import { useAuth } from '../../contexts/AuthContext';
+import { apiClient } from '../services/apiClient';
 
 const SettingsScreen: React.FC = () => {
   const { user } = useAuth();
@@ -55,9 +56,12 @@ const SettingsScreen: React.FC = () => {
     try {
       setSaving(true);
       setMessage(null);
-      // 실제 저장 API는 후속 단계에서 연결합니다. (프로필 저장)
-      await new Promise(resolve => setTimeout(resolve, 400));
-      setMessage('프로필이 저장되었습니다. (데모)');
+      const res = await apiClient.put('/api/auth/me', { name });
+      if (res.data?.success) {
+        setMessage('프로필이 저장되었습니다.');
+      } else {
+        setMessage('프로필 저장에 실패했습니다.');
+      }
       setSaving(false);
     } catch (e: any) {
       setSaving(false);
@@ -108,8 +112,22 @@ const SettingsScreen: React.FC = () => {
           <Button variant="contained" startIcon={<SaveIcon />} onClick={handleSaveSettings} disabled={saveStatus === 'saving'}>
             {saveStatus === 'saving' ? '저장 중...' : '설정 저장'}
           </Button>
+          <Button color="error" variant="outlined" startIcon={<DeleteForeverIcon />} onClick={async ()=>{
+            if (!window.confirm('정말로 회원 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) return;
+            try {
+              const res = await apiClient.delete('/api/auth/me');
+              if (res.data?.success) {
+                localStorage.clear();
+                window.location.href = '/';
+              }
+            } catch (err:any) {
+              alert(err?.response?.data?.detail || '회원 탈퇴 중 오류가 발생했습니다.');
+            }
+          }}>
+            회원 탈퇴
+          </Button>
         </Box>
-      </Box>
+      </Box>  
 
       {saveStatus === 'success' && (
         <Alert severity="success" sx={{ mb: 2 }}>설정이 저장되었습니다. (데모)</Alert>
