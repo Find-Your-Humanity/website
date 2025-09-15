@@ -25,7 +25,7 @@ apiClient.interceptors.response.use(
     const status = error.response?.status;
     const originalRequest: any = error.config;
 
-    if (status === 401 && originalRequest && !originalRequest._retry) {
+    if ((status === 401 || status === 403) && originalRequest && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
         // Try refresh by cookie
@@ -47,9 +47,12 @@ apiClient.interceptors.response.use(
         }
         throw new Error('No access_token in refresh response');
       } catch (refreshError) {
+        // 토큰 갱신 실패 시 로그아웃 처리
         try {
           localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
           localStorage.removeItem(STORAGE_KEYS.USER_DATA);
+          // 페이지 새로고침으로 로그인 페이지로 이동
+          window.location.href = '/login';
         } catch {}
       }
     }

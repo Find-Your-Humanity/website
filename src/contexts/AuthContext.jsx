@@ -22,14 +22,20 @@ export const AuthProvider = ({ children }) => {
       const token = localStorage.getItem('authToken') || localStorage.getItem('captcha_dashboard_token');
       const userData = localStorage.getItem('captcha_dashboard_user');
       
-      console.log('🔍 AuthContext 초기화 - 토큰:', token, '사용자 데이터:', userData);
+      console.log('🔍 AuthContext 초기화 - 토큰:', token ? '***' : null, '사용자 데이터:', userData ? '***' : null);
       
       if (token && userData) {
         try {
           const parsedUser = JSON.parse(userData);
           setUser(parsedUser);
           setLoading(false);
-          console.log('✅ 로컬 스토리지에서 사용자 정보 복원:', parsedUser);
+          console.log('✅ 로컬 스토리지에서 사용자 정보 복원:', {
+            id: parsedUser.id,
+            email: parsedUser.email ? '***@***.***' : null,
+            username: parsedUser.username ? '***' : null,
+            name: parsedUser.name ? '***' : null,
+            is_admin: parsedUser.is_admin
+          });
           return;
         } catch (error) {
           console.error('사용자 데이터 파싱 오류:', error);
@@ -64,7 +70,13 @@ export const AuthProvider = ({ children }) => {
               // Google OAuth 토큰이 있는 경우 사용자 정보만 저장
               localStorage.setItem('captcha_dashboard_user', JSON.stringify(data.user));
             }
-            console.log('쿠키 기반 자동 로그인 완료:', data.user);
+            console.log('쿠키 기반 자동 로그인 완료:', {
+              id: data.user.id,
+              email: data.user.email ? '***@***.***' : null,
+              username: data.user.username ? '***' : null,
+              name: data.user.name ? '***' : null,
+              is_admin: data.user.is_admin
+            });
           } else {
             // 서버 응답에 사용자 정보가 없는 경우
             localStorage.removeItem('authToken');
