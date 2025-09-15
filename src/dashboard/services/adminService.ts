@@ -239,6 +239,15 @@ export interface PerformanceStatsResponse {
   data: PerformanceStatsData[];
 }
 
+// 기간 내 활성 사용자 수 타입
+export interface ActiveUsersResponse {
+  success: boolean;
+  data: {
+    days: number;
+    activeUsers: number;
+  };
+}
+
 export interface UserGrowthData {
   month: string;
   newUsers: number;
@@ -382,6 +391,15 @@ class AdminService {
   async getPerformanceStats(days: number = 7): Promise<PerformanceStatsResponse> {
     try {
       const response = await apiClient.get<PerformanceStatsResponse>(`/api/admin/performance-stats?days=${days}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getActiveUsers(days: number): Promise<ActiveUsersResponse> {
+    try {
+      const response = await apiClient.get<ActiveUsersResponse>(`/api/admin/active-users?days=${days}`);
       return response.data;
     } catch (error) {
       throw error;

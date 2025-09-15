@@ -54,6 +54,9 @@ const AdminAnalyticsScreen: React.FC = () => {
   const [planDistribution, setPlanDistribution] = useState<PlanDistributionData[]>([]);
   const [errorTypes, setErrorTypes] = useState<ErrorStatsData[]>([]);
   const [performanceStats, setPerformanceStats] = useState<PerformanceStatsData[]>([]);
+  const [active7d, setActive7d] = useState<number>(0);
+  const [active30d, setActive30d] = useState<number>(0);
+  const [active90d, setActive90d] = useState<number>(0);
 
   const handleTimePeriodChange = (event: SelectChangeEvent) => {
     setTimePeriod(event.target.value);
@@ -78,12 +81,15 @@ const AdminAnalyticsScreen: React.FC = () => {
       const months = timePeriod === '7days' ? 1 : timePeriod === '30days' ? 3 : 6;
       
       // 병렬로 모든 API 호출
-      const [systemStatsRes, userGrowthRes, planDistRes, errorStatsRes, performanceStatsRes] = await Promise.all([
+      const [systemStatsRes, userGrowthRes, planDistRes, errorStatsRes, performanceStatsRes, active7, active30, active90] = await Promise.all([
         adminService.getSystemStats(days),
         adminService.getUserGrowth(months),
         adminService.getPlanDistribution(),
         adminService.getErrorStats(days),
-        adminService.getPerformanceStats(days)
+        adminService.getPerformanceStats(days),
+        adminService.getActiveUsers(7),
+        adminService.getActiveUsers(30),
+        adminService.getActiveUsers(90)
       ]);
       
       setSystemStats(systemStatsRes.data);
@@ -91,6 +97,9 @@ const AdminAnalyticsScreen: React.FC = () => {
       setPlanDistribution(planDistRes.data);
       setErrorTypes(errorStatsRes.data);
       setPerformanceStats(performanceStatsRes.data);
+      setActive7d(active7.data.activeUsers);
+      setActive30d(active30.data.activeUsers);
+      setActive90d(active90.data.activeUsers);
       
     } catch (err: any) {
       console.error('분석 데이터 로드 실패:', err);
@@ -265,6 +274,27 @@ const AdminAnalyticsScreen: React.FC = () => {
                     <Typography variant="body2" color="text.secondary">
                       총 사용자 수
                     </Typography>
+                  </Box>
+                </Grid>
+                <Grid item xs={6} sm={3}>
+                  <Box textAlign="center">
+                    <Typography variant="h6" color="text.secondary">
+                      최근 활성 사용자
+                    </Typography>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-around', mt: 1 }}>
+                      <Box>
+                        <Typography variant="subtitle2" color="text.secondary">7일</Typography>
+                        <Typography variant="h6">{formatNumber(active7d)}</Typography>
+                      </Box>
+                      <Box>
+                        <Typography variant="subtitle2" color="text.secondary">30일</Typography>
+                        <Typography variant="h6">{formatNumber(active30d)}</Typography>
+                      </Box>
+                      <Box>
+                        <Typography variant="subtitle2" color="text.secondary">90일</Typography>
+                        <Typography variant="h6">{formatNumber(active90d)}</Typography>
+                      </Box>
+                    </Box>
                   </Box>
                 </Grid>
                 <Grid item xs={6} sm={3}>
