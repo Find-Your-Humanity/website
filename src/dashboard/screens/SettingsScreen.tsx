@@ -157,6 +157,9 @@ const SettingsScreen: React.FC = () => {
                   <Button variant="outlined" onClick={handleSave} disabled={saving}>
                     {saving ? '저장 중...' : '프로필 저장'}
                   </Button>
+                  <Typography variant="caption" color="text.secondary" sx={{ ml: 1 }}>
+                    * Google 로그인 사용자는 이름(name), 일반 로그인 사용자는 사용자명(username)으로 저장됩니다.
+                  </Typography>
                 </Grid>
               </Grid>
             </CardContent>
@@ -180,7 +183,7 @@ const SettingsScreen: React.FC = () => {
           </Card>
         </Grid>
 
-        {/* 시스템 설정 */}
+        {/* 시스템 설정 */} 
         <Grid item xs={12} md={6}>
           <Card>
             <CardContent>
