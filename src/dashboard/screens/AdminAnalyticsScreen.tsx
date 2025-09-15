@@ -175,8 +175,20 @@ const AdminAnalyticsScreen: React.FC = () => {
             <Typography variant="h5" component="h5" gutterBottom sx={{ fontWeight: 700, mb: 0 }}>
               시스템 분석
             </Typography>
-            <Typography variant="body2" color="text.secondary">
-              전체 시스템 사용 패턴 및 성능 분석 (관리자 전용)
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+              캡차 검증 API 기간별 성능 분석 및 트렌드 (관리자 전용)
+            </Typography>
+            <Typography variant="caption" color="text.secondary" sx={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 0.5,
+              px: 1, 
+              py: 0.5, 
+              backgroundColor: 'rgba(156, 39, 176, 0.08)', 
+              borderRadius: 1,
+              border: '1px solid rgba(156, 39, 176, 0.2)'
+            }}>
+              📈 데이터 소스: 검증 API 전용 (request_logs) - 기간별 필터링
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
@@ -211,6 +223,17 @@ const AdminAnalyticsScreen: React.FC = () => {
               <Typography variant="h6" gutterBottom>
                 시스템 개요 통계
               </Typography>
+              <Typography variant="caption" color="text.secondary" sx={{ 
+                display: 'block',
+                mb: 2,
+                px: 1, 
+                py: 0.5, 
+                backgroundColor: 'rgba(156, 39, 176, 0.05)', 
+                borderRadius: 0.5,
+                fontStyle: 'italic'
+              }}>
+                ⚠️ 주의: 이 통계는 검증 API만 집계하므로 대시보드와 수치가 다를 수 있습니다
+              </Typography>
               <Grid container spacing={3}>
                 <Grid item xs={6} sm={3}>
                   <Box textAlign="center">
@@ -219,6 +242,9 @@ const AdminAnalyticsScreen: React.FC = () => {
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                       총 사용자 수
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.6rem', opacity: 0.7 }}>
+                      📊 user_growth
                     </Typography>
                   </Box>
                 </Grid>
@@ -230,6 +256,9 @@ const AdminAnalyticsScreen: React.FC = () => {
                     <Typography variant="body2" color="text.secondary">
                       총 API 요청
                     </Typography>
+                    <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.6rem', opacity: 0.7 }}>
+                      📊 request_logs
+                    </Typography>
                   </Box>
                 </Grid>
                 <Grid item xs={6} sm={3}>
@@ -240,6 +269,9 @@ const AdminAnalyticsScreen: React.FC = () => {
                     <Typography variant="body2" color="text.secondary">
                       평균 성공률
                     </Typography>
+                    <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.6rem', opacity: 0.7 }}>
+                      📊 request_logs
+                    </Typography>
                   </Box>
                 </Grid>
                 <Grid item xs={6} sm={3}>
@@ -249,6 +281,9 @@ const AdminAnalyticsScreen: React.FC = () => {
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                       월간 수익
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.6rem', opacity: 0.7 }}>
+                      📊 plan_distribution
                     </Typography>
                   </Box>
                 </Grid>
