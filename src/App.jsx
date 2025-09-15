@@ -37,7 +37,7 @@ import UsersScreen from './dashboard/screens/UsersScreen';
 import PlansScreen from './dashboard/screens/PlansScreen';
 import RequestsScreen from './dashboard/screens/RequestsScreen';
 import RequestStatusScreen from './dashboard/screens/RequestStatusScreen';
-import { SettingsScreen } from './dashboard/screens/ManagementScreens';
+import SettingsScreen from './dashboard/screens/SettingsScreen';
 
 import RedirectLegacy from './components/RedirectLegacy';
 
