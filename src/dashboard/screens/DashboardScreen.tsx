@@ -163,13 +163,13 @@ const DashboardScreen: React.FC = () => {
   const levelData = analytics?.level_stats ? [
     { name: 'Level 0 (Pass)', value: Math.round(analytics.level_stats.level_0), color: '#8884d8' },
     { name: 'Level 1 (Image)', value: Math.round(analytics.level_stats.level_1), color: '#82ca9d' },
-    { name: 'Level 2 (Handwriting)', value: Math.round(analytics.level_stats.level_2), color: '#ffc658' },
-    { name: 'Level 3 (Abstract)', value: Math.round(analytics.level_stats.level_3), color: '#ff7300' },
+    { name: 'Level 2 (Abstract)', value: Math.round(analytics.level_stats.level_2), color: '#ffc658' },
+    { name: 'Level 3 (Handwriting)', value: Math.round(analytics.level_stats.level_3), color: '#ff7300' },
   ] : [
     { name: 'Level 0 (Pass)', value: 40, color: '#8884d8' },
     { name: 'Level 1 (Image)', value: 30, color: '#82ca9d' },
-    { name: 'Level 2 (Handwriting)', value: 20, color: '#ffc658' },
-    { name: 'Level 3 (Abstract)', value: 10, color: '#ff7300' },
+    { name: 'Level 2 (Abstract)', value: 20, color: '#ffc658' },
+    { name: 'Level 3 (Handwriting)', value: 10, color: '#ff7300' },
   ];
 
   // 캡차 타입 정규화 함수
