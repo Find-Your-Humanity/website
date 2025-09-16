@@ -22,23 +22,17 @@ export const AuthProvider = ({ children }) => {
       const token = localStorage.getItem('authToken') || localStorage.getItem('captcha_dashboard_token');
       const userData = localStorage.getItem('captcha_dashboard_user');
       
-      console.log('🔍 AuthContext 초기화 - 토큰:', token ? '***' : null, '사용자 데이터:', userData ? '***' : null);
+      // log removed
       
       if (token && userData) {
         try {
           const parsedUser = JSON.parse(userData);
           setUser(parsedUser);
           setLoading(false);
-          console.log('✅ 로컬 스토리지에서 사용자 정보 복원:', {
-            id: parsedUser.id,
-            email: parsedUser.email ? '***@***.***' : null,
-            username: parsedUser.username ? '***' : null,
-            name: parsedUser.name ? '***' : null,
-            is_admin: parsedUser.is_admin
-          });
+          // log removed: restore user info
           return;
         } catch (error) {
-          console.error('사용자 데이터 파싱 오류:', error);
+          // log removed
           localStorage.removeItem('authToken');
           localStorage.removeItem('captcha_dashboard_token');
           localStorage.removeItem('captcha_dashboard_user');
@@ -47,7 +41,6 @@ export const AuthProvider = ({ children }) => {
       
       // Google OAuth 토큰이 있는 경우 처리
       if (token === 'google-oauth') {
-        console.log('🔍 Google OAuth 토큰 발견, 사용자 정보 확인 중...');
         // Google OAuth 사용자는 쿠키 기반으로 사용자 정보 확인
       }
       
@@ -70,13 +63,7 @@ export const AuthProvider = ({ children }) => {
               // Google OAuth 토큰이 있는 경우 사용자 정보만 저장
               localStorage.setItem('captcha_dashboard_user', JSON.stringify(data.user));
             }
-            console.log('쿠키 기반 자동 로그인 완료:', {
-              id: data.user.id,
-              email: data.user.email ? '***@***.***' : null,
-              username: data.user.username ? '***' : null,
-              name: data.user.name ? '***' : null,
-              is_admin: data.user.is_admin
-            });
+            // log removed
           } else {
             // 서버 응답에 사용자 정보가 없는 경우
             localStorage.removeItem('authToken');
@@ -174,7 +161,7 @@ export const AuthProvider = ({ children }) => {
         credentials: 'include', // 쿠키 전송 허용
       });
     } catch (error) {
-      console.warn('로그아웃 API 호출 실패:', error);
+      // log removed
       // API 실패해도 로컬 상태는 정리
     }
     
@@ -188,7 +175,7 @@ export const AuthProvider = ({ children }) => {
   // 토큰 자동 갱신 함수
   const refreshAccessToken = async () => {
     try {
-      console.log('🔄 액세스 토큰 갱신 시도...');
+      // log removed
       const response = await fetch('https://gateway.realcatcha.com/api/auth/refresh', {
         method: 'POST',
         credentials: 'include', // 쿠키 전송
@@ -199,15 +186,15 @@ export const AuthProvider = ({ children }) => {
         if (data.success && data.access_token) {
           // 새 액세스 토큰을 localStorage에 저장
           localStorage.setItem('captcha_dashboard_token', data.access_token);
-          console.log('✅ 액세스 토큰 갱신 성공');
+          // log removed
           return data.access_token;
         }
       }
       
-      console.log('❌ 액세스 토큰 갱신 실패');
+      // log removed
       return null;
     } catch (error) {
-      console.error('❌ 토큰 갱신 오류:', error);
+      // log removed
       return null;
     }
   };
@@ -223,19 +210,19 @@ export const AuthProvider = ({ children }) => {
 
       // 401 에러 (토큰 만료) 시 토큰 갱신 시도
       if (response.status === 401) {
-        console.log('🔄 401 에러 감지, 토큰 갱신 시도...');
+        // log removed
         const newToken = await refreshAccessToken();
         
         if (newToken) {
           // 새 토큰으로 재요청
-          console.log('🔄 새 토큰으로 재요청...');
+          // log removed
           response = await fetch(url, {
             ...options,
             credentials: 'include',
           });
         } else {
           // 토큰 갱신 실패 시 로그아웃
-          console.log('❌ 토큰 갱신 실패, 로그아웃 처리');
+          // log removed
           logout();
           throw new Error('인증이 만료되었습니다. 다시 로그인해주세요.');
         }
@@ -243,7 +230,7 @@ export const AuthProvider = ({ children }) => {
 
       return response;
     } catch (error) {
-      console.error('❌ API 요청 오류:', error);
+      // log removed
       throw error;
     }
   };
@@ -254,8 +241,7 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       setLoading(true);
 
-      console.log('🚀 Signup 요청 시작:', userData);
-      console.log('📡 API URL:', 'https://gateway.realcatcha.com/api/auth/signup');
+      // log removed
 
       const response = await fetch('https://gateway.realcatcha.com/api/auth/signup', {
         method: 'POST',
@@ -265,8 +251,7 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify(userData),
       });
 
-      console.log('📨 응답 상태:', response.status);
-      console.log('📨 응답 헤더:', Object.fromEntries(response.headers.entries()));
+      // log removed
 
       if (!response.ok) {
         let message = `회원가입에 실패했습니다. (${response.status})`;
@@ -281,15 +266,15 @@ export const AuthProvider = ({ children }) => {
             if (text) message = text;
           } catch (_) {}
         }
-        console.error('❌ 응답 오류 메시지:', message);
+        // log removed
         return { success: false, error: message };
       }
 
       const data = await response.json();
-      console.log('✅ 회원가입 성공:', data);
+      // log removed
       return { success: true, message: '회원가입이 완료되었습니다.' };
     } catch (error) {
-      console.error('❌ 회원가입 오류:', error);
+      // log removed
       const fallback = error?.message || '회원가입 중 오류가 발생했습니다.';
       setError(fallback);
       return { success: false, error: fallback };
