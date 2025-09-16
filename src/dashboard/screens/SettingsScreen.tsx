@@ -95,7 +95,8 @@ const SettingsScreen: React.FC = () => {
       
       if (response.ok) {
         const data = await response.json();
-        setSuspiciousIPs(data);
+        const items = Array.isArray(data) ? data : (data?.suspicious_ips ?? []);
+        setSuspiciousIPs(items);
       } else {
         console.error('Failed to fetch suspicious IPs');
       }
@@ -183,9 +184,11 @@ const SettingsScreen: React.FC = () => {
     }
   }, [settings.blockSuspiciousIPs]);
 
-  // 시간 포맷팅 함수
-  const formatTimestamp = (timestamp: number) => {
-    return new Date(timestamp * 1000).toLocaleString('ko-KR');
+  // 시간 포맷팅 함수 (ISO 문자열/epoch seconds 모두 지원)
+  const formatTimestamp = (ts: any) => {
+    if (ts === null || ts === undefined) return '-';
+    const d = typeof ts === 'number' ? new Date(ts * 1000) : new Date(ts);
+    return isNaN(d.getTime()) ? '-' : d.toLocaleString('ko-KR');
   };
 
   const handleSave = async () => {
@@ -433,7 +436,7 @@ const SettingsScreen: React.FC = () => {
                           </TableCell>
                           <TableCell>
                             <Typography variant="body2">
-                              {formatTimestamp(ipData.last_violation)}
+                              {formatTimestamp(ipData.last_violation_time)}
                             </Typography>
                           </TableCell>
                           <TableCell>
