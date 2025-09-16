@@ -121,11 +121,9 @@ const SettingsScreen: React.FC = () => {
   const fetchMyApiKeys = async () => {
     try {
       const response = await fetch('https://gateway.realcatcha.com/api/admin/my-api-keys', {
-        headers: {
-          'X-API-Key': apiKeyHeader || undefined,
-          'Content-Type': 'application/json'
-        } as any
-      });
+        // 세션 기반으로만 동작하므로 쿠키 포함
+        credentials: 'include'
+      } as RequestInit);
       if (response.ok) {
         const data = await response.json();
         const keys = (data?.api_keys || []).map((k: any) => k.key_id).filter(Boolean);
@@ -135,6 +133,9 @@ const SettingsScreen: React.FC = () => {
           setApiKeyInput(keys[0]);
           if (typeof window !== 'undefined') localStorage.setItem('rc_dashboard_api_key', keys[0]);
         }
+      } else if (response.status === 401) {
+        setMyKeys([]);
+        setErrorText('세션 인증이 필요합니다. 로그인 후 다시 시도해 주세요.');
       }
     } catch {}
   };
