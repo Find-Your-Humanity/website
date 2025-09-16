@@ -39,6 +39,8 @@ import { useAuth } from '../../contexts/AuthContext';
 
 const SettingsScreen: React.FC = () => {
   const { user } = useAuth();
+  // 로그인 사용자의 API 키 사용 (없을 경우 마지막에 데모키 폴백)
+  const apiKeyHeader = (user as any)?.apiKey || (user as any)?.api_key || 'rc_live_f49a055d62283fd02e8203ccaba70fc2';
   const [name, setName] = useState<string>(user?.name || '');
   const [email] = useState<string>(user?.email || '');
   const [saving, setSaving] = useState(false);
@@ -88,7 +90,7 @@ const SettingsScreen: React.FC = () => {
     try {
       const response = await fetch('https://gateway.realcatcha.com/api/admin/suspicious-ips', {
         headers: {
-          'X-API-Key': 'rc_live_f49a055d62283fd02e8203ccaba70fc2', // 데모 키 사용
+          'X-API-Key': apiKeyHeader,
           'Content-Type': 'application/json'
         }
       });
@@ -112,7 +114,7 @@ const SettingsScreen: React.FC = () => {
     try {
       const response = await fetch('https://gateway.realcatcha.com/api/admin/ip-stats', {
         headers: {
-          'X-API-Key': 'rc_live_f49a055d62283fd02e8203ccaba70fc2',
+          'X-API-Key': apiKeyHeader,
           'Content-Type': 'application/json'
         }
       });
@@ -132,7 +134,7 @@ const SettingsScreen: React.FC = () => {
       const response = await fetch('https://gateway.realcatcha.com/api/admin/block-ip', {
         method: 'POST',
         headers: {
-          'X-API-Key': 'rc_live_f49a055d62283fd02e8203ccaba70fc2',
+          'X-API-Key': apiKeyHeader,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ ip_address: ip, reason })
@@ -157,7 +159,7 @@ const SettingsScreen: React.FC = () => {
       const response = await fetch('https://gateway.realcatcha.com/api/admin/unblock-ip', {
         method: 'POST',
         headers: {
-          'X-API-Key': 'rc_live_f49a055d62283fd02e8203ccaba70fc2',
+          'X-API-Key': apiKeyHeader,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ ip_address: ip })
