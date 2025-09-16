@@ -203,51 +203,7 @@ const SettingsScreen: React.FC = () => {
     return isNaN(d.getTime()) ? '-' : d.toLocaleString('ko-KR');
   };
 
-  const handleSave = async () => {
-    try {
-      setSaving(true);
-      setMessage(null);
-      // 실제 저장 API는 후속 단계에서 연결합니다. (프로필 저장)
-      await new Promise(resolve => setTimeout(resolve, 400));
-      setMessage('프로필이 저장되었습니다. (데모)');
-      setSaving(false);
-    } catch (e: any) {
-      setSaving(false);
-      setMessage(e?.message || '저장 중 오류가 발생했습니다.');
-    }
-  };
-
-  const handleSaveSettings = async () => {
-    setSaveStatus('saving');
-    try {
-      // 실제 설정 저장 API는 후속 단계에서 연결합니다.
-      await new Promise(resolve => setTimeout(resolve, 600));
-      setSaveStatus('success');
-      setTimeout(() => setSaveStatus('idle'), 2000);
-    } catch (e) {
-      setSaveStatus('error');
-      setTimeout(() => setSaveStatus('idle'), 2000);
-    }
-  };
-
-  const handleResetSettings = () => {
-    setSettings({
-      imageRecognitionEnabled: true,
-      handwritingRecognitionEnabled: true,
-      emotionRecognitionEnabled: false,
-      difficultyLevel: 3,
-      timeoutDuration: 30,
-      maxAttempts: 3,
-      autoScalingEnabled: true,
-      debugMode: false,
-      analyticsEnabled: true,
-      alertsEnabled: true,
-      rateLimitEnabled: true,
-      rateLimitPerMinute: 60,
-      blockSuspiciousIPs: true,
-      requireSSL: true,
-    });
-  };
+  // 제거된 설정/프로필 관련 함수들 (미사용)
 
   return (
     <Box className="rc-container">
@@ -258,7 +214,7 @@ const SettingsScreen: React.FC = () => {
             새로고침
           </Button>
         </Box>
-      </Box>
+      </Box>  
       {!apiKeyHeader && (
         <Alert severity="warning" sx={{ mb: 2 }}>API 키가 설정되어 있지 않습니다. 아래 입력란에 API 키를 입력하고 저장해 주세요.</Alert>
       )}
@@ -318,56 +274,10 @@ const SettingsScreen: React.FC = () => {
           </Card>
         </Grid>
 
-        {/* 캡차 설정 */}
-        <Grid item xs={12} md={6}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>캡차 설정</Typography>
-              <FormControlLabel control={<Switch checked={settings.imageRecognitionEnabled} onChange={(e) => handleSettingChange('imageRecognitionEnabled', e.target.checked)} />} label="이미지 인식 캡차" sx={{ display: 'block', mb: 2 }} />
-              <FormControlLabel control={<Switch checked={settings.handwritingRecognitionEnabled} onChange={(e) => handleSettingChange('handwritingRecognitionEnabled', e.target.checked)} />} label="필기 인식 캡차" sx={{ display: 'block', mb: 2 }} />
-              <FormControlLabel control={<Switch checked={settings.emotionRecognitionEnabled} onChange={(e) => handleSettingChange('emotionRecognitionEnabled', e.target.checked)} />} label="감정 인식 캡차" sx={{ display: 'block', mb: 3 }} />
-              <Divider sx={{ my: 2 }} />
-              <Typography variant="body2" gutterBottom>난이도 레벨: {settings.difficultyLevel}</Typography>
-              <Slider value={settings.difficultyLevel} onChange={(_, v) => handleSettingChange('difficultyLevel', v)} min={1} max={5} marks sx={{ mb: 2 }} />
-              <TextField fullWidth label="타임아웃 (초)" type="number" value={settings.timeoutDuration} onChange={(e) => handleSettingChange('timeoutDuration', parseInt(e.target.value))} sx={{ mb: 2 }} />
-              <TextField fullWidth label="최대 시도 횟수" type="number" value={settings.maxAttempts} onChange={(e) => handleSettingChange('maxAttempts', parseInt(e.target.value))} />
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* 시스템 설정 */}
-        <Grid item xs={12} md={6}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>시스템 설정</Typography>
-              <FormControlLabel control={<Switch checked={settings.autoScalingEnabled} onChange={(e) => handleSettingChange('autoScalingEnabled', e.target.checked)} />} label="자동 스케일링" sx={{ display: 'block', mb: 2 }} />
-              <FormControlLabel control={<Switch checked={settings.debugMode} onChange={(e) => handleSettingChange('debugMode', e.target.checked)} />} label="디버그 모드" sx={{ display: 'block', mb: 2 }} />
-              <FormControlLabel control={<Switch checked={settings.analyticsEnabled} onChange={(e) => handleSettingChange('analyticsEnabled', e.target.checked)} />} label="분석 데이터 수집" sx={{ display: 'block', mb: 2 }} />
-              <FormControlLabel control={<Switch checked={settings.alertsEnabled} onChange={(e) => handleSettingChange('alertsEnabled', e.target.checked)} />} label="알림 사용" sx={{ display: 'block', mb: 2 }} />
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* 보안 설정 */}
+        {/* 의심스러운 IP 관리 */}
         <Grid item xs={12}>
           <Card>
             <CardContent>
-              <Typography variant="h6" gutterBottom>보안 설정</Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={6}>
-                  <FormControlLabel control={<Switch checked={settings.rateLimitEnabled} onChange={(e) => handleSettingChange('rateLimitEnabled', e.target.checked)} />} label="요청 빈도 제한" sx={{ display: 'block', mb: 2 }} />
-                  <TextField fullWidth label="분당 최대 요청 수" type="number" value={settings.rateLimitPerMinute} onChange={(e) => handleSettingChange('rateLimitPerMinute', parseInt(e.target.value))} disabled={!settings.rateLimitEnabled} sx={{ mb: 2 }} />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <FormControlLabel control={<Switch checked={settings.blockSuspiciousIPs} onChange={(e) => handleSettingChange('blockSuspiciousIPs', e.target.checked)} />} label="의심스러운 IP 차단" sx={{ display: 'block', mb: 2 }} />
-                  <FormControlLabel control={<Switch checked={settings.requireSSL} onChange={(e) => handleSettingChange('requireSSL', e.target.checked)} />} label="SSL 연결 요구" sx={{ display: 'block', mb: 2 }} />
-                </Grid>
-              </Grid>
-            </CardContent>
-          </Card>
-
-          {/* 의심스러운 IP 관리 */}
-          {settings.blockSuspiciousIPs && (
             <Card>
               <CardContent>
                 {/* 디버그 정보 */}
@@ -423,7 +333,7 @@ const SettingsScreen: React.FC = () => {
                           활성 의심 IP
                         </Typography>
                       </Box>
-                    </Grid>
+                </Grid>
                     <Grid item xs={6} md={3}>
                       <Box textAlign="center" p={2} bgcolor="success.light" borderRadius={1}>
                         <Typography variant="h4" color="success.contrastText">
@@ -433,8 +343,8 @@ const SettingsScreen: React.FC = () => {
                           24시간 내 위반
                         </Typography>
                       </Box>
-                    </Grid>
-                  </Grid>
+                </Grid>
+              </Grid>
                 )}
 
                 {/* 의심스러운 IP 목록 */}
@@ -535,8 +445,8 @@ const SettingsScreen: React.FC = () => {
                     </TableBody>
                   </Table>
                 </TableContainer>
-              </CardContent>
-            </Card>
+            </CardContent>
+          </Card>
           )}
         </Grid>
       </Grid>
