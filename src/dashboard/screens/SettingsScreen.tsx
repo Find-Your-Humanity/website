@@ -77,6 +77,7 @@ const SettingsScreen: React.FC = () => {
   const [loadingIPs, setLoadingIPs] = useState(false);
   const [ipStats, setIpStats] = useState<any>(null);
   const [errorText, setErrorText] = useState<string | null>(null);
+  const [lastRaw, setLastRaw] = useState<any>(null);
   const [blockDialog, setBlockDialog] = useState<{open: boolean, ip: string, reason: string}>({
     open: false,
     ip: '',
@@ -101,7 +102,7 @@ const SettingsScreen: React.FC = () => {
       return;
     }
     try {
-      const response = await fetch('https://gateway.realcatcha.com/api/admin/suspicious-ips', {
+      const response = await fetch('https://gateway.realcatcha.com/api/admin/suspicious-ips?page=1&limit=50', {
         headers: {
           'X-API-Key': apiKeyHeader,
           'Content-Type': 'application/json'
@@ -110,6 +111,7 @@ const SettingsScreen: React.FC = () => {
       
       if (response.ok) {
         const data = await response.json();
+        setLastRaw({ endpoint: 'suspicious-ips', data });
         const items = Array.isArray(data) ? data : (data?.suspicious_ips ?? []);
         setSuspiciousIPs(items);
       } else {
@@ -136,6 +138,7 @@ const SettingsScreen: React.FC = () => {
       
       if (response.ok) {
         const data = await response.json();
+        setLastRaw({ endpoint: 'ip-stats', data });
         setIpStats(data);
       } else {
         setIpStats(null);
@@ -389,6 +392,12 @@ const SettingsScreen: React.FC = () => {
           {settings.blockSuspiciousIPs && (
             <Card>
               <CardContent>
+                {/* 디버그 정보 */}
+                <Box mb={2}>
+                  <Typography variant="caption" color="text.secondary">
+                    API 키: {apiKeyHeader ? apiKeyHeader : '(미설정)'} | 아이템 수: {suspiciousIPs.length} {lastRaw?.endpoint ? `| 마지막: ${lastRaw.endpoint}` : ''}
+                  </Typography>
+                </Box>
                 <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
                   <Typography variant="h6">의심스러운 IP 관리</Typography>
                   <Button
