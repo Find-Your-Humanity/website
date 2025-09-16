@@ -39,8 +39,13 @@ import { useAuth } from '../../contexts/AuthContext';
 
 const SettingsScreen: React.FC = () => {
   const { user } = useAuth();
-  // 로그인 사용자의 API 키 사용 (없을 경우 마지막에 데모키 폴백)
-  const apiKeyHeader = (user as any)?.apiKey || (user as any)?.api_key || 'rc_live_f49a055d62283fd02e8203ccaba70fc2';
+  // 사용자 API 키 입력/저장 (없으면 호출 차단하고 안내)
+  const [apiKeyInput, setApiKeyInput] = useState<string>(() => {
+    const fromUser = (user as any)?.apiKey || (user as any)?.api_key;
+    const fromStorage = typeof window !== 'undefined' ? localStorage.getItem('rc_dashboard_api_key') || '' : '';
+    return fromUser || fromStorage || '';
+  });
+  const apiKeyHeader = apiKeyInput.trim();
   const [name, setName] = useState<string>(user?.name || '');
   const [email] = useState<string>(user?.email || '');
   const [saving, setSaving] = useState(false);
@@ -71,6 +76,7 @@ const SettingsScreen: React.FC = () => {
   const [suspiciousIPs, setSuspiciousIPs] = useState<any[]>([]);
   const [loadingIPs, setLoadingIPs] = useState(false);
   const [ipStats, setIpStats] = useState<any>(null);
+  const [errorText, setErrorText] = useState<string | null>(null);
   const [blockDialog, setBlockDialog] = useState<{open: boolean, ip: string, reason: string}>({
     open: false,
     ip: '',
@@ -87,6 +93,13 @@ const SettingsScreen: React.FC = () => {
   // 의심스러운 IP 목록 조회
   const fetchSuspiciousIPs = async () => {
     setLoadingIPs(true);
+    setErrorText(null);
+    if (!apiKeyHeader) {
+      setSuspiciousIPs([]);
+      setLoadingIPs(false);
+      setErrorText('API 키가 설정되어 있지 않습니다. 아래에서 API 키를 입력해 주세요.');
+      return;
+    }
     try {
       const response = await fetch('https://gateway.realcatcha.com/api/admin/suspicious-ips', {
         headers: {
@@ -100,10 +113,10 @@ const SettingsScreen: React.FC = () => {
         const items = Array.isArray(data) ? data : (data?.suspicious_ips ?? []);
         setSuspiciousIPs(items);
       } else {
-        console.error('Failed to fetch suspicious IPs');
+        setErrorText('의심 IP 조회 실패: 권한 또는 네트워크 오류');
       }
     } catch (error) {
-      console.error('Error fetching suspicious IPs:', error);
+      setErrorText('의심 IP 조회 중 오류가 발생했습니다.');
     } finally {
       setLoadingIPs(false);
     }
@@ -112,6 +125,8 @@ const SettingsScreen: React.FC = () => {
   // IP 통계 조회
   const fetchIPStats = async () => {
     try {
+      setErrorText(null);
+      if (!apiKeyHeader) return;
       const response = await fetch('https://gateway.realcatcha.com/api/admin/ip-stats', {
         headers: {
           'X-API-Key': apiKeyHeader,
@@ -122,9 +137,12 @@ const SettingsScreen: React.FC = () => {
       if (response.ok) {
         const data = await response.json();
         setIpStats(data);
+      } else {
+        setIpStats(null);
+        setErrorText('IP 통계 조회 실패: 권한 또는 네트워크 오류');
       }
     } catch (error) {
-      console.error('Error fetching IP stats:', error);
+      setErrorText('IP 통계 조회 중 오류가 발생했습니다.');
     }
   };
 
@@ -184,7 +202,7 @@ const SettingsScreen: React.FC = () => {
       fetchSuspiciousIPs();
       fetchIPStats();
     }
-  }, [settings.blockSuspiciousIPs]);
+  }, [settings.blockSuspiciousIPs, apiKeyHeader]);
 
   // 시간 포맷팅 함수 (ISO 문자열/epoch seconds 모두 지원)
   const formatTimestamp = (ts: any) => {
@@ -259,6 +277,12 @@ const SettingsScreen: React.FC = () => {
       {saveStatus === 'error' && (
         <Alert severity="error" sx={{ mb: 2 }}>설정 저장 중 오류가 발생했습니다.</Alert>
       )}
+      {!apiKeyHeader && (
+        <Alert severity="warning" sx={{ mb: 2 }}>API 키가 설정되어 있지 않습니다. 아래 입력란에 API 키를 입력하고 저장해 주세요.</Alert>
+      )}
+      {errorText && (
+        <Alert severity="error" sx={{ mb: 2 }}>{errorText}</Alert>
+      )}
 
       <Grid container spacing={2}>
         {/* 프로필 카드 */}
@@ -276,6 +300,32 @@ const SettingsScreen: React.FC = () => {
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <TextField label="이름" fullWidth value={name} onChange={(e) => setName(e.target.value)} />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="API 키 (X-API-Key)"
+                    fullWidth
+                    value={apiKeyInput}
+                    onChange={(e) => setApiKeyInput(e.target.value)}
+                    placeholder="rc_live_..."
+                    sx={{ mt: 1 }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Button
+                    variant="contained"
+                    onClick={() => {
+                      if (typeof window !== 'undefined') {
+                        localStorage.setItem('rc_dashboard_api_key', apiKeyInput.trim());
+                      }
+                      setMessage('API 키가 저장되었습니다.');
+                      fetchSuspiciousIPs();
+                      fetchIPStats();
+                    }}
+                    disabled={!apiKeyInput.trim()}
+                  >
+                    API 키 저장
+                  </Button>
                 </Grid>
                 <Grid item xs={12}>
                   <Button variant="outlined" onClick={handleSave} disabled={saving}>
