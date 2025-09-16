@@ -35,6 +35,7 @@ import {
   Warning as WarningIcon,
   Info as InfoIcon
 } from '@mui/icons-material';
+import { MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 import { useAuth } from '../../contexts/AuthContext';
 
 const SettingsScreen: React.FC = () => {
@@ -78,6 +79,7 @@ const SettingsScreen: React.FC = () => {
   const [ipStats, setIpStats] = useState<any>(null);
   const [errorText, setErrorText] = useState<string | null>(null);
   const [lastRaw, setLastRaw] = useState<any>(null);
+  const [myKeys, setMyKeys] = useState<string[]>([]);
   const [blockDialog, setBlockDialog] = useState<{open: boolean, ip: string, reason: string}>({
     open: false,
     ip: '',
@@ -102,7 +104,8 @@ const SettingsScreen: React.FC = () => {
       return;
     }
     try {
-      const response = await fetch('https://gateway.realcatcha.com/api/admin/suspicious-ips?page=1&limit=50', {
+      const qp = apiKeyHeader ? `&key_id=${encodeURIComponent(apiKeyHeader)}` : '';
+      const response = await fetch(`https://gateway.realcatcha.com/api/admin/suspicious-ips?page=1&limit=50${qp}`, {
         headers: {
           'X-API-Key': apiKeyHeader,
           'Content-Type': 'application/json'
@@ -129,7 +132,7 @@ const SettingsScreen: React.FC = () => {
     try {
       setErrorText(null);
       if (!apiKeyHeader) return;
-      const response = await fetch('https://gateway.realcatcha.com/api/admin/ip-stats', {
+      const response = await fetch(`https://gateway.realcatcha.com/api/admin/ip-stats?key_id=${encodeURIComponent(apiKeyHeader)}`, {
         headers: {
           'X-API-Key': apiKeyHeader,
           'Content-Type': 'application/json'
@@ -147,6 +150,28 @@ const SettingsScreen: React.FC = () => {
     } catch (error) {
       setErrorText('IP 통계 조회 중 오류가 발생했습니다.');
     }
+  };
+
+  // 내 API 키 목록 조회
+  const fetchMyApiKeys = async () => {
+    try {
+      const response = await fetch('https://gateway.realcatcha.com/api/admin/my-api-keys', {
+        headers: {
+          'X-API-Key': apiKeyHeader || undefined,
+          'Content-Type': 'application/json'
+        } as any
+      });
+      if (response.ok) {
+        const data = await response.json();
+        const keys = (data?.api_keys || []).map((k: any) => k.key_id).filter(Boolean);
+        setMyKeys(keys);
+        // 저장된 키가 없고 서버에서 받은 키가 있으면 첫 키 자동 선택
+        if (!apiKeyHeader && keys.length > 0) {
+          setApiKeyInput(keys[0]);
+          if (typeof window !== 'undefined') localStorage.setItem('rc_dashboard_api_key', keys[0]);
+        }
+      }
+    } catch {}
   };
 
   // IP 차단
@@ -201,6 +226,7 @@ const SettingsScreen: React.FC = () => {
 
   // 컴포넌트 마운트 시 데이터 로드
   useEffect(() => {
+    fetchMyApiKeys();
     if (settings.blockSuspiciousIPs) {
       fetchSuspiciousIPs();
       fetchIPStats();
@@ -305,14 +331,22 @@ const SettingsScreen: React.FC = () => {
                   <TextField label="이름" fullWidth value={name} onChange={(e) => setName(e.target.value)} />
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField
-                    label="API 키 (X-API-Key)"
-                    fullWidth
-                    value={apiKeyInput}
-                    onChange={(e) => setApiKeyInput(e.target.value)}
-                    placeholder="rc_live_..."
-                    sx={{ mt: 1 }}
-                  />
+                  <FormControl fullWidth sx={{ mt: 1 }}>
+                    <InputLabel id="api-key-select-label">API 키 선택</InputLabel>
+                    <Select
+                      labelId="api-key-select-label"
+                      label="API 키 선택"
+                      value={apiKeyInput}
+                      onChange={(e) => setApiKeyInput(String(e.target.value))}
+                    >
+                      {myKeys.map(k => (
+                        <MenuItem key={k} value={k}>{k}</MenuItem>
+                      ))}
+                      {myKeys.length === 0 && (
+                        <MenuItem value="">(키 없음) 먼저 API 키를 입력/저장하세요</MenuItem>
+                      )}
+                    </Select>
+                  </FormControl>
                 </Grid>
                 <Grid item xs={12}>
                   <Button
