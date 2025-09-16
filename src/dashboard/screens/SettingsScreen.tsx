@@ -278,8 +278,6 @@ const SettingsScreen: React.FC = () => {
         <Grid item xs={12}>
           <Card>
             <CardContent>
-            <Card>
-              <CardContent>
                 {/* 디버그 정보 */}
                 <Box mb={2}>
                   <Typography variant="caption" color="text.secondary">
@@ -333,7 +331,7 @@ const SettingsScreen: React.FC = () => {
                           활성 의심 IP
                         </Typography>
                       </Box>
-                </Grid>
+                    </Grid>
                     <Grid item xs={6} md={3}>
                       <Box textAlign="center" p={2} bgcolor="success.light" borderRadius={1}>
                         <Typography variant="h4" color="success.contrastText">
@@ -343,8 +341,8 @@ const SettingsScreen: React.FC = () => {
                           24시간 내 위반
                         </Typography>
                       </Box>
-                </Grid>
-              </Grid>
+                    </Grid>
+                  </Grid>
                 )}
 
                 {/* 의심스러운 IP 목록 */}
