@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -12,8 +12,29 @@ import {
   FormControlLabel,
   Divider,
   Slider,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Chip,
+  IconButton,
+  Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material';
-import { Save as SaveIcon, Refresh as RefreshIcon } from '@mui/icons-material';
+import { 
+  Save as SaveIcon, 
+  Refresh as RefreshIcon,
+  Block as BlockIcon,
+  CheckCircle as UnblockIcon,
+  Warning as WarningIcon,
+  Info as InfoIcon
+} from '@mui/icons-material';
 import { useAuth } from '../../contexts/AuthContext';
 
 const SettingsScreen: React.FC = () => {
@@ -43,12 +64,128 @@ const SettingsScreen: React.FC = () => {
     requireSSL: true,
   });
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
+  
+  // 의심스러운 IP 관리 상태
+  const [suspiciousIPs, setSuspiciousIPs] = useState<any[]>([]);
+  const [loadingIPs, setLoadingIPs] = useState(false);
+  const [ipStats, setIpStats] = useState<any>(null);
+  const [blockDialog, setBlockDialog] = useState<{open: boolean, ip: string, reason: string}>({
+    open: false,
+    ip: '',
+    reason: ''
+  });
 
   const handleSettingChange = (key: string, value: any) => {
     setSettings(prev => ({
       ...prev,
       [key]: value,
     }));
+  };
+
+  // 의심스러운 IP 목록 조회
+  const fetchSuspiciousIPs = async () => {
+    setLoadingIPs(true);
+    try {
+      const response = await fetch('https://api.realcatcha.com/api/admin/suspicious-ips', {
+        headers: {
+          'X-API-Key': 'rc_live_f49a055d62283fd02e8203ccaba70fc2', // 데모 키 사용
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setSuspiciousIPs(data);
+      } else {
+        console.error('Failed to fetch suspicious IPs');
+      }
+    } catch (error) {
+      console.error('Error fetching suspicious IPs:', error);
+    } finally {
+      setLoadingIPs(false);
+    }
+  };
+
+  // IP 통계 조회
+  const fetchIPStats = async () => {
+    try {
+      const response = await fetch('https://api.realcatcha.com/api/admin/ip-stats', {
+        headers: {
+          'X-API-Key': 'rc_live_f49a055d62283fd02e8203ccaba70fc2',
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setIpStats(data);
+      }
+    } catch (error) {
+      console.error('Error fetching IP stats:', error);
+    }
+  };
+
+  // IP 차단
+  const blockIP = async (ip: string, reason: string) => {
+    try {
+      const response = await fetch('https://api.realcatcha.com/api/admin/block-ip', {
+        method: 'POST',
+        headers: {
+          'X-API-Key': 'rc_live_f49a055d62283fd02e8203ccaba70fc2',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ ip_address: ip, reason })
+      });
+      
+      if (response.ok) {
+        setMessage(`IP ${ip}이(가) 차단되었습니다.`);
+        fetchSuspiciousIPs();
+        fetchIPStats();
+      } else {
+        setMessage('IP 차단에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('Error blocking IP:', error);
+      setMessage('IP 차단 중 오류가 발생했습니다.');
+    }
+  };
+
+  // IP 차단 해제
+  const unblockIP = async (ip: string) => {
+    try {
+      const response = await fetch('https://api.realcatcha.com/api/admin/unblock-ip', {
+        method: 'POST',
+        headers: {
+          'X-API-Key': 'rc_live_f49a055d62283fd02e8203ccaba70fc2',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ ip_address: ip })
+      });
+      
+      if (response.ok) {
+        setMessage(`IP ${ip}의 차단이 해제되었습니다.`);
+        fetchSuspiciousIPs();
+        fetchIPStats();
+      } else {
+        setMessage('IP 차단 해제에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('Error unblocking IP:', error);
+      setMessage('IP 차단 해제 중 오류가 발생했습니다.');
+    }
+  };
+
+  // 컴포넌트 마운트 시 데이터 로드
+  useEffect(() => {
+    if (settings.blockSuspiciousIPs) {
+      fetchSuspiciousIPs();
+      fetchIPStats();
+    }
+  }, [settings.blockSuspiciousIPs]);
+
+  // 시간 포맷팅 함수
+  const formatTimestamp = (timestamp: number) => {
+    return new Date(timestamp * 1000).toLocaleString('ko-KR');
   };
 
   const handleSave = async () => {
@@ -192,8 +329,209 @@ const SettingsScreen: React.FC = () => {
               </Grid>
             </CardContent>
           </Card>
+
+          {/* 의심스러운 IP 관리 */}
+          {settings.blockSuspiciousIPs && (
+            <Card>
+              <CardContent>
+                <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                  <Typography variant="h6">의심스러운 IP 관리</Typography>
+                  <Button
+                    variant="outlined"
+                    startIcon={<RefreshIcon />}
+                    onClick={() => {
+                      fetchSuspiciousIPs();
+                      fetchIPStats();
+                    }}
+                    disabled={loadingIPs}
+                  >
+                    새로고침
+                  </Button>
+                </Box>
+
+                {/* IP 통계 */}
+                {ipStats && (
+                  <Grid container spacing={2} mb={3}>
+                    <Grid item xs={6} md={3}>
+                      <Box textAlign="center" p={2} bgcolor="warning.light" borderRadius={1}>
+                        <Typography variant="h4" color="warning.contrastText">
+                          {ipStats.total_suspicious_ips}
+                        </Typography>
+                        <Typography variant="body2" color="warning.contrastText">
+                          총 의심 IP
+                        </Typography>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={6} md={3}>
+                      <Box textAlign="center" p={2} bgcolor="error.light" borderRadius={1}>
+                        <Typography variant="h4" color="error.contrastText">
+                          {ipStats.blocked_ips}
+                        </Typography>
+                        <Typography variant="body2" color="error.contrastText">
+                          차단된 IP
+                        </Typography>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={6} md={3}>
+                      <Box textAlign="center" p={2} bgcolor="info.light" borderRadius={1}>
+                        <Typography variant="h4" color="info.contrastText">
+                          {ipStats.active_suspicious_ips}
+                        </Typography>
+                        <Typography variant="body2" color="info.contrastText">
+                          활성 의심 IP
+                        </Typography>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={6} md={3}>
+                      <Box textAlign="center" p={2} bgcolor="success.light" borderRadius={1}>
+                        <Typography variant="h4" color="success.contrastText">
+                          {ipStats.recent_violations_24h}
+                        </Typography>
+                        <Typography variant="body2" color="success.contrastText">
+                          24시간 내 위반
+                        </Typography>
+                      </Box>
+                    </Grid>
+                  </Grid>
+                )}
+
+                {/* 의심스러운 IP 목록 */}
+                <TableContainer component={Paper}>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>IP 주소</TableCell>
+                        <TableCell>상태</TableCell>
+                        <TableCell>위반 횟수</TableCell>
+                        <TableCell>최근 위반</TableCell>
+                        <TableCell>차단 사유</TableCell>
+                        <TableCell>작업</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {suspiciousIPs.map((ipData, index) => (
+                        <TableRow key={index}>
+                          <TableCell>
+                            <Box display="flex" alignItems="center">
+                              <WarningIcon color="warning" sx={{ mr: 1 }} />
+                              <Typography variant="body2" fontFamily="monospace">
+                                {ipData.ip_address}
+                              </Typography>
+                            </Box>
+                          </TableCell>
+                          <TableCell>
+                            <Chip
+                              label={ipData.is_blocked ? "차단됨" : "활성"}
+                              color={ipData.is_blocked ? "error" : "warning"}
+                              size="small"
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Typography variant="body2">
+                              {ipData.violation_count}회
+                            </Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Typography variant="body2">
+                              {formatTimestamp(ipData.last_violation)}
+                            </Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Typography variant="body2" color="text.secondary">
+                              {ipData.block_reason || "Rate limit 초과"}
+                            </Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Box display="flex" gap={1}>
+                              {ipData.is_blocked ? (
+                                <Tooltip title="차단 해제">
+                                  <IconButton
+                                    size="small"
+                                    color="success"
+                                    onClick={() => unblockIP(ipData.ip_address)}
+                                  >
+                                    <UnblockIcon />
+                                  </IconButton>
+                                </Tooltip>
+                              ) : (
+                                <Tooltip title="IP 차단">
+                                  <IconButton
+                                    size="small"
+                                    color="error"
+                                    onClick={() => setBlockDialog({
+                                      open: true,
+                                      ip: ipData.ip_address,
+                                      reason: 'Manual block'
+                                    })}
+                                  >
+                                    <BlockIcon />
+                                  </IconButton>
+                                </Tooltip>
+                              )}
+                            </Box>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                      {suspiciousIPs.length === 0 && !loadingIPs && (
+                        <TableRow>
+                          <TableCell colSpan={6} align="center">
+                            <Typography variant="body2" color="text.secondary">
+                              의심스러운 IP가 없습니다.
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                      )}
+                      {loadingIPs && (
+                        <TableRow>
+                          <TableCell colSpan={6} align="center">
+                            <Typography variant="body2" color="text.secondary">
+                              로딩 중...
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </CardContent>
+            </Card>
+          )}
         </Grid>
       </Grid>
+
+      {/* IP 차단 다이얼로그 */}
+      <Dialog open={blockDialog.open} onClose={() => setBlockDialog({open: false, ip: '', reason: ''})}>
+        <DialogTitle>IP 차단</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" gutterBottom>
+            IP 주소 <strong>{blockDialog.ip}</strong>를 차단하시겠습니까?
+          </Typography>
+          <TextField
+            fullWidth
+            label="차단 사유"
+            value={blockDialog.reason}
+            onChange={(e) => setBlockDialog(prev => ({...prev, reason: e.target.value}))}
+            margin="normal"
+            multiline
+            rows={3}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setBlockDialog({open: false, ip: '', reason: ''})}>
+            취소
+          </Button>
+          <Button 
+            onClick={() => {
+              blockIP(blockDialog.ip, blockDialog.reason);
+              setBlockDialog({open: false, ip: '', reason: ''});
+            }}
+            color="error"
+            variant="contained"
+          >
+            차단
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
