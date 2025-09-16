@@ -92,8 +92,8 @@ const PayPage = () => {
   const getPlanPrice = (planType) => {
     const priceMapping = {
       'basic': 100,
-      'plus': 9900,
-      'pro': 29000
+      'plus': 25000,
+      'pro': 100000
     };
     return priceMapping[planType];
   };
@@ -219,7 +219,7 @@ const PayPage = () => {
               <div className="plan-header">
                 <h3 className="plan-name">Plus Plan</h3>
                 <div className="plan-price">
-                  <span className="price">₩9,900</span>
+                  <span className="price">₩25,000</span>
                   <span className="period">/월</span>
                 </div>
                 <p className="plan-description">
@@ -262,7 +262,7 @@ const PayPage = () => {
               <div className="plan-header">
                 <h3 className="plan-name">Pro Plan</h3>
                 <div className="plan-price">
-                  <span className="price">₩29,000</span>
+                  <span className="price">₩100,000</span>
                   <span className="period">/월</span>
                 </div>
                 <p className="plan-description">
