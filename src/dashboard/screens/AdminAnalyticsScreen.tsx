@@ -278,27 +278,6 @@ const AdminAnalyticsScreen: React.FC = () => {
                 </Grid>
                 <Grid item xs={6} sm={3}>
                   <Box textAlign="center">
-                    <Typography variant="h6" color="text.secondary">
-                      최근 활성 사용자
-                    </Typography>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-around', mt: 1 }}>
-                      <Box>
-                        <Typography variant="subtitle2" color="text.secondary">7일</Typography>
-                        <Typography variant="h6">{formatNumber(active7d)}</Typography>
-                      </Box>
-                      <Box>
-                        <Typography variant="subtitle2" color="text.secondary">30일</Typography>
-                        <Typography variant="h6">{formatNumber(active30d)}</Typography>
-                      </Box>
-                      <Box>
-                        <Typography variant="subtitle2" color="text.secondary">90일</Typography>
-                        <Typography variant="h6">{formatNumber(active90d)}</Typography>
-                      </Box>
-                    </Box>
-                  </Box>
-                </Grid>
-                <Grid item xs={6} sm={3}>
-                  <Box textAlign="center">
                     <Typography variant="h4" color="success.main">
                       {formatNumber(systemOverview.totalGenerated)}
                     </Typography>
