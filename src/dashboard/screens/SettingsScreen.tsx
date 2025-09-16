@@ -314,17 +314,8 @@ const SettingsScreen: React.FC = () => {
                   </Button>
                 </Box>
 
-                {/* IP 통계 (스켈레톤) */}
-                {showLoadingStats && (
-                  <Grid container spacing={2} mb={3}>
-                    {[1,2,3,4].map((i)=> (
-                      <Grid item xs={6} md={3} key={i}>
-                        <Skeleton variant="rounded" height={96} />
-                      </Grid>
-                    ))}
-                  </Grid>
-                )}
-                {!showLoadingStats && ipStats && (
+                {/* IP 통계 */}
+                {ipStats && (
                   <Grid container spacing={2} mb={3}>
                     <Grid item xs={6} md={3}>
                       <Box textAlign="center" p={2} bgcolor="warning.light" borderRadius={1}>
@@ -369,14 +360,7 @@ const SettingsScreen: React.FC = () => {
                   </Grid>
                 )}
 
-                {/* 의심스러운 IP 목록 (스켈레톤) */}
-                {showLoadingIPs ? (
-                  <Box>
-                    {[1,2,3].map((i)=> (
-                      <Skeleton key={i} variant="rounded" height={56} sx={{ mb: 1 }} />
-                    ))}
-                  </Box>
-                ) : (
+                {/* 의심스러운 IP 목록 */}
                 <TableContainer component={Paper}>
                   <Table>
                     <TableHead>
@@ -474,7 +458,6 @@ const SettingsScreen: React.FC = () => {
                     </TableBody>
                   </Table>
                 </TableContainer>
-                )}
             </CardContent>
           </Card>
         </Grid>
