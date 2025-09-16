@@ -8,10 +8,6 @@ import {
   Button,
   Grid,
   Alert,
-  Switch,
-  FormControlLabel,
-  Divider,
-  Slider,
   Table,
   TableBody,
   TableCell,
@@ -28,12 +24,10 @@ import {
   DialogActions,
 } from '@mui/material';
 import { 
-  Save as SaveIcon, 
   Refresh as RefreshIcon,
   Block as BlockIcon,
   CheckCircle as UnblockIcon,
-  Warning as WarningIcon,
-  Info as InfoIcon
+  Warning as WarningIcon
 } from '@mui/icons-material';
 import { MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 import { useAuth } from '../../contexts/AuthContext';
@@ -47,31 +41,7 @@ const SettingsScreen: React.FC = () => {
     return fromUser || fromStorage || '';
   });
   const apiKeyHeader = apiKeyInput.trim();
-  const [name, setName] = useState<string>(user?.name || '');
-  const [email] = useState<string>(user?.email || '');
-  const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  // 구 대시보드 설정 UI 통합 상태
-  const [settings, setSettings] = useState({
-    // 캡차 설정
-    imageRecognitionEnabled: true,
-    handwritingRecognitionEnabled: true,
-    emotionRecognitionEnabled: false,
-    difficultyLevel: 3,
-    timeoutDuration: 30,
-    maxAttempts: 3,
-    // 시스템 설정
-    autoScalingEnabled: true,
-    debugMode: false,
-    analyticsEnabled: true,
-    alertsEnabled: true,
-    // 보안 설정
-    rateLimitEnabled: true,
-    rateLimitPerMinute: 60,
-    blockSuspiciousIPs: true,
-    requireSSL: true,
-  });
-  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
   
   // 의심스러운 IP 관리 상태
   const [suspiciousIPs, setSuspiciousIPs] = useState<any[]>([]);
@@ -86,12 +56,7 @@ const SettingsScreen: React.FC = () => {
     reason: ''
   });
 
-  const handleSettingChange = (key: string, value: any) => {
-    setSettings(prev => ({
-      ...prev,
-      [key]: value,
-    }));
-  };
+  const handleSettingChange = (_key: string, _value: any) => {};
 
   // 의심스러운 IP 목록 조회
   const fetchSuspiciousIPs = async () => {
@@ -224,14 +189,12 @@ const SettingsScreen: React.FC = () => {
     }
   };
 
-  // 컴포넌트 마운트 시 데이터 로드
+  // 데이터 로드
   useEffect(() => {
     fetchMyApiKeys();
-    if (settings.blockSuspiciousIPs) {
-      fetchSuspiciousIPs();
-      fetchIPStats();
-    }
-  }, [settings.blockSuspiciousIPs, apiKeyHeader]);
+    fetchSuspiciousIPs();
+    fetchIPStats();
+  }, [apiKeyHeader]);
 
   // 시간 포맷팅 함수 (ISO 문자열/epoch seconds 모두 지원)
   const formatTimestamp = (ts: any) => {
@@ -289,23 +252,13 @@ const SettingsScreen: React.FC = () => {
   return (
     <Box className="rc-container">
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography variant="h5" sx={{ fontWeight: 700 }}>설정</Typography>
+        <Typography variant="h5" sx={{ fontWeight: 700 }}>의심 IP 관리</Typography>
         <Box sx={{ display: 'flex', gap: 1 }}>
-          <Button variant="outlined" startIcon={<RefreshIcon />} onClick={handleResetSettings}>
-            초기화
-          </Button>
-          <Button variant="contained" startIcon={<SaveIcon />} onClick={handleSaveSettings} disabled={saveStatus === 'saving'}>
-            {saveStatus === 'saving' ? '저장 중...' : '설정 저장'}
+          <Button variant="outlined" startIcon={<RefreshIcon />} onClick={() => { fetchSuspiciousIPs(); fetchIPStats(); }}>
+            새로고침
           </Button>
         </Box>
-      </Box>  
-
-      {saveStatus === 'success' && (
-        <Alert severity="success" sx={{ mb: 2 }}>설정이 저장되었습니다. (데모)</Alert>
-      )}
-      {saveStatus === 'error' && (
-        <Alert severity="error" sx={{ mb: 2 }}>설정 저장 중 오류가 발생했습니다.</Alert>
-      )}
+      </Box>
       {!apiKeyHeader && (
         <Alert severity="warning" sx={{ mb: 2 }}>API 키가 설정되어 있지 않습니다. 아래 입력란에 API 키를 입력하고 저장해 주세요.</Alert>
       )}
@@ -314,22 +267,11 @@ const SettingsScreen: React.FC = () => {
       )}
 
       <Grid container spacing={2}>
-        {/* 프로필 카드 */}
+        {/* API 키 선택/저장 */}
         <Grid item xs={12}>
           <Card>
             <CardContent>
-              {message && (
-                <Alert severity={message.includes('오류') ? 'error' : 'success'} sx={{ mb: 2 }}>
-                  {message}
-                </Alert>
-              )}
               <Grid container spacing={2}>
-                <Grid item xs={12} md={6}>
-                  <TextField label="이메일" fullWidth value={email} disabled />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <TextField label="이름" fullWidth value={name} onChange={(e) => setName(e.target.value)} />
-                </Grid>
                 <Grid item xs={12}>
                   <FormControl fullWidth sx={{ mt: 1 }}>
                     <InputLabel id="api-key-select-label">API 키 선택</InputLabel>
@@ -365,9 +307,11 @@ const SettingsScreen: React.FC = () => {
                   </Button>
                 </Grid>
                 <Grid item xs={12}>
-                  <Button variant="outlined" onClick={handleSave} disabled={saving}>
-                    {saving ? '저장 중...' : '프로필 저장'}
-                  </Button>
+                  {message && (
+                    <Alert severity={message.includes('오류') ? 'error' : 'success'} sx={{ mt: 1 }}>
+                      {message}
+                    </Alert>
+                  )}
                 </Grid>
               </Grid>
             </CardContent>
