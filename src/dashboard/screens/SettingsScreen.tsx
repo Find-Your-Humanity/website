@@ -37,8 +37,7 @@ const SettingsScreen: React.FC = () => {
   // 사용자 API 키 입력/저장 (없으면 호출 차단하고 안내)
   const [apiKeyInput, setApiKeyInput] = useState<string>(() => {
     const fromUser = (user as any)?.apiKey || (user as any)?.api_key;
-    const fromStorage = typeof window !== 'undefined' ? localStorage.getItem('rc_dashboard_api_key') || '' : '';
-    return fromUser || fromStorage || '';
+    return fromUser || '';
   });
   const apiKeyHeader = apiKeyInput.trim();
   const [message, setMessage] = useState<string | null>(null);
@@ -197,6 +196,22 @@ const SettingsScreen: React.FC = () => {
     fetchIPStats();
   }, [apiKeyHeader]);
 
+  // 로그인 사용자 변경 시, 저장된 키 초기화 및 재조회
+  useEffect(() => {
+    const uid = (user as any)?.id || (user as any)?.user_id;
+    if (!uid) return;
+    // 다른 사용자로 전환 시 로컬 저장 키 초기화
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('rc_dashboard_api_key');
+    }
+    setApiKeyInput('');
+    setMyKeys([]);
+    setSuspiciousIPs([]);
+    setIpStats(null);
+    setErrorText(null);
+    fetchMyApiKeys();
+  }, [(user as any)?.id]);
+
   // 시간 포맷팅 함수 (ISO 문자열/epoch seconds 모두 지원)
   const formatTimestamp = (ts: any) => {
     if (ts === null || ts === undefined) return '-';
@@ -251,9 +266,6 @@ const SettingsScreen: React.FC = () => {
                   <Button
                     variant="contained"
                     onClick={() => {
-                      if (typeof window !== 'undefined') {
-                        localStorage.setItem('rc_dashboard_api_key', apiKeyInput.trim());
-                      }
                       setMessage('API 키가 저장되었습니다.');
                       fetchSuspiciousIPs();
                       fetchIPStats();
