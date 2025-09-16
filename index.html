@@ -15,30 +15,10 @@
     <!-- RealCaptcha 위젯 스크립트 -->
     <script src="https://1df60f5faf3b4f2f992ced2edbae22ad.kakaoiedge.com/latest/realcaptcha-widget.min.js"></script>
     
-    <!-- 위젯 스크립트 로드 확인 및 초기화 -->
+    <!-- 위젯 스크립트 로드 확인 및 초기화 (콘솔 로그 제거) -->
     <script>
       window.addEventListener('load', function() {
-        console.log('🔍 React 버전 확인:', {
-          'React': window.React?.version,
-          'ReactDOM': window.ReactDOM?.version
-        });
-        
-        console.log('🔍 RealCaptcha 관련 함수들:', 
-          Object.keys(window).filter(key => 
-            key.toLowerCase().includes('captcha') || 
-            key.toLowerCase().includes('real')
-          )
-        );
-        
-        console.log('🔍 RealCaptcha 객체:', window.RealCaptcha);
-        
-        // renderRealCaptcha 함수 확인
-        if (typeof window.renderRealCaptcha === 'function') {
-          console.log('✅ renderRealCaptcha 함수를 찾았습니다!');
-        } else {
-          console.log('❌ renderRealCaptcha 함수를 찾을 수 없습니다.');
-          console.log('사용 가능한 함수들:', Object.keys(window));
-        }
+        // 콘솔 출력 제거됨
       });
     </script>
   </head>
