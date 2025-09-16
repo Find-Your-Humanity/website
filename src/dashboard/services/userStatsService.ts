@@ -62,7 +62,6 @@ class UserStatsService {
       const response = await apiClient.get(`/api/user/stats/overview?period=${period}`);
       return response.data;
     } catch (error) {
-      console.error('사용자 통계 개요 조회 실패:', error);
       throw error;
     }
   }
@@ -75,7 +74,6 @@ class UserStatsService {
       const response = await apiClient.get(`/api/user/stats/by-api-key?period=${period}`);
       return response.data;
     } catch (error) {
-      console.error('API 키별 통계 조회 실패:', error);
       throw error;
     }
   }
@@ -96,7 +94,6 @@ class UserStatsService {
       const response = await apiClient.get(`/api/user/stats/time-series?${params}`);
       return response.data;
     } catch (error) {
-      console.error('시계열 통계 조회 실패:', error);
       throw error;
     }
   }
@@ -109,7 +106,6 @@ class UserStatsService {
       const response = await apiClient.get(`/api/user/stats/hourly-chart?period=${period}`);
       return response.data;
     } catch (error) {
-      console.error('시간별 차트 데이터 조회 실패:', error);
       throw error;
     }
   }

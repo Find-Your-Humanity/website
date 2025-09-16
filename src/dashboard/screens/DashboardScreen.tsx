@@ -85,10 +85,7 @@ const DashboardScreen: React.FC = () => {
       
       setLastUpdated(new Date());
     } catch (error) {
-      console.error('대시보드 데이터 로드 실패:', error);
-      console.error('Error details:', error);
-      // 에러 발생 시 Mock 데이터 사용
-      console.log('Mock 데이터로 대체합니다.');
+      // 콘솔 출력 제거, UI로만 처리
     } finally {
       setLoading(false);
     }
@@ -156,10 +153,7 @@ const DashboardScreen: React.FC = () => {
   // 실제 데이터만 사용 (Mock 데이터 제거)
   const creditUsagePercentage = analytics?.plan_info?.usage_percentage || 0;
   
-  // 디버깅용 로그
-  console.log('Dashboard Analytics:', analytics);
-  console.log('Credit Usage Percentage:', creditUsagePercentage);
-  console.log('Analytics Success:', analytics ? 'Yes' : 'No');
+  // 디버깅 로그 제거
   const levelData = analytics?.level_stats ? [
     { name: 'Level 0 (Pass)', value: Math.round(analytics.level_stats.level_0), color: '#8884d8' },
     { name: 'Level 1 (Image)', value: Math.round(analytics.level_stats.level_1), color: '#82ca9d' },

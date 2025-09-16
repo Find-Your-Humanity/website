@@ -61,7 +61,7 @@ const BillingScreen: React.FC = () => {
         );
         setPaymentWidget(widget);
       } catch (e) {
-        console.error('Toss Payments 위젯 초기화 실패:', e);
+        // 콘솔 출력 제거
       }
     })();
   }, []);
@@ -109,7 +109,7 @@ const BillingScreen: React.FC = () => {
         setError(plansResponse.error || '요금제 목록을 불러오는데 실패했습니다.');
       }
     } catch (err) {
-      console.error('요금제 정보 조회 실패:', err);
+      // 콘솔 출력 제거
       setError('요금제 정보를 불러오는데 실패했습니다.');
     } finally {
       setLoading(false);

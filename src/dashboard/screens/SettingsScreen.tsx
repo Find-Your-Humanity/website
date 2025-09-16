@@ -161,7 +161,6 @@ const SettingsScreen: React.FC = () => {
         setMessage('IP 차단에 실패했습니다.');
       }
     } catch (error) {
-      console.error('Error blocking IP:', error);
       setMessage('IP 차단 중 오류가 발생했습니다.');
     }
   };
@@ -186,7 +185,6 @@ const SettingsScreen: React.FC = () => {
         setMessage('IP 차단 해제에 실패했습니다.');
       }
     } catch (error) {
-      console.error('Error unblocking IP:', error);
       setMessage('IP 차단 해제 중 오류가 발생했습니다.');
     }
   };

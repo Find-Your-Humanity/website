@@ -113,11 +113,11 @@ const AnalyticsScreen: React.FC = () => {
         if (res.success) {
           setErrorAnalysis(res.data.error_types || []);
         } else {
-          console.error('오류 분석 API 응답 실패:', res);
+          // 콘솔 출력 제거
           setErrorAnalysis([]);
         }
       } catch (e) {
-        console.error('오류 분석 데이터 조회 실패:', e);
+        // 콘솔 출력 제거
         // 401 오류 등 인증 실패 시 빈 배열로 설정 (UI는 정상 표시)
         setErrorAnalysis([]);
       }
@@ -135,7 +135,7 @@ const AnalyticsScreen: React.FC = () => {
           setUsageLimits(res.data);
         }
       } catch (e) {
-        console.error('API 사용량 제한 조회 실패:', e);
+        // 콘솔 출력 제거
       }
     };
     
@@ -144,7 +144,7 @@ const AnalyticsScreen: React.FC = () => {
     
     // 요금제 변경 이벤트 리스너 추가
     const handlePlanChanged = () => {
-      console.log('요금제 변경 감지됨 - Analytics 데이터 새로고침');
+      // 로그 제거
       fetchUsageLimits();
     };
     
