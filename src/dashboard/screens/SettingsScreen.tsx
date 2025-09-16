@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Box,
   Typography,
@@ -29,7 +29,7 @@ import {
   CheckCircle as UnblockIcon,
   Warning as WarningIcon
 } from '@mui/icons-material';
-import { MenuItem, Select, InputLabel, FormControl } from '@mui/material';
+import { MenuItem, Select, InputLabel, FormControl, Skeleton } from '@mui/material';
 import { useAuth } from '../../contexts/AuthContext';
 
 const SettingsScreen: React.FC = () => {
@@ -45,7 +45,10 @@ const SettingsScreen: React.FC = () => {
   // 의심스러운 IP 관리 상태
   const [suspiciousIPs, setSuspiciousIPs] = useState<any[]>([]);
   const [loadingIPs, setLoadingIPs] = useState(false);
+  const [showLoadingIPs, setShowLoadingIPs] = useState(false);
   const [ipStats, setIpStats] = useState<any>(null);
+  const [loadingStats, setLoadingStats] = useState(false);
+  const [showLoadingStats, setShowLoadingStats] = useState(false);
   const [errorText, setErrorText] = useState<string | null>(null);
   const [lastRaw, setLastRaw] = useState<any>(null);
   const [myKeys, setMyKeys] = useState<string[]>([]);
@@ -55,15 +58,24 @@ const SettingsScreen: React.FC = () => {
     reason: ''
   });
 
+  // 요청 중복 취소용
+  const abortRef = useRef<{ ips?: AbortController; stats?: AbortController; keys?: AbortController }>({});
+
   const handleSettingChange = (_key: string, _value: any) => {};
 
   // 의심스러운 IP 목록 조회
   const fetchSuspiciousIPs = async () => {
+    // 이전 요청 취소
+    abortRef.current.ips?.abort();
+    const ac = new AbortController();
+    abortRef.current.ips = ac;
     setLoadingIPs(true);
+    const t = setTimeout(() => setShowLoadingIPs(true), 150);
     setErrorText(null);
     if (!apiKeyHeader) {
       setSuspiciousIPs([]);
       setLoadingIPs(false);
+      setShowLoadingIPs(false);
       setErrorText('API 키가 설정되어 있지 않습니다. 아래에서 API 키를 입력해 주세요.');
       return;
     }
@@ -73,7 +85,8 @@ const SettingsScreen: React.FC = () => {
         headers: {
           'X-API-Key': apiKeyHeader,
           'Content-Type': 'application/json'
-        }
+        },
+        signal: ac.signal
       });
       
       if (response.ok) {
@@ -85,22 +98,33 @@ const SettingsScreen: React.FC = () => {
         setErrorText('의심 IP 조회 실패: 권한 또는 네트워크 오류');
       }
     } catch (error) {
-      setErrorText('의심 IP 조회 중 오류가 발생했습니다.');
+      if ((error as any)?.name !== 'AbortError') {
+        setErrorText('의심 IP 조회 중 오류가 발생했습니다.');
+      }
     } finally {
       setLoadingIPs(false);
+      setShowLoadingIPs(false);
+      clearTimeout(t);
     }
   };
 
   // IP 통계 조회
   const fetchIPStats = async () => {
+    // 이전 요청 취소
+    abortRef.current.stats?.abort();
+    const ac = new AbortController();
+    abortRef.current.stats = ac;
     try {
       setErrorText(null);
       if (!apiKeyHeader) return;
+      setLoadingStats(true);
+      const t = setTimeout(() => setShowLoadingStats(true), 150);
       const response = await fetch(`https://gateway.realcatcha.com/api/admin/ip-stats?key_id=${encodeURIComponent(apiKeyHeader)}`, {
         headers: {
           'X-API-Key': apiKeyHeader,
           'Content-Type': 'application/json'
-        }
+        },
+        signal: ac.signal
       });
       
       if (response.ok) {
@@ -112,16 +136,25 @@ const SettingsScreen: React.FC = () => {
         setErrorText('IP 통계 조회 실패: 권한 또는 네트워크 오류');
       }
     } catch (error) {
-      setErrorText('IP 통계 조회 중 오류가 발생했습니다.');
+      if ((error as any)?.name !== 'AbortError') {
+        setErrorText('IP 통계 조회 중 오류가 발생했습니다.');
+      }
+    } finally {
+      setLoadingStats(false);
+      setShowLoadingStats(false);
     }
   };
 
   // 내 API 키 목록 조회
   const fetchMyApiKeys = async () => {
     try {
+      abortRef.current.keys?.abort();
+      const ac = new AbortController();
+      abortRef.current.keys = ac;
       const response = await fetch('https://gateway.realcatcha.com/api/admin/my-api-keys', {
         // 세션 기반으로만 동작하므로 쿠키 포함
-        credentials: 'include'
+        credentials: 'include',
+        signal: ac.signal
       } as RequestInit);
       if (response.ok) {
         const data = await response.json();
@@ -312,8 +345,17 @@ const SettingsScreen: React.FC = () => {
                   </Button>
                 </Box>
 
-                {/* IP 통계 */}
-                {ipStats && (
+                {/* IP 통계 (스켈레톤) */}
+                {showLoadingStats && (
+                  <Grid container spacing={2} mb={3}>
+                    {[1,2,3,4].map((i)=> (
+                      <Grid item xs={6} md={3} key={i}>
+                        <Skeleton variant="rounded" height={96} />
+                      </Grid>
+                    ))}
+                  </Grid>
+                )}
+                {!showLoadingStats && ipStats && (
                   <Grid container spacing={2} mb={3}>
                     <Grid item xs={6} md={3}>
                       <Box textAlign="center" p={2} bgcolor="warning.light" borderRadius={1}>
@@ -358,7 +400,14 @@ const SettingsScreen: React.FC = () => {
                   </Grid>
                 )}
 
-                {/* 의심스러운 IP 목록 */}
+                {/* 의심스러운 IP 목록 (스켈레톤) */}
+                {showLoadingIPs ? (
+                  <Box>
+                    {[1,2,3].map((i)=> (
+                      <Skeleton key={i} variant="rounded" height={56} sx={{ mb: 1 }} />
+                    ))}
+                  </Box>
+                ) : (
                 <TableContainer component={Paper}>
                   <Table>
                     <TableHead>
@@ -456,6 +505,7 @@ const SettingsScreen: React.FC = () => {
                     </TableBody>
                   </Table>
                 </TableContainer>
+                )}
             </CardContent>
           </Card>
         </Grid>
