@@ -447,7 +447,6 @@ const SettingsScreen: React.FC = () => {
                 </TableContainer>
             </CardContent>
           </Card>
-          )}
         </Grid>
       </Grid>
 
