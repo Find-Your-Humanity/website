@@ -86,7 +86,7 @@ const SettingsScreen: React.FC = () => {
   const fetchSuspiciousIPs = async () => {
     setLoadingIPs(true);
     try {
-      const response = await fetch('https://gateway-api.realcatcha.com/api/admin/suspicious-ips', {
+      const response = await fetch('https://gateway.realcatcha.com/api/admin/suspicious-ips', {
         headers: {
           'X-API-Key': 'rc_live_f49a055d62283fd02e8203ccaba70fc2', // 데모 키 사용
           'Content-Type': 'application/json'
@@ -109,7 +109,7 @@ const SettingsScreen: React.FC = () => {
   // IP 통계 조회
   const fetchIPStats = async () => {
     try {
-      const response = await fetch('https://gateway-api.realcatcha.com/api/admin/ip-stats', {
+      const response = await fetch('https://gateway.realcatcha.com/api/admin/ip-stats', {
         headers: {
           'X-API-Key': 'rc_live_f49a055d62283fd02e8203ccaba70fc2',
           'Content-Type': 'application/json'
@@ -128,7 +128,7 @@ const SettingsScreen: React.FC = () => {
   // IP 차단
   const blockIP = async (ip: string, reason: string) => {
     try {
-      const response = await fetch('https://gateway-api.realcatcha.com/api/admin/block-ip', {
+      const response = await fetch('https://gateway.realcatcha.com/api/admin/block-ip', {
         method: 'POST',
         headers: {
           'X-API-Key': 'rc_live_f49a055d62283fd02e8203ccaba70fc2',
@@ -153,7 +153,7 @@ const SettingsScreen: React.FC = () => {
   // IP 차단 해제
   const unblockIP = async (ip: string) => {
     try {
-      const response = await fetch('https://gateway-api.realcatcha.com/api/admin/unblock-ip', {
+      const response = await fetch('https://gateway.realcatcha.com/api/admin/unblock-ip', {
         method: 'POST',
         headers: {
           'X-API-Key': 'rc_live_f49a055d62283fd02e8203ccaba70fc2',
