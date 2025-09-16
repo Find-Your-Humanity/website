@@ -262,19 +262,7 @@ const SettingsScreen: React.FC = () => {
                     </Select>
                   </FormControl>
                 </Grid>
-                <Grid item xs={12}>
-                  <Button
-                    variant="contained"
-                    onClick={() => {
-                      setMessage('API 키가 저장되었습니다.');
-                      fetchSuspiciousIPs();
-                      fetchIPStats();
-                    }}
-                    disabled={!apiKeyInput.trim()}
-                  >
-                    API 키 저장
-                  </Button>
-                </Grid>
+                
                 <Grid item xs={12}>
                   {message && (
                     <Alert severity={message.includes('오류') ? 'error' : 'success'} sx={{ mt: 1 }}>
@@ -299,17 +287,7 @@ const SettingsScreen: React.FC = () => {
                 </Box>
                 <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
                   <Typography variant="h6">의심스러운 IP 관리</Typography>
-                  <Button
-                    variant="outlined"
-                    startIcon={<RefreshIcon />}
-                    onClick={() => {
-                      fetchSuspiciousIPs();
-                      fetchIPStats();
-                    }}
-                    disabled={loadingIPs}
-                  >
-                    새로고침
-                  </Button>
+                  
                 </Box>
 
                 {/* IP 통계 */}
