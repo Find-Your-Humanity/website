@@ -44,7 +44,12 @@ export const AuthProvider = ({ children }) => {
         // Google OAuth 사용자는 쿠키 기반으로 사용자 정보 확인
       }
       
-      // 2. 쿠키 기반 자동 로그인 시도 (401 오류 조용히 처리)
+      // 2. 쿠키 기반 자동 로그인 시도 (조건부: 로컬 스토리지 힌트가 있을 때만 호출)
+      const shouldAttemptCookieLogin = Boolean(token || userData);
+      if (!shouldAttemptCookieLogin) {
+        setLoading(false);
+        return;
+      }
       try {
         const response = await fetch('https://gateway.realcatcha.com/api/auth/me', {
           method: 'GET',
