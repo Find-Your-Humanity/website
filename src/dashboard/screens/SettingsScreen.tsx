@@ -55,7 +55,7 @@ const SettingsScreen: React.FC = () => {
     reason: ''
   });
 
-  // (요청 취소 미사용)
+  // 요청 취소 없음
 
   const handleSettingChange = (_key: string, _value: any) => {};
 
