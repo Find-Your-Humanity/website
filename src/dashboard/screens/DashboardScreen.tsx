@@ -357,55 +357,6 @@ const DashboardScreen: React.FC = () => {
               </Card>
             </Grid>
             
-            <Grid item>
-              <Card sx={{ 
-                transition: 'all 0.3s ease-in-out',
-                '&:hover': {
-                  transform: 'translateY(-4px)',
-                  boxShadow: '0 8px 25px rgba(0,0,0,0.15)',
-                  cursor: 'pointer'
-                }
-              }}>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    Pro Credit
-                  </Typography>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4 }}>
-                    <Box sx={{ width: '80%', mb: 2, position: 'relative' }}>
-                      <LinearProgress 
-                        variant="determinate" 
-                        value={45} 
-                        sx={{ 
-                          height: 20, 
-                          borderRadius: 8,
-                          backgroundColor: '#e0e0e0',
-                          '& .MuiLinearProgress-bar': {
-                            borderRadius: 8,
-                            backgroundColor: '#9c27b0'
-                          }
-                        }} 
-                      />
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
-                        <Typography variant="caption" color="text.secondary">0</Typography>
-                        <Typography variant="caption" color="text.secondary">100</Typography>
-                      </Box>
-                      <Typography 
-                        variant="body2" 
-                        color="text.secondary"
-                        sx={{
-                          position: 'absolute',
-                          bottom: -10,
-                          left: '45%',
-                          transform: 'translateX(-50%)'
-                        }}
-                      >
-                        45%
-                      </Typography>
-                    </Box>
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
           </Grid>
         </Grid>
         
