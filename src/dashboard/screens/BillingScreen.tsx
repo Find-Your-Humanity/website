@@ -166,7 +166,7 @@ const BillingScreen: React.FC = () => {
               현재 요금제: {currentPlanData.plan.name}
             </Typography>
             
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
               <Grid item xs={12} md={6}>
                 <Typography variant="body2" color="text.secondary">
                   월 요금
@@ -211,7 +211,7 @@ const BillingScreen: React.FC = () => {
         요금제 변경
       </Typography>
 
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         {availablePlans.map((plan) => (
           <Grid item xs={12} md={4} key={plan.id}>
             <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
