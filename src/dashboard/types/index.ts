@@ -100,6 +100,15 @@ export interface ApiUsageLimit {
   status: 'normal' | 'warning' | 'critical' | 'exceeded';
 }
 
+// Monthly Usage Data Types
+export interface MonthlyUsageData {
+  month: string;
+  month_short: string;
+  total_requests: number;
+  successful_requests: number;
+  failed_requests: number;
+}
+
 // API Type and Period Types
 export type ApiType = 'all' | 'handwriting' | 'abstract' | 'imagecaptcha';
 export type PeriodType = 'daily' | 'weekly' | 'monthly';

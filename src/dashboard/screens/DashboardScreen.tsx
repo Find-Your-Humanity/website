@@ -30,10 +30,10 @@ import {
   Error as ErrorIcon,
   ExpandMore as ExpandMoreIcon,
 } from '@mui/icons-material';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar } from 'recharts';
 import { dashboardService } from '../services/dashboardService';
 import { userStatsService, UserStatsOverview, ApiKeyStats, CaptchaTypeStats, ChartData } from '../services/userStatsService';
-import { DashboardAnalytics, CaptchaStats } from '../types';
+import { DashboardAnalytics, CaptchaStats, MonthlyUsageData } from '../types';
 import { formatNumber, formatPercentage, formatResponseTime } from '../utils';
 
 const DashboardScreen: React.FC = () => {
@@ -51,16 +51,18 @@ const DashboardScreen: React.FC = () => {
   // 차트 데이터 상태
   const [chartData, setChartData] = useState<ChartData[]>([]);
   const [chartTabValue, setChartTabValue] = useState(0); // 0: 오전, 1: 오후
+  const [monthlyUsage, setMonthlyUsage] = useState<MonthlyUsageData[]>([]);
 
   const loadDashboardData = async () => {
     try {
       setLoading(true);
-      const [analyticsResponse, statsResponse, userStatsResponse, apiKeyStatsResponse, chartResponse] = await Promise.all([
+      const [analyticsResponse, statsResponse, userStatsResponse, apiKeyStatsResponse, chartResponse, monthlyUsageResponse] = await Promise.all([
         dashboardService.getAnalytics(),
         dashboardService.getStats('daily'),
         userStatsService.getOverview(period),
         userStatsService.getByApiKey(period),
         userStatsService.getHourlyChartData(period),
+        dashboardService.getMonthlyUsage(),
       ]);
 
       if (analyticsResponse.success) {
@@ -81,6 +83,10 @@ const DashboardScreen: React.FC = () => {
 
       if (chartResponse.success && chartResponse.data) {
         setChartData(chartResponse.data.chart_data || []);
+      }
+
+      if (monthlyUsageResponse.success && monthlyUsageResponse.data) {
+        setMonthlyUsage(monthlyUsageResponse.data.monthly_usage || []);
       }
       
       setLastUpdated(new Date());
@@ -351,6 +357,45 @@ const DashboardScreen: React.FC = () => {
                       >
                         {creditUsagePercentage.toFixed(1)}%
                       </Typography>
+                    </Box>
+                  </Box>
+                  
+                  {/* 월별 크레딧 사용량 막대그래프 */}
+                  <Box sx={{ mt: 3 }}>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2, textAlign: 'center' }}>
+                      최근 6개월 사용량
+                    </Typography>
+                    <Box sx={{ height: 200, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={monthlyUsage}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis 
+                            dataKey="month_short" 
+                            tick={{ fontSize: 12 }}
+                            interval={0}
+                          />
+                          <YAxis tick={{ fontSize: 12 }} />
+                          <Tooltip 
+                            formatter={(value: number, name: string) => [
+                              formatNumber(value), 
+                              name === 'total_requests' ? '총 요청' : '성공 요청'
+                            ]}
+                            labelFormatter={(label: string) => `월: ${label}`}
+                          />
+                          <Bar 
+                            dataKey="total_requests" 
+                            fill="#1976d2" 
+                            name="총 요청"
+                            radius={[2, 2, 0, 0]}
+                          />
+                          <Bar 
+                            dataKey="successful_requests" 
+                            fill="#2e7d32" 
+                            name="성공 요청"
+                            radius={[2, 2, 0, 0]}
+                          />
+                        </BarChart>
+                      </ResponsiveContainer>
                     </Box>
                   </Box>
                 </CardContent>
