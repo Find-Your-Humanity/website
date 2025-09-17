@@ -5,7 +5,6 @@ import {
   Card,
   CardContent,
   Grid,
-  Paper,
   CircularProgress,
   Alert,
   Chip,
@@ -99,29 +98,37 @@ const RequestStatusScreen: React.FC = () => {
     ];
 
     return (
-      <Grid container spacing={2}>
+      <Grid container spacing={{ xs: 2, md: 3 }}>
         {stats.map((stat, idx) => (
           <Grid item xs={12} sm={6} md={4} key={idx}>
-            <Paper elevation={0} sx={{ p: 2, border: '1px solid #eee', borderRadius: 1 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                {stat.icon}
-                <Typography variant="caption" color="text.secondary">{stat.label}</Typography>
-              </Box>
-              <Typography 
-                variant="h6" 
-                sx={{ 
-                  mt: 0.5,
-                  color: stat.color === 'success' ? 'success.main' : 
-                         stat.color === 'warning' ? 'warning.main' : 
-                         stat.color === 'error' ? 'error.main' : 
-                         stat.color === 'primary' ? 'primary.main' : 
-                         stat.color === 'secondary' ? 'secondary.main' : 
-                         stat.color === 'info' ? 'info.main' : 'text.primary'
-                }}
-              >
-                {stat.value}
-              </Typography>
-            </Paper>
+            <Card sx={{ 
+              p: 2, 
+              height: '100%',
+              transition: 'all 0.3s ease-in-out',
+              '&:hover': { transform: 'translateY(-4px)', boxShadow: '0 8px 25px rgba(0,0,0,0.15)', cursor: 'pointer' }
+            }}>
+              <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                  {stat.icon}
+                  <Typography variant="body2" color="text.secondary">{stat.label}</Typography>
+                </Box>
+                <Typography 
+                  variant="h6" 
+                  sx={{ 
+                    mt: 0.5,
+                    fontWeight: 700,
+                    color: stat.color === 'success' ? 'success.main' : 
+                           stat.color === 'warning' ? 'warning.main' : 
+                           stat.color === 'error' ? 'error.main' : 
+                           stat.color === 'primary' ? 'primary.main' : 
+                           stat.color === 'secondary' ? 'secondary.main' : 
+                           stat.color === 'info' ? 'info.main' : 'text.primary'
+                  }}
+                >
+                  {stat.value}
+                </Typography>
+              </CardContent>
+            </Card>
           </Grid>
         ))}
       </Grid>
@@ -140,24 +147,27 @@ const RequestStatusScreen: React.FC = () => {
   };
 
   return (
-    <Box>
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-        <Typography variant="h5" sx={{ fontWeight: 700 }}>
-          실시간 모니터링 대시보드
-        </Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Typography variant="caption" color="text.secondary">
-            마지막 업데이트: {formatLastUpdated(lastUpdated)}
-          </Typography>
-          <Tooltip title="새로고침">
-            <IconButton 
-              onClick={loadMonitoringData} 
-              disabled={loading}
-              size="small"
-            >
-              <RefreshIcon />
-            </IconButton>
-          </Tooltip>
+    <Box className="rc-container">
+      <Box sx={{ mb: 3 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, gap: 2 }}>
+          <Box>
+            <Typography variant="h5" component="h5" gutterBottom sx={{ fontWeight: 700, mb: 0 }}>
+              실시간 모니터링 대시보드
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              API 상태, 응답시간, 에러율, TPS 실시간 현황
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+            <Typography variant="caption" color="text.secondary">
+              마지막 업데이트: {formatLastUpdated(lastUpdated)}
+            </Typography>
+            <Tooltip title="새로고침">
+              <IconButton onClick={loadMonitoringData} disabled={loading} size="small">
+                <RefreshIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
         </Box>
       </Box>
 
@@ -174,7 +184,7 @@ const RequestStatusScreen: React.FC = () => {
           표시할 모니터링 데이터가 없습니다.
         </Alert>
       ) : (
-        <Grid container spacing={3}>
+        <Grid container spacing={{ xs: 2, md: 3 }}>
           {/* 시스템 요약 */}
           <Grid item xs={12}>
             <Card>
@@ -189,22 +199,62 @@ const RequestStatusScreen: React.FC = () => {
 
           {/* API 상태 모니터링 */}
           <Grid item xs={12} lg={6}>
-            <ApiStatusMonitor apiStatus={monitoringData.api_status} />
+            <Card sx={{
+              transition: 'all 0.3s ease-in-out',
+              '&:hover': { transform: 'translateY(-4px)', boxShadow: '0 8px 25px rgba(0,0,0,0.15)', cursor: 'pointer' }
+            }}>
+              <CardContent>
+                <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+                  API 상태 모니터링
+                </Typography>
+                <ApiStatusMonitor apiStatus={monitoringData.api_status} />
+              </CardContent>
+            </Card>
           </Grid>
 
           {/* 응답 시간 차트 */}
           <Grid item xs={12} lg={6}>
-            <ResponseTimeChart responseTimeData={monitoringData.response_time_data} />
+            <Card sx={{
+              transition: 'all 0.3s ease-in-out',
+              '&:hover': { transform: 'translateY(-4px)', boxShadow: '0 8px 25px rgba(0,0,0,0.15)', cursor: 'pointer' }
+            }}>
+              <CardContent>
+                <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+                  응답 시간 추이
+                </Typography>
+                <ResponseTimeChart responseTimeData={monitoringData.response_time_data} />
+              </CardContent>
+            </Card>
           </Grid>
 
           {/* 에러율 차트 */}
           <Grid item xs={12} lg={6}>
-            <ErrorRateChart errorRateData={monitoringData.error_rate_data} />
+            <Card sx={{
+              transition: 'all 0.3s ease-in-out',
+              '&:hover': { transform: 'translateY(-4px)', boxShadow: '0 8px 25px rgba(0,0,0,0.15)', cursor: 'pointer' }
+            }}>
+              <CardContent>
+                <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+                  에러율 추이
+                </Typography>
+                <ErrorRateChart errorRateData={monitoringData.error_rate_data} />
+              </CardContent>
+            </Card>
           </Grid>
 
           {/* TPS 차트 */}
           <Grid item xs={12} lg={6}>
-            <TpsChart tpsData={monitoringData.tps_data} />
+            <Card sx={{
+              transition: 'all 0.3s ease-in-out',
+              '&:hover': { transform: 'translateY(-4px)', boxShadow: '0 8px 25px rgba(0,0,0,0.15)', cursor: 'pointer' }
+            }}>
+              <CardContent>
+                <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+                  TPS 추이
+                </Typography>
+                <TpsChart tpsData={monitoringData.tps_data} />
+              </CardContent>
+            </Card>
           </Grid>
         </Grid>
       )}
