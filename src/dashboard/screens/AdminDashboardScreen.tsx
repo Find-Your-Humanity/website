@@ -354,78 +354,7 @@ const AdminDashboardScreen: React.FC = () => {
         </Grid>
       </Grid>
 
-      {/* 시스템 성능 메트릭 */}
-      <Grid container spacing={{ xs: 2, md: 3 }}>
-        <Grid item xs={12} md={6}>
-          <Card sx={{ 
-            transition: 'all 0.3s ease-in-out',
-            '&:hover': {
-              transform: 'translateY(-4px)',
-              boxShadow: '0 8px 25px rgba(0,0,0,0.15)',
-              cursor: 'pointer'
-            }
-          }}>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                시스템 성능
-              </Typography>
-              <Box sx={{ mt: 2 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                  <Typography variant="body2">평균 응답 시간</Typography>
-                  <Typography variant="body2" fontWeight="bold">{formatResponseTime(adminMetrics.averageResponseTime)}</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                  <Typography variant="body2">시스템 업타임</Typography>
-                  <Typography variant="body2" fontWeight="bold" color="success.main">99.9%</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                  <Typography variant="body2">서버 CPU 사용률</Typography>
-                  <Typography variant="body2" fontWeight="bold">45%</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Typography variant="body2">메모리 사용률</Typography>
-                  <Typography variant="body2" fontWeight="bold">62%</Typography>
-                </Box>
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid item xs={12} md={6}>
-          <Card sx={{ 
-            transition: 'all 0.3s ease-in-out',
-            '&:hover': {
-              transform: 'translateY(-4px)',
-              boxShadow: '0 8px 25px rgba(0,0,0,0.15)',
-              cursor: 'pointer'
-            }
-          }}>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                보안 현황
-              </Typography>
-              <Box sx={{ mt: 2 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                  <Typography variant="body2">차단된 봇 요청</Typography>
-                  <Typography variant="body2" fontWeight="bold" color="error.main">{formatNumber(adminMetrics.failedAttempts)}</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                  <Typography variant="body2">의심스러운 활동</Typography>
-                  <Typography variant="body2" fontWeight="bold" color="warning.main">23</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                  <Typography variant="body2">API 키 비활성화</Typography>
-                  <Typography variant="body2" fontWeight="bold">5</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Typography variant="body2">보안 점수</Typography>
-                  <Typography variant="body2" fontWeight="bold" color="success.main">A+</Typography>
-                </Box>
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
+      {/* 시스템 성능 및 보안 현황 섹션 제거됨 */}
     </Box>
   );
 };
