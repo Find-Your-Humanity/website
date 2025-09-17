@@ -1,14 +1,8 @@
 import { apiClient } from './apiClient';
 import { ApiResponse } from '../types';
+import { API_ENDPOINTS } from '../config/api';
 
-// Settings 관련 API 엔드포인트
-const API_ENDPOINTS = {
-  SUSPICIOUS_IPS: '/api/admin/suspicious-ips',
-  IP_STATS: '/api/admin/ip-stats',
-  BLOCK_IP: '/api/admin/block-ip',
-  UNBLOCK_IP: '/api/admin/unblock-ip',
-  MY_API_KEYS: '/api/admin/my-api-keys',
-};
+// Settings 관련 API 엔드포인트는 api.ts에서 가져옴
 
 // 의심 IP 인터페이스
 export interface SuspiciousIP {
@@ -64,7 +58,7 @@ export class SettingsService {
       }
 
       const response = await apiClient.get<ApiResponse<{ suspicious_ips: SuspiciousIP[], total_count: number, page: number, limit: number }>>(
-        `${API_ENDPOINTS.SUSPICIOUS_IPS}?${params.toString()}`
+        `${API_ENDPOINTS.ADMIN.SUSPICIOUS_IPS}?${params.toString()}`
       );
       return response.data;
     } catch (error) {
@@ -81,7 +75,7 @@ export class SettingsService {
       }
 
       const response = await apiClient.get<ApiResponse<IPStats>>(
-        `${API_ENDPOINTS.IP_STATS}?${params.toString()}`
+        `${API_ENDPOINTS.ADMIN.IP_STATS}?${params.toString()}`
       );
       return response.data;
     } catch (error) {
@@ -93,7 +87,7 @@ export class SettingsService {
   async blockIP(ipAddress: string, reason: string): Promise<ApiResponse<{ message: string }>> {
     try {
       const response = await apiClient.post<ApiResponse<{ message: string }>>(
-        API_ENDPOINTS.BLOCK_IP,
+        API_ENDPOINTS.ADMIN.BLOCK_IP,
         { ip_address: ipAddress, reason }
       );
       return response.data;
@@ -106,7 +100,7 @@ export class SettingsService {
   async unblockIP(ipAddress: string): Promise<ApiResponse<{ message: string }>> {
     try {
       const response = await apiClient.post<ApiResponse<{ message: string }>>(
-        API_ENDPOINTS.UNBLOCK_IP,
+        API_ENDPOINTS.ADMIN.UNBLOCK_IP,
         { ip_address: ipAddress }
       );
       return response.data;
@@ -118,10 +112,22 @@ export class SettingsService {
   // 내 API 키 목록 조회 (세션 기반)
   async getMyApiKeys(): Promise<ApiResponse<{ api_keys: ApiKey[] }>> {
     try {
-      const response = await apiClient.get<ApiResponse<{ api_keys: ApiKey[] }>>(
-        API_ENDPOINTS.MY_API_KEYS
+      const response = await apiClient.get<{ api_keys: any[] }>(
+        API_ENDPOINTS.ADMIN.MY_API_KEYS
       );
-      return response.data;
+      
+      // 백엔드 응답을 표준 형식으로 변환
+      return {
+        success: true,
+        data: {
+          api_keys: response.data.api_keys.map(key => ({
+            key_id: key.key_id,
+            name: key.name || key.key_id,
+            is_active: key.is_active,
+            created_at: key.created_at
+          }))
+        }
+      };
     } catch (error) {
       throw error;
     }

@@ -52,6 +52,11 @@ export const API_ENDPOINTS = {
     REQUEST_LOGS: '/api/admin/request-logs',
     ERROR_STATS: '/api/admin/error-stats',
     ENDPOINT_USAGE: '/api/admin/endpoint-usage',
+    MY_API_KEYS: '/api/admin/my-api-keys',
+    SUSPICIOUS_IPS: '/api/admin/suspicious-ips',
+    IP_STATS: '/api/admin/ip-stats',
+    BLOCK_IP: '/api/admin/block-ip',
+    UNBLOCK_IP: '/api/admin/unblock-ip',
   },
 } as const;
 
