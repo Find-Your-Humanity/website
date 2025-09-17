@@ -20,7 +20,6 @@ import {
   AccordionDetails,
 } from '@mui/material';
 import {
-  Refresh as RefreshIcon,
   TrendingUp as TrendingUpIcon,
   Security as SecurityIcon,
   Speed as SpeedIcon,
@@ -40,7 +39,6 @@ const DashboardScreen: React.FC = () => {
   const [analytics, setAnalytics] = useState<DashboardAnalytics | null>(null);
   const [stats, setStats] = useState<CaptchaStats[]>([]);
   const [loading, setLoading] = useState(true);
-  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   
   // 새로운 상태 추가
   const [userStats, setUserStats] = useState<UserStatsOverview | null>(null);
@@ -83,8 +81,6 @@ const DashboardScreen: React.FC = () => {
       if (chartResponse.success && chartResponse.data) {
         setChartData(chartResponse.data.chart_data || []);
       }
-      
-      setLastUpdated(new Date());
     } catch (error) {
       // 콘솔 출력 제거, UI로만 처리
     } finally {
@@ -279,14 +275,6 @@ const DashboardScreen: React.FC = () => {
             <Typography variant="h5" component="h5" gutterBottom sx={{ fontWeight: 700, mb: 0 }}>
               내 대시보드
             </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-            <Typography variant="caption" color="text.secondary">
-              마지막 업데이트: {lastUpdated.toLocaleTimeString()}
-            </Typography>
-            <IconButton onClick={loadDashboardData} disabled={loading}>
-              <RefreshIcon />
-            </IconButton>
           </Box>
         </Box>
         <Typography variant="body1" color="text.secondary">
