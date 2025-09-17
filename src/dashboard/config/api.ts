@@ -1,6 +1,7 @@
 // API 기본 설정 (Vite 환경 변수 적용)
 export const API_CONFIG = {
-  BASE_URL: (import.meta as any).env?.VITE_API_URL || 'https://gateway.realcatcha.com',
+  // 기본값을 동일 출처로 설정하여 CORS 회피 (프로덕션: realcatcha.com)
+  BASE_URL: (import.meta as any).env?.VITE_API_URL || (typeof window !== 'undefined' ? window.location.origin : 'https://realcatcha.com'),
   TIMEOUT: 10000,
   RETRY_ATTEMPTS: 3,
   RETRY_DELAY: 1000,
@@ -36,10 +37,11 @@ export const API_ENDPOINTS = {
     PERFORMANCE: '/api/captcha/performance',
   },
   API_KEYS: {
-    CREATE: '/api/keys/create',
-    LIST: '/api/keys/list',
-    TOGGLE: (keyId: string) => `/api/keys/${keyId}/toggle`,
-    DELETE: (keyId: string) => `/api/keys/${keyId}`,
+    // 동일 출처 경로로 변경: realcatcha.com/app/api-keys
+    CREATE: '/app/api-keys',
+    LIST: '/app/api-keys',
+    TOGGLE: (keyId: string) => `/app/api-keys/${keyId}/toggle`,
+    DELETE: (keyId: string) => `/app/api-keys/${keyId}`,
   },
   PAYMENTS: {
     CONFIRM: '/api/payments/confirm',
