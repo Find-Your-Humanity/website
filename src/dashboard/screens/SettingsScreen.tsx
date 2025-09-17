@@ -160,18 +160,18 @@ const SettingsScreen: React.FC = () => {
       const response = await settingsService.blockIP(ip, reason);
       
       if (response.success) {
-        setMessage(`IP ${ip}이(가) 차단되었습니다.`);
+        setMessage(`IP ${ip} 차단 완료`);
         fetchSuspiciousIPs();
         fetchIPStats();
       } else {
-        setMessage(`IP 차단 실패: ${response.message || '알 수 없는 오류'}`);
+        setMessage('IP 차단 실패');
       }
     } catch (error: any) {
       console.error('IP 차단 오류:', error);
       if (error.response?.status === 401) {
         setMessage('세션이 만료되었습니다. 페이지를 새로고침해주세요.');
       } else {
-        setMessage(`IP 차단 중 오류가 발생했습니다: ${error.message || '알 수 없는 오류'}`);
+        setMessage(error?.message || 'IP 차단 중 오류가 발생했습니다.');
       }
     }
   };
@@ -187,18 +187,18 @@ const SettingsScreen: React.FC = () => {
       const response = await settingsService.unblockIP(ip);
       
       if (response.success) {
-        setMessage(`IP ${ip}의 차단이 해제되었습니다.`);
+        setMessage(`IP ${ip} 차단 해제 완료`);
         fetchSuspiciousIPs();
         fetchIPStats();
       } else {
-        setMessage(`IP 차단 해제 실패: ${response.message || '알 수 없는 오류'}`);
+        setMessage('IP 차단 해제 실패');
       }
     } catch (error: any) {
       console.error('IP 차단 해제 오류:', error);
       if (error.response?.status === 401) {
         setMessage('세션이 만료되었습니다. 페이지를 새로고침해주세요.');
       } else {
-        setMessage(`IP 차단 해제 중 오류가 발생했습니다: ${error.message || '알 수 없는 오류'}`);
+        setMessage(error?.message || 'IP 차단 해제 중 오류가 발생했습니다.');
       }
     }
   };

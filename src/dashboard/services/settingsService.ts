@@ -101,11 +101,11 @@ export class SettingsService {
   // IP 차단 (세션 기반)
   async blockIP(ipAddress: string, reason: string): Promise<ApiResponse<{ message: string }>> {
     try {
-      const response = await apiClient.post<ApiResponse<{ message: string }>>(
+      const response = await apiClient.post<{ message: string }>(
         API_ENDPOINTS.ADMIN.BLOCK_IP,
         { ip_address: ipAddress, reason }
       );
-      return response.data;
+      return { success: true, data: { message: response.data.message } } as any;
     } catch (error) {
       throw error;
     }
@@ -114,11 +114,11 @@ export class SettingsService {
   // IP 차단 해제 (세션 기반)
   async unblockIP(ipAddress: string): Promise<ApiResponse<{ message: string }>> {
     try {
-      const response = await apiClient.post<ApiResponse<{ message: string }>>(
+      const response = await apiClient.post<{ message: string }>(
         API_ENDPOINTS.ADMIN.UNBLOCK_IP,
         { ip_address: ipAddress }
       );
-      return response.data;
+      return { success: true, data: { message: response.data.message } } as any;
     } catch (error) {
       throw error;
     }
