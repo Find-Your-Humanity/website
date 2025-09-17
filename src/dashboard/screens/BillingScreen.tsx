@@ -150,7 +150,12 @@ const BillingScreen: React.FC = () => {
 
   return (
     <Box className="rc-container">
-      <Typography variant="h5" sx={{ mb: 2, fontWeight: 700 }}>요금제 관리</Typography>
+      {/* 헤더 (다른 화면들과 동일한 레이아웃) */}
+      <Box sx={{ mb: 3 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, gap: 2 }}>
+          <Typography variant="h5" sx={{ fontWeight: 700 }}>요금제 관리</Typography>
+        </Box>
+      </Box>
 
       {error && (
         <Alert severity="error" sx={{ mb: 3 }}>
