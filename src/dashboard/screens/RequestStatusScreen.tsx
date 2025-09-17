@@ -154,7 +154,7 @@ const RequestStatusScreen: React.FC = () => {
             <Typography variant="h5" component="h5" gutterBottom sx={{ fontWeight: 700, mb: 0 }}>
               실시간 모니터링 대시보드
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body1" color="text.secondary">
               API 상태, 응답시간, 에러율, TPS 실시간 현황
             </Typography>
           </Box>

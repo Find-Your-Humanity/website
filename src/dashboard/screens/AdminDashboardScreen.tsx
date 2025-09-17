@@ -153,7 +153,7 @@ const AdminDashboardScreen: React.FC = () => {
             <Typography variant="h5" component="h5" gutterBottom sx={{ fontWeight: 700, mb: 0 }}>
               관리자 대시보드
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body1" color="text.secondary">
               전체 시스템 현황 및 관리자 전용 통계
             </Typography>
           </Box>

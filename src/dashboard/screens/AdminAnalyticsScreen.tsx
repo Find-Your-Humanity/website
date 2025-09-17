@@ -229,7 +229,7 @@ const AdminAnalyticsScreen: React.FC = () => {
             <Typography variant="h5" component="h5" gutterBottom sx={{ fontWeight: 700, mb: 0 }}>
               시스템 분석
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body1" color="text.secondary">
               전체 시스템 사용 패턴 및 성능 분석 (관리자 전용)
             </Typography>
           </Box>
