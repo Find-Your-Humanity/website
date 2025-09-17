@@ -201,7 +201,7 @@ const AdminAnalyticsScreen: React.FC = () => {
     return (
       <Box className="rc-container">
         <Skeleton variant="rectangular" height={200} sx={{ mb: 3 }} />
-        <Grid container spacing={3}>
+        <Grid container spacing={{ xs: 2, md: 3 }}>
           <Grid item xs={12} md={6}>
             <Skeleton variant="rectangular" height={300} />
           </Grid>
@@ -257,15 +257,15 @@ const AdminAnalyticsScreen: React.FC = () => {
         </Alert>
       )}
 
-      <Grid container spacing={3}>
+      <Grid container spacing={{ xs: 2, md: 3 }}>
         {/* 시스템 개요 통계 */}
         <Grid item xs={12}>
-          <Card>
+          <Card sx={{ transition: 'all 0.3s ease-in-out', '&:hover': { transform: 'translateY(-4px)', boxShadow: '0 8px 25px rgba(0,0,0,0.15)', cursor: 'pointer' } }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
                 시스템 개요 통계
               </Typography>
-              <Grid container spacing={3}>
+              <Grid container spacing={{ xs: 2, md: 3 }}>
                 <Grid item xs={6} sm={3}>
                   <Box textAlign="center">
                     <Typography variant="h4" color="primary">
@@ -322,7 +322,7 @@ const AdminAnalyticsScreen: React.FC = () => {
 
         {/* 기간별 시스템 사용량 */}
         <Grid item xs={12}>
-          <Card>
+          <Card sx={{ transition: 'all 0.3s ease-in-out', '&:hover': { transform: 'translateY(-4px)', boxShadow: '0 8px 25px rgba(0,0,0,0.15)', cursor: 'pointer' } }}>
             <CardContent>
               {/* 탭 네비게이션 */}
               <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
@@ -456,7 +456,7 @@ const AdminAnalyticsScreen: React.FC = () => {
 
         {/* 플랜별 분포 및 수익 */}
         <Grid item xs={12} md={6}>
-          <Card>
+          <Card sx={{ transition: 'all 0.3s ease-in-out', '&:hover': { transform: 'translateY(-4px)', boxShadow: '0 8px 25px rgba(0,0,0,0.15)', cursor: 'pointer' } }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
                 플랜별 사용자 분포
@@ -501,7 +501,7 @@ const AdminAnalyticsScreen: React.FC = () => {
 
         {/* 수익 분석 */}
         <Grid item xs={12} md={6}>
-          <Card>
+          <Card sx={{ transition: 'all 0.3s ease-in-out', '&:hover': { transform: 'translateY(-4px)', boxShadow: '0 8px 25px rgba(0,0,0,0.15)', cursor: 'pointer' } }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
                 플랜별 수익 분석
@@ -537,12 +537,12 @@ const AdminAnalyticsScreen: React.FC = () => {
 
         {/* 오류 유형 분석 */}
         <Grid item xs={12}>
-          <Card>
+          <Card sx={{ transition: 'all 0.3s ease-in-out', '&:hover': { transform: 'translateY(-4px)', boxShadow: '0 8px 25px rgba(0,0,0,0.15)', cursor: 'pointer' } }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
                 시스템 오류 분석
               </Typography>
-              <Grid container spacing={2} sx={{ mt: 1 }}>
+              <Grid container spacing={{ xs: 2, md: 3 }} sx={{ mt: 1 }}>
                 {errorTypes.map((error, index) => (
                   <Grid item xs={12} sm={6} md={3} key={index}>
                     <Box
