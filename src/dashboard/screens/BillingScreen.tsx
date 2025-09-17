@@ -103,7 +103,6 @@ const BillingScreen: React.FC = () => {
 
       const plansResponse = await billingService.getAvailablePlans();
       if (plansResponse.success) {
-        console.log('📊 요금제 목록 응답:', plansResponse.data);
         setAvailablePlans(plansResponse.data);
       } else {
         setError(plansResponse.error || '요금제 목록을 불러오는데 실패했습니다.');
