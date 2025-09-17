@@ -42,7 +42,6 @@ const AnalyticsScreen: React.FC = () => {
   const [usageLimits, setUsageLimits] = useState<ApiUsageLimit | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
-  const [errorAnalysis, setErrorAnalysis] = useState<Array<{ type: string; count: number; percentage: number }>>([]);
   
 
   const handleTimePeriodChange = (event: SelectChangeEvent) => {
@@ -105,26 +104,6 @@ const AnalyticsScreen: React.FC = () => {
     fetchStats();
   }, [timePeriod, apiType, selectedApiKey]);
 
-  // 오류 분석 데이터 조회
-  useEffect(() => {
-    const fetchErrorAnalysis = async () => {
-      try {
-        const res = await dashboardService.getErrorAnalysis(timePeriod, selectedApiKey || undefined);
-        if (res.success) {
-          setErrorAnalysis(res.data.error_types || []);
-        } else {
-          // 콘솔 출력 제거
-          setErrorAnalysis([]);
-        }
-      } catch (e) {
-        // 콘솔 출력 제거
-        // 401 오류 등 인증 실패 시 빈 배열로 설정 (UI는 정상 표시)
-        setErrorAnalysis([]);
-      }
-    };
-    
-    fetchErrorAnalysis();
-  }, [timePeriod, selectedApiKey]);
 
   // API 사용량 제한 조회
   useEffect(() => {
@@ -189,7 +168,6 @@ const AnalyticsScreen: React.FC = () => {
     });
   }, [statsData]);
 
-  // 오류 유형 데이터는 이제 실제 API에서 가져옴 (errorAnalysis state 사용)
 
 
   // 중복 데이터 정리 핸들러 (하단의 고도화 버전만 유지)
@@ -412,48 +390,6 @@ const AnalyticsScreen: React.FC = () => {
           </Card>
         </Grid>
 
-        {/* 오류 유형 분석 */}
-        <Grid item xs={12}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                오류 유형 분석
-              </Typography>
-              {errorAnalysis.length > 0 ? (
-                <Grid container spacing={2} sx={{ mt: 1 }}>
-                  {errorAnalysis.map((error, index) => (
-                    <Grid item xs={12} sm={6} md={3} key={index}>
-                      <Box
-                        sx={{
-                          p: 2,
-                          bgcolor: 'grey.50',
-                          borderRadius: 1,
-                          textAlign: 'center',
-                        }}
-                      >
-                        <Typography variant="h4" color="error.main">
-                          {formatNumber(error.count)}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {error.type}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          ({formatPercentage(error.percentage)})
-                        </Typography>
-                      </Box>
-                    </Grid>
-                  ))}
-                </Grid>
-              ) : (
-                <Box sx={{ textAlign: 'center', py: 4 }}>
-                  <Typography variant="body2" color="text.secondary">
-                    선택한 기간 동안 오류가 발생하지 않았습니다. 🎉
-                  </Typography>
-                </Box>
-              )}
-            </CardContent>
-          </Card>
-        </Grid>
 
       </Grid>
     </Box>
