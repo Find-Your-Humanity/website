@@ -447,15 +447,15 @@ const DashboardScreen: React.FC = () => {
                 </Box>
               ) : (
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 2 }}>
-                  <Box sx={{ width: '100%', height: 200, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  <Box sx={{ width: '100%', height: 280, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie
                           data={levelData}
                           cx="50%"
                           cy="50%"
-                          innerRadius={40}
-                          outerRadius={80}
+                          innerRadius={60}
+                          outerRadius={120}
                           paddingAngle={2}
                           dataKey="value"
                         >
