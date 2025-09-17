@@ -55,6 +55,14 @@ export interface DashboardAnalytics {
     level_2: number;
     level_3: number;
   };
+  monthly_usage: {
+    month: string;
+    month_short: string;
+    handwriting: number;
+    abstract: number;
+    imagecaptcha: number;
+    total: number;
+  }[];
 }
 
 // Authentication Types
@@ -98,15 +106,6 @@ export interface ApiUsageLimit {
     perMonth: string;  // ISO timestamp
   };
   status: 'normal' | 'warning' | 'critical' | 'exceeded';
-}
-
-// Monthly Usage Data Types
-export interface MonthlyUsageData {
-  month: string;
-  month_short: string;
-  total_requests: number;
-  successful_requests: number;
-  failed_requests: number;
 }
 
 // API Type and Period Types

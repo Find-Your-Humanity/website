@@ -33,7 +33,7 @@ import {
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar } from 'recharts';
 import { dashboardService } from '../services/dashboardService';
 import { userStatsService, UserStatsOverview, ApiKeyStats, CaptchaTypeStats, ChartData } from '../services/userStatsService';
-import { DashboardAnalytics, CaptchaStats, MonthlyUsageData } from '../types';
+import { DashboardAnalytics, CaptchaStats } from '../types';
 import { formatNumber, formatPercentage, formatResponseTime } from '../utils';
 
 const DashboardScreen: React.FC = () => {
@@ -51,18 +51,16 @@ const DashboardScreen: React.FC = () => {
   // 차트 데이터 상태
   const [chartData, setChartData] = useState<ChartData[]>([]);
   const [chartTabValue, setChartTabValue] = useState(0); // 0: 오전, 1: 오후
-  const [monthlyUsage, setMonthlyUsage] = useState<MonthlyUsageData[]>([]);
 
   const loadDashboardData = async () => {
     try {
       setLoading(true);
-      const [analyticsResponse, statsResponse, userStatsResponse, apiKeyStatsResponse, chartResponse, monthlyUsageResponse] = await Promise.all([
+      const [analyticsResponse, statsResponse, userStatsResponse, apiKeyStatsResponse, chartResponse] = await Promise.all([
         dashboardService.getAnalytics(),
         dashboardService.getStats('daily'),
         userStatsService.getOverview(period),
         userStatsService.getByApiKey(period),
         userStatsService.getHourlyChartData(period),
-        dashboardService.getMonthlyUsage(),
       ]);
 
       if (analyticsResponse.success) {
@@ -83,10 +81,6 @@ const DashboardScreen: React.FC = () => {
 
       if (chartResponse.success && chartResponse.data) {
         setChartData(chartResponse.data.chart_data || []);
-      }
-
-      if (monthlyUsageResponse.success && monthlyUsageResponse.data) {
-        setMonthlyUsage(monthlyUsageResponse.data.monthly_usage || []);
       }
       
       setLastUpdated(new Date());
@@ -367,7 +361,7 @@ const DashboardScreen: React.FC = () => {
                     </Typography>
                     <Box sx={{ height: 200, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                       <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={monthlyUsage}>
+                        <BarChart data={analytics?.monthly_usage || []}>
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis 
                             dataKey="month_short" 
@@ -376,22 +370,45 @@ const DashboardScreen: React.FC = () => {
                           />
                           <YAxis tick={{ fontSize: 12 }} />
                           <Tooltip 
-                            formatter={(value: number, name: string) => [
-                              formatNumber(value), 
-                              name === 'total_requests' ? '총 요청' : '성공 요청'
-                            ]}
-                            labelFormatter={(label: string) => `월: ${label}`}
+                            content={({ active, payload, label }) => {
+                              if (active && payload && payload.length && payload[0].payload) {
+                                const data = payload[0].payload;
+                                return (
+                                  <Box sx={{ 
+                                    bgcolor: 'background.paper', 
+                                    border: 1, 
+                                    borderColor: 'divider', 
+                                    borderRadius: 1, 
+                                    p: 2, 
+                                    boxShadow: 3 
+                                  }}>
+                                    <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+                                      {label}월 사용량
+                                    </Typography>
+                                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                                      <Typography variant="body2">
+                                        총 요청: <strong>{formatNumber(data.total)}</strong>
+                                      </Typography>
+                                      <Typography variant="body2" color="primary">
+                                        필기 캡차: <strong>{formatNumber(data.handwriting)}</strong>
+                                      </Typography>
+                                      <Typography variant="body2" color="warning.main">
+                                        추상 캡차: <strong>{formatNumber(data.abstract)}</strong>
+                                      </Typography>
+                                      <Typography variant="body2" color="success.main">
+                                        이미지 캡차: <strong>{formatNumber(data.imagecaptcha)}</strong>
+                                      </Typography>
+                                    </Box>
+                                  </Box>
+                                );
+                              }
+                              return null;
+                            }}
                           />
                           <Bar 
-                            dataKey="total_requests" 
+                            dataKey="total" 
                             fill="#1976d2" 
                             name="총 요청"
-                            radius={[2, 2, 0, 0]}
-                          />
-                          <Bar 
-                            dataKey="successful_requests" 
-                            fill="#2e7d32" 
-                            name="성공 요청"
                             radius={[2, 2, 0, 0]}
                           />
                         </BarChart>
