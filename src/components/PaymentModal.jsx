@@ -102,9 +102,21 @@ const PaymentModal = ({
 				`🔍 모달 내 결제 요청 - 플랜: ${planName}, 금액: ${amount}원, 주문ID: ${orderId}`
 			);
 			const fromParam = from || searchParams.get("from") || "website";
+			const origin = window.location.origin;
+			// 대시보드 흐름은 /app/billing 에 pay 쿼리로 리디렉션하여 오버레이로 처리,
+			// 웹사이트 흐름은 /payment/success|fail 로 이동해 전용 페이지를 렌더링
+			const successUrl =
+				fromParam === "dashboard"
+					? `${origin}/app/billing?pay=success&planType=${selectedPlan.type}&planId=${planId}&from=dashboard`
+					: `${origin}/payment/success?planType=${selectedPlan.type}&planId=${planId}&from=website`;
+			const failUrl =
+				fromParam === "dashboard"
+					? `${origin}/app/billing?pay=fail&planType=${selectedPlan.type}&planId=${planId}&from=dashboard`
+					: `${origin}/payment/fail?planType=${selectedPlan.type}&planId=${planId}&from=website`;
+
 			console.log(`🔍 결제 요청 URL 설정:`, {
-				successUrl: `${window.location.origin}/app/billing?pay=success&planType=${selectedPlan.type}&planId=${planId}&from=${fromParam}`,
-				failUrl: `${window.location.origin}/app/billing?pay=fail&planType=${selectedPlan.type}&planId=${planId}&from=${fromParam}`,
+				successUrl,
+				failUrl,
 				selectedPlan: selectedPlan,
 				fromParam,
 			});
@@ -114,8 +126,8 @@ const PaymentModal = ({
 				orderId: orderId,
 				orderName: `${planName} - CAPTCHA 서비스`,
 				amount: amount,
-				successUrl: `${window.location.origin}/app/billing?pay=success&planType=${selectedPlan.type}&planId=${planId}&from=${fromParam}`,
-				failUrl: `${window.location.origin}/app/billing?pay=fail&planType=${selectedPlan.type}&planId=${planId}&from=${fromParam}`,
+				successUrl: successUrl,
+				failUrl: failUrl,
 				customerEmail: "test@example.com", // 실제로는 사용자 이메일 사용
 				customerName: "테스트 사용자", // 실제로는 사용자 이름 사용
 				// 추가 파라미터 (선택사항)
