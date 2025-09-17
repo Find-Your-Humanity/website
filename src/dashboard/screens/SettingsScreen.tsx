@@ -279,12 +279,6 @@ const SettingsScreen: React.FC = () => {
         <Grid item xs={12}>
           <Card>
             <CardContent>
-                {/* 디버그 정보 */}
-                <Box mb={2}>
-                  <Typography variant="caption" color="text.secondary">
-                    API 키: {apiKeyHeader ? apiKeyHeader : '(미설정)'} | 아이템 수: {suspiciousIPs.length} {lastRaw?.endpoint ? `| 마지막: ${lastRaw.endpoint}` : ''}
-                  </Typography>
-                </Box>
                 <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
                   <Typography variant="h6">의심스러운 IP 관리</Typography>
                   
