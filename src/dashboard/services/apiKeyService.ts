@@ -76,10 +76,12 @@ class ApiKeyService {
 
   async toggleApiKey(keyId: string, isActive: boolean): Promise<ApiResponse> {
     try {
-      const response = await apiClient.patch<ApiResponse>(
-        API_ENDPOINTS.API_KEYS.TOGGLE(keyId),
-        { is_active: isActive }
-      );
+      // CORS 회피: 토글만 동일 출처(realcatcha.com) 경로로 호출
+      const sameOrigin = typeof window !== 'undefined' ? window.location.origin : '';
+      const toggleUrl = sameOrigin
+        ? `${sameOrigin}/app/api-keys/${keyId}/toggle`
+        : API_ENDPOINTS.API_KEYS.TOGGLE(keyId);
+      const response = await apiClient.patch<ApiResponse>(toggleUrl, { is_active: isActive });
       return response.data;
     } catch (error) {
       this.handleAxiosError(error);
