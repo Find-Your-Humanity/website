@@ -276,7 +276,7 @@ const DashboardScreen: React.FC = () => {
       <Box sx={{ display: 'flex', flexDirection: 'column', mb: 3 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Typography variant="h5" component="h5" gutterBottom sx={{ fontWeight: 700 }}>
+            <Typography variant="h5" component="h5" gutterBottom sx={{ fontWeight: 700, mb: 0 }}>
               내 대시보드
             </Typography>
           </Box>
