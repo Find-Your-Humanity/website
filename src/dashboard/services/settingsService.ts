@@ -57,10 +57,20 @@ export class SettingsService {
         params.append('key_id', keyId);
       }
 
-      const response = await apiClient.get<ApiResponse<{ suspicious_ips: SuspiciousIP[], total_count: number, page: number, limit: number }>>(
+      const response = await apiClient.get<{ suspicious_ips: SuspiciousIP[], total_count: number, page: number, limit: number, total_pages: number }>(
         `${API_ENDPOINTS.ADMIN.SUSPICIOUS_IPS}?${params.toString()}`
       );
-      return response.data;
+      
+      // 백엔드 응답을 표준 형식으로 변환
+      return {
+        success: true,
+        data: {
+          suspicious_ips: response.data.suspicious_ips,
+          total_count: response.data.total_count,
+          page: response.data.page,
+          limit: response.data.limit
+        }
+      };
     } catch (error) {
       throw error;
     }
@@ -74,10 +84,15 @@ export class SettingsService {
         params.append('key_id', keyId);
       }
 
-      const response = await apiClient.get<ApiResponse<IPStats>>(
+      const response = await apiClient.get<IPStats>(
         `${API_ENDPOINTS.ADMIN.IP_STATS}?${params.toString()}`
       );
-      return response.data;
+      
+      // 백엔드 응답을 표준 형식으로 변환
+      return {
+        success: true,
+        data: response.data
+      };
     } catch (error) {
       throw error;
     }
