@@ -455,63 +455,6 @@ const AnalyticsScreen: React.FC = () => {
           </Card>
         </Grid>
 
-        {/* 성능 메트릭 */}
-        <Grid item xs={12} md={6}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                성능 메트릭
-              </Typography>
-              <Box sx={{ mt: 2 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                  <Typography variant="body2">평균 응답 시간</Typography>
-                  <Typography variant="body2" fontWeight="bold">245ms</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                  <Typography variant="body2">95% 응답 시간</Typography>
-                  <Typography variant="body2" fontWeight="bold">890ms</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                  <Typography variant="body2">초당 처리 요청</Typography>
-                  <Typography variant="body2" fontWeight="bold">2.1/s</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Typography variant="body2">업타임</Typography>
-                  <Typography variant="body2" fontWeight="bold" color="success.main">99.9%</Typography>
-                </Box>
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* 사용자 통계 */}
-        <Grid item xs={12} md={6}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                사용자 통계
-              </Typography>
-              <Box sx={{ mt: 2 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                  <Typography variant="body2">일일 활성 사용자</Typography>
-                  <Typography variant="body2" fontWeight="bold">{formatNumber(15420)}</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                  <Typography variant="body2">신규 사용자</Typography>
-                  <Typography variant="body2" fontWeight="bold">{formatNumber(1240)}</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                  <Typography variant="body2">재방문 사용자</Typography>
-                  <Typography variant="body2" fontWeight="bold">{formatNumber(14180)}</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Typography variant="body2">평균 세션 시간</Typography>
-                  <Typography variant="body2" fontWeight="bold">4m 32s</Typography>
-                </Box>
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
       </Grid>
     </Box>
   );

@@ -275,13 +275,6 @@ const DashboardScreen: React.FC = () => {
             <Typography variant="h5" component="h5" gutterBottom sx={{ fontWeight: 700 }}>
               내 대시보드
             </Typography>
-            <Chip
-              label="정상"
-              color="success"
-              variant="outlined"
-              icon={<SuccessIcon />}
-              size="small"
-            />
           </Box>
           <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
             <Typography variant="caption" color="text.secondary">
