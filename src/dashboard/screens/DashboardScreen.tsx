@@ -47,6 +47,7 @@ const DashboardScreen: React.FC = () => {
   const [apiKeyStats, setApiKeyStats] = useState<ApiKeyStats[]>([]);
   const [period, setPeriod] = useState<'today' | 'week' | 'month'>('month');
   const [tabValue, setTabValue] = useState(0);
+  const [includeInactiveDeleted, setIncludeInactiveDeleted] = useState<boolean>(false);
   
   // 차트 데이터 상태
   const [chartData, setChartData] = useState<ChartData[]>([]);
@@ -59,7 +60,7 @@ const DashboardScreen: React.FC = () => {
         dashboardService.getAnalytics(),
         dashboardService.getStats('daily'),
         userStatsService.getOverview(period),
-        userStatsService.getByApiKey(period),
+        userStatsService.getByApiKey(period, { includeInactiveDeleted }),
         userStatsService.getHourlyChartData(period),
       ]);
 
@@ -93,7 +94,7 @@ const DashboardScreen: React.FC = () => {
 
   useEffect(() => {
     loadDashboardData();
-  }, [period]);
+  }, [period, includeInactiveDeleted]);
 
   const handlePeriodChange = (event: SelectChangeEvent<string>) => {
     setPeriod(event.target.value as 'today' | 'week' | 'month');
@@ -101,6 +102,9 @@ const DashboardScreen: React.FC = () => {
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
+  };
+  const handleToggleInactiveDeleted = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIncludeInactiveDeleted(event.target.checked);
   };
 
   const handleChartTabChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -482,13 +486,19 @@ const DashboardScreen: React.FC = () => {
         <Typography variant="h5" sx={{ fontWeight: 600 }}>
           내 통계
         </Typography>
-        <FormControl size="small" sx={{ minWidth: 120 }}>
-          <Select value={period} onChange={handlePeriodChange}>
-            <MenuItem value="today">오늘</MenuItem>
-            <MenuItem value="week">최근 일주일</MenuItem>
-            <MenuItem value="month">최근 한달</MenuItem>
-          </Select>
-        </FormControl>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <FormControl size="small" sx={{ minWidth: 120 }}>
+            <Select value={period} onChange={handlePeriodChange}>
+              <MenuItem value="today">오늘</MenuItem>
+              <MenuItem value="week">최근 일주일</MenuItem>
+              <MenuItem value="month">최근 한달</MenuItem>
+            </Select>
+          </FormControl>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Typography variant="caption" color="text.secondary">비활성화+삭제</Typography>
+            <input type="checkbox" checked={includeInactiveDeleted} onChange={handleToggleInactiveDeleted} />
+          </Box>
+        </Box>
       </Box>
 
       {/* 주요 메트릭 */}
@@ -601,6 +611,14 @@ const DashboardScreen: React.FC = () => {
                           <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
                             {apiKey.api_key_name}
                           </Typography>
+                          {/* 상태 뱃지 */}
+                          {'is_active' in (apiKey as any) && (
+                            <Box sx={{ mb: 1 }}>
+                              {!includeInactiveDeleted ? null : (
+                                <Chip size="small" label={(apiKey as any).is_active ? '활성' : '비활성/삭제'} color={(apiKey as any).is_active ? 'success' : 'default'} />
+                              )}
+                            </Box>
+                          )}
                           <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1, mb: 2 }}>
                             <Box>
                               <Typography variant="body2" color="text.secondary">총 요청</Typography>
@@ -648,6 +666,9 @@ const DashboardScreen: React.FC = () => {
                   <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                     <Typography sx={{ fontWeight: 600 }}>
                       {apiKey.api_key_name} - {formatNumber(apiKey.total_requests)}건
+                      {'is_active' in (apiKey as any) && includeInactiveDeleted && (
+                        <Chip size="small" sx={{ ml: 1 }} label={(apiKey as any).is_active ? '활성' : '비활성/삭제'} color={(apiKey as any).is_active ? 'success' : 'default'} />
+                      )}
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails>

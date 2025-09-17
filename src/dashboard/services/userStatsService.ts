@@ -69,9 +69,13 @@ class UserStatsService {
   /**
    * API 키별 상세 통계 조회
    */
-  async getByApiKey(period: 'today' | 'week' | 'month' = 'month'): Promise<ApiResponse<{api_keys: ApiKeyStats[], period: string}>> {
+  async getByApiKey(
+    period: 'today' | 'week' | 'month' = 'month',
+    options?: { includeInactiveDeleted?: boolean }
+  ): Promise<ApiResponse<{api_keys: ApiKeyStats[], period: string}>> {
     try {
-      const response = await apiClient.get(`/api/user/stats/by-api-key?period=${period}`);
+      const include = options?.includeInactiveDeleted ? '&include_inactive_deleted=true' : '';
+      const response = await apiClient.get(`/api/user/stats/by-api-key?period=${period}${include}`);
       return response.data;
     } catch (error) {
       throw error;
