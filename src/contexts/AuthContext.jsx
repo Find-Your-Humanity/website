@@ -44,12 +44,7 @@ export const AuthProvider = ({ children }) => {
         // Google OAuth 사용자는 쿠키 기반으로 사용자 정보 확인
       }
       
-      // 2. 쿠키 기반 자동 로그인 시도 (조건부: 로컬 스토리지 힌트가 있을 때만 호출)
-      const shouldAttemptCookieLogin = Boolean(token || userData);
-      if (!shouldAttemptCookieLogin) {
-        setLoading(false);
-        return;
-      }
+      // 2. 쿠키 기반 자동 로그인 시도 (401 에러는 조용히 처리)
       try {
         const response = await fetch('https://gateway.realcatcha.com/api/auth/me', {
           method: 'GET',
@@ -76,13 +71,13 @@ export const AuthProvider = ({ children }) => {
             localStorage.removeItem('captcha_dashboard_user');
           }
         } else {
-          // 401 에러 등으로 인증 실패 시 로컬 스토리지 정리
+          // 401 에러 등으로 인증 실패 시 로컬 스토리지 정리 (조용히 처리)
           localStorage.removeItem('authToken');
           localStorage.removeItem('captcha_dashboard_token');
           localStorage.removeItem('captcha_dashboard_user');
         }
       } catch (error) {
-        // 네트워크 오류 시에도 로컬 스토리지 정리
+        // 네트워크 오류 시에도 로컬 스토리지 정리 (조용히 처리)
         localStorage.removeItem('authToken');
         localStorage.removeItem('captcha_dashboard_token');
         localStorage.removeItem('captcha_dashboard_user');
