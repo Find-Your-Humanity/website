@@ -62,7 +62,8 @@ class UsersService {
 
   async remove(id: string): Promise<ApiResponse> {
     try {
-      const resp = await apiClient.delete<ApiResponse>(`${API_ENDPOINTS.ADMIN.USERS}/${id}`);
+      // 하드 삭제가 필요한 경우를 대비해 force=true 기본 적용
+      const resp = await apiClient.delete<ApiResponse>(`${API_ENDPOINTS.ADMIN.USERS}/${id}?force=true`);
       return resp.data;
     } catch (error: any) {
       throw error;
