@@ -475,7 +475,6 @@ const DashboardScreen: React.FC = () => {
             value={formatPercentage(userStats?.success_rate || 0)}
             icon={<TrendingUpIcon sx={{ fontSize: 40 }} />}
             color="#2e7d32"
-            subtitle={`${formatNumber(userStats?.success_requests || 0)} / ${formatNumber(userStats?.total_requests || 0)}`}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
