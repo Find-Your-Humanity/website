@@ -57,7 +57,7 @@ const DashboardScreen: React.FC = () => {
       const [analyticsResponse, statsResponse, userStatsResponse, apiKeyStatsResponse, chartResponse] = await Promise.all([
         dashboardService.getAnalytics(),
         dashboardService.getStats('daily'),
-        userStatsService.getOverview(period),
+        userStatsService.getOverview(period, { includeInactiveDeleted }),
         userStatsService.getByApiKey(period, { includeInactiveDeleted }),
         userStatsService.getHourlyChartData(period),
       ]);
@@ -150,8 +150,9 @@ const DashboardScreen: React.FC = () => {
     { time: '20:00', requests: 89, success: 84 },
   ];
 
-  // 실제 데이터만 사용 (Mock 데이터 제거)
-  const creditUsagePercentage = analytics?.plan_info?.usage_percentage || 0;
+  // Credit 사용량을 userStats의 총 요청 수와 동일하게 맞춤
+  const creditUsagePercentage = userStats?.total_requests ? 
+    (userStats.total_requests / (analytics?.plan_info?.monthly_limit || 100)) * 100 : 0;
   
   // 디버깅 로그 제거
   const levelData = analytics?.level_stats ? [
@@ -316,7 +317,7 @@ const DashboardScreen: React.FC = () => {
                       />
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
                         <Typography variant="caption" color="text.secondary">
-                          {analytics?.plan_info?.current_usage ? formatNumber(analytics.plan_info.current_usage) : '0'}
+                          {userStats?.total_requests ? formatNumber(userStats.total_requests) : '0'}
                         </Typography>
                         <Typography variant="caption" color="text.secondary">
                           {analytics?.plan_info?.monthly_limit ? formatNumber(analytics.plan_info.monthly_limit) : '100'}

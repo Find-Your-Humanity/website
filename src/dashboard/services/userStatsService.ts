@@ -57,9 +57,13 @@ class UserStatsService {
   /**
    * 사용자 통계 개요 조회 (전체 합계)
    */
-  async getOverview(period: 'today' | 'week' | 'month' = 'month'): Promise<ApiResponse<UserStatsOverview>> {
+  async getOverview(
+    period: 'today' | 'week' | 'month' = 'month',
+    options?: { includeInactiveDeleted?: boolean }
+  ): Promise<ApiResponse<UserStatsOverview>> {
     try {
-      const response = await apiClient.get(`/api/user/stats/overview?period=${period}`);
+      const include = options?.includeInactiveDeleted ? '&include_inactive_deleted=true' : '';
+      const response = await apiClient.get(`/api/user/stats/overview?period=${period}${include}`);
       return response.data;
     } catch (error) {
       throw error;
