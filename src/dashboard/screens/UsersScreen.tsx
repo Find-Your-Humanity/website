@@ -205,7 +205,7 @@ const UsersScreen: React.FC = () => {
                           control={
                             <Switch
                               checked={!!u.is_active}
-                              onChange={() => handleToggleActive(u)}
+                              onChange={(e) => { e.stopPropagation(); handleToggleActive(u); }}
                             />
                           }
                           label={u.is_active ? '활성' : '비활성'}
@@ -215,14 +215,14 @@ const UsersScreen: React.FC = () => {
                       <TableCell>
                         <IconButton 
                           size="small" 
-                          onClick={() => handleEditUser(u)}
+                          onClick={(e) => { e.stopPropagation(); handleEditUser(u); }}
                           color="primary"
                         >
                           <Edit />
                         </IconButton>
                         <IconButton 
                           size="small" 
-                          onClick={() => handleDeleteUser(u)}
+                          onClick={(e) => { e.stopPropagation(); handleDeleteUser(u); }}
                           color="error"
                         >
                           <Delete />
