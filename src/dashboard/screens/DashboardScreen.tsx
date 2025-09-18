@@ -164,52 +164,18 @@ const DashboardScreen: React.FC = () => {
   ] : [];
 
   // 캡차 타입 정규화 함수
+  // A안: 백엔드에서 준 success_rate를 그대로 사용(재계산하지 않음)
   const normalizeCaptchaTypes = (captchaTypes: CaptchaTypeStats[]): CaptchaTypeStats[] => {
     if (!captchaTypes || captchaTypes.length === 0) return [];
-
-    // 타입별로 그룹화
-    const typeGroups: { [key: string]: CaptchaTypeStats[] } = {};
-    
-    captchaTypes.forEach(type => {
-      let normalizedType: string;
-      
-      // 타입 정규화
-      if (type.captcha_type === 'imagecaptcha' || type.captcha_type === 'image') {
-        normalizedType = 'image';
-      } else if (type.captcha_type === 'handwriting') {
-        normalizedType = 'handwriting';
-      } else if (type.captcha_type === 'abstract') {
-        normalizedType = 'abstract';
-      } else if (!type.captcha_type || type.captcha_type === '' || type.captcha_type === null) {
-        normalizedType = 'pass';
-      } else {
-        normalizedType = type.captcha_type;
-      }
-
-      if (!typeGroups[normalizedType]) {
-        typeGroups[normalizedType] = [];
-      }
-      typeGroups[normalizedType].push(type);
-    });
-
-    // 각 그룹별로 데이터 합계 계산
-    const normalizedTypes: CaptchaTypeStats[] = Object.entries(typeGroups).map(([normalizedType, types]) => {
-      const totalRequests = types.reduce((sum, type) => sum + type.total_requests, 0);
-      const successRequests = types.reduce((sum, type) => sum + type.success_requests, 0);
-      const failedRequests = types.reduce((sum, type) => sum + type.failed_requests, 0);
-      const totalResponseTime = types.reduce((sum, type) => sum + (type.avg_response_time * type.total_requests), 0);
-      
-      return {
-        captcha_type: normalizedType,
-        total_requests: totalRequests,
-        success_requests: successRequests,
-        failed_requests: failedRequests,
-        success_rate: totalRequests > 0 ? (successRequests / totalRequests) * 100 : 0,
-        avg_response_time: totalRequests > 0 ? totalResponseTime / totalRequests : 0
-      };
-    });
-
-    return normalizedTypes;
+    return captchaTypes.map((t) => ({
+      captcha_type:
+        t.captcha_type === 'image' ? 'imagecaptcha' : (t.captcha_type || 'unknown'),
+      total_requests: t.total_requests,
+      success_requests: t.success_requests,
+      failed_requests: t.failed_requests,
+      success_rate: t.success_rate, // 그대로 사용
+      avg_response_time: t.avg_response_time,
+    }));
   };
 
   // 캡차 타입 이름 변환 함수
