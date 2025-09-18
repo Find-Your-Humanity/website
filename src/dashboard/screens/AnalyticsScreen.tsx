@@ -28,6 +28,7 @@ import {
 } from 'recharts';
 import { formatNumber, formatPercentage } from '../utils';
 import { dashboardService } from '../services/dashboardService';
+import { userStatsService, ChartData } from '../services/userStatsService';
 import { CaptchaStats, ApiUsageLimit, ApiType, PeriodType } from '../types';
 import AnalyticsSkeleton from '../components/AnalyticsSkeleton';
 import AnalyticsChart from '../components/AnalyticsChart';
@@ -36,7 +37,7 @@ const AnalyticsScreen: React.FC = () => {
   const [timePeriod, setTimePeriod] = useState('1day');
   const [apiType, setApiType] = useState<ApiType>('all');
   const [tabValue, setTabValue] = useState(0); // 탭 네비게이션 상태
-  const [statsData, setStatsData] = useState<CaptchaStats[]>([]);
+  const [statsData, setStatsData] = useState<ChartData[]>([]);
   const [apiKeys, setApiKeys] = useState<{ key_id: string; name?: string }[]>([]);
   const [selectedApiKey, setSelectedApiKey] = useState<string>('');
   const [usageLimits, setUsageLimits] = useState<ApiUsageLimit | null>(null);
@@ -80,15 +81,17 @@ const AnalyticsScreen: React.FC = () => {
       setLoading(true);
       setError('');
       try {
-        // 하루/7일은 일별 집계(days 사용), 한달은 주간 집계(최근 4주)
-        const isMonth = timePeriod === '30days';
-        const period: PeriodType = isMonth ? 'weekly' : 'daily';
-        const days = !isMonth ? (timePeriod === '1day' ? 1 : 7) : undefined;
-        // 키가 선택되어 있으면 개인/키 기반 통계 사용
-        const res = selectedApiKey
-          ? await dashboardService.getKeyStats(period, apiType, selectedApiKey, days as any)
-          : await dashboardService.getKeyStats(period, apiType, undefined, days as any);
-        if (res.success) {
+        // 기간 매핑: 1day -> today, 7days -> week, 30days -> month
+        const periodMap: { [key: string]: 'today' | 'week' | 'month' } = {
+          '1day': 'today',
+          '7days': 'week', 
+          '30days': 'month'
+        };
+        const period = periodMap[timePeriod] || 'month';
+        
+        // userStatsService.getHourlyChartData 사용 (daily_user_api_stats 기반)
+        const res = await userStatsService.getHourlyChartData(period);
+        if (res.success && res.data) {
           setStatsData(res.data);
         } else {
           setError(res.message || '통계 데이터를 불러오지 못했습니다.');
@@ -135,36 +138,15 @@ const AnalyticsScreen: React.FC = () => {
     };
   }, []);
 
-  // 차트용 가공 데이터 생성 (실제 날짜 사용)
+  // 차트용 가공 데이터 생성 (ChartData 타입 사용)
   const chartData = useMemo(() => {
     return statsData.map((s, idx) => {
-      // 실제 날짜를 사용하여 라벨 생성
-      let label = '';
-      if (s.date) {
-        // 백엔드에서 이미 포맷된 라벨을 받은 경우 그대로 사용
-        if (s.date.includes('/') || s.date.includes('-') || s.date.startsWith('W')) {
-          label = s.date;
-        } else {
-          // 날짜 문자열인 경우 파싱
-          const date = new Date(s.date);
-          if (!isNaN(date.getTime())) {
-            const month = date.getMonth() + 1;
-            const day = date.getDate();
-            label = `${month}/${day}`;
-          } else {
-            label = s.date;
-          }
-        }
-      } else {
-        // 날짜가 없는 경우 인덱스 기반으로 생성
-        label = `Day ${idx + 1}`;
-      }
-      
+      // ChartData 타입에 맞게 매핑
       return {
-        label: label,
-        success: s.successfulSolves,
-        failed: s.failedAttempts,
-        total: s.totalRequests,
+        label: s.label || `Day ${idx + 1}`,
+        success: s.success || 0,
+        failed: s.failed || 0,
+        total: s.requests || 0,
       };
     });
   }, [statsData]);
