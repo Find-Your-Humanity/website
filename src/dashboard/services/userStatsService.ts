@@ -110,9 +110,10 @@ class UserStatsService {
   /**
    * 시간별/일별 차트 데이터 조회
    */
-  async getHourlyChartData(period: 'today' | 'week' | 'month' = 'today', apiType: string = 'all'): Promise<ApiResponse<{chart_data: ChartData[], period: string}>> {
+  async getHourlyChartData(period: 'today' | 'week' | 'month' = 'today', apiType: string = 'all', apiKey?: string): Promise<ApiResponse<{chart_data: ChartData[], period: string}>> {
     try {
-      const response = await apiClient.get(`/api/user/stats/hourly-chart?period=${period}&api_type=${apiType}`);
+      const apiKeyParam = apiKey ? `&api_key=${encodeURIComponent(apiKey)}` : '';
+      const response = await apiClient.get(`/api/user/stats/hourly-chart?period=${period}&api_type=${apiType}${apiKeyParam}`);
       return response.data;
     } catch (error) {
       throw error;
