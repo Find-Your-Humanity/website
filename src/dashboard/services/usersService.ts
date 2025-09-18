@@ -20,7 +20,8 @@ export interface UpdateUserRequest {
 class UsersService {
   async list(): Promise<ApiResponse<User[]>> {
     try {
-      const resp = await apiClient.get<ApiResponse<User[]>>(API_ENDPOINTS.USERS.LIST);
+      // 관리자 전용 엔드포인트로 변경
+      const resp = await apiClient.get<ApiResponse<User[]>>(API_ENDPOINTS.ADMIN.USERS);
       return resp.data;
     } catch (error: any) {
       throw error;
@@ -29,7 +30,7 @@ class UsersService {
 
   async create(data: CreateUserRequest): Promise<ApiResponse<User>> {
     try {
-      const resp = await apiClient.post<ApiResponse<User>>(API_ENDPOINTS.USERS.CREATE, data);
+      const resp = await apiClient.post<ApiResponse<User>>(API_ENDPOINTS.ADMIN.USERS, data);
       return resp.data;
     } catch (error: any) {
       throw error;
@@ -38,7 +39,7 @@ class UsersService {
 
   async update(id: string, data: UpdateUserRequest): Promise<ApiResponse<User>> {
     try {
-      const resp = await apiClient.put<ApiResponse<User>>(API_ENDPOINTS.USERS.UPDATE(id), data);
+      const resp = await apiClient.put<ApiResponse<User>>(`${API_ENDPOINTS.ADMIN.USERS}/${id}`, data);
       return resp.data;
     } catch (error: any) {
       throw error;
@@ -47,7 +48,7 @@ class UsersService {
 
   async remove(id: string): Promise<ApiResponse> {
     try {
-      const resp = await apiClient.delete<ApiResponse>(API_ENDPOINTS.USERS.DELETE(id));
+      const resp = await apiClient.delete<ApiResponse>(`${API_ENDPOINTS.ADMIN.USERS}/${id}`);
       return resp.data;
     } catch (error: any) {
       throw error;
