@@ -18,6 +18,7 @@ export interface ApiKeyStats {
   success_rate: number;
   avg_response_time: number;
   captcha_types: CaptchaTypeStats[];
+  is_active?: boolean;
 }
 
 export interface UserStatsOverview {

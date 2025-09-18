@@ -601,10 +601,10 @@ const DashboardScreen: React.FC = () => {
                             {apiKey.api_key_name}
                           </Typography>
                           {/* 상태 뱃지 */}
-                          {'is_active' in (apiKey as any) && (
+                          {apiKey.is_active !== undefined && (
                             <Box sx={{ mb: 1 }}>
                               {!includeInactiveDeleted ? null : (
-                                <Chip size="small" label={(apiKey as any).is_active ? '활성' : '비활성/삭제'} color={(apiKey as any).is_active ? 'success' : 'default'} />
+                                <Chip size="small" label={apiKey.is_active ? '활성' : '비활성/삭제'} color={apiKey.is_active ? 'success' : 'default'} />
                               )}
                             </Box>
                           )}
@@ -655,8 +655,8 @@ const DashboardScreen: React.FC = () => {
                   <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                     <Typography sx={{ fontWeight: 600 }}>
                       {apiKey.api_key_name} - {formatNumber(apiKey.total_requests)}건
-                      {'is_active' in (apiKey as any) && includeInactiveDeleted && (
-                        <Chip size="small" sx={{ ml: 1 }} label={(apiKey as any).is_active ? '활성' : '비활성/삭제'} color={(apiKey as any).is_active ? 'success' : 'default'} />
+                      {apiKey.is_active !== undefined && includeInactiveDeleted && (
+                        <Chip size="small" sx={{ ml: 1 }} label={apiKey.is_active ? '활성' : '비활성/삭제'} color={apiKey.is_active ? 'success' : 'default'} />
                       )}
                     </Typography>
                   </AccordionSummary>
