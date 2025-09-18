@@ -177,8 +177,10 @@ const AdminAnalyticsScreen: React.FC = () => {
     const totalSuccessfulSolved = systemStats.reduce((sum, stat) => sum + stat.successfulSolved, 0);
     const solvedSuccessRate = totalSolved > 0 ? (totalSuccessfulSolved / totalSolved) * 100 : 0;
     
-    // 해결 완료율
-    const completionRate = totalGenerated > 0 ? (totalSolved / totalGenerated) * 100 : 0;
+    // 해결 완료율 (성공적으로 해결된 캡차 / 성공적으로 생성된 캡차)
+    const completionRate = totalSuccessfulGenerated > 0 
+      ? Math.min((totalSuccessfulSolved / totalSuccessfulGenerated) * 100, 100) 
+      : 0;
     
     // 수익 및 사용자
     const totalRevenue = planDistribution.reduce((sum, plan) => sum + plan.revenue, 0);

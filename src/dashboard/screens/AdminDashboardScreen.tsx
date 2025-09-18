@@ -222,7 +222,7 @@ const AdminDashboardScreen: React.FC = () => {
         <Grid item xs={12} sm={6} md={4}>
           <StatCard
             title="해결 완료율"
-            value={formatPercentage(adminMetrics.completionRate)}
+            value={formatPercentage(Math.min(adminMetrics.completionRate, 100))}
             icon={<TrendingUpIcon sx={{ fontSize: 40 }} />}
             color="#1976d2"
             subtitle="생성 대비 해결 비율"
