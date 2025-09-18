@@ -59,7 +59,7 @@ const DashboardScreen: React.FC = () => {
         dashboardService.getStats('daily'),
         userStatsService.getOverview(period, { includeInactiveDeleted }),
         userStatsService.getByApiKey(period, { includeInactiveDeleted }),
-        userStatsService.getHourlyChartData(period),
+        dashboardService.getKeyStats(period, 'all'),
       ]);
 
       if (analyticsResponse.success) {
@@ -79,7 +79,15 @@ const DashboardScreen: React.FC = () => {
       }
 
       if (chartResponse.success && chartResponse.data) {
-        setChartData(chartResponse.data.chart_data || []);
+        // getKeyStats 데이터를 차트용으로 변환
+        const transformedData = (chartResponse.data || []).map((item: any) => ({
+          ...item,
+          time: item.date || item.time || '00:00', // date 필드를 time으로 매핑
+          requests: item.totalRequests || 0,
+          success: item.successfulSolves || 0,
+          failed: item.failedAttempts || 0
+        }));
+        setChartData(transformedData);
       }
     } catch (error) {
       // 콘솔 출력 제거, UI로만 처리
@@ -117,13 +125,13 @@ const DashboardScreen: React.FC = () => {
     if (chartTabValue === 0) {
       // 오전: 00시~10시 (00, 02, 04, 06, 08, 10)
       return chartData.filter(item => {
-        const hour = parseInt(item.time.replace('시', ''));
+        const hour = parseInt(item.time?.replace('시', '') || '0');
         return hour >= 0 && hour <= 10;
       });
     } else {
       // 오후: 12시~22시 (12, 14, 16, 18, 20, 22)
       return chartData.filter(item => {
-        const hour = parseInt(item.time.replace('시', ''));
+        const hour = parseInt(item.time?.replace('시', '') || '0');
         return hour >= 12 && hour <= 22;
       });
     }
