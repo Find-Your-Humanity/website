@@ -90,7 +90,7 @@ const AnalyticsScreen: React.FC = () => {
         const period = periodMap[timePeriod] || 'month';
         
         // userStatsService.getHourlyChartData 사용 (daily_user_api_stats 기반)
-        const res = await userStatsService.getHourlyChartData(period);
+        const res = await userStatsService.getHourlyChartData(period, apiType);
         if (res.success && res.data && res.data.chart_data) {
           setStatsData(res.data.chart_data);
         } else {
