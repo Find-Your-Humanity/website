@@ -369,7 +369,7 @@ const DashboardScreen: React.FC = () => {
                                     boxShadow: 3 
                                   }}>
                                     <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
-                                      {label}월 사용량
+                                      {label} 사용량
                                     </Typography>
                                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                                       <Typography variant="body2">
