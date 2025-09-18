@@ -350,6 +350,9 @@ const DashboardScreen: React.FC = () => {
                                       <Typography variant="body2" color="success.main">
                                         이미지 캡차: <strong>{formatNumber(data.imagecaptcha)}</strong>
                                       </Typography>
+                                      <Typography variant="body2" color="info.main">
+                                        Pass: <strong>{formatNumber(data.pass || 0)}</strong>
+                                      </Typography>
                                     </Box>
                                   </Box>
                                 );
