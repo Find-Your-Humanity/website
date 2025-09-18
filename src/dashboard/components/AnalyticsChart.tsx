@@ -20,7 +20,6 @@ interface ChartData {
   label: string;
   success: number;
   failed: number;
-  total?: number;
 }
 
 interface AnalyticsChartProps {
@@ -90,10 +89,6 @@ const AnalyticsChart: React.FC<AnalyticsChartProps> = React.memo(({ data, loadin
   const axisColor = getVar('--text-secondary', '#666');
   const successColor = getVar('--success-color', '#28a745');
   const errorColor = getVar('--error-color', '#dc3545');
-  const rerenderColor = getVar('--warning-color', '#9c27b0');
-
-  // 툴팁 포맷터
-  const formatNumber = (value: number) => value.toLocaleString();
 
   return (
     <Card>
@@ -107,24 +102,9 @@ const AnalyticsChart: React.FC<AnalyticsChartProps> = React.memo(({ data, loadin
               <CartesianGrid stroke={gridColor} strokeDasharray="3 3" />
               <XAxis dataKey="label" stroke={axisColor} tick={{ fill: axisColor }} />
               <YAxis stroke={axisColor} tick={{ fill: axisColor }} />
-              <Tooltip 
-                contentStyle={{ 
-                  background: getVar('--bg-primary', '#fff'), 
-                  color: getVar('--text-primary', '#000'), 
-                  border: `1px solid ${gridColor}`,
-                  borderRadius: '8px',
-                  padding: '12px'
-                }}
-                formatter={(value: number, name: string) => [formatNumber(value), name]}
-                labelFormatter={(label: string) => `날짜: ${label}`}
-              />
-              <Bar dataKey="success" fill={successColor} name="성공 요청" />
-              <Bar dataKey="failed" fill={errorColor} name="실패 요청" />
-              <Bar 
-                dataKey={(entry: any) => Math.max(0, (entry.total || 0) - (entry.success || 0) - (entry.failed || 0))} 
-                fill={rerenderColor} 
-                name="리렌더링" 
-              />
+              <Tooltip contentStyle={{ background: getVar('--bg-primary', '#fff'), color: getVar('--text-primary', '#000'), border: `1px solid ${gridColor}` }} />
+              <Bar dataKey="success" fill={successColor} name="성공" />
+              <Bar dataKey="failed" fill={errorColor} name="실패" />
             </BarChart>
           </ResponsiveContainer>
         </Box>
