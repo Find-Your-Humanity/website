@@ -54,7 +54,8 @@ const Sidebar: React.FC<SidebarProps> = ({ onItemClick }) => {
   const menuItems = [
     ...baseMenuItems,
     ...(user && isUserAdmin ? adminMenuItems : []),
-    settingsMenuItem,
+    // Settings는 사용자 전용 서비스로 관리자에서는 제외
+    ...(user && !isUserAdmin ? [settingsMenuItem] : []),
   ];
 
   const handleItemClick = (path: string) => {

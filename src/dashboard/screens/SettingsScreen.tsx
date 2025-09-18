@@ -235,7 +235,12 @@ const SettingsScreen: React.FC = () => {
   return (
     <Box className="rc-container">
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography variant="h5" sx={{ fontWeight: 700 }}>의심 IP 관리</Typography>
+        <Box>
+          <Typography variant="h5" sx={{ fontWeight: 700 }}>의심 IP 관리</Typography>
+          <Typography variant="body2" color="text.secondary">
+            사용자 전용 서비스 - API 키별 의심스러운 IP 모니터링 및 차단 관리
+          </Typography>
+        </Box>
         <Box sx={{ display: 'flex', gap: 1 }}>
           <Button variant="outlined" startIcon={<RefreshIcon />} onClick={() => { fetchSuspiciousIPs(); fetchIPStats(); }}>
             새로고침

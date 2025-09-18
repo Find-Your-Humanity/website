@@ -157,13 +157,6 @@ function App() {
                   </DashboardShell>
                 </RequireAdmin>
               } />
-              <Route path="/admin/settings" element={
-                <RequireAdmin>
-                  <DashboardShell>
-                    <SettingsScreen />
-                  </DashboardShell>
-                </RequireAdmin>
-              } />
 
               {/* Existing payment routes */}
               <Route path="/pay" element={<PayPage />} />

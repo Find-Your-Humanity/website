@@ -41,7 +41,7 @@ export default function RedirectLegacy() {
   if (pathname.startsWith('/dashboard/')) {
     const sub = pathname.substring('/dashboard/'.length);
     const mapApp = new Set(['dashboard', 'analytics', 'billing', 'api-keys', 'settings']);
-    const mapAdmin = new Set(['users', 'plans', 'requests', 'request-status', 'settings']);
+    const mapAdmin = new Set(['users', 'plans', 'requests', 'request-status']);
 
     if (mapApp.has(sub)) {
       return <Navigate to={`/app/${sub}`} replace />;
