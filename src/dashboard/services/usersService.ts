@@ -21,8 +21,19 @@ class UsersService {
   async list(): Promise<ApiResponse<User[]>> {
     try {
       // 관리자 전용 엔드포인트로 변경
-      const resp = await apiClient.get<ApiResponse<User[]>>(API_ENDPOINTS.ADMIN.USERS);
-      return resp.data;
+      const resp = await apiClient.get<any>(API_ENDPOINTS.ADMIN.USERS);
+      const body = resp.data;
+      // 호환 처리: {success, data: User[], total...} | {success, data: {data: User[], ...}} | ApiResponse<User[]>
+      if (body && Array.isArray(body.data)) {
+        return { success: !!body.success, data: body.data, message: body.message, error: body.error };
+      }
+      if (body && body.data && Array.isArray(body.data.data)) {
+        return { success: !!body.success, data: body.data.data, message: body.message, error: body.error };
+      }
+      if (Array.isArray(body)) {
+        return { success: true, data: body };
+      }
+      return { success: false, data: [], error: 'Unexpected response shape from /api/admin/users' };
     } catch (error: any) {
       throw error;
     }
