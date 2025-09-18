@@ -70,7 +70,7 @@ const SettingsScreen: React.FC = () => {
     }
 
     try {
-      const response = await settingsService.getSuspiciousIPs(1, 50, selectedApiKey || undefined);
+      const response = await settingsService.getSuspiciousIPs(1, 50, selectedApiKey && selectedApiKey.trim() ? selectedApiKey : undefined);
       
       if (response.success && response.data) {
         setLastRaw({ endpoint: 'suspicious-ips', data: response.data });
@@ -102,7 +102,7 @@ const SettingsScreen: React.FC = () => {
         return;
       }
 
-      const response = await settingsService.getIPStats(selectedApiKey || undefined);
+      const response = await settingsService.getIPStats(selectedApiKey && selectedApiKey.trim() ? selectedApiKey : undefined);
       
       if (response.success && response.data) {
         setLastRaw({ endpoint: 'ip-stats', data: response.data });

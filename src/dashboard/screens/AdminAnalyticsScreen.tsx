@@ -282,7 +282,7 @@ const AdminAnalyticsScreen: React.FC = () => {
                       {formatNumber(systemOverview.totalGenerated)}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      캡차 생성 수
+                      캡차 생성 횟수
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
                       성공률: {formatPercentage(systemOverview.generatedSuccessRate)}
@@ -295,7 +295,7 @@ const AdminAnalyticsScreen: React.FC = () => {
                       {formatNumber(systemOverview.totalSolved)}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      캡차 해결 수
+                      캡차 검증 시도 횟수
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
                       성공률: {formatPercentage(systemOverview.solvedSuccessRate)}
@@ -308,7 +308,7 @@ const AdminAnalyticsScreen: React.FC = () => {
                       {formatPercentage(systemOverview.completionRate)}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      해결 완료율
+                      검증 시도율
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
                       수익: ₩{formatNumber(systemOverview.totalRevenue)}
