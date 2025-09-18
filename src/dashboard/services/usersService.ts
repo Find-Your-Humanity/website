@@ -15,6 +15,9 @@ export interface UpdateUserRequest {
   password?: string;
   role?: 'admin' | 'user';
   is_admin?: boolean | number;
+  username?: string;
+  contact?: string;
+  is_active?: boolean | number;
 }
 
 class UsersService {

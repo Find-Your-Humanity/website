@@ -86,6 +86,26 @@ const UsersScreen: React.FC = () => {
     setDeleteDialogOpen(true);
   };
 
+  // 활성/비활성 토글 핸들러
+  const handleToggleActive = async (user: User) => {
+    try {
+      const resp = await usersService.update(String(user.id), {
+        is_active: !user.is_active,
+      } as any);
+      if (resp.success) {
+        // 목록 새로고침
+        const usersResp = await usersService.list();
+        if (usersResp.success) {
+          setUsers(usersResp.data);
+        }
+      } else {
+        setError(resp.error || '상태 변경에 실패했습니다.');
+      }
+    } catch (e: any) {
+      setError(e?.message || '상태 변경에 실패했습니다.');
+    }
+  };
+
   // 사용자 수정 저장
   const handleSaveEdit = async () => {
     if (!selectedUser) return;
@@ -95,6 +115,14 @@ const UsersScreen: React.FC = () => {
         email: editForm.email,
         name: editForm.name,
         is_admin: editForm.is_admin,
+        // 추가 전달: username/contact/is_active
+        // (게이트웨이 허용 필드와 일치)
+        // @ts-ignore
+        username: editForm.username,
+        // @ts-ignore
+        contact: editForm.contact,
+        // @ts-ignore
+        is_active: editForm.is_active,
       });
       if (resp.success) {
         // 사용자 목록 새로고침
@@ -173,10 +201,14 @@ const UsersScreen: React.FC = () => {
                         />
                       </TableCell>
                       <TableCell>
-                        <Chip 
-                          size="small" 
-                          color={u.is_active ? "success" : "default"} 
-                          label={u.is_active ? "활성" : "비활성"} 
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={!!u.is_active}
+                              onChange={() => handleToggleActive(u)}
+                            />
+                          }
+                          label={u.is_active ? '활성' : '비활성'}
                         />
                       </TableCell>
                       <TableCell>{u.created_at ? new Date(u.created_at).toLocaleString() : '-'}</TableCell>

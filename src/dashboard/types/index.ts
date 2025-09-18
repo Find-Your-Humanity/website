@@ -8,13 +8,16 @@ export interface ApiResponse<T = any> {
 
 // User Types
 export interface User {
-  id: string;
+  id: number | string;
   email: string;
-  name: string;
-  username?: string;   // 일반 로그인 사용자의 username
+  name?: string;
+  username?: string;
+  contact?: string;
+  is_active: boolean;
+  is_admin: boolean;
+  created_at?: string;
+  // 백엔드에서 제공하지 않을 수 있는 추가 메타
   role?: 'admin' | 'user';
-  is_admin?: boolean | number;
-  createdAt: string;
   lastLoginAt?: string;
 }
 
