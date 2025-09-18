@@ -212,7 +212,7 @@ const AdminDashboardScreen: React.FC = () => {
       <Grid container spacing={{ xs: 2, md: 3 }} sx={{ mb: 3 }}>
         <Grid item xs={12} sm={6} md={4}>
           <StatCard
-            title="캡차 해결 수"
+            title="캡차 해결 시도 API 수"
             value={formatNumber(adminMetrics.totalSolved)}
             icon={<SuccessIcon sx={{ fontSize: 40 }} />}
             color="#2e7d32"
@@ -221,11 +221,20 @@ const AdminDashboardScreen: React.FC = () => {
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
           <StatCard
-            title="해결 완료율"
-            value={formatPercentage(Math.min(adminMetrics.completionRate, 100))}
-            icon={<TrendingUpIcon sx={{ fontSize: 40 }} />}
+            title="캡차 생성 API 수"
+            value={formatNumber(adminMetrics.totalGenerated)}
+            icon={<SecurityIcon sx={{ fontSize: 40 }} />}
             color="#1976d2"
-            subtitle="생성 대비 해결 비율"
+            subtitle={`성공률: ${formatPercentage(adminMetrics.generatedSuccessRate)}`}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <StatCard
+            title="해결 성공 API 수"
+            value={formatNumber(adminMetrics.successfulSolved)}
+            icon={<SuccessIcon sx={{ fontSize: 40 }} />}
+            color="#2e7d32"
+            subtitle="성공적으로 해결된 캡차"
           />
         </Grid>
         <Grid item xs={12} sm={6} md={4}>

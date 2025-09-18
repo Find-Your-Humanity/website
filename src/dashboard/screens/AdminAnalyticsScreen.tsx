@@ -129,7 +129,6 @@ const AdminAnalyticsScreen: React.FC = () => {
         failedSolved: s.failedSolved,
         // 공통
         users: s.activeUsers,
-        completionRate: s.completionRate,
       };
     });
   }, [systemStats]);
@@ -160,9 +159,9 @@ const AdminAnalyticsScreen: React.FC = () => {
         totalUsers: 0,
         totalGenerated: 0,
         totalSolved: 0,
+        totalSuccessfulSolved: 0,
         generatedSuccessRate: 0,
         solvedSuccessRate: 0,
-        completionRate: 0,
         totalRevenue: 0
       };
     }
@@ -177,10 +176,8 @@ const AdminAnalyticsScreen: React.FC = () => {
     const totalSuccessfulSolved = systemStats.reduce((sum, stat) => sum + stat.successfulSolved, 0);
     const solvedSuccessRate = totalSolved > 0 ? (totalSuccessfulSolved / totalSolved) * 100 : 0;
     
-    // 해결 완료율 (성공적으로 해결된 캡차 / 성공적으로 생성된 캡차)
-    const completionRate = totalSuccessfulGenerated > 0 
-      ? Math.min((totalSuccessfulSolved / totalSuccessfulGenerated) * 100, 100) 
-      : 0;
+    // 해결 성공 API 수 (직접 사용)
+    const totalSuccessfulSolvedCount = totalSuccessfulSolved;
     
     // 수익 및 사용자
     const totalRevenue = planDistribution.reduce((sum, plan) => sum + plan.revenue, 0);
@@ -192,9 +189,9 @@ const AdminAnalyticsScreen: React.FC = () => {
       totalUsers,
       totalGenerated,
       totalSolved,
+      totalSuccessfulSolved: totalSuccessfulSolvedCount,
       generatedSuccessRate,
       solvedSuccessRate,
-      completionRate,
       totalRevenue
     };
   }, [systemStats, planDistribution, userGrowthData]);
@@ -306,14 +303,14 @@ const AdminAnalyticsScreen: React.FC = () => {
                 </Grid>
                 <Grid item xs={6} sm={3}>
                   <Box textAlign="center">
-                    <Typography variant="h4" color="warning.main">
-                      {formatPercentage(systemOverview.completionRate)}
+                    <Typography variant="h4" color="success.main">
+                      {formatNumber(systemOverview.totalSuccessfulSolved)}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      해결 완료율
+                      해결 성공 API 수
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
-                      수익: ₩{formatNumber(systemOverview.totalRevenue)}
+                      성공적으로 해결된 캡차
                     </Typography>
                   </Box>
                 </Grid>
@@ -365,10 +362,10 @@ const AdminAnalyticsScreen: React.FC = () => {
                       />
                       <Line
                         type="monotone"
-                        dataKey="completionRate"
-                        stroke="#ff9800"
+                        dataKey="successSolved"
+                        stroke="#2e7d32"
                         strokeWidth={2}
-                        name="해결 완료율 (%)"
+                        name="해결 성공 API 수"
                       />
                     </LineChart>
                   </ResponsiveContainer>

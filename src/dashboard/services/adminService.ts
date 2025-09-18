@@ -16,6 +16,7 @@ export interface AdminMetrics {
   generatedSuccessRate: number;
   // 캡차 해결 통계
   totalSolved: number;
+  successfulSolved: number;
   solvedSuccessRate: number;
   // 해결 완료율
   completionRate: number;
