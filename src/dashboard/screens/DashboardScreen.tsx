@@ -341,6 +341,9 @@ const DashboardScreen: React.FC = () => {
                                       <Typography variant="body2">
                                         총 요청: <strong>{formatNumber(data.total)}</strong>
                                       </Typography>
+                                      <Typography variant="body2" color="info.main">
+                                        Pass: <strong>{formatNumber(data.pass || 0)}</strong>
+                                      </Typography>
                                       <Typography variant="body2" color="primary">
                                         필기 캡차: <strong>{formatNumber(data.handwriting)}</strong>
                                       </Typography>
@@ -349,10 +352,7 @@ const DashboardScreen: React.FC = () => {
                                       </Typography>
                                       <Typography variant="body2" color="success.main">
                                         이미지 캡차: <strong>{formatNumber(data.imagecaptcha)}</strong>
-                                      </Typography>
-                                      <Typography variant="body2" color="info.main">
-                                        Pass: <strong>{formatNumber(data.pass || 0)}</strong>
-                                      </Typography>
+                                      </Typography>                      
                                     </Box>
                                   </Box>
                                 );
@@ -707,7 +707,47 @@ const DashboardScreen: React.FC = () => {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="time" />
                     <YAxis />
-                    <Tooltip />
+                    <Tooltip 
+                      content={({ active, payload, label }) => {
+                        if (active && payload && payload.length) {
+                          const pMap: Record<string, number> = {} as any;
+                          payload.forEach((p: any) => {
+                            if (p && p.dataKey) {
+                              pMap[p.dataKey] = p.value as number;
+                            }
+                          });
+                          return (
+                            <Box sx={{ 
+                              bgcolor: 'background.paper', 
+                              border: 1, 
+                              borderColor: 'divider', 
+                              borderRadius: 1, 
+                              p: 2,
+                              boxShadow: 3
+                            }}>
+                              <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+                                {label}
+                              </Typography>
+                              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                                <Typography variant="body2">
+                                  전체 요청: <strong>{formatNumber(pMap['requests'] || 0)}</strong>
+                                </Typography>
+                                <Typography variant="body2" sx={{ color: '#2e7d32' }}>
+                                  성공 요청: <strong>{formatNumber(pMap['success'] || 0)}</strong>
+                                </Typography>
+                                <Typography variant="body2" sx={{ color: '#d32f2f' }}>
+                                  실패 요청: <strong>{formatNumber(pMap['failed'] || 0)}</strong>
+                                </Typography>
+                                <Typography variant="body2" sx={{ color: '#9c27b0' }}>
+                                  리렌더링: <strong>{formatNumber(pMap['rerender'] || 0)}</strong>
+                                </Typography>
+                              </Box>
+                            </Box>
+                          );
+                        }
+                        return null;
+                      }}
+                    />
                     <Line
                       type="monotone"
                       dataKey="requests"
