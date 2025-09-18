@@ -91,8 +91,8 @@ const AnalyticsScreen: React.FC = () => {
         
         // userStatsService.getHourlyChartData 사용 (daily_user_api_stats 기반)
         const res = await userStatsService.getHourlyChartData(period);
-        if (res.success && res.data) {
-          setStatsData(res.data);
+        if (res.success && res.data && res.data.chart_data) {
+          setStatsData(res.data.chart_data);
         } else {
           setError(res.message || '통계 데이터를 불러오지 못했습니다.');
           setStatsData([]);
