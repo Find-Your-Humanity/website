@@ -33,8 +33,11 @@ const AdminDashboardScreen: React.FC = () => {
     totalUsers: 0,
     newUsersToday: 0,
     activeUsers: 0,
-    totalRequests: 0,
-    successRate: 0,
+    totalGenerated: 0,
+    generatedSuccessRate: 0,
+    totalSolved: 0,
+    solvedSuccessRate: 0,
+    avgResponseTime: 0,
     revenue: 0,
     planDistribution: []
   });
@@ -90,11 +93,11 @@ const AdminDashboardScreen: React.FC = () => {
   const chartData = {
     totalUsers: adminMetrics.totalUsers,
     activeUsers: adminMetrics.activeUsers,
-    totalRequests: adminMetrics.totalRequests,
-    successfulSolves: Math.round(adminMetrics.totalRequests * adminMetrics.successRate / 100),
-    failedAttempts: Math.round(adminMetrics.totalRequests * (100 - adminMetrics.successRate) / 100),
-    successRate: adminMetrics.successRate,
-    averageResponseTime: 245, // TODO: 실제 응답 시간 데이터 추가
+    totalGenerated: adminMetrics.totalGenerated,
+    totalSolved: adminMetrics.totalSolved,
+    generatedSuccessRate: adminMetrics.generatedSuccessRate,
+    solvedSuccessRate: adminMetrics.solvedSuccessRate,
+    averageResponseTime: adminMetrics.avgResponseTime,
     systemHealth: 'healthy' as const,
     revenue: adminMetrics.revenue,
     newUsersToday: adminMetrics.newUsersToday,
@@ -208,36 +211,18 @@ const AdminDashboardScreen: React.FC = () => {
         </Grid>
       </Grid>
 
-      {/* 캡차 해결 및 전환율 통계 */}
+      {/* 캡차 해결 및 성능 통계 */}
       <Grid container spacing={{ xs: 2, md: 3 }} sx={{ mb: 3 }}>
-        <Grid item xs={12} sm={6} md={4}>
+        <Grid item xs={12} sm={6} md={6}>
           <StatCard
-            title="캡차 해결 시도 API 수"
+            title="캡차 해결 수"
             value={formatNumber(adminMetrics.totalSolved)}
             icon={<SuccessIcon sx={{ fontSize: 40 }} />}
             color="#2e7d32"
             subtitle={`성공률: ${formatPercentage(adminMetrics.solvedSuccessRate)}`}
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <StatCard
-            title="캡차 생성 API 수"
-            value={formatNumber(adminMetrics.totalGenerated)}
-            icon={<SecurityIcon sx={{ fontSize: 40 }} />}
-            color="#1976d2"
-            subtitle={`성공률: ${formatPercentage(adminMetrics.generatedSuccessRate)}`}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <StatCard
-            title="해결 성공 API 수"
-            value={formatNumber(adminMetrics.successfulSolved)}
-            icon={<SuccessIcon sx={{ fontSize: 40 }} />}
-            color="#2e7d32"
-            subtitle="성공적으로 해결된 캡차"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
+        <Grid item xs={12} sm={6} md={6}>
           <StatCard
             title="평균 응답시간"
             value={formatResponseTime(adminMetrics.avgResponseTime)}

@@ -5,9 +5,7 @@ export function formatNumber(value: number | null | undefined): string {
 
 export function formatPercentage(value: number | null | undefined, fractionDigits = 1): string {
   const n = typeof value === 'number' && isFinite(value) ? value : 0;
-  // 100%를 넘는 경우 100%로 제한
-  const clampedValue = Math.min(n, 100);
-  return `${clampedValue.toFixed(fractionDigits)}%`;
+  return `${n.toFixed(fractionDigits)}%`;
 }
 
 export function formatResponseTime(ms: number | null | undefined): string {
