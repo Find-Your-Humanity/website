@@ -164,6 +164,7 @@ const AnalyticsScreen: React.FC = () => {
         label: label,
         success: s.successfulSolves,
         failed: s.failedAttempts,
+        total: s.totalRequests,
       };
     });
   }, [statsData]);
