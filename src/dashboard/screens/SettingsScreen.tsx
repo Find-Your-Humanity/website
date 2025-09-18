@@ -133,11 +133,6 @@ const SettingsScreen: React.FC = () => {
       
       if (response.success && response.data) {
         setMyApiKeys(response.data.api_keys);
-        
-        // 저장된 키가 없고 서버에서 받은 키가 있으면 첫 키 자동 선택
-        if (!selectedApiKey && response.data.api_keys.length > 0) {
-          setSelectedApiKey(response.data.api_keys[0].key_id);
-        }
       } else {
         console.error('API 키 조회 실패: 서버 응답 오류');
       }
@@ -308,44 +303,44 @@ const SettingsScreen: React.FC = () => {
                 {ipStats && (
                   <Grid container spacing={2} mb={3}>
                     <Grid item xs={6} md={3}>
-                      <Box textAlign="center" p={2} bgcolor="warning.light" borderRadius={1}>
-                        <Typography variant="h4" color="warning.contrastText">
+                      <Card variant="outlined" sx={{ textAlign: 'center', p: 2, borderLeft: '4px solid #ff9800' }}>
+                        <Typography variant="h4" color="text.primary" sx={{ fontWeight: 600 }}>
                           {ipStats.total_suspicious_ips || 0}
                         </Typography>
-                        <Typography variant="body2" color="warning.contrastText">
+                        <Typography variant="body2" color="text.secondary">
                           총 의심 IP
                         </Typography>
-                      </Box>
+                      </Card>
                     </Grid>
                     <Grid item xs={6} md={3}>
-                      <Box textAlign="center" p={2} bgcolor="error.light" borderRadius={1}>
-                        <Typography variant="h4" color="error.contrastText">
+                      <Card variant="outlined" sx={{ textAlign: 'center', p: 2, borderLeft: '4px solid #f44336' }}>
+                        <Typography variant="h4" color="text.primary" sx={{ fontWeight: 600 }}>
                           {ipStats.blocked_ips}
                         </Typography>
-                        <Typography variant="body2" color="error.contrastText">
+                        <Typography variant="body2" color="text.secondary">
                           차단된 IP
                         </Typography>
-                      </Box>
+                      </Card>
                     </Grid>
                     <Grid item xs={6} md={3}>
-                      <Box textAlign="center" p={2} bgcolor="info.light" borderRadius={1}>
-                        <Typography variant="h4" color="info.contrastText">
+                      <Card variant="outlined" sx={{ textAlign: 'center', p: 2, borderLeft: '4px solid #2196f3' }}>
+                        <Typography variant="h4" color="text.primary" sx={{ fontWeight: 600 }}>
                           {ipStats.active_suspicious_ips || 0}
                         </Typography>
-                        <Typography variant="body2" color="info.contrastText">
+                        <Typography variant="body2" color="text.secondary">
                           활성 의심 IP
                         </Typography>
-                      </Box>
+                      </Card>
                     </Grid>
                     <Grid item xs={6} md={3}>
-                      <Box textAlign="center" p={2} bgcolor="success.light" borderRadius={1}>
-                        <Typography variant="h4" color="success.contrastText">
+                      <Card variant="outlined" sx={{ textAlign: 'center', p: 2, borderLeft: '4px solid #4caf50' }}>
+                        <Typography variant="h4" color="text.primary" sx={{ fontWeight: 600 }}>
                           {ipStats.recent_violations_24h || 0}
                         </Typography>
-                        <Typography variant="body2" color="success.contrastText">
+                        <Typography variant="body2" color="text.secondary">
                           24시간 내 위반
                         </Typography>
-                      </Box>
+                      </Card>
                     </Grid>
                   </Grid>
                 )}
