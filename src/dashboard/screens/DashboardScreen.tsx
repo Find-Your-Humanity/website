@@ -739,7 +739,7 @@ const DashboardScreen: React.FC = () => {
                                   실패 요청: <strong>{formatNumber(pMap['failed'] || 0)}</strong>
                                 </Typography>
                                 <Typography variant="body2" sx={{ color: '#9c27b0' }}>
-                                  리렌더링: <strong>{formatNumber(pMap['rerender'] || 0)}</strong>
+                                  리렌더링: <strong>{formatNumber(Math.max(0, (pMap['requests'] || 0) - (pMap['success'] || 0) - (pMap['failed'] || 0)))}</strong>
                                 </Typography>
                               </Box>
                             </Box>
