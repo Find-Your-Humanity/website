@@ -25,7 +25,8 @@ import {
   Chip,
 } from '@mui/material';
 import { Edit, Delete, Add } from '@mui/icons-material';
-import { adminService, type User } from '../services/adminService';
+import { usersService } from '../services/usersService';
+import type { User } from '../types';
 
 const UsersScreen: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -50,9 +51,9 @@ const UsersScreen: React.FC = () => {
       try {
         setLoading(true);
         setError(null);
-        const resp = await adminService.getUsers();
+        const resp = await usersService.list();
         if (resp.success) {
-          setUsers(resp.data.data);
+          setUsers(resp.data);
         } else {
           setError(resp.error || '사용자 목록을 불러오지 못했습니다.');
         }
@@ -90,12 +91,16 @@ const UsersScreen: React.FC = () => {
     if (!selectedUser) return;
     
     try {
-      const resp = await adminService.updateUser(selectedUser.id, editForm);
+      const resp = await usersService.update(String(selectedUser.id), {
+        email: editForm.email,
+        name: editForm.name,
+        is_admin: editForm.is_admin,
+      });
       if (resp.success) {
         // 사용자 목록 새로고침
-        const usersResp = await adminService.getUsers();
+        const usersResp = await usersService.list();
         if (usersResp.success) {
-          setUsers(usersResp.data.data);
+          setUsers(usersResp.data);
         }
         setEditDialogOpen(false);
         setSelectedUser(null);
@@ -112,12 +117,12 @@ const UsersScreen: React.FC = () => {
     if (!selectedUser) return;
     
     try {
-      const resp = await adminService.deleteUser(selectedUser.id);
+      const resp = await usersService.remove(String(selectedUser.id));
       if (resp.success) {
         // 사용자 목록 새로고침
-        const usersResp = await adminService.getUsers();
+        const usersResp = await usersService.list();
         if (usersResp.success) {
-          setUsers(usersResp.data.data);
+          setUsers(usersResp.data);
         }
         setDeleteDialogOpen(false);
         setSelectedUser(null);
