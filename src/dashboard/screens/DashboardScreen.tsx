@@ -452,10 +452,6 @@ const DashboardScreen: React.FC = () => {
               <MenuItem value="month">최근 한달</MenuItem>
             </Select>
           </FormControl>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography variant="caption" color="text.secondary">비활성화+삭제</Typography>
-            <input type="checkbox" checked={includeInactiveDeleted} onChange={handleToggleInactiveDeleted} />
-          </Box>
         </Box>
       </Box>
 
@@ -545,9 +541,15 @@ const DashboardScreen: React.FC = () => {
       {/* API 키별 상세 통계 */}
       <Card sx={{ mb: 3 }}>
         <CardContent>
-          <Typography variant="h6" gutterBottom>
-            API 키별 상세 통계
-          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Typography variant="h6">
+              API 키별 상세 통계
+            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="caption" color="text.secondary">비활성화+삭제</Typography>
+              <input type="checkbox" checked={includeInactiveDeleted} onChange={handleToggleInactiveDeleted} />
+            </Box>
+          </Box>
           <Tabs value={tabValue} onChange={handleTabChange}>
             <Tab label="전체 보기" />
             <Tab label="상세 분석" />
