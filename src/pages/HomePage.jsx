@@ -320,7 +320,8 @@ const HomePage = () => {
           <div className="feature-box">
             <h3 className="feature-title">딥러닝 이미지 분류</h3>
             <p className="feature-description">
-              위 주제에 대한 설명 추가
+              고도화된 딥러닝 알고리즘을 통해<br />
+              이미지 내 객체를 정확하게 분류하고 인식합니다.
             </p>
           </div>
           <div className="feature-box">
